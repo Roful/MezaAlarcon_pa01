@@ -1,0 +1,104 @@
+
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<LINK href="diff-s.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="nav-div.js"></script>
+</head>
+<body>
+<div id="left" class="src">
+<pre>
+<a id='leftstart' tid='rightstart'></a>
+// Copyright 2009 the V8 project authors. All rights reserved.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+//       copyright notice, this list of conditions and the following
+//       disclaimer in the documentation and/or other materials provided
+//       with the distribution.
+//     * Neither the name of Google Inc. nor the names of its
+//       contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#<a id='4275' tid='4276', class="m">include</a> <a id='4277' tid='4278', class="m">&lt;</a><a id='4279' tid='4280', class="m">stdlib</a><a id='4281' tid='4282', class="m">.</a><a id='4283' tid='4284', class="m">h</a><a id='4285' tid='4286', class="m">&gt;</a>
+#<a id='4287' tid='4288', class="m">include</a> <a id='4289' tid='4290', class="m">&lt;</a><a id='4291' tid='4292', class="m">errno</a><a id='4293' tid='4294', class="m">.</a><a id='4295' tid='4296', class="m">h</a><a id='4297' tid='4298', class="m">&gt;</a>
+
+<span class="d">#include &quot;d8.h&quot;</span>
+<span class="d">#include &quot;d8-debug.h&quot;</span>
+<span class="d">#include &quot;debug.h&quot;</span>
+<span class="d">#include &quot;api.h&quot;</span>
+<span class="d">#include &quot;natives.h&quot;</span>
+<span class="d">#include &quot;platform.h&quot;</span>
+
+
+namespace <span class="d">v8</span> {
+
+
+<a id='4261' tid='4262', class="m">const</a> <a id='4263' tid='4264', class="m">char</a><a id='4265' tid='4266', class="m">*</a> <a id='4267' tid='4268', class="m">Shell</a><a id='4269' tid='4270', class="m">::</a><a id='4271' tid='4272', class="m">kHistoryFileName</a> = <a id='4273' tid='4274', class="m">&quot;.d8_history&quot;</a>;
+<a id='4247' tid='4248', class="m">const</a> <a id='4249' tid='4250', class="m">char</a><a id='4251' tid='4252', class="m">*</a> <a id='4253' tid='4254', class="m">Shell</a><a id='4255' tid='4256', class="m">::</a><a id='4257' tid='4258', class="m">kPrompt</a> = <a id='4259' tid='4260', class="m">&quot;d8&gt; &quot;</a>;
+
+
+<a id='4205' tid='4206', class="m">LineEditor</a> <a id='4207' tid='4208', class="m">*</a><a id='4209' tid='4210', class="m">LineEditor</a><a id='4211' tid='4212', class="m">::</a><a id='4213' tid='4214', class="m">first_</a> = <a id='4215' tid='4216', class="m">NULL</a>;
+
+
+<a id='4169' tid='4170', class="m">LineEditor</a><a id='4171' tid='4172', class="m">::</a><a id='4173' tid='4174', class="m">LineEditor</a>(<a id='4175' tid='4176', class="m">Type</a> <a id='4177' tid='4178', class="m">type</a>, <a id='4179' tid='4180', class="m">const</a> <a id='4181' tid='4182', class="m">char</a><a id='4183' tid='4184', class="m">*</a> <a id='4185' tid='4186', class="m">name</a>)
+    : <a id='4187' tid='4188', class="m">type_</a>(<a id='4189' tid='4190', class="m">type</a>),
+      <a id='4191' tid='4192', class="m">name_</a>(<a id='4193' tid='4194', class="m">name</a>),
+      <a id='4195' tid='4196', class="m">next_</a>(<a id='4197' tid='4198', class="m">first_</a>) {
+  <a id='4199' tid='4200', class="m">first_</a> <a id='4201' tid='4202', class="m">=</a> <a id='4203' tid='4204', class="m">this</a>;
+}
+
+
+<a id='4105' tid='4106', class="m">LineEditor</a><a id='4107' tid='4108', class="m">*</a> <a id='4109' tid='4110', class="m">LineEditor</a><a id='4111' tid='4112', class="m">::</a><a id='4113' tid='4114', class="m">Get</a>() {
+  <a id='4115' tid='4116', class="m">LineEditor</a><a id='4117' tid='4118', class="m">*</a> <a id='4119' tid='4120', class="m">current</a> = <a id='4121' tid='4122', class="m">first_</a>;
+  <a id='4123' tid='4124', class="m">LineEditor</a><a id='4125' tid='4126', class="m">*</a> <a id='4127' tid='4128', class="m">best</a> = <a id='4129' tid='4130', class="m">current</a>;
+  <a id='4131' tid='4132', class="m">while</a> (<a id='4133' tid='4134', class="m">current</a> <a id='4135' tid='4136', class="m">!=</a> <a id='4137' tid='4138', class="m">NULL</a>) {
+    <a id='4139' tid='4140', class="m">if</a> (<a id='4141' tid='4142', class="m">current</a>-&gt;<a id='4143' tid='4144', class="m">type_</a> <a id='4145' tid='4146', class="m">&gt;</a> <a id='4147' tid='4148', class="m">best</a>-&gt;<a id='4149' tid='4150', class="m">type_</a>)
+      <a id='4151' tid='4152', class="m">best</a> <a id='4153' tid='4154', class="m">=</a> <a id='4155' tid='4156', class="m">current</a>;
+    <a id='4157' tid='4158', class="m">current</a> <a id='4159' tid='4160', class="m">=</a> <a id='4161' tid='4162', class="m">current</a>-&gt;<a id='4163' tid='4164', class="m">next_</a>;
+  }
+  <a id='4165' tid='4166', class="m">return</a> <a id='4167' tid='4168', class="m">best</a>;
+}
+
+
+<a id='4063' tid='4064', class="m">class</a> <a id='4065' tid='4066', class="m">DumbLineEditor</a>: <a id='4067' tid='4068', class="m">public</a> <a id='4069' tid='4070', class="m">LineEditor</a> {
+ <a id='4103' tid='4104', class="m">public</a>:
+  <a id='4071' tid='4072', class="m">DumbLineEditor</a>() : <a id='4073' tid='4074', class="m">LineEditor</a>(<a id='4075' tid='4076', class="m">LineEditor</a><a id='4077' tid='4078', class="m">::</a><a id='4079' tid='4080', class="m">DUMB</a>, <a id='4081' tid='4082', class="m">&quot;dumb&quot;</a>) { }
+  <a id='4083' tid='4084', class="m">virtual</a> <a id='4085' tid='4086', class="m">i</a><a id='4087' tid='4088', class="m">::</a><a id='4089' tid='4090', class="m">SmartPointer</a>&lt;<a id='4091' tid='4092', class="m">char</a>&gt; <a id='4093' tid='4094', class="m">Prompt</a>(<a id='4095' tid='4096', class="m">const</a> <a id='4097' tid='4098', class="m">char</a><a id='4099' tid='4100', class="m">*</a> <a id='4101' tid='4102', class="m">prompt</a>);
+};
+
+
+<span class="d">static DumbLineEditor dumb_line_editor;</span>
+
+
+<a id='3983' tid='3984', class="m">i</a><a id='3985' tid='3986', class="m">::</a><a id='3987' tid='3988', class="m">SmartPointer</a>&lt;<a id='3989' tid='3990', class="m">char</a>&gt; <a id='3991' tid='3992', class="m">DumbLineEditor</a><a id='3993' tid='3994', class="m">::</a><a id='3995' tid='3996', class="m">Prompt</a>(<a id='3997' tid='3998', class="m">const</a> <a id='3999' tid='4000', class="m">char</a><a id='4001' tid='4002', class="m">*</a> <a id='4003' tid='4004', class="m">prompt</a>) {
+  <a id='4005' tid='4006', class="m">static</a> <a id='4007' tid='4008', class="m">const</a> <a id='4009' tid='4010', class="m">int</a> <a id='4011' tid='4012', class="m">kBufferSize</a> = <a id='4013' tid='4014', class="m">256</a>;
+  <a id='4015' tid='4016', class="m">char</a> <a id='4017' tid='4018', class="m">buffer</a>[<a id='4019' tid='4020', class="m">kBufferSize</a>];
+  <a id='4021' tid='4022', class="m">printf</a>(<a id='4023' tid='4024', class="m">&quot;%s&quot;</a>, <a id='4025' tid='4026', class="m">prompt</a>);
+  <a id='4027' tid='4028', class="m">char</a><a id='4029' tid='4030', class="m">*</a> <a id='4031' tid='4032', class="m">str</a> = <a id='4033' tid='4034', class="m">fgets</a>(<a id='4035' tid='4036', class="m">buffer</a>, <a id='4037' tid='4038', class="m">kBufferSize</a>, <a id='4039' tid='4040', class="m">stdin</a>);
+  <a id='4041' tid='4042', class="m">return</a> <a id='4043' tid='4044', class="m">i</a><a id='4045' tid='4046', class="m">::</a><a id='4047' tid='4048', class="m">SmartPointer</a>&lt;<a id='4049' tid='4050', class="m">char</a>&gt;(<a id='4051' tid='4052', class="m">str</a> ? <a id='4053' tid='4054', class="m">i</a><a id='4055' tid='4056', class="m">::</a><a id='4057' tid='4058', class="m">StrDup</a>(<a id='4059' tid='4060', class="m">str</a>) : <a id='4061' tid='4062', class="m">str</a>);
+}
+
+
+<a id='3973' tid='3974', class="m">CounterMap</a><a id='3975' tid='3976', class="m">*</a> <a id='3977' tid='3978', class="m">Shell</a><a id='3979' tid='3980', class="m">::</a><a id='3981' tid='3982', class="m">counter_map_</a>;
+<a id='3953' tid='3954', class="m">i</a><a id='3955' tid='3956', class="m">::</a><a id='3957' tid='3958', class="m">OS</a><a id='3959' tid='3960', class="m">::</a><a id='3961' tid='3962', class="m">MemoryMappedFile</a><a id='3963' tid='3964', class="m">*</a> <a id='3965' tid='3966', class="m">Shell</a><a id='3967' tid='3968', class="m">::</a><a id='3969' tid='3970', class="m">counters_file_</a> = <a id='3971' tid='3972', class="m">NULL</a>;
+<span class="d">CounterCollection Shell::local_counters_;</span>
+<a id='3939' tid='3940', class="m">CounterCollection</a><a id='3941' tid='3942', class="m">*</a> <a id='3943' tid='3944', class="m">Shell</a><a id='3945' tid='3946', class="m">::</a><a id='3947' tid='3948', class="m">counters_</a> = <a id='3949' tid='3950', class="m">&</a><a id='3951' tid='3952', class="m">local_counters_</a>;
+<a id='3929' tid='3930', class="m">Persistent</a>&lt;<a id='3931' tid='3932', class="m">Context</a>&gt; <a id='3933' tid='3934', class="m">Shell</a><a id='3935' tid='3936', class="m">::</a><a id='3937' tid='3938', class="m">utility_context_</a>;
