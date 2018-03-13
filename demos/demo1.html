@@ -89,4 +89,15 @@
 <div class="line" id="L81"><span class="lineno">81 </span></div>
 <div class="line" id="L82"><span class="lineno">82 </span></div>
 <div class="line" id="L83"><span class="lineno">83 </span><span class="deletion" title="function &#39;mkList&#39; (line 83) deleted"><span class="keyword">def</span></span> mkList(pylist):</div>
-<div class="line" id="L84"><span class="lineno">84 </span>    <span class="keyword">if
+<div class="line" id="L84"><span class="lineno">84 </span>    <span class="keyword">if</span> (pylist == []):</div>
+<div class="line" id="L85"><span class="lineno">85 </span>        <span class="keyword">return</span> nil</div>
+<div class="line" id="L86"><span class="lineno">86 </span>    else:</div>
+<div class="line" id="L87"><span class="lineno">87 </span>        <span class="keyword">return</span> Cons(pylist[0], mkList(pylist[1:]))</div>
+<div class="line" id="L88"><span class="lineno">88 </span></div>
+<div class="line" id="L89"><span class="lineno">89 </span></div>
+<div class="line" id="L90"><span class="lineno">90 </span></div>
+<div class="line" id="L91"><span class="lineno">91 </span></div>
+<div class="line" id="L92"><span class="lineno">92 </span><span class="deletion" title="function &#39;toList&#39; (line 92) deleted"><span class="keyword">def</span></span> toList(ls):</div>
+<div class="line" id="L93"><span class="lineno">93 </span>    ret = []</div>
+<div class="line" id="L94"><span class="lineno">94 </span>    <span class="keyword">while</span> ls &lt;&gt; nil:</div>
+<div class="
