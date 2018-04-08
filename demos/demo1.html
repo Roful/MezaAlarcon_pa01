@@ -153,4 +153,12 @@
 <div class="line" id="L145"><span class="lineno">145 </span># has been modified significantly since renaming.</div>
 <div class="line" id="L146"><span class="lineno">146 </span># Thus we no longer consider them to be the same</div>
 <div class="line" id="L147"><span class="lineno">147 </span># function.</div>
-<div class="line" id="L148"><span class="lineno">
+<div class="line" id="L148"><span class="lineno">148 </span><span class="deletion" title="function &#39;cmap&#39; (line 148) deleted"><span class="keyword">def</span></span> cmap(f, ls):</div>
+<div class="line" id="L149"><span class="lineno">149 </span>    <span class="keyword">if</span> (ls == nil):</div>
+<div class="line" id="L150"><span class="lineno">150 </span>        <span class="keyword">return</span> nil</div>
+<div class="line" id="L151"><span class="lineno">151 </span>    else:</div>
+<div class="line" id="L152"><span class="lineno">152 </span>        <span class="keyword">return</span> Cons(f(ls.first), cmap(f, ls.rest))</div>
+<div class="line" id="L153"><span class="lineno">153 </span></div>
+<div class="line" id="L154"><span class="lineno">154 </span></div>
+<div class="line" id="L155"><span class="lineno">155 </span># reverse is unchanged</div>
+<div class="line" id="L156"><span class="lineno">156 </span><a id="48"  class="move"  title="function &#39;reverse&#39; (line 156) moved to function &#39;reverse&
