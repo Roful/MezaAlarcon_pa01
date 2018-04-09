@@ -176,4 +176,15 @@
 <div class="line" id="L168"><span class="lineno">168 </span># the same function.</div>
 <div class="line" id="L169"><span class="lineno">169 </span><span class="deletion" title="function &#39;cfilter&#39; (line 169) deleted"><span class="keyword">def</span></span> cfilter(f, ls):</div>
 <div class="line" id="L170"><span class="lineno">170 </span>    ret = nil</div>
-<div class="line" id="L171"><span class="lineno">171 </span>    <span class="keyword">while</span> ls &lt;&gt; nil:
+<div class="line" id="L171"><span class="lineno">171 </span>    <span class="keyword">while</span> ls &lt;&gt; nil:</div>
+<div class="line" id="L172"><span class="lineno">172 </span>        <span class="keyword">if</span> f(ls.first):</div>
+<div class="line" id="L173"><span class="lineno">173 </span>            ret = Cons(ls.first, ret)</div>
+<div class="line" id="L174"><span class="lineno">174 </span>        ls = ls.rest</div>
+<div class="line" id="L175"><span class="lineno">175 </span>    <span class="keyword">return</span> reverse(ret)</div>
+<div class="line" id="L176"><span class="lineno">176 </span></div>
+<div class="line" id="L177"><span class="lineno">177 </span>    # if (ls == nil):</div>
+<div class="line" id="L178"><span class="lineno">178 </span>    #     return nil</div>
+<div class="line" id="L179"><span class="lineno">179 </span>    # elif f(ls.first):</div>
+<div class="line" id="L180"><span class="lineno">180 </span>    #     return Cons(ls.first, cfilter(f, ls.rest))</div>
+<div class="line" id="L181"><span class="lineno">181 </span>    # else:</div>
+<d
