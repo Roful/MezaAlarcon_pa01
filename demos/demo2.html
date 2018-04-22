@@ -43,4 +43,15 @@
 <div class="line" id="L35"><span class="lineno">35 </span></div>
 <div class="line" id="L36"><span class="lineno">36 </span><span class="insertion" title="class &#39;PairIterator&#39; (line 36) inserted"><span class="keyword">class</span></span> PairIterator:</div>
 <div class="line" id="L37"><span class="lineno">37 </span>    <span class="keyword">def</span> __init__(self, p):</div>
-<div class="line" id="L38"><span class="lineno">38 </span>        self.p 
+<div class="line" id="L38"><span class="lineno">38 </span>        self.p = p</div>
+<div class="line" id="L39"><span class="lineno">39 </span>    <span class="keyword">def</span> next(self):</div>
+<div class="line" id="L40"><span class="lineno">40 </span>        <span class="keyword">if</span> self.p == nil:</div>
+<div class="line" id="L41"><span class="lineno">41 </span>            raise StopIteration</div>
+<div class="line" id="L42"><span class="lineno">42 </span>        ret = self.p.fst</div>
+<div class="line" id="L43"><span class="lineno">43 </span>        self.p = self.p.snd</div>
+<div class="line" id="L44"><span class="lineno">44 </span>        <span class="keyword">return</span> ret</div>
+<div class="line" id="L45"><span class="lineno">45 </span></div>
+<div class="line" id="L46"><span class="lineno">46 </span></div>
+<div class="line" id="L47"><span class="lineno">47 </span></div>
+<div class="line" id="L48"><span class="lineno">48 </span></div>
+<div class="line" id="L49"><span class="lineno">49 </span><a id="61"  class="change"  ti
