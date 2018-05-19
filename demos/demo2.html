@@ -140,4 +140,13 @@
 <div class="line" id="L132"><span class="lineno">132 </span># function has been modified significantly since</div>
 <div class="line" id="L133"><span class="lineno">133 </span># renaming. Thus we no longer consider them to be</div>
 <div class="line" id="L134"><span class="lineno">134 </span># the same function.</div>
-<div class="line" id="L135"><span class="lineno">135 </span><span class="insertion" title="function &#39;filterlist&#39; (line 135)
+<div class="line" id="L135"><span class="lineno">135 </span><span class="insertion" title="function &#39;filterlist&#39; (line 135) inserted"><span class="keyword">def</span></span> filterlist(f, ls):</div>
+<div class="line" id="L136"><span class="lineno">136 </span>    ret = nil</div>
+<div class="line" id="L137"><span class="lineno">137 </span>    <span class="keyword">for</span> x in ls:</div>
+<div class="line" id="L138"><span class="lineno">138 </span>        <span class="keyword">if</span> f(x):</div>
+<div class="line" id="L139"><span class="lineno">139 </span>            ret = Pair(x, ret)</div>
+<div class="line" id="L140"><span class="lineno">140 </span>    <span class="keyword">return</span> reverse(ret)</div>
+<div class="line" id="L141"><span class="lineno">141 </span></div>
+<div class="line" id="L142"><span class="lineno">142 </span></div>
+<div class="line" id="L143"><span class="lineno">143 </span></div>
+<div class="line" id="L144"><span class="lineno">144 </span><a id="49"  class="move"  title="function &#39;reverse&#39; (line 156) moved to function &#39;reverse&#39; (
