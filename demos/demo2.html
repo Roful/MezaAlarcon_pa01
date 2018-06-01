@@ -184,4 +184,13 @@
 <div class="line" id="L176"><span class="lineno">176 </span></div>
 <div class="line" id="L177"><span class="lineno">177 </span></div>
 <div class="line" id="L178"><span class="lineno">178 </span></div>
-<div class="line" id="L179"><span class="lineno"
+<div class="line" id="L179"><span class="lineno">179 </span></div>
+<div class="line" id="L180"><span class="lineno">180 </span><span class="insertion" title="function &#39;ziplist&#39; (line 180) inserted"><span class="keyword">def</span></span> ziplist(ls1, ls2):</div>
+<div class="line" id="L181"><span class="lineno">181 </span>    ret = nil</div>
+<div class="line" id="L182"><span class="lineno">182 </span>    <span class="keyword">while</span> ls1 &lt;&gt; nil and ls2 &lt;&gt; nil:</div>
+<div class="line" id="L183"><span class="lineno">183 </span>        ret = Pair(Pair(ls1.fst, ls2.fst), ret)</div>
+<div class="line" id="L184"><span class="lineno">184 </span>        ls1 = ls1.snd</div>
+<div class="line" id="L185"><span class="lineno">185 </span>        ls2 = ls2.snd</div>
+<div class="line" id="L186"><span class="lineno">186 </span>    <span class="keyword">return</span> reverse(ret)</div>
+<div class="line" id="L187"><span class="lineno">187 </span></div>
+<div class="line" id="L188"><span class=
