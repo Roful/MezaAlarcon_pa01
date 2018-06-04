@@ -26,4 +26,20 @@
 
 (define even
   (fun ([x Int] [-> Bool])
-    (if 
+    (if (= x 0)
+
+            true
+         (if (= x 1)
+            false
+      (odd (- x 1))))))
+
+
+
+
+
+(even 10)   -- true
+
+
+
+(even 11)            -- false
+(odd 11)   -- true
