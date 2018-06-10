@@ -31,4 +31,21 @@
 
 
 
-<span class='d'>;------------------------------------------------------------
+<span class='d'>;-------------------------------------------------------------
+</span><span class='d'>;                      parameters
+</span><span class='d'>;-------------------------------------------------------------
+</span>
+<span class='d'>;; The ratio of cost/size that we consider two nodes to be
+</span><span class='d'>;; &quot;similar&quot;, so as to perform a heuristic move (that will
+</span><span class='d'>;; cut running time by a lot.) But this number should be
+</span><span class='d'>;; small enough otherwise everything will be considered to
+</span><span class='d'>;; be moves! Set to a small number for accuracy.
+</span><span class='d'>(define *move-ratio* 0)</span>
+
+
+<span class='d'>;; The minimum size of a node to be considered for moves.
+</span><span class='d'>;; Shouldn&#39;t be too small, otherwise small deletec names
+</span><span class='d'>;; will appear in a very distant place! This number should
+</span><span class='d'>;; be larger than *min-frame-size* otherwise it will not be
+</span><span class='d'>;; effective because substructural diff will do it.
+</span>(<a id='809' tid='810'
