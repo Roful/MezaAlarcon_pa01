@@ -48,4 +48,21 @@
 </span><span class='d'>;; will appear in a very distant place! This number should
 </span><span class='d'>;; be larger than *min-frame-size* otherwise it will not be
 </span><span class='d'>;; effective because substructural diff will do it.
-</span>(<a id='809' tid='810'
+</span>(<a id='809' tid='810' class='u'>define</a> <a id='811' tid='812' class='u'>*move-size*</a> <a id='813' tid='814' class='u'>5</a>)
+
+
+<span class='d'>;; The depth limit for detecting substructural moves. If
+</span><span class='d'>;; this is set, we will ignore nodes that are deeper than
+</span><span class='d'>;; this number. The minimum is 7 to be useful.
+</span><span class='d'>(define *move-depth* 5)</span>
+
+<span class='d'>;; How many iterations do we go for moves? This parameter
+</span><span class='d'>;; should be large enough so that we can discover enough
+</span><span class='d'>;; moves. The algorithm is guaranteed to terminate, but it
+</span><span class='d'>;; should be be set to some small number if we found that it
+</span><span class='d'>;; takes too much time to terminate. This value should be
+</span><span class='d'>;; larger than 7 in order to work for normal programs.
+</span><span class='d'>(define *move-iteration* 1000)</span>
+
+
+<span class='d'>;; How large mu
