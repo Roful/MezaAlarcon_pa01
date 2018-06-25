@@ -96,4 +96,25 @@
 
 <span class='d'>;; only memoize the diff of nodes of size larger than this
 </span><span class='d'>;; number
-</span>(<a id='803' tid='804' cla
+</span>(<a id='803' tid='804' class='u'>define</a> <a id='805' tid='806' class='u'>*memo-node-size*</a> <a id='807' tid='808' class='u'>2</a>)
+
+
+
+<span class='d'>(define *keywords* &#39;())</span>
+<span class='d'>(define *keyword-exchange* &#39;())</span>
+<span class='d'>(define *defs* &#39;())</span>
+
+
+
+<span class='d'>;-------------------------------------------------------------
+</span><span class='d'>;                      utilities
+</span><span class='d'>;-------------------------------------------------------------
+</span>
+(<a id='1551' tid='1552' class='u'>define</a> <a id='1553' tid='1554' class='u'>qs</a>
+  <span class='d'>(lambda (x)
+    (string-append &quot;&#39;&quot; (number-&gt;string x) &quot;&#39;&quot;))</span>)
+
+
+(<a id='1403' tid='1404' class='u'>define</a> <a id='1405' tid='1406' class='u'>line</a>
+  (<a id='1407' tid='1408' class='u'>lambda</a> (<a id='1409' tid='1410' class='u'>port</a> <a id='1411' tid='1412' class='u'>.</a> <a id='1413' tid='1414' class='u'>s</a>)
+    (<a id='1415' tid='1416' class=
