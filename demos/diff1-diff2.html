@@ -79,4 +79,21 @@
 
 
 <span class='d'>;; How deep must the frames be for us to consider them as
-</span><span class='d'>
+</span><span class='d'>;; moves? This affects only already extracted frames, which
+</span><span class='d'>;; may be considered to be moves to other extracted frames.
+</span><span class='d'>;; Set it large will not necessarily lower accuracy, but
+</span><span class='d'>;; improves performance.
+</span><span class='d'>(define *min-frame-depth* 2)</span>
+
+
+<span class='d'>;; How long must a string be in order for us to use
+</span><span class='d'>;; string-dist function, which is costly when used on long
+</span><span class='d'>;; strings but the most accurate method to use. This
+</span><span class='d'>;; parameter affects strings/comments only. We use
+</span><span class='d'>;; string-dist for all Tokens.
+</span>(<a id='799' tid='800' class='u'>define</a> <a id='801' tid='802' class='u'>*max-string-len*</a> <span class='d'>200</span>)
+
+
+<span class='d'>;; only memoize the diff of nodes of size larger than this
+</span><span class='d'>;; number
+</span>(<a id='803' tid='804' cla
