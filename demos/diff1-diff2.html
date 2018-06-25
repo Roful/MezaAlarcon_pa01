@@ -65,4 +65,18 @@
 </span><span class='d'>(define *move-iteration* 1000)</span>
 
 
-<span class='d'>;; How large mu
+<span class='d'>;; How large must a node be considered as container for
+</span><span class='d'>;; another node? If this is set to a big number, we will
+</span><span class='d'>;; ignore nodes that are smaller than the number. This
+</span><span class='d'>;; number shouldn&#39;t be too small, otherwise too many
+</span><span class='d'>;; spurious moves will be detected! For example, a deleted
+</span><span class='d'>;; &quot;int&quot; could be moved to a very far place! Setting it to a
+</span><span class='d'>;; bigger number also reduces running time (by a great
+</span><span class='d'>;; amount) because less substructural moves are considered.
+</span><span class='d'>;; Set it to a larger number will cause loss of
+</span><span class='d'>;; substructural changes, but greatly reduces time to run.
+</span><span class='d'>(define *min-frame-size* 3)</span>
+
+
+<span class='d'>;; How deep must the frames be for us to consider them as
+</span><span class='d'>
