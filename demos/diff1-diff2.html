@@ -129,4 +129,22 @@
 (<a id='1923' tid='1924' class='u'>struct</a> <a id='1925' tid='1926' class='u'>Tag</a> (<a id='1927' tid='1928' class='u'>tag</a> <a id='1929' tid='1930' class='u'>idx</a> <a id='1931' tid='1932' class='u'>start</a>) <a id='1933' tid='1934' class='u'>#:transparent</a>)
 
 
-(<a id='1399' tid='1400' class='u'>define</a> <a id='1401' tid='1402' class='u'>ins?
+(<a id='1399' tid='1400' class='u'>define</a> <a id='1401' tid='1402' class='u'>ins?</a>
+  <span class='d'>(lambda (c)
+    (not (Change-orig c)))</span>)
+
+(<a id='1107' tid='1108' class='u'>define</a> <a id='1109' tid='1110' class='u'>del?</a>
+  <span class='d'>(lambda (c)
+    (not (Change-cur c)))</span>)
+
+(<a id='1535' tid='1536' class='u'>define</a> <a id='1537' tid='1538' class='u'>mod?</a>
+  <span class='d'>(lambda (c)
+    (and (Change-orig c) (Change-cur c)))</span>)
+
+
+
+<a id='1935' tid='1936' class='u'>;----------------- utils for creating changes ----------------
+</a>(<a id='1747' tid='1748' class='u'>define</a> <a id='1749' tid='1750' class='u'>total</a>
+  (<a id='495' tid='496' class='m'>lambda</a> (<a id='497' tid='498' class='m'>node1</a> <a id='499' tid='500' class='m'>node2</a>)
+    (<span class='d'>let</span> ([<a id='501' tid='502' class='m'>size1</a> (<a id='503' tid='504' class='m'>node-size</a> <a id='505' tid='506' class='m'>node1</a>)]
+          [<a id='507' tid='508' class='m'>size2</a> (<a id='509' tid='510' class='m'>node-size</a> <a id='511' tid='
