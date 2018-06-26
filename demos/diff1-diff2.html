@@ -147,4 +147,15 @@
 </a>(<a id='1747' tid='1748' class='u'>define</a> <a id='1749' tid='1750' class='u'>total</a>
   (<a id='495' tid='496' class='m'>lambda</a> (<a id='497' tid='498' class='m'>node1</a> <a id='499' tid='500' class='m'>node2</a>)
     (<span class='d'>let</span> ([<a id='501' tid='502' class='m'>size1</a> (<a id='503' tid='504' class='m'>node-size</a> <a id='505' tid='506' class='m'>node1</a>)]
-          [<a id='507' tid='508' class='m'>size2</a> (<a id='509' tid='510' class='m'>node-size</a> <a id='511' tid='
+          [<a id='507' tid='508' class='m'>size2</a> (<a id='509' tid='510' class='m'>node-size</a> <a id='511' tid='512' class='m'>node2</a>)])
+      <span class='d'>(values (append (del-node node1) (ins-node node2))
+              (+ size1 size2))</span>)))
+
+(<span class='d'>define</span> <span class='d'>del-node</span>
+  (<a id='389' tid='390' class='m'>lambda</a> (<a id='391' tid='392' class='m'>node</a>)
+    (<a id='393' tid='394' class='m'>let</a> ([<a id='395' tid='396' class='m'>size</a> (<a id='397' tid='398' class='m'>node-size</a> <a id='399' tid='400' class='m'>node</a>)])
+      (<a id='401' tid='402' class='m'>list</a> (<a id='403' tid='404' class='m'>Change</a> <a id='405' tid='406' class='m'>node</a> <a id='407' tid='408' class='m'>#f</a> <a id='409' tid='410' class='m'>size</a> <a id='411' tid='412' class='m'>&#39;</a><a id='413' tid='414' class='m'>del</a>)))))
+
+(<span class='d'>define</span> <span class='d'>ins-node</span>
+  (<a id='425' tid='426' class='m'>lambda</a> (<a id='427' tid='428' class='m'>node</a>)
+    (<a id='429' ti
