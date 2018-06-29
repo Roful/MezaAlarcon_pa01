@@ -180,4 +180,16 @@
                   (disassemble-frame (Change-cur change))))]
      [(del? change)
       (apply append
- 
+             (map del-node
+                  (disassemble-frame (Change-orig change))))]
+     [else (list change)])))</span>
+
+
+(<a id='1371' tid='1372' class='u'>define</a> <a id='1373' tid='1374' class='u'>extract-frame</a>
+  (<span class='d'>lambda</span> <span class='d'>(node1 node2)</span>
+    (<span class='d'>match</span> <span class='d'>node1</span>
+      [<span class='d'>(Expr type1 elts1 start1 end1)</span>
+       (<span class='d'>let</span> ([<a id='513' tid='514' class='m'>frame-elts</a> (<a id='515' tid='516' class='m'>filter</a> (<a id='517' tid='518' class='m'>lambda</a> (<a id='519' tid='520' class='m'>x</a>)
+                                   (<a id='521' tid='522' class='m'>not</a> (<a id='523' tid='524' class='m'>eq?</a> <a id='525' tid='526' class='m'>x</a> <a id='527' tid='528' class='m'>node2</a>)))
+                                 <a id='529' tid='530' class='m'>elts1</a>)])
+         <span class='d'>(Expr &#39;
