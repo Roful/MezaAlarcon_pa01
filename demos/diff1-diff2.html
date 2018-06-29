@@ -158,4 +158,26 @@
 
 (<span class='d'>define</span> <span class='d'>ins-node</span>
   (<a id='425' tid='426' class='m'>lambda</a> (<a id='427' tid='428' class='m'>node</a>)
-    (<a id='429' ti
+    (<a id='429' tid='430' class='m'>let</a> ([<a id='431' tid='432' class='m'>size</a> (<a id='433' tid='434' class='m'>node-size</a> <a id='435' tid='436' class='m'>node</a>)])
+      (<a id='437' tid='438' class='m'>list</a> (<a id='439' tid='440' class='m'>Change</a> <a id='441' tid='442' class='m'>#f</a> <a id='443' tid='444' class='m'>node</a> <a id='445' tid='446' class='m'>size</a> <a id='447' tid='448' class='m'>&#39;</a><a id='449' tid='450' class='m'>ins</a>)))))
+
+
+
+<span class='d'>(define disassemble-frame
+  (lambda (node)
+    (cond
+     [(and (Expr? node) (eq? &#39;frame (Expr-type node)))
+      (apply append (map disassemble-frame (Expr-elts node)))]
+     [else (list node)])))</span>
+
+
+<span class='d'>(define disassemble-change
+  (lambda (change)
+    (cond
+     [(ins? change)
+      (apply append
+             (map ins-node
+                  (disassemble-frame (Change-cur change))))]
+     [(del? change)
+      (apply append
+ 
