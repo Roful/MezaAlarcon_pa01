@@ -192,4 +192,42 @@
        (<span class='d'>let</span> ([<a id='513' tid='514' class='m'>frame-elts</a> (<a id='515' tid='516' class='m'>filter</a> (<a id='517' tid='518' class='m'>lambda</a> (<a id='519' tid='520' class='m'>x</a>)
                                    (<a id='521' tid='522' class='m'>not</a> (<a id='523' tid='524' class='m'>eq?</a> <a id='525' tid='526' class='m'>x</a> <a id='527' tid='528' class='m'>node2</a>)))
                                  <a id='529' tid='530' class='m'>elts1</a>)])
-         <span class='d'>(Expr &#39;
+         <span class='d'>(Expr &#39;frame frame-elts start1 start1)</span>)]
+      <span class='d'>[_ fatal &#39;extract-frame &quot;I only accept Expr&quot;]</span>)))
+
+
+
+<span class='d'>(define extract-ins-frame
+  (lambda (node1 node2)
+    (let ([frame (extract-frame node1 node2)])
+      (cond
+       [(not frame) &#39;()]
+       [else
+        (ins-node frame)]))))</span>
+
+
+
+<span class='d'>(define extract-del-frame
+  (lambda (node1 node2)
+    (let ([frame (extract-frame node1 node2)])
+      (cond
+       [(not frame) &#39;()]
+       [else
+        (del-node frame)]))))</span>
+
+
+
+<span class='d'>;; (define n1 (Token &quot;ok&quot; 0 1))
+</span>
+<span class='d'>;; (define n2 (Expr &#39;ok (list n1 (Token &quot;bar&quot; 1 2)) 0 2))
+</span>
+<span class='d'>;; (map disassemble-change (extract-ins-frame n2 n1))
+</span>
+
+
+
+<span class='d'>(define ins-node-except
+  (lambda (node1 node2)
+    (let ([nodes (map (lambda (x)
+                        (if (not (eq? x node2))
+                            
