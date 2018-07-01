@@ -230,4 +230,25 @@
   (lambda (node1 node2)
     (let ([nodes (map (lambda (x)
                         (if (not (eq? x node2))
-                            
+                            (ins-node x)
+                            &#39;()))
+                      (Expr-elts node1))])
+      (apply append nodes))))</span>
+
+
+<span class='d'>(define del-node-except
+  (lambda (node1 node2)
+    (let ([nodes (map (lambda (x)
+                        (if (not (eq? x node2))
+                            (del-node x)
+                            &#39;()))
+                      (Expr-elts node1))])
+      (apply append nodes))))</span>
+
+
+
+(<span class='d'>define</span> <span class='d'>mod-node</span>
+  (<a id='451' tid='452' class='m'>lambda</a> (<a id='453' tid='454' class='m'>node1</a> <a id='455' tid='456' class='m'>node2</a> <a id='457' tid='458' class='m'>cost</a>)
+    (<a id='459' tid='460' class='m'>list</a> (<a id='461' tid='462' class='m'>Change</a> <a id='463' tid='464' class='m'>node1</a> <a id='465' tid='466' class='m'>node2</a> <a id='467' tid='468' class='m'>cost</a> <a id='469' tid='470' class='m'>&#39;</a><a id='471' tid='472' class='m'>mod</a>))))
+
+(<span class='d'>define</
