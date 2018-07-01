@@ -258,4 +258,20 @@
 (<a id='1495' tid='1496' class='u'>define</a> <a id='1497' tid='1498' class='u'>mod-&gt;mov</a>
   (<a id='1499' tid='1500' class='u'>lambda</a> (<a id='1501' tid='1502' class='u'>c</a>)
     (<a id='1503' tid='1504' class='u'>match</a> <a id='1505' tid='1506' class='u'>c</a>
-     [(<a id='1507' tid='1508' class='u'>Change</a> <a id='1509' tid='1510' class='u'>node1</a> <a id='1511' tid='1512' class='u'>node2</a> <a id='1513' tid='1514'
+     [(<a id='1507' tid='1508' class='u'>Change</a> <a id='1509' tid='1510' class='u'>node1</a> <a id='1511' tid='1512' class='u'>node2</a> <a id='1513' tid='1514' class='u'>cost</a> <a id='1515' tid='1516' class='u'>&#39;</a><a id='1517' tid='1518' class='u'>mod</a>)
+      (<a id='1519' tid='1520' class='u'>Change</a> <a id='1521' tid='1522' class='u'>node1</a> <a id='1523' tid='1524' class='u'>node2</a> <a id='1525' tid='1526' class='u'>cost</a> <a id='1527' tid='1528' class='u'>&#39;</a><a id='1529' tid='1530' class='u'>mov</a>)]
+     [<a id='1531' tid='1532' class='u'>other</a> <a id='1533' tid='1534' class='u'>other</a>])))
+
+
+
+
+<span class='d'>;------------------ operations on nodes ---------------------
+</span>
+(<span class='d'>define</span> <span class='d'>node-equal?</span>
+  (<span class='d'>lambda</span> <span class='d'>(node1 node2)</span>
+    (<span class='d'>cond</span>
+     <span class='d'>[(and (null? node1) (null? node2)) #t]</span>
+     <span class='d'>[(and (Str? node1) (Str? node2))
+      (and (equal? (Str-s node1) (Str-s node2)))]</span>
+     <span class='d'>[(and (Comment? node1) (Comment? node2))
+      (and (equal? (Comment-text node1) (Comment
