@@ -389,4 +389,14 @@
 
 (<a id='815' tid='816' class='u'>define</a> <a id='817' tid='818' class='u'>*node-size-hash*</a> (<a id='819' tid='820' class='u'>make-hasheq</a>))
 
-(<a id='1543' tid='1544' 
+(<a id='1543' tid='1544' class='u'>define</a> <a id='1545' tid='1546' class='u'>node-size</a>
+  (<a id='559' tid='560' class='m'>lambda</a> (<a id='561' tid='562' class='m'>node</a>)
+    (<a id='531' tid='532' class='m'>define</a> <a id='533' tid='534' class='m'>memo</a>
+      (<a id='535' tid='536' class='m'>lambda</a> (<a id='537' tid='538' class='m'>v</a>)
+        (<a id='539' tid='540' class='m'>if</a> (<a id='541' tid='542' class='m'>&gt;</a> <a id='543' tid='544' class='m'>v</a> <a id='545' tid='546' class='m'>1</a>)
+            (<a id='547' tid='548' class='m'>hash-set!</a> <a id='549' tid='550' class='m'>*node-size-hash*</a> <a id='551' tid='552' class='m'>node</a> <a id='553' tid='554' class='m'>v</a>)
+            (<a id='555' tid='556' class='m'>void</a>))
+        <a id='557' tid='558' class='m'>v</a>))
+    (<span class='d'>cond</span>
+     [(<a id='563' tid='564' class='m'>pair?</a> <a id='565' tid='566' class='m'>node</a>)
+      (<a id='567' tid='568' class='m'>apply</a
