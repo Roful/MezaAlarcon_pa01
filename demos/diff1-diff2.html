@@ -338,4 +338,31 @@
 
 
 
-(<a 
+(<a id='1555' tid='1556' class='u'>define</a> <a id='1557' tid='1558' class='u'>same-def?</a>
+  <span class='d'>(lambda (e1 e2)
+    (cond
+      [(and (Expr? e1) (Expr? e2))
+       (let ([elts1 (Expr-elts e1)]
+             [elts2 (Expr-elts e2)])
+         (cond
+          [(and (&gt; (length elts1) 1)
+                (&gt; (length elts2) 1)
+                (memq (get-symbol (car elts1)) *defs*)
+                (memq (get-symbol (car elts2)) *defs*))
+           (eq? (get-symbol (cadr elts1))
+                (get-symbol (cadr elts2)))]
+          [else #f]))]
+      [else #f]))</span>)
+
+<span class='d'>;; (same-def? (car (parse-scheme &quot;(define f 1)&quot;))
+</span><span class='d'>;;            (car (parse-scheme &quot;(define g 1)&quot;)))
+</span>
+
+
+<span class='d'>(define different-def?
+  (lambda (e1 e2)
+    (cond
+      [(and (Expr? e1) (Expr? e2))
+       (let ([elts1 (Expr-elts e1)]
+             [elts2 (Expr-elts e2)])
+         (c
