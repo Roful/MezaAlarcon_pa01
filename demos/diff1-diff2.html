@@ -365,4 +365,28 @@
       [(and (Expr? e1) (Expr? e2))
        (let ([elts1 (Expr-elts e1)]
              [elts2 (Expr-elts e2)])
-         (c
+         (cond
+          [(and (&gt; (length elts1) 1)
+                (&gt; (length elts2) 1)
+                (memq (get-symbol (car elts1)) *defs*)
+                (memq (get-symbol (car elts2)) *defs*))
+           (not (eq? (get-symbol (cadr elts1))
+                     (get-symbol (cadr elts2))))]
+          [else #f]))]
+      [else #f])))</span>
+
+<span class='d'>;; (different-def? (car (parse-scheme &quot;(define f 1)&quot;))
+</span><span class='d'>;;                 (car (parse-scheme &quot;(let f 1)&quot;)))
+</span>
+
+
+<span class='d'>;; whether two nodes are similar given the cost
+</span><span class='d'>(define similar?
+  (lambda (node1 node2 c)
+    (&lt;= c (* *move-ratio* (+ (node-size node1)
+                             (node-size node2))))))</span>
+
+
+(<a id='815' tid='816' class='u'>define</a> <a id='817' tid='818' class='u'>*node-size-hash*</a> (<a id='819' tid='820' class='u'>make-hasheq</a>))
+
+(<a id='1543' tid='1544' 
