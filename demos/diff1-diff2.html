@@ -399,4 +399,18 @@
         <a id='557' tid='558' class='m'>v</a>))
     (<span class='d'>cond</span>
      [(<a id='563' tid='564' class='m'>pair?</a> <a id='565' tid='566' class='m'>node</a>)
-      (<a id='567' tid='568' class='m'>apply</a
+      (<a id='567' tid='568' class='m'>apply</a> <a id='569' tid='570' class='m'>+</a> (<a id='571' tid='572' class='m'>map</a> <a id='573' tid='574' class='m'>node-size</a> <a id='575' tid='576' class='m'>node</a>))]
+     <span class='d'>[(or (Token? node) (Str? node) (Char? node)) 1]</span>
+     [<span class='d'>(Expr? node)</span>
+      (<span class='d'>cond</span>
+       [(<a id='165' tid='166' class='m'>hash-has-key?</a> <a id='167' tid='168' class='m'>*node-size-hash*</a> <a id='169' tid='170' class='m'>node</a>)
+        (<a id='171' tid='172' class='m'>hash-ref</a> <a id='173' tid='174' class='m'>*node-size-hash*</a> <a id='175' tid='176' class='m'>node</a>)]
+       <span class='d'>[else
+        (memo (node-size (Expr-elts node)))]</span>)]
+     <span class='d'>[else 0]</span>)))
+
+
+(<a id='1539' tid='1540' class='u'>define</a> <a id='1541' tid='1542' class='u'>node-depth</a>
+  (<a id='577' tid='578' class='m'>lambda</a> (<a id='579' tid='580' class='m'>node</a>)
+    (<span class='d'>cond</span>
+     <span
