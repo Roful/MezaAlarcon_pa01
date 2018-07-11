@@ -413,4 +413,21 @@
 (<a id='1539' tid='1540' class='u'>define</a> <a id='1541' tid='1542' class='u'>node-depth</a>
   (<a id='577' tid='578' class='m'>lambda</a> (<a id='579' tid='580' class='m'>node</a>)
     (<span class='d'>cond</span>
-     <span
+     <span class='d'>[(null? node) 0]</span>
+     [(<a id='581' tid='582' class='m'>pair?</a> <a id='583' tid='584' class='m'>node</a>)
+      (<a id='585' tid='586' class='m'>apply</a> <a id='587' tid='588' class='m'>max</a> (<a id='589' tid='590' class='m'>map</a> <a id='591' tid='592' class='m'>node-depth</a> <a id='593' tid='594' class='m'>node</a>))]
+     <span class='d'>[(Expr? node)
+      (add1 (node-depth (Expr-elts node)))]</span>
+     <span class='d'>[else 0]</span>)))
+
+
+<span class='d'>; (node-depth (parse-scheme &quot;(lambda (x (x (y)) (y)) x)&quot;))
+</span>
+<span class='d'>;; (same-def? (parse-scheme &quot;(define f (x 1))&quot;)
+</span><span class='d'>;;            (parse-scheme &quot;(define f 2&quot;))
+</span>
+
+
+(<a id='1751' tid='1752' class='u'>define</a> <a id='1753' tid='1754' class='u'>uid</a>
+  (<a id='1755' tid='1756' class='u'>let</a> ([<a id='1757' tid='1758' class='u'>count</a> <a id='1759' tid='1760' class='u'>1</a>]
+        [<a id='1761' tid='1762' class='u'>t
