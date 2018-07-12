@@ -430,4 +430,11 @@
 
 (<a id='1751' tid='1752' class='u'>define</a> <a id='1753' tid='1754' class='u'>uid</a>
   (<a id='1755' tid='1756' class='u'>let</a> ([<a id='1757' tid='1758' class='u'>count</a> <a id='1759' tid='1760' class='u'>1</a>]
-        [<a id='1761' tid='1762' class='u'>t
+        [<a id='1761' tid='1762' class='u'>table</a> (<a id='1763' tid='1764' class='u'>box</a> <a id='1765' tid='1766' class='u'>&#39;</a>())])
+    (<a id='1767' tid='1768' class='u'>lambda</a> (<a id='1769' tid='1770' class='u'>node</a>)
+      (<a id='1771' tid='1772' class='u'>let</a> ([<a id='1773' tid='1774' class='u'>p</a> (<a id='1775' tid='1776' class='u'>assq</a> <a id='1777' tid='1778' class='u'>node</a> (<a id='1779' tid='1780' class='u'>unbox</a> <a id='1781' tid='1782' class='u'>table</a>))])
+        (<a id='1783' tid='1784' class='u'>cond</a>
+         [(<a id='1785' tid='1786' class='u'>not</a> <a id='1787' tid='1788' class='u'>p</a>)
+          (<a id='1789' tid='1790' class='u'>let</a> ([<a id='1791' tid='1792' class='u'>id</a> <a id='1793' tid='1794' class='u'>count</a>])
+            (<a id='1795' tid='1796' class='u'>set!</a> <a id='1797' tid='1798' class='u'>count</a> (<a id='1799' tid='1800' class='u'>add1</a> <a id='1801' tid='1802' class='u'>count</a>))
+            (<a id='1803' tid='1804' class='u'>set-box!</a> <a id='1805' tid='
