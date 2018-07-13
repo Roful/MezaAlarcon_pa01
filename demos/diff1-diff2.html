@@ -455,4 +455,17 @@
         (<a id='621' tid='622' class='m'>string-append</a>
          (<a id='623' tid='624' class='m'>real-&gt;decimal-string</a>
           (<a id='625' tid='626' class='m'>*</a> <a id='627' tid='628' class='m'>100</a> (<a id='629' tid='630' class='m'>-</a> <a id='631' tid='632' class='m'>1.0</a> (<a id='633' tid='634' class='m'>/</a> (<a id='635' tid='636' class='m'>Change-cost</a> <a id='637' tid='638' class='m'>change</a>) <a id='639' tid='640' class='m'>total</a>))) <a id='641' tid='642' class='m'>1</a>)
-         <
+         <a id='643' tid='644' class='m'>&quot;%&quot;</a>)]))))
+
+
+
+<span class='d'>;-------------------------------------------------------------
+</span><span class='d'>;                        diff stuff
+</span><span class='d'>;-------------------------------------------------------------
+</span>
+<span class='d'>; 2-D memoization table
+</span>(<a id='1433' tid='1434' class='u'>define</a> <a id='1435' tid='1436' class='u'>make-table</a>
+  (<a id='1437' tid='1438' class='u'>lambda</a> (<a id='1439' tid='1440' class='u'>dim1</a> <a id='1441' tid='1442' class='u'>dim2</a>)
+    (<a id='1443' tid='1444' class='u'>let</a> ([<a id='1445' tid='1446' class='u'>vec</a> (<a id='1447' tid='1448' class='u'>make-vector</a> (<a id='1449' tid='1450' class='u'>add1</a> <a id='1451' tid='1452' class='u'>dim1</a>))])
+      (<a id='1453' tid='1454' class='u'>let</a> <a id='1455' tid='1456' class='u'>loop</a> ([<a id='1457' tid='1458' class='u'>n</a> <a id='1459' tid='1460' class='u'>0</a>])
+        (
