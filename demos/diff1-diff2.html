@@ -468,4 +468,12 @@
   (<a id='1437' tid='1438' class='u'>lambda</a> (<a id='1439' tid='1440' class='u'>dim1</a> <a id='1441' tid='1442' class='u'>dim2</a>)
     (<a id='1443' tid='1444' class='u'>let</a> ([<a id='1445' tid='1446' class='u'>vec</a> (<a id='1447' tid='1448' class='u'>make-vector</a> (<a id='1449' tid='1450' class='u'>add1</a> <a id='1451' tid='1452' class='u'>dim1</a>))])
       (<a id='1453' tid='1454' class='u'>let</a> <a id='1455' tid='1456' class='u'>loop</a> ([<a id='1457' tid='1458' class='u'>n</a> <a id='1459' tid='1460' class='u'>0</a>])
-        (
+        (<a id='1461' tid='1462' class='u'>cond</a>
+         [(<a id='1463' tid='1464' class='u'>=</a> <a id='1465' tid='1466' class='u'>n</a> (<a id='1467' tid='1468' class='u'>vector-length</a> <a id='1469' tid='1470' class='u'>vec</a>)) <a id='1471' tid='1472' class='u'>vec</a>]
+         [<a id='1473' tid='1474' class='u'>else</a>
+          (<a id='1475' tid='1476' class='u'>vector-set!</a> <a id='1477' tid='1478' class='u'>vec</a> <a id='1479' tid='1480' class='u'>n</a> (<a id='1481' tid='1482' class='u'>make-vector</a> (<a id='1483' tid='1484' class='u'>add1</a> <a id='1485' tid='1486' class='u'>dim2</a>) <a id='1487' tid='1488' class='u'>#f</a>))
+          (<a id='1489' tid='1490' class='u'>loop</a> (<a id='1491' tid='1492' class='u'>add1</a> <a id='1493' tid='1494' class='u'>n</a>))])))))
+
+
+(<a id='1643' tid='1644' class='u'>define</a> <a id='1645' tid='1646' class='u'>table-ref</a>
+  (<a id='1647' tid='1648' class='u'>lambda</a> (<a id='1649' tid='1650' class='u'>t</a> <a id='16
