@@ -476,4 +476,11 @@
 
 
 (<a id='1643' tid='1644' class='u'>define</a> <a id='1645' tid='1646' class='u'>table-ref</a>
-  (<a id='1647' tid='1648' class='u'>lambda</a> (<a id='1649' tid='1650' class='u'>t</a> <a id='16
+  (<a id='1647' tid='1648' class='u'>lambda</a> (<a id='1649' tid='1650' class='u'>t</a> <a id='1651' tid='1652' class='u'>x</a> <a id='1653' tid='1654' class='u'>y</a>)
+    (<a id='1655' tid='1656' class='u'>let</a> ([<a id='1657' tid='1658' class='u'>row</a> (<a id='1659' tid='1660' class='u'>vector-ref</a> <a id='1661' tid='1662' class='u'>t</a> <a id='1663' tid='1664' class='u'>x</a>)])
+      (<a id='1665' tid='1666' class='u'>vector-ref</a> <a id='1667' tid='1668' class='u'>row</a> <a id='1669' tid='1670' class='u'>y</a>))))
+
+
+(<a id='1671' tid='1672' class='u'>define</a> <a id='1673' tid='1674' class='u'>table-set!</a>
+  (<a id='1675' tid='1676' class='u'>lambda</a> (<a id='1677' tid='1678' class='u'>t</a> <a id='1679' tid='1680' class='u'>x</a> <a id='1681' tid='1682' class='u'>y</a> <a id='1683' tid='1684' class='u'>v</a>)
+    (<a id='1685' tid='1686' class='u'>let</a> ([<a id='1687' tid='1688' class='u'>row</a> (<a id='1689' tid='1690' class='u'>vector-ref</a> <a id='1691' tid='1692' class='u'>t</a> <a id=
