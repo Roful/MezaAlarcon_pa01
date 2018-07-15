@@ -483,4 +483,15 @@
 
 (<a id='1671' tid='1672' class='u'>define</a> <a id='1673' tid='1674' class='u'>table-set!</a>
   (<a id='1675' tid='1676' class='u'>lambda</a> (<a id='1677' tid='1678' class='u'>t</a> <a id='1679' tid='1680' class='u'>x</a> <a id='1681' tid='1682' class='u'>y</a> <a id='1683' tid='1684' class='u'>v</a>)
-    (<a id='1685' tid='1686' class='u'>let</a> ([<a id='1687' tid='1688' class='u'>row</a> (<a id='1689' tid='1690' class='u'>vector-ref</a> <a id='1691' tid='1692' class='u'>t</a> <a id=
+    (<a id='1685' tid='1686' class='u'>let</a> ([<a id='1687' tid='1688' class='u'>row</a> (<a id='1689' tid='1690' class='u'>vector-ref</a> <a id='1691' tid='1692' class='u'>t</a> <a id='1693' tid='1694' class='u'>x</a>)])
+      (<a id='1695' tid='1696' class='u'>vector-set!</a> <a id='1697' tid='1698' class='u'>row</a> <a id='1699' tid='1700' class='u'>y</a> <a id='1701' tid='1702' class='u'>v</a>))))
+
+
+
+<span class='d'>;---------------- string distance function -----------------
+</span>
+(<a id='1567' tid='1568' class='u'>define</a> <a id='1569' tid='1570' class='u'>string-dist</a>
+  (<a id='1571' tid='1572' class='u'>lambda</a> (<a id='1573' tid='1574' class='u'>s1</a> <a id='1575' tid='1576' class='u'>s2</a>)
+    (<a id='1577' tid='1578' class='u'>let*</a> ([<a id='1579' tid='1580' class='u'>len1</a> (<a id='1581' tid='1582' class='u'>string-length</a> <a id='1583' tid='1584' class='u'>s1</a>)]
+           [<a id='1585' tid='1586' class='u'>len2</a> (<a id='1587' tid='1588' class='u'>string-length</a> <a id='1589' tid='1590' class='u'>s2</a>)]
+           [<a id='1591' tid='1592' class='u'>t</a> (<a id='1593' tid='1594' class='u'>make-table</a> <a id='1595' tid='1596' class=
