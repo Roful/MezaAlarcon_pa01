@@ -494,4 +494,9 @@
   (<a id='1571' tid='1572' class='u'>lambda</a> (<a id='1573' tid='1574' class='u'>s1</a> <a id='1575' tid='1576' class='u'>s2</a>)
     (<a id='1577' tid='1578' class='u'>let*</a> ([<a id='1579' tid='1580' class='u'>len1</a> (<a id='1581' tid='1582' class='u'>string-length</a> <a id='1583' tid='1584' class='u'>s1</a>)]
            [<a id='1585' tid='1586' class='u'>len2</a> (<a id='1587' tid='1588' class='u'>string-length</a> <a id='1589' tid='1590' class='u'>s2</a>)]
-           [<a id='1591' tid='1592' class='u'>t</a> (<a id='1593' tid='1594' class='u'>make-table</a> <a id='1595' tid='1596' class=
+           [<a id='1591' tid='1592' class='u'>t</a> (<a id='1593' tid='1594' class='u'>make-table</a> <a id='1595' tid='1596' class='u'>len1</a> <a id='1597' tid='1598' class='u'>len2</a>)]
+           [<a id='1599' tid='1600' class='u'>char-dist</a> (<a id='1601' tid='1602' class='u'>dist1</a> <a id='1603' tid='1604' class='u'>t</a> <a id='1605' tid='1606' class='u'>s1</a> <a id='1607' tid='1608' class='u'>0</a> <a id='1609' tid='1610' class='u'>s2</a> <a id='1611' tid='1612' class='u'>0</a>)])
+      (<a id='1613' tid='1614' class='u'>cond</a>
+       [(<a id='1615' tid='1616' class='u'>=</a> <a id='1617' tid='1618' class='u'>0</a> (<a id='1619' tid='1620' class='u'>+</a> <a id='1621' tid='1622' class='u'>len1</a> <a id='1623' tid='1624' class='u'>len2</a>)) <a id='1625' tid='1626' class='u'>0</a>]
+       [<a id='1627' tid='1628' class='u'>else</a>
+        (<a id='1629' tid='1630' class='u'>/</a> (<a id='1631' tid='1632' class='u'>*</a> <a id='1633' tid='1634' class='u'>2.0</a> <a id='1635' tid='1636' class='u'>char-dist</a>) (<a id='1637' tid='1638' class='u'>+</a> <a id='1639' tid='1
