@@ -499,4 +499,15 @@
       (<a id='1613' tid='1614' class='u'>cond</a>
        [(<a id='1615' tid='1616' class='u'>=</a> <a id='1617' tid='1618' class='u'>0</a> (<a id='1619' tid='1620' class='u'>+</a> <a id='1621' tid='1622' class='u'>len1</a> <a id='1623' tid='1624' class='u'>len2</a>)) <a id='1625' tid='1626' class='u'>0</a>]
        [<a id='1627' tid='1628' class='u'>else</a>
-        (<a id='1629' tid='1630' class='u'>/</a> (<a id='1631' tid='1632' class='u'>*</a> <a id='1633' tid='1634' class='u'>2.0</a> <a id='1635' tid='1636' class='u'>char-dist</a>) (<a id='1637' tid='1638' class='u'>+</a> <a id='1639' tid='1
+        (<a id='1629' tid='1630' class='u'>/</a> (<a id='1631' tid='1632' class='u'>*</a> <a id='1633' tid='1634' class='u'>2.0</a> <a id='1635' tid='1636' class='u'>char-dist</a>) (<a id='1637' tid='1638' class='u'>+</a> <a id='1639' tid='1640' class='u'>len1</a> <a id='1641' tid='1642' class='u'>len2</a>))]))))
+
+
+
+(<a id='1135' tid='1136' class='u'>define</a> <a id='1137' tid='1138' class='u'>dist1</a>
+  (<a id='1159' tid='1160' class='u'>lambda</a> (<a id='1161' tid='1162' class='u'>table</a> <a id='1163' tid='1164' class='u'>s1</a> <a id='1165' tid='1166' class='u'>start1</a> <a id='1167' tid='1168' class='u'>s2</a> <a id='1169' tid='1170' class='u'>start2</a>)
+    (<a id='1139' tid='1140' class='u'>define</a> <a id='1141' tid='1142' class='u'>memo</a>
+      (<a id='1143' tid='1144' class='u'>lambda</a> (<a id='1145' tid='1146' class='u'>value</a>)
+        (<a id='1147' tid='1148' class='u'>table-set!</a> <a id='1149' tid='1150' class='u'>table</a> <a id='1151' tid='1152' class='u'>start1</a> <a id='1153' tid='1154' class='u'>start2</a> <a id='1155' tid='1156' class='u'>value</a>)
+        <a id='1157' tid='1158' class='u'>value</a>))
+    (<a id='1171' tid='1172' class='u'>cond</a>
+     [(<a id='1173' tid
