@@ -520,4 +520,9 @@
       (<a id='1227' tid='1228' class='u'>let*</a> ([<a id='1229' tid='1230' class='u'>c1</a> (<a id='1231' tid='1232' class='u'>string-ref</a> <a id='1233' tid='1234' class='u'>s1</a> <a id='1235' tid='1236' class='u'>start1</a>)]
              [<a id='1237' tid='1238' class='u'>c2</a> (<a id='1239' tid='1240' class='u'>string-ref</a> <a id='1241' tid='1242' class='u'>s2</a> <a id='1243' tid='1244' class='u'>start2</a>)]
              [<a id='1245' tid='1246' class='u'>d0</a> (<a id='1247' tid='1248' class='u'>cond</a>
-                  [(<a id='1249' tid='1250' class='u'>char=?</a> <a id='1251' tid='1252' class='u'>c1</a> <a id='1253' tid='1254' class='u'>c2</a>) <a id='1255' t
+                  [(<a id='1249' tid='1250' class='u'>char=?</a> <a id='1251' tid='1252' class='u'>c1</a> <a id='1253' tid='1254' class='u'>c2</a>) <a id='1255' tid='1256' class='u'>0</a>]
+                  [(<a id='1257' tid='1258' class='u'>char=?</a> (<a id='1259' tid='1260' class='u'>char-downcase</a> <a id='1261' tid='1262' class='u'>c1</a>)
+                           (<a id='1263' tid='1264' class='u'>char-downcase</a> <a id='1265' tid='1266' class='u'>c2</a>)) <a id='1267' tid='1268' class='u'>1</a>]
+                  [<a id='1269' tid='1270' class='u'>else</a> <a id='1271' tid='1272' class='u'>2</a>])]
+             [<a id='1273' tid='1274' class='u'>d1</a> (<a id='1275' tid='1276' class='u'>+</a> <a id='1277' tid='1278' class='u'>d0</a> (<a id='1279' tid='1280' class='u'>dist1</a> <a id='1281' tid='1282' class='u'>table</a> <a id='1283' tid='1284' class='u'>s1</a> (<a id='1285' tid='1286' class='u'>add1</a> <a id='1287' tid='1288' class='u'>start1</a>) <a id='1289' tid='1290' class='u'>s2</a> (<a id='1291' tid='1292' class='u'>add1</a> <a id='1293' tid='1294' class='u'>start2</a>)))]
+             [<a id='1295' tid='1296' 
