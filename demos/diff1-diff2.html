@@ -564,4 +564,17 @@
       (<span class='d'>lambda</span> <span class='d'>(changes cost)</span>
         (<span class='d'>cond</span>
          <span class='d'>[(or (not move?)
-      
+              (similar? node1 node2 cost))
+          (memo changes cost)]</span>
+         [<a id='177' tid='178' class='m'>else</a>
+          (<span class='d'>letv</span> <span class='d'>([(m c) (diff-sub node1 node2 depth move?)])</span>
+            (<a id='179' tid='180' class='m'>cond</a>
+             [(<a id='181' tid='182' class='m'>not</a> <a id='183' tid='184' class='m'>m</a>)
+              (<a id='185' tid='186' class='m'>memo</a> <a id='187' tid='188' class='m'>changes</a> <a id='189' tid='190' class='m'>cost</a>)]
+             [<a id='191' tid='192' class='m'>else</a>
+              (<a id='193' tid='194' class='m'>memo</a> <a id='195' tid='196' class='m'>m</a> <a id='197' tid='198' class='m'>c</a>)]))])))
+
+    <span class='d'>(diff-progress 1)</span>
+
+    (<span class='d'>cond</span>
+     [(<a id='229' tid='230' class='m'>hash-get</a> <a id='231' tid='232' class='m'>*diff-hash*</a> <a id='233' tid='234' cla
