@@ -537,4 +537,21 @@
      [(<a id='101' tid='102' class='m'>or</a> (<a id='103' tid='104' class='m'>&gt;</a> (<a id='105' tid='106' class='m'>string-length</a> <a id='107' tid='108' class='m'>string1</a>) <a id='109' tid='110' class='m'>*max-string-len*</a>)
           (<a id='111' tid='112' class='m'>&gt;</a> (<a id='113' tid='114' class='m'>string-length</a> <a id='115' tid='116' class='m'>string2</a>) <a id='117' tid='118' class='m'>*max-string-len*</a>))
       <span class='d'>(cond
-      
+       [(equal? string1 string2)
+        (values (mod-node node1 node2 0) 0)]
+       [else
+        (total node1 node2)])</span>]
+     <span class='d'>[else
+      (let ([cost (string-dist string1 string2)])
+        (values (mod-node node1 node2 cost) cost))]</span>)))
+
+
+
+
+<span class='d'>;--------------------- main node diff function ----------------------
+</span>(<a id='1119' tid='1120' class='u'>define</a> <a id='1121' tid='1122' class='u'>diff-node</a>
+  (<span class='d'>lambda</span> <span class='d'>(node1 node2 depth move?)</span>
+
+    (<a id='645' tid='646' class='m'>define</a> <a id='647' tid='648' class='m'>memo</a>
+      (<a id='649' tid='650' class='m'>lambda</a> (<a id='651' tid='652' class='m'>v1</a> <a id='653' tid='654' class='m'>v2</a>)
+        (<span class='d'>if</span> (<a id='199' tid='200' class='m'>and</a> (<a id='201' tid='202' class='m'>&gt;</a> (<a id='203' tid='204' class='m'>node-size</a> <a id='205' tid='206' class='m'>node1</a>) <a id='207' tid='208
