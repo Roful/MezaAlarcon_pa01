@@ -554,4 +554,14 @@
 
     (<a id='645' tid='646' class='m'>define</a> <a id='647' tid='648' class='m'>memo</a>
       (<a id='649' tid='650' class='m'>lambda</a> (<a id='651' tid='652' class='m'>v1</a> <a id='653' tid='654' class='m'>v2</a>)
-        (<span class='d'>if</span> (<a id='199' tid='200' class='m'>and</a> (<a id='201' tid='202' class='m'>&gt;</a> (<a id='203' tid='204' class='m'>node-size</a> <a id='205' tid='206' class='m'>node1</a>) <a id='207' tid='208
+        (<span class='d'>if</span> (<a id='199' tid='200' class='m'>and</a> (<a id='201' tid='202' class='m'>&gt;</a> (<a id='203' tid='204' class='m'>node-size</a> <a id='205' tid='206' class='m'>node1</a>) <a id='207' tid='208' class='m'>*memo-node-size*</a>)
+                 (<a id='209' tid='210' class='m'>&gt;</a> (<a id='211' tid='212' class='m'>node-size</a> <a id='213' tid='214' class='m'>node2</a>) <a id='215' tid='216' class='m'>*memo-node-size*</a>))
+            (<a id='655' tid='656' class='m'>hash-put!</a> <a id='657' tid='658' class='m'>*diff-hash*</a> <a id='659' tid='660' class='m'>node1</a> <a id='661' tid='662' class='m'>node2</a> (<a id='663' tid='664' class='m'>cons</a> <a id='665' tid='666' class='m'>v1</a> <a id='667' tid='668' class='m'>v2</a>))
+            <span class='d'>(void)</span>)
+        (<a id='669' tid='670' class='m'>values</a> <a id='671' tid='672' class='m'>v1</a> <a id='673' tid='674' class='m'>v2</a>)))
+
+    (<span class='d'>define</span> <span class='d'>trysub</span>
+      (<span class='d'>lambda</span> <span class='d'>(changes cost)</span>
+        (<span class='d'>cond</span>
+         <span class='d'>[(or (not move?)
+      
