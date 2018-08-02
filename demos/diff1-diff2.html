@@ -577,4 +577,16 @@
     <span class='d'>(diff-progress 1)</span>
 
     (<span class='d'>cond</span>
-     [(<a id='229' tid='230' class='m'>hash-get</a> <a id='231' tid='232' class='m'>*diff-hash*</a> <a id='233' tid='234' cla
+     [(<a id='229' tid='230' class='m'>hash-get</a> <a id='231' tid='232' class='m'>*diff-hash*</a> <a id='233' tid='234' class='m'>node1</a> <a id='235' tid='236' class='m'>node2</a>)
+      <a id='237' tid='238' class='m'>=&gt;</a> (<a id='319' tid='320' class='m'>lambda</a> (<a id='321' tid='322' class='m'>cached</a>)
+           (<a id='323' tid='324' class='m'>values</a> (<a id='325' tid='326' class='m'>car</a> <a id='327' tid='328' class='m'>cached</a>) (<a id='329' tid='330' class='m'>cdr</a> <a id='331' tid='332' class='m'>cached</a>)))]
+     <span class='d'>[(and (Char? node1) (Char? node2))
+      (diff-string (char-&gt;string (Char-c node1))
+                   (char-&gt;string (Char-c node2))
+                   node1 node2)]</span>
+     <span class='d'>[(and (Str? node1) (Str? node2))
+      (diff-string (Str-s node1) (Str-s node2) node1 node2)]</span>
+     <span class='d'>[(and (Comment? node1) (Comment? node2))
+      (diff-string (Comment-text node1) (Comment-text node2) node1 node2)]</span>
+     <span class='d'>[(and (Token? node1) (Token? node2))
+      (diff-string (Token-text node1) (Token-text nod
