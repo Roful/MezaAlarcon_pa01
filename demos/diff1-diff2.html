@@ -589,4 +589,16 @@
      <span class='d'>[(and (Comment? node1) (Comment? node2))
       (diff-string (Comment-text node1) (Comment-text node2) node1 node2)]</span>
      <span class='d'>[(and (Token? node1) (Token? node2))
-      (diff-string (Token-text node1) (Token-text nod
+      (diff-string (Token-text node1) (Token-text node2) node1 node2)]</span>
+     <span class='d'>[(and (Expr? node1) (Expr? node2)
+           (keywords-equal? node1 node2))
+      (letv ([t (make-hasheq)]
+             [(m c) (diff-list t (Expr-elts node1) (Expr-elts node2)
+                               depth move?)])
+        (trysub m c))]</span>
+     [(<a id='217' tid='218' class='m'>and</a> (<a id='219' tid='220' class='m'>pair?</a> <a id='221' tid='222' class='m'>node1</a>) (<a id='223' tid='224' class='m'>not</a> (<a id='225' tid='226' class='m'>pair?</a> <a id='227' tid='228' class='m'>node2</a>)))
+      <span class='d'>(let ([t (make-hasheq)])
+        (diff-list t node1 (list node2) depth move?))</span>]
+     [(<a id='57' tid='58' class='m'>and</a> (<a id='59' tid='60' class='m'>not</a> (<a id='61' tid='62' class='m'>pair?</a> <a id='63' tid='64' class='m'>node1</a>)) (<a id='65' tid='66' class='m'>pair?</a> <a id='67' tid='68' class='m'>node2</a>))
+      <span class='d'>(let ([t (make-hasheq)])
+ 
