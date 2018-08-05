@@ -601,4 +601,23 @@
         (diff-list t node1 (list node2) depth move?))</span>]
      [(<a id='57' tid='58' class='m'>and</a> (<a id='59' tid='60' class='m'>not</a> (<a id='61' tid='62' class='m'>pair?</a> <a id='63' tid='64' class='m'>node1</a>)) (<a id='65' tid='66' class='m'>pair?</a> <a id='67' tid='68' class='m'>node2</a>))
       <span class='d'>(let ([t (make-hasheq)])
- 
+        (diff-list t (list node1) node2 depth move?))</span>]
+     <span class='d'>[(and (pair? node1) (pair? node2))
+      (let ([t (make-hasheq)])
+        (diff-list t node1 node2 depth move?))]</span>
+     [<a id='1' tid='2' class='m'>else</a>
+      (<span class='d'>letv</span> ([(<a id='3' tid='4' class='m'>m</a> <a id='5' tid='6' class='m'>c</a>) (<a id='7' tid='8' class='m'>total</a> <a id='9' tid='10' class='m'>node1</a> <a id='11' tid='12' class='m'>node2</a>)])
+        <span class='d'>(trysub m c)</span>)])))
+
+
+
+
+
+
+<span class='d'>;; global 2D hash for storing known diffs
+</span>(<a id='763' tid='764' class='u'>define</a> <a id='765' tid='766' class='u'>*diff-hash*</a> (<a id='767' tid='768' class='u'>make-hasheq</a>))
+
+(<a id='1115' tid='1116' class='u'>define</a> <a id='1117' tid='1118' class='u'>diff-list</a>
+  (<span class='d'>lambda</span> <span class='d'>(table ls1 ls2 depth move?)</span>
+
+    (<a id='239' tid='240' class='m'>define</a> <a id='241' tid='242
