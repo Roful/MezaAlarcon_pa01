@@ -620,4 +620,14 @@
 (<a id='1115' tid='1116' class='u'>define</a> <a id='1117' tid='1118' class='u'>diff-list</a>
   (<span class='d'>lambda</span> <span class='d'>(table ls1 ls2 depth move?)</span>
 
-    (<a id='239' tid='240' class='m'>define</a> <a id='241' tid='242
+    (<a id='239' tid='240' class='m'>define</a> <a id='241' tid='242' class='m'>memo</a>
+      (<a id='243' tid='244' class='m'>lambda</a> (<a id='245' tid='246' class='m'>v1</a> <a id='247' tid='248' class='m'>v2</a>)
+        (<a id='249' tid='250' class='m'>hash-put!</a> <a id='251' tid='252' class='m'>table</a> <a id='253' tid='254' class='m'>ls1</a> <a id='255' tid='256' class='m'>ls2</a> (<a id='257' tid='258' class='m'>cons</a> <a id='259' tid='260' class='m'>v1</a> <a id='261' tid='262' class='m'>v2</a>))
+        (<a id='263' tid='264' class='m'>values</a> <a id='265' tid='266' class='m'>v1</a> <a id='267' tid='268' class='m'>v2</a>)))
+
+    (<span class='d'>define</span> <span class='d'>guess</span>
+      (<span class='d'>lambda</span> <span class='d'>(ls1  ls2)</span>
+        (<span class='d'>letv</span> <span class='d'>([(m0 c0) (diff-node (car ls1) (car ls2) depth move?)]
+               [(m1 c1) (diff-list table (cdr ls1) (cdr ls2) depth move?)]
+               [(cost1) (+ c0 c1)])</span>
+          (<a id='119' tid='120' class='m'>con
