@@ -638,4 +638,16 @@
            [<a id='141' tid='142' class='m'>else</a>
             (<span class='d'>letv</span> (<span class='d'>[(m2 c2) (diff-list table (cdr ls1) ls2  depth move?)]</span>
                    <span class='d'>[(m3 c3) (diff-list table ls1 (cdr ls2) depth move?)]</span>
-                   [<a id='143' tid='144' class='m'>cost2</a> (<a id='145' tid='146' class='m'
+                   [<a id='143' tid='144' class='m'>cost2</a> (<a id='145' tid='146' class='m'>+</a> <a id='147' tid='148' class='m'>c2</a> (<a id='149' tid='150' class='m'>node-size</a> (<a id='151' tid='152' class='m'>car</a> <a id='153' tid='154' class='m'>ls1</a>)))]
+                   [<a id='69' tid='70' class='m'>cost3</a> (<a id='71' tid='72' class='m'>+</a> <a id='73' tid='74' class='m'>c3</a> (<a id='75' tid='76' class='m'>node-size</a> (<a id='77' tid='78' class='m'>car</a> <a id='79' tid='80' class='m'>ls2</a>)))])
+              <span class='d'>(cond
+               ;; They can&#39;t be same-def now.
+               ;; don&#39;t move them. It is quite confusing
+
+               ;; [(and (not (different-def? (car ls1) (car ls2)))
+               ;;       (&lt;= cost1 cost2) (&lt;= cost1 cost3))
+               ;;  (memo (append m0 m1) cost1)]
+               [(&lt;= cost2 cost3)
+                (memo (append (del-node (car ls1)) m2) cost2)]
+               [else
+                (memo (append (ins-node (car ls2)) m3) cost3
