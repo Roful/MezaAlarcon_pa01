@@ -630,4 +630,12 @@
         (<span class='d'>letv</span> <span class='d'>([(m0 c0) (diff-node (car ls1) (car ls2) depth move?)]
                [(m1 c1) (diff-list table (cdr ls1) (cdr ls2) depth move?)]
                [(cost1) (+ c0 c1)])</span>
-          (<a id='119' tid='120' class='m'>con
+          (<a id='119' tid='120' class='m'>cond</a>
+           [(<span class='d'>or</span> (<a id='121' tid='122' class='m'>same-def?</a> (<a id='123' tid='124' class='m'>car</a> <a id='125' tid='126' class='m'>ls1</a>) (<a id='127' tid='128' class='m'>car</a> <a id='129' tid='130' class='m'>ls2</a>))
+                <span class='d'>(and (not (different-def? (car ls1) (car ls2)))
+                     (similar? (car ls1) (car ls2) c0))</span>)
+            (<a id='131' tid='132' class='m'>memo</a> (<a id='133' tid='134' class='m'>append</a> <a id='135' tid='136' class='m'>m0</a> <a id='137' tid='138' class='m'>m1</a>) <a id='139' tid='140' class='m'>cost1</a>)]
+           [<a id='141' tid='142' class='m'>else</a>
+            (<span class='d'>letv</span> (<span class='d'>[(m2 c2) (diff-list table (cdr ls1) ls2  depth move?)]</span>
+                   <span class='d'>[(m3 c3) (diff-list table ls1 (cdr ls2) depth move?)]</span>
+                   [<a id='143' tid='144' class='m'>cost2</a> (<a id='145' tid='146' class='m'
