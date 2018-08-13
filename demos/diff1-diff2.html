@@ -658,4 +658,28 @@
            (<a id='337' tid='338' class='m'>values</a> (<a id='339' tid='340' class='m'>car</a> <a id='341' tid='342' class='m'>cached</a>) (<a id='343' tid='344' class='m'>cdr</a> <a id='345' tid='346' class='m'>cached</a>)))]
      [(<a id='269' tid='270' class='m'>and</a> (<a id='271' tid='272' class='m'>null?</a> <a id='273' tid='274' class='m'>ls1</a>) (<a id='275' tid='276' class='m'>null?</a> <a id='277' tid='278' class='m'>ls2</a>))
       (<a id='279' tid='280' class='m'>values</a> <a id='281' tid='282' class='m'>&#39;</a>() <a id='283' tid='284' class='m'>0</a>)]
-     <span class='d'>[(null? ls
+     <span class='d'>[(null? ls1)
+      (let ([changes (apply append (map ins-node ls2))])
+        (values changes (node-size ls2)))]</span>
+     <span class='d'>[(null? ls2)
+      (let ([changes (apply append (map del-node ls1))])
+        (values changes (node-size ls1)))]</span>
+     <span class='d'>[else
+      (guess ls1 ls2)]</span>)))
+
+
+
+
+
+
+(<span class='d'>define</span> <span class='d'>diff-sub</span>
+  (<span class='d'>lambda</span> <span class='d'>(node1 node2 depth move?)</span>
+    (<span class='d'>cond</span>
+     <span class='d'>[(or (&gt;= depth *move-depth*)
+          (&lt; (node-size node1) *min-frame-size*)
+          (&lt; (node-size node2) *min-frame-size*))
+      (values #f #f)]</span>
+     [<span class='d'>(and (Expr? node1) (Expr? node2))</span>
+      (<span class='d'>cond</span>
+       [<span class='d'>(&lt; (node-size node1) (node-size node2))</span>
+        (<span class='d'>let</span> <span class='d'>loop</span> <
