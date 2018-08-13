@@ -650,4 +650,12 @@
                [(&lt;= cost2 cost3)
                 (memo (append (del-node (car ls1)) m2) cost2)]
                [else
-                (memo (append (ins-node (car ls2)) m3) cost3
+                (memo (append (ins-node (car ls2)) m3) cost3)])</span>)]))))
+
+    (<span class='d'>cond</span>
+     [(<a id='285' tid='286' class='m'>hash-get</a> <a id='287' tid='288' class='m'>table</a> <a id='289' tid='290' class='m'>ls1</a> <a id='291' tid='292' class='m'>ls2</a>)
+      <a id='293' tid='294' class='m'>=&gt;</a> (<a id='333' tid='334' class='m'>lambda</a> (<a id='335' tid='336' class='m'>cached</a>)
+           (<a id='337' tid='338' class='m'>values</a> (<a id='339' tid='340' class='m'>car</a> <a id='341' tid='342' class='m'>cached</a>) (<a id='343' tid='344' class='m'>cdr</a> <a id='345' tid='346' class='m'>cached</a>)))]
+     [(<a id='269' tid='270' class='m'>and</a> (<a id='271' tid='272' class='m'>null?</a> <a id='273' tid='274' class='m'>ls1</a>) (<a id='275' tid='276' class='m'>null?</a> <a id='277' tid='278' class='m'>ls2</a>))
+      (<a id='279' tid='280' class='m'>values</a> <a id='281' tid='282' class='m'>&#39;</a>() <a id='283' tid='284' class='m'>0</a>)]
+     <span class='d'>[(null? ls
