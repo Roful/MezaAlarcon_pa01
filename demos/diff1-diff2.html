@@ -682,4 +682,14 @@
      [<span class='d'>(and (Expr? node1) (Expr? node2))</span>
       (<span class='d'>cond</span>
        [<span class='d'>(&lt; (node-size node1) (node-size node2))</span>
-        (<span class='d'>let</span> <span class='d'>loop</span> <
+        (<span class='d'>let</span> <span class='d'>loop</span> <span class='d'>([elts2 (Expr-elts node2)])</span>
+          (<a id='357' tid='358' class='m'>cond</a>
+           [(<a id='415' tid='416' class='m'>null?</a> <a id='417' tid='418' class='m'>elts2</a>) (<a id='419' tid='420' class='m'>values</a> <a id='421' tid='422' class='m'>#f</a> <a id='423' tid='424' class='m'>#f</a>)]
+           [<a id='359' tid='360' class='m'>else</a>
+            (<span class='d'>letv</span> <span class='d'>([(m0 c0) (diff-node node1 (car elts2) (add1 depth) move?)])</span>
+              (<a id='295' tid='296' class='m'>cond</a>
+               [<span class='d'>(or (same-def? node1 (car elts2))
+                    (similar? node1 (car elts2) c0))</span>
+                (<span class='d'>let</span> <span class='d'>([frame (extract-ins-frame node2 (car elts2))]
+                      [frame-size (- (node-size node2) (node-size (car elts2)))])</span>
+                  (<a id='361' tid='362' class='m'>values</a> (<a id='363' tid='364' c
