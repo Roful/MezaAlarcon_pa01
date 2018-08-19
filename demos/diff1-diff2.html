@@ -692,4 +692,23 @@
                     (similar? node1 (car elts2) c0))</span>
                 (<span class='d'>let</span> <span class='d'>([frame (extract-ins-frame node2 (car elts2))]
                       [frame-size (- (node-size node2) (node-size (car elts2)))])</span>
-                  (<a id='361' tid='362' class='m'>values</a> (<a id='363' tid='364' c
+                  (<a id='361' tid='362' class='m'>values</a> (<a id='363' tid='364' class='m'>append</a> <a id='365' tid='366' class='m'>m0</a> <a id='367' tid='368' class='m'>frame</a>) <a id='369' tid='370' class='m'>c0</a>))]
+               [<a id='297' tid='298' class='m'>else</a>
+                (<a id='299' tid='300' class='m'>loop</a> (<a id='301' tid='302' class='m'>cdr</a> <a id='303' tid='304' class='m'>elts2</a>))]))]))]
+       [<span class='d'>(&gt; (node-size node1) (node-size node2))</span>
+        (<span class='d'>let</span> <span class='d'>loop</span> <span class='d'>([elts1 (Expr-elts node1)])</span>
+          (<a id='305' tid='306' class='m'>cond</a>
+           [(<a id='347' tid='348' class='m'>null?</a> <a id='349' tid='350' class='m'>elts1</a>) (<a id='351' tid='352' class='m'>values</a> <a id='353' tid='354' class='m'>#f</a> <a id='355' tid='356' class='m'>#f</a>)]
+           [<a id='307' tid='308' class='m'>else</a>
+            (<span class='d'>letv</span> <span class='d'>([(m0 c0) (diff-node (car elts1) node2 (add1 depth) move?)])</span>
+              (<a id='155' tid='156' class='m'>cond</a>
+               [<span class='d'>(or (same-def? (car elts1) node2)
+                    (similar? (car elts1) node2 c0))</span>
+                (<span class='d'>let</span> <span class='d'>([frame (extract-del-frame node1 (car elts1))]
+                      [frame-size (- (node-size node1) (node-size (car elts1)))])</span>
+                  (<a id='309' tid='310' class='m'>values</a> (<a id='311' tid='312' class='m'>append</a> <a id='313' tid='314' class='m'>m0</a> <a id='315' tid='316' class='m'>frame</a>) <a id='317' tid='318' class='m'>c0</a>))]
+               [<a id='157' tid='158' class='m'>else</a>
+                (<a id='159' tid='160' class='m'>loop</a> (<a id='161' tid='162' class='m'>cdr</a> <a id='163' tid='164' class='m'>elts1</a>))]))]))]
+       <span class='d'>[else                            ; equal size
+        (values #f #f)]</span>)]
+     <span class='d'>[else (va
