@@ -711,4 +711,28 @@
                 (<a id='159' tid='160' class='m'>loop</a> (<a id='161' tid='162' class='m'>cdr</a> <a id='163' tid='164' class='m'>elts1</a>))]))]))]
        <span class='d'>[else                            ; equal size
         (values #f #f)]</span>)]
-     <span class='d'>[else (va
+     <span class='d'>[else (values #f #f)]</span>)))
+
+
+
+
+<a id='1937' tid='1938' class='u'>;-------------------------------------------------------------
+</a><span class='d'>;                    finding moves
+</span><span class='d'>;-------------------------------------------------------------
+</span>
+(<a id='1065' tid='1066' class='u'>define</a> <a id='1067' tid='1068' class='u'>big-node?</a>
+  (<a id='1069' tid='1070' class='u'>lambda</a> (<a id='1071' tid='1072' class='u'>node</a>)
+    (<a id='1073' tid='1074' class='u'>&gt;=</a> (<a id='1075' tid='1076' class='u'>node-size</a> <a id='1077' tid='1078' class='u'>node</a>) <a id='1079' tid='1080' class='u'>*move-size*</a>)))
+
+
+
+<span class='d'>(define shallow-frame?
+  (lambda (node)
+    (and (eq? &#39;frame (node-type node))
+         (&lt; (node-depth node) *min-frame-depth*))))</span>
+
+
+(<a id='1061' tid='1062' class='u'>define</a> <a id='1063' tid='1064' class='u'>big-change?</a>
+  <span class='d'>(lambda (c)
+    (cond
+     
