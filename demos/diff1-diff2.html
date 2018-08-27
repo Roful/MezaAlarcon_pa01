@@ -771,4 +771,16 @@
 
 
 <span class='d'>;; iterate the dynamic programming
-</span>(<a id='1103' tid='1104' class='
+</span>(<a id='1103' tid='1104' class='u'>define</a> <a id='1105' tid='1106' class='u'>closure</a>
+  (<a id='675' tid='676' class='m'>lambda</a> (<a id='677' tid='678' class='m'>changes</a>)
+    (<a id='679' tid='680' class='m'>set!</a> <a id='681' tid='682' class='m'>*diff-hash*</a> (<a id='683' tid='684' class='m'>make-hasheq</a>))
+    (<span class='d'>let</span> <span class='d'>loop</span> <span class='d'>([changes changes] [moved &#39;()] [count 1])</span>
+      (<span class='d'>cond</span>
+       <span class='d'>[(&gt; count *move-iteration*)
+        (let ([all-changes (append changes moved)])
+          (apply append (map disassemble-change all-changes)))]</span>
+       [<span class='d'>else</span>
+        <span class='d'>(printf &quot;~n[closure loop #~a] &quot; count)</span>
+        (<span class='d'>let*</span> <span class='d'>([del-changes (filter (predand del?
+                                             (predor (lambda (c)
+                                                       
