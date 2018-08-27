@@ -735,4 +735,40 @@
 (<a id='1061' tid='1062' class='u'>define</a> <a id='1063' tid='1064' class='u'>big-change?</a>
   <span class='d'>(lambda (c)
     (cond
-     
+     [(ins? c)
+      (big-node? (Change-cur c))]
+     [(del? c)
+      (big-node? (Change-orig c))]
+     [(mod? c)
+      (or (big-node? (Change-orig c))
+          (big-node? (Change-cur c)))]))</span>)
+
+
+<span class='d'>(define shallow-change?
+  (lambda (c)
+    (cond
+     [(ins? c)
+      (shallow-frame? (Change-cur c))]
+     [(del? c)
+      (shallow-frame? (Change-orig c))]
+     [(mod? c)
+      (or (shallow-frame? (Change-orig c))
+          (shallow-frame? (Change-cur c)))])))</span>
+
+
+<span class='d'>(define large-change?
+  (predand big-change? (negate shallow-frame?)))</span>
+
+
+
+<span class='d'>; ((predand number? (lambda (x) (&gt; x 1))) 0)
+</span><span class='d'>; ((predor number? (lambda (x) (&gt; x 1))) 5)
+</span>
+
+(<a id='1547' tid='1548' class='u'>define</a> <a id='1549' tid='1550' class='u'>node-sort-fn</a>
+  <span class='d'>(lambda (x y)
+    (&lt; (get-start x) (get-start y)))</span>)
+
+
+<span class='d'>;; iterate the dynamic programming
+</span>(<a id='1103' tid='1104' class='
