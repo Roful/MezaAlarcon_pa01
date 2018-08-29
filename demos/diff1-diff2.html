@@ -783,4 +783,20 @@
         <span class='d'>(printf &quot;~n[closure loop #~a] &quot; count)</span>
         (<span class='d'>let*</span> <span class='d'>([del-changes (filter (predand del?
                                              (predor (lambda (c)
-                                                       
+                                                       (language-specific-include?
+                                                        (Change-orig c)))
+                                                     large-change?))
+                                    changes)]
+               [add-changes (filter (predand ins?
+                                             (predor (lambda (c)
+                                                       (language-specific-include?
+                                                        (Change-cur c)))
+                                                     large-change?))
+                                    changes)]
+               [old-moves (filter mod? changes)]
+               [unincluded (set- changes (append old-moves
+                                                 del-changes
+                                                 add-changes))]
+               [dels (map Change-orig del-changes)]
+               [adds (map Change-cur add-changes)]
+       
