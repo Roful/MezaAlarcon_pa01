@@ -799,4 +799,14 @@
                                                  add-changes))]
                [dels (map Change-orig del-changes)]
                [adds (map Change-cur add-changes)]
-       
+               [sorted-dels (sort dels node-sort-fn)]
+               [sorted-adds (sort adds node-sort-fn)])</span>
+
+          (<a id='685' tid='686' class='m'>letv</a> (<span class='d'>[t (make-hasheq)]</span>
+                 <span class='d'>[(m c) (diff-list t sorted-dels sorted-adds 0 #t)]</span>
+                 [<a id='687' tid='688' class='m'>new-moves</a> (<a id='689' tid='690' class='m'>map</a> <a id='691' tid='692' class='m'>mod-&gt;mov</a> (<a id='693' tid='694' class='m'>filter</a> <a id='695' tid='696' class='m'>mod?</a> <a id='697' tid='698' class='m'>m</a>))])
+            (<a id='699' tid='700' class='m'>printf</a> <a id='701' tid='702' class='m'>&quot;~n~a new moves found&quot;</a> (<a id='703' tid='704' class='m'>length</a> <a id='705' tid='706' class='m'>new-moves</a>))
+            (<span class='d'>cond</span>
+             <span class='d'>[(null? new-moves)
+              (let ([all-changes (append m old-moves unincluded moved)])
+                (apply append (map disassemble-
