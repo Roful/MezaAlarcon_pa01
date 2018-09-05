@@ -809,4 +809,27 @@
             (<span class='d'>cond</span>
              <span class='d'>[(null? new-moves)
               (let ([all-changes (append m old-moves unincluded moved)])
-                (apply append (map disassemble-
+                (apply append (map disassemble-change all-changes)))]</span>
+             [<a id='707' tid='708' class='m'>else</a>
+              (<span class='d'>let</span> ([<a id='709' tid='710' class='m'>new-changes</a> (<a id='711' tid='712' class='m'>filter</a> (<a id='713' tid='714' class='m'>negate</a> <a id='715' tid='716' class='m'>mod?</a>) <a id='717' tid='718' class='m'>m</a>)])
+                <span class='d'>(loop new-changes
+                      (append new-moves old-moves unincluded moved)
+                      (add1 count))</span>)])))]))))
+
+
+<span class='d'>(define language-specific-similar?
+  (lambda (e1 e2 c)
+    #f))</span>
+
+<span class='d'>(define language-specific-include?
+  (lambda (e)
+    #f))</span>
+
+
+
+
+<span class='d'>;-------------------------------------------------------------
+</span><span class='d'>;                      HTML generation
+</span><span class='d'>;-------------------------------------------------------------
+</span>
+(<a id='1081' t
