@@ -843,4 +843,13 @@
                        (Change-cur (car cs)))])</span>
           (<span class='d'>cond</span>
            <span class='d'>[(or (not key)
-           
+                (= (get-start key) (get-end key)))
+            (loop (cdr cs) tags)]</span>
+           [<span class='d'>(and (Change-orig (car cs)) (Change-cur (car cs)))</span>
+            (<span class='d'>let</span> <span class='d'>([startTag (Tag (link-start (car cs) side)
+                                 (get-start key) -1)]
+                  [endTag (Tag &quot;&lt;/a&gt;&quot; (get-end key) (get-start key))])</span>
+              (<a id='747' tid='748' class='m'>loop</a> (<a id='749' tid='750' class='m'>cdr</a> <a id='751' tid='752' class='m'>cs</a>) (<a id='753' tid='754' class='m'>cons</a> <a id='755' tid='756' class='m'>endTag</a> (<a id='757' tid='758' class='m'>cons</a> <a id='759' tid='760' class='m'>startTag</a> <a id='761' tid='762' class='m'>tags</a>))))]
+           [<a id='371' tid='372' class='m'>else</a>
+            (<span class='d'>let</span> <span class='d'>([startTag (Tag (span-start (car cs) side)
+                   
