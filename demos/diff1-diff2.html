@@ -832,4 +832,15 @@
 </span><span class='d'>;                      HTML generation
 </span><span class='d'>;-------------------------------------------------------------
 </span>
-(<a id='1081' t
+(<a id='1081' tid='1082' class='u'>define</a> <a id='1083' tid='1084' class='u'>change-tags</a>
+  (<a id='719' tid='720' class='m'>lambda</a> (<a id='721' tid='722' class='m'>changes</a> <a id='723' tid='724' class='m'>side</a>)
+    (<a id='725' tid='726' class='m'>let</a> <a id='727' tid='728' class='m'>loop</a> ([<a id='729' tid='730' class='m'>cs</a> <a id='731' tid='732' class='m'>changes</a>] [<a id='733' tid='734' class='m'>tags</a> <a id='735' tid='736' class='m'>&#39;</a>()])
+      (<a id='737' tid='738' class='m'>cond</a>
+       [(<a id='739' tid='740' class='m'>null?</a> <a id='741' tid='742' class='m'>cs</a>) <a id='743' tid='744' class='m'>tags</a>]
+       [<a id='745' tid='746' class='m'>else</a>
+        (<span class='d'>let</span> <span class='d'>([key (if (eq? side &#39;left)
+                       (Change-orig (car cs))
+                       (Change-cur (car cs)))])</span>
+          (<span class='d'>cond</span>
+           <span class='d'>[(or (not key)
+           
