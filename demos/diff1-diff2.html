@@ -852,4 +852,12 @@
               (<a id='747' tid='748' class='m'>loop</a> (<a id='749' tid='750' class='m'>cdr</a> <a id='751' tid='752' class='m'>cs</a>) (<a id='753' tid='754' class='m'>cons</a> <a id='755' tid='756' class='m'>endTag</a> (<a id='757' tid='758' class='m'>cons</a> <a id='759' tid='760' class='m'>startTag</a> <a id='761' tid='762' class='m'>tags</a>))))]
            [<a id='371' tid='372' class='m'>else</a>
             (<span class='d'>let</span> <span class='d'>([startTag (Tag (span-start (car cs) side)
-                   
+                                 (get-start key) -1)]
+                  [endTag (Tag &quot;&lt;/span&gt;&quot; (get-end key) (get-start key))])</span>
+              (<a id='373' tid='374' class='m'>loop</a> (<a id='375' tid='376' class='m'>cdr</a> <a id='377' tid='378' class='m'>cs</a>) (<a id='379' tid='380' class='m'>cons</a> <a id='381' tid='382' class='m'>endTag</a> (<a id='383' tid='384' class='m'>cons</a> <a id='385' tid='386' class='m'>startTag</a> <a id='387' tid='388' class='m'>tags</a>))))]))]))))
+
+
+(<a id='821' tid='822' class='u'>define</a> <a id='823' tid='824' class='u'>apply-tags</a>
+  (<a id='825' tid='826' class='u'>lambda</a> (<a id='827' tid='828' class='u'>s</a> <a id='829' tid='830' class='u'>tags</a>)
+    (<a id='831' tid='832' class='u'>let</a> ([<a id='833' tid='834' class='u'>tags</a> (<a id='835' tid='836' class='u'>sort</a> <a id='837' tid='838' class='u'>tags</a> <a id='839' tid='840' class='u'>tag-sort-fn</a>)])
+      (<a id='841' tid='842' class='u'>let
