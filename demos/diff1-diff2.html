@@ -860,4 +860,9 @@
 (<a id='821' tid='822' class='u'>define</a> <a id='823' tid='824' class='u'>apply-tags</a>
   (<a id='825' tid='826' class='u'>lambda</a> (<a id='827' tid='828' class='u'>s</a> <a id='829' tid='830' class='u'>tags</a>)
     (<a id='831' tid='832' class='u'>let</a> ([<a id='833' tid='834' class='u'>tags</a> (<a id='835' tid='836' class='u'>sort</a> <a id='837' tid='838' class='u'>tags</a> <a id='839' tid='840' class='u'>tag-sort-fn</a>)])
-      (<a id='841' tid='842' class='u'>let
+      (<a id='841' tid='842' class='u'>let</a> <a id='843' tid='844' class='u'>loop</a> ([<a id='845' tid='846' class='u'>tags</a> <a id='847' tid='848' class='u'>tags</a>] [<a id='849' tid='850' class='u'>curr</a> <a id='851' tid='852' class='u'>0</a>] [<a id='853' tid='854' class='u'>out</a> <a id='855' tid='856' class='u'>&#39;</a>()])
+        (<a id='857' tid='858' class='u'>cond</a>
+         [(<a id='859' tid='860' class='u'>null?</a> <a id='861' tid='862' class='u'>tags</a>)
+          (<a id='863' tid='864' class='u'>cond</a>
+           [(<a id='865' tid='866' class='u'>&lt;</a> <a id='867' tid='868' class='u'>curr</a> (<a id='869' tid='870' class='u'>string-length</a> <a id='871' tid='872' class='u'>s</a>))
+            (<a id='873' tid='874' class='u'>loop</a> <a id='875' tid='876' class='u'>tags</a> (<a id='877' tid='878' class='u'>add1</a> <a id='879' tid='880' class='u'>curr</a>) (<a id='881' tid='882' class='u'>cons</a> (<a id='883' tid='884' class='u'
