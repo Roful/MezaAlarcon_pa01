@@ -879,4 +879,10 @@
 
 (<a id='1429' tid='1430' class='u'>define</a> <a id='1431' tid='1432' class='u'>link-start</a>
   (<span class='d'>lambda</span> <span class='d'>(change side)</span>
-    (<span class='d'>let</span> ([<span class='d'>cls</span> (<span clas
+    (<span class='d'>let</span> ([<span class='d'>cls</span> (<span class='d'>cond</span>
+                [(<a id='23' tid='24' class='m'>and</a> (<a id='25' tid='26' class='m'>eq?</a> (<a id='27' tid='28' class='m'>Change-type</a> <a id='29' tid='30' class='m'>change</a>) <a id='31' tid='32' class='m'>&#39;</a><a id='33' tid='34' class='m'>mov</a>)
+                      (<a id='35' tid='36' class='m'>&gt;</a> (<a id='37' tid='38' class='m'>Change-cost</a> <a id='39' tid='40' class='m'>change</a>) <a id='41' tid='42' class='m'>0</a>))
+                 <span class='d'>&quot;move-change&quot;</span>]
+                [(<a id='13' tid='14' class='m'>eq?</a> (<a id='15' tid='16' class='m'>Change-type</a> <a id='17' tid='18' class='m'>change</a>) <a id='19' tid='20' class='m'>&#39;</a><a id='21' tid='22' class='m'>mov</a>) <span class='d'>&quot;move&quot;</span>]
+                <span class='d'>[(&gt; (Change-cost change) 0) &quot;change&quot;]</span>
+                <
