@@ -885,4 +885,23 @@
                  <span class='d'>&quot;move-change&quot;</span>]
                 [(<a id='13' tid='14' class='m'>eq?</a> (<a id='15' tid='16' class='m'>Change-type</a> <a id='17' tid='18' class='m'>change</a>) <a id='19' tid='20' class='m'>&#39;</a><a id='21' tid='22' class='m'>mov</a>) <span class='d'>&quot;move&quot;</span>]
                 <span class='d'>[(&gt; (Change-cost change) 0) &quot;change&quot;]</span>
-                <
+                <span class='d'>[else &quot;unchanged&quot;]</span>)]
+          <span class='d'>[text (string-append &quot;(similarity &quot; (similarity change) &quot;)&quot;)]</span>
+          <span class='d'>[me (if (eq? side &#39;left)
+                  (Change-orig change)
+                  (Change-cur change))]</span>
+          <span class='d'>[other (if (eq? side &#39;left)
+                  (Change-cur change)
+                  (Change-orig change))]</span>)
+      <span class='d'>(string-append
+       &quot;&lt;a id=&quot;   (qs (uid me))
+       &quot; tid=&quot; (qs (uid other)) &quot;,&quot;
+       &quot; class=\&quot;&quot;  cls   &quot;\&quot;&quot;
+       &quot; title=\&quot;&quot;  text  &quot;\&quot;&gt;&quot;)</span>)))
+
+
+
+(<a id='1563' tid='1564' class='u'>define</a> <a id='1565' tid='1566' class='u'>span-start</a>
+  <span class='d'>(lambda (change side)
+    (let ([cls (if (Change-orig change) &quot;deletion&quot; &quot;insertion&quot;)]
+          
