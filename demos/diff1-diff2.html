@@ -904,4 +904,13 @@
 (<a id='1563' tid='1564' class='u'>define</a> <a id='1565' tid='1566' class='u'>span-start</a>
   <span class='d'>(lambda (change side)
     (let ([cls (if (Change-orig change) &quot;deletion&quot; &quot;insertion&quot;)]
-          
+          [text (if (Change-orig change) &quot;deleted&quot; &quot;inserted&quot;)])
+      (string-append &quot;&lt;span class=\&quot;&quot; cls &quot;\&quot; title=\&quot;&quot; text &quot;\&quot;&gt;&quot;)))</span>)
+
+
+
+(<a id='1703' tid='1704' class='u'>define</a> <a id='1705' tid='1706' class='u'>tag-sort-fn</a>
+  (<a id='1707' tid='1708' class='u'>lambda</a> (<a id='1709' tid='1710' class='u'>t1</a> <a id='1711' tid='1712' class='u'>t2</a>)
+    (<a id='1713' tid='1714' class='u'>cond</a>
+     [(<a id='1715' tid='1716' class='u'>=</a> (<a id='1717' tid='1718' class='u'>Tag-idx</a> <a id='1719' tid='1720' class='u'>t1</a>) (<a id='1721' tid='1722' class='u'>Tag-idx</a> <a id='1723' tid='1724' class='u'>t2</a>))
+      (<a id='1725' tid='1726' class='u'>&gt;</a> (<a id='1727' tid='1728' class='u'>Tag-start</a> <a id='1729' tid='1730' class='u'>t1</a>) (<a id='1731' tid='1732' class='u'>Tag-start</a> <a id='1733' tid='1734' class='u'>t2
