@@ -926,4 +926,17 @@
     ))
 
 
-(<
+(<a id='1345' tid='1346' class='u'>define</a> <a id='1347' tid='1348' class='u'>escape</a>
+  (<a id='1349' tid='1350' class='u'>lambda</a> (<a id='1351' tid='1352' class='u'>c</a>)
+    (<a id='1353' tid='1354' class='u'>cond</a>
+     [(<a id='1355' tid='1356' class='u'>assq</a> <a id='1357' tid='1358' class='u'>c</a> <a id='1359' tid='1360' class='u'>*escape-table*</a>) <a id='1361' tid='1362' class='u'>=&gt;</a> <a id='1363' tid='1364' class='u'>cdr</a>]
+     [<a id='1365' tid='1366' class='u'>else</a> (<a id='1367' tid='1368' class='u'>char-&gt;string</a> <a id='1369' tid='1370' class='u'>c</a>)])))
+
+
+
+
+<span class='d'>; getting the base name of a path/file name
+</span><span class='d'>; (base-name &quot;mk/mk-c.scm&quot;) =&gt; mk-c
+</span>(<a id='957' tid='958' class='u'>define</a> <a id='959' tid='960' class='u'>base-name</a>
+  (<a id='961' tid='962' class='u'>lambda</a> (<a id='963' tid='964' class='u'>fn</a>)
+    (<a id='965' tid='966' class='u'>let</a> <a id='967' tid='968' class='u'>loop</a> ([<a id='969' tid='
