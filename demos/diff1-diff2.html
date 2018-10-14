@@ -945,4 +945,9 @@
       (<a id='993' tid='994' class='u'>cond</a>
        [(<a id='995' tid='996' class='u'>=</a> <a id='997' tid='998' class='u'>i</a> <a id='999' tid='1000' class='u'>0</a>)
         (<a id='1001' tid='1002' class='u'>substring</a> <a id='1003' tid='1004' class='u'>fn</a> <a id='1005' tid='1006' class='u'>i</a> <a id='1007' tid='1008' class='u'>end</a>)]
-       [(<a id='1009' tid='1010' class='u'>eq?</a> (<a id='1011' tid='1012' class='u'>string-ref</a> <a id='1013' tid='1014' class='u'>fn<
+       [(<a id='1009' tid='1010' class='u'>eq?</a> (<a id='1011' tid='1012' class='u'>string-ref</a> <a id='1013' tid='1014' class='u'>fn</a> <a id='1015' tid='1016' class='u'>i</a>) <a id='1017' tid='1018' class='u'>#\.</a>)
+        (<a id='1019' tid='1020' class='u'>loop</a> (<a id='1021' tid='1022' class='u'>sub1</a> <a id='1023' tid='1024' class='u'>i</a>) <a id='1025' tid='1026' class='u'>start</a> <a id='1027' tid='1028' class='u'>i</a>)]
+       [(<a id='1029' tid='1030' class='u'>eq?</a> (<a id='1031' tid='1032' class='u'>string-ref</a> <a id='1033' tid='1034' class='u'>fn</a> <a id='1035' tid='1036' class='u'>i</a>) <a id='1037' tid='1038' class='u'>#\/</a>)
+        (<a id='1039' tid='1040' class='u'>substring</a> <a id='1041' tid='1042' class='u'>fn</a> (<a id='1043' tid='1044' class='u'>add1</a> <a id='1045' tid='1046' class='u'>i</a>) <a id='1047' tid='1048' class='u'>end</a>)]
+       [<a id='1049' tid='1050' class='u'>else</a>
+        (<a id='1051' tid='1052' class='u'>loop</a> (<a id='1053' tid='1054
