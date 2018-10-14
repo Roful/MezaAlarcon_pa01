@@ -939,4 +939,10 @@
 </span><span class='d'>; (base-name &quot;mk/mk-c.scm&quot;) =&gt; mk-c
 </span>(<a id='957' tid='958' class='u'>define</a> <a id='959' tid='960' class='u'>base-name</a>
   (<a id='961' tid='962' class='u'>lambda</a> (<a id='963' tid='964' class='u'>fn</a>)
-    (<a id='965' tid='966' class='u'>let</a> <a id='967' tid='968' class='u'>loop</a> ([<a id='969' tid='
+    (<a id='965' tid='966' class='u'>let</a> <a id='967' tid='968' class='u'>loop</a> ([<a id='969' tid='970' class='u'>i</a> (<a id='971' tid='972' class='u'>-</a> (<a id='973' tid='974' class='u'>string-length</a> <a id='975' tid='976' class='u'>fn</a>) <a id='977' tid='978' class='u'>1</a>)]
+               [<a id='979' tid='980' class='u'>start</a> <a id='981' tid='982' class='u'>-1</a>]
+               [<a id='983' tid='984' class='u'>end</a> (<a id='985' tid='986' class='u'>-</a> (<a id='987' tid='988' class='u'>string-length</a> <a id='989' tid='990' class='u'>fn</a>) <a id='991' tid='992' class='u'>1</a>)])
+      (<a id='993' tid='994' class='u'>cond</a>
+       [(<a id='995' tid='996' class='u'>=</a> <a id='997' tid='998' class='u'>i</a> <a id='999' tid='1000' class='u'>0</a>)
+        (<a id='1001' tid='1002' class='u'>substring</a> <a id='1003' tid='1004' class='u'>fn</a> <a id='1005' tid='1006' class='u'>i</a> <a id='1007' tid='1008' class='u'>end</a>)]
+       [(<a id='1009' tid='1010' class='u'>eq?</a> (<a id='1011' tid='1012' class='u'>string-ref</a> <a id='1013' tid='1014' class='u'>fn<
