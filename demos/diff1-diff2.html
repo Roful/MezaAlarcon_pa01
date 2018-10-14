@@ -950,4 +950,21 @@
        [(<a id='1029' tid='1030' class='u'>eq?</a> (<a id='1031' tid='1032' class='u'>string-ref</a> <a id='1033' tid='1034' class='u'>fn</a> <a id='1035' tid='1036' class='u'>i</a>) <a id='1037' tid='1038' class='u'>#\/</a>)
         (<a id='1039' tid='1040' class='u'>substring</a> <a id='1041' tid='1042' class='u'>fn</a> (<a id='1043' tid='1044' class='u'>add1</a> <a id='1045' tid='1046' class='u'>i</a>) <a id='1047' tid='1048' class='u'>end</a>)]
        [<a id='1049' tid='1050' class='u'>else</a>
-        (<a id='1051' tid='1052' class='u'>loop</a> (<a id='1053' tid='1054
+        (<a id='1051' tid='1052' class='u'>loop</a> (<a id='1053' tid='1054' class='u'>sub1</a> <a id='1055' tid='1056' class='u'>i</a>) <a id='1057' tid='1058' class='u'>start</a> <a id='1059' tid='1060' class='u'>end</a>)]))))
+
+
+
+(<a id='1395' tid='1396' class='u'>define</a> <a id='1397' tid='1398' class='u'>html-header</a>
+  <span class='d'>(lambda (port)
+      (line port &quot;&lt;html&gt;&quot;)
+      (line port &quot;&lt;head&gt;&quot;)
+      (line port &quot;&lt;META http-equiv=\&quot;Content-Type\&quot;&quot;
+                      &quot; content=\&quot;text/html; charset=utf-8\&quot;&gt;&quot;)
+      (line port &quot;&lt;LINK href=\&quot;diff-s.css\&quot;&quot;
+                      &quot; rel=\&quot;stylesheet\&quot; type=\&quot;text/css\&quot;&gt;&quot;)
+      (line port &quot;&lt;script type=\&quot;text/javascript\&quot;&quot;
+                        &quot; src=\&quot;nav-div.js\&quot;&gt;&lt;/script&gt;&quot;)
+      (line port &quot;&lt;/head&gt;&quot;)
+      (line port &quot;&lt;body&gt;&quot;))</span>)
+
+(<a id='1375' tid='13
