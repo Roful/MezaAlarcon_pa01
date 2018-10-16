@@ -980,4 +980,15 @@
     (<a id='1863' tid='1864' class='u'>if</a> (<a id='1865' tid='1866' class='u'>string=?</a> <a id='1867' tid='1868' class='u'>side</a> <a id='1869' tid='1870' class='u'>&quot;left&quot;</a>)
         (<a id='1871' tid='1872' class='u'>line</a> <a id='1873' tid='1874' class='u'>port</a> <a id='1875' tid='1876' class='u'>&quot;&lt;a id=&#39;leftstart&#39; tid=&#39;rightstart&#39;&gt;&lt;/a&gt;&quot;</a>)
         (<a id='1877' tid='1878' class='u'>line</a> <a id='1879' tid='1880' class='u'>port</a> <a id='1881' tid='1882' class='u'>&quot;&lt;a id=&#39;rightstart&#39; tid=&#39;leftstart&#39;&gt;&lt;/a&gt;&quot;</a>))
-    (<a id='1883'
+    (<a id='1883' tid='1884' class='u'>line</a> <a id='1885' tid='1886' class='u'>port</a> <a id='1887' tid='1888' class='u'>text</a>)
+    (<a id='1889' tid='1890' class='u'>line</a> <a id='1891' tid='1892' class='u'>port</a> <a id='1893' tid='1894' class='u'>&quot;&lt;/pre&gt;&quot;</a>)
+    (<a id='1895' tid='1896' class='u'>line</a> <a id='1897' tid='1898' class='u'>port</a> <a id='1899' tid='1900' class='u'>&quot;&lt;/div&gt;&quot;</a>)))
+
+
+<span class='d'>;; progress bar :-)
+</span>(<a id='1123' tid='1124' class='u'>define</a> <a id='1125' tid='1126' class='u'>diff-progress</a>
+  (<a id='1127' tid='1128' class='u'>new-progress</a> <a id='1129' tid='1130' class='u'>10000</a>))
+
+(<a id='1085' tid='1086' class='u'>define</a> <a id='1087' tid='1088' class='u'>cleanup</a>
+  (<a id='1089' tid='1090' class='u'>lambda</a> ()
+    (<a id='1091' tid='1092' class='u'>set!</a> <a id='1093' tid='1094' class='u'>*node-size-hash*</a> (<a id='1095'
