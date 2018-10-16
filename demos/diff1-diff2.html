@@ -967,4 +967,12 @@
       (line port &quot;&lt;/head&gt;&quot;)
       (line port &quot;&lt;body&gt;&quot;))</span>)
 
-(<a id='1375' tid='13
+(<a id='1375' tid='1376' class='u'>define</a> <a id='1377' tid='1378' class='u'>html-footer</a>
+  (<a id='1379' tid='1380' class='u'>lambda</a> (<a id='1381' tid='1382' class='u'>port</a>)
+    (<a id='1383' tid='1384' class='u'>line</a> <a id='1385' tid='1386' class='u'>port</a> <a id='1387' tid='1388' class='u'>&quot;&lt;/body&gt;&quot;</a>)
+    (<a id='1389' tid='1390' class='u'>line</a> <a id='1391' tid='1392' class='u'>port</a> <a id='1393' tid='1394' class='u'>&quot;&lt;/html&gt;&quot;</a>)))
+
+
+(<a id='1833' tid='1834' class='u'>define</a> <a id='1835' tid='1836' class='u'>write-html</a>
+  (<a id='1837' tid='1838' class='u'>lambda</a> (<a id='1839' tid='1840' class='u'>port</a> <a id='1841' tid='1842' class='u'>text</a> <a id='1843' tid='1844' class='u'>side</a>)
+    (<a id='1845' tid='1846' class='u'>line</a> <a id='1847' tid='1848' class='u'>port</a> (<a id='1849' tid='1850' class='u'>string-append</a> <a id='1851' tid='1852' class='u'>&quot;&lt;div id=
