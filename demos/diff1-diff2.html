@@ -991,4 +991,23 @@
 
 (<a id='1085' tid='1086' class='u'>define</a> <a id='1087' tid='1088' class='u'>cleanup</a>
   (<a id='1089' tid='1090' class='u'>lambda</a> ()
-    (<a id='1091' tid='1092' class='u'>set!</a> <a id='1093' tid='1094' class='u'>*node-size-hash*</a> (<a id='1095'
+    (<a id='1091' tid='1092' class='u'>set!</a> <a id='1093' tid='1094' class='u'>*node-size-hash*</a> (<a id='1095' tid='1096' class='u'>make-hasheq</a>))
+    (<a id='1097' tid='1098' class='u'>set!</a> <a id='1099' tid='1100' class='u'>*diff-hash*</a> (<a id='1101' tid='1102' class='u'>make-hasheq</a>))))
+
+
+<span class='d'>;; main command
+</span>(<a id='1111' tid='1112' class='u'>define</a> <a id='1113' tid='1114' class='u'>diff</a>
+  (<span class='d'>lambda</span> <span class='d'>(file1 file2 parse)</span>
+    <span class='d'>(cleanup)</span>
+    (<span class='d'>letv</span> <span class='d'>([s1 (read-file file1)]
+           [s2 (read-file file2)]
+           [node1 (parse s1)]
+           [node2 (parse s2)]
+           [_ (diff-progress &quot;\nDone parsing&quot;)]
+           [(changes cost) (diff-node node1 node2 0 #f)]
+           [_ (diff-progress &quot;\nDone diffing&quot;)]
+           [changes (closure changes)]
+           [_ (diff-progress &quot;\nDone moving&quot;)]
+           [_ (set! *diff-hash* (make-hasheq))]
+           [ctags1 (change-tags changes &#39;left)]
+           [ctags2 (c
