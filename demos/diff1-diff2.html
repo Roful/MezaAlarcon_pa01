@@ -1010,4 +1010,15 @@
            [_ (diff-progress &quot;\nDone moving&quot;)]
            [_ (set! *diff-hash* (make-hasheq))]
            [ctags1 (change-tags changes &#39;left)]
-           [ctags2 (c
+           [ctags2 (change-tags changes &#39;right)]
+           [tagged1 (apply-tags s1 ctags1)]
+           [tagged2 (apply-tags s2 ctags2)])</span>
+      (<span class='d'>let*</span> ([<span class='d'>frame-file</span> (<a id='43' tid='44' class='m'>string-append</a> (<a id='45' tid='46' class='m'>base-name</a> <a id='47' tid='48' class='m'>file1</a>) <a id='49' tid='50' class='m'>&quot;-&quot;</a>
+                                        (<a id='51' tid='52' class='m'>base-name</a> <a id='53' tid='54' class='m'>file2</a>) <a id='55' tid='56' class='m'>&quot;.html&quot;</a>)]
+             <span class='d'>[port (open-output-file frame-file
+                                     #:mode &#39;text
+                                     #:exists &#39;replace)]</span>)
+        <span class='d'>(html-header port)</span>
+        <span class='d'>(write-html port tagged1 &quot;left&quot;)</span>
+        <span class='d'>(write-html port tagged2 &quot;right&quot;)</span>
+        <span class='d'>(html-fo
