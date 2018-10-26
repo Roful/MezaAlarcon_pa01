@@ -1060,4 +1060,22 @@
 </a>
 <span class='i'>#lang</span> <span class='i'>racket</span>
 
-<span class='i'>(req
+<span class='i'>(require &quot;utils.rkt&quot;)</span>
+<span class='i'>(require &quot;structs.rkt&quot;)</span>
+
+<span class='i'>(provide (all-defined-out))</span>
+
+
+<span class='i'>;-------------------------------------------------------------
+</span><span class='i'>;                      parameters
+</span><span class='i'>;-------------------------------------------------------------
+</span>
+<span class='i'>;; The minimum size of a node to be considered as moved. Shouldn&#39;t be
+</span><span class='i'>;; too small, otherwise small deleted names may appear in a very
+</span><span class='i'>;; distant place!
+</span>(<a id='810' tid='809' class='u'>define</a> <a id='812' tid='811' class='u'>*move-size*</a> <a id='814' tid='813' class='u'>5</a>)
+
+
+<span class='i'>;; How long must a string be in order for us to use string-dist
+</span><span class='i'>;; function, which is costly when used on long strings but the most
+</span><span class='i'>;; accurate method to us
