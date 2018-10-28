@@ -1098,4 +1098,18 @@
 </span><span class='i'>;-------------------------------------------------------------
 </span>
 <span class='i'>;; Change - a change in the data structure
-</spa
+</span><span class='i'>;; - old  : the old version, #f for insertions
+</span><span class='i'>;; - new  : the new version, #f for deletions
+</span><span class='i'>;; - cost : the cost of change from old to new
+</span><span class='i'>;; - type : insertion, deletion, or modification?
+</span><span class='i'>(struct Change (old new cost type) #:transparent)</span>
+
+<span class='i'>;; HTML tag structure used HTML generation code
+</span>(<a id='1924' tid='1923' class='u'>struct</a> <a id='1926' tid='1925' class='u'>Tag</a> (<a id='1928' tid='1927' class='u'>tag</a> <a id='1930' tid='1929' class='u'>idx</a> <a id='1932' tid='1931' class='u'>start</a>) <a id='1934' tid='1933' class='u'>#:transparent</a>)
+
+(<a id='1400' tid='1399' class='u'>define</a> <a id='1402' tid='1401' class='u'>ins?</a>
+  <span class='i'>(lambda (c)
+    (eq? &#39;ins (Change-type c)))</span>)
+
+(<a id='1108' tid='1107' class='u'>define</a> <a id='1110' tid='1109' class='u'>del?</a>
+  <span class='
