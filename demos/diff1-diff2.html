@@ -1136,4 +1136,14 @@
 
 (<span class='i'>define</span> <span class='i'>mod</span>
   (<a id='452' tid='451' class='m'>lambda</a> (<a id='454' tid='453' class='m'>node1</a> <a id='456' tid='455' class='m'>node2</a> <a id='458' tid='457' class='m'>cost</a>)
-    (<a id='460' tid='459' class='m'>list</a> (<a id='462' tid='461' class='m'>Change</a> <a 
+    (<a id='460' tid='459' class='m'>list</a> (<a id='462' tid='461' class='m'>Change</a> <a id='464' tid='463' class='m'>node1</a> <a id='466' tid='465' class='m'>node2</a> <a id='468' tid='467' class='m'>cost</a> <a id='470' tid='469' class='m'>&#39;</a><a id='472' tid='471' class='m'>mod</a>))))
+
+
+(<span class='i'>define</span> <span class='i'>mov</span>
+  (<a id='474' tid='473' class='m'>lambda</a> (<a id='476' tid='475' class='m'>node1</a> <a id='478' tid='477' class='m'>node2</a> <a id='480' tid='479' class='m'>cost</a>)
+    (<a id='482' tid='481' class='m'>list</a> (<a id='484' tid='483' class='m'>Change</a> <a id='486' tid='485' class='m'>node1</a> <a id='488' tid='487' class='m'>node2</a> <a id='490' tid='489' class='m'>cost</a> <a id='492' tid='491' class='m'>&#39;</a><a id='494' tid='493' class='m'>mov</a>))))
+
+
+<span class='i'>;; create a &quot;total change&quot;
+</span><span class='i'>;; (delete node1 completely and then insert node2)
+</span>(<a id='1748' tid='1747' class='u'>define</a> <a id='1750' tid='1749' class='u'>t
