@@ -1112,4 +1112,17 @@
     (eq? &#39;ins (Change-type c)))</span>)
 
 (<a id='1108' tid='1107' class='u'>define</a> <a id='1110' tid='1109' class='u'>del?</a>
-  <span class='
+  <span class='i'>(lambda (c)
+    (eq? &#39;del (Change-type c)))</span>)
+
+(<a id='1536' tid='1535' class='u'>define</a> <a id='1538' tid='1537' class='u'>mod?</a>
+  <span class='i'>(lambda (c)
+    (eq? &#39;mod (Change-type c)))</span>)
+
+
+
+<a id='1936' tid='1935' class='u'>;----------------- utils for creating changes ----------------
+</a>(<span class='i'>define</span> <span class='i'>ins</span>
+  (<a id='426' tid='425' class='m'>lambda</a> (<a id='428' tid='427' class='m'>node</a>)
+    (<a id='430' tid='429' class='m'>let</a> ([<a id='432' tid='431' class='m'>size</a> (<a id='434' tid='433' class='m'>node-size</a> <a id='436' tid='435' class='m'>node</a>)])
+      (<a id='438' tid='437' class='m'>list</a> (<a id='440' tid='439' class='m'>Change</a> <a id='442' tid='441' class='m'>#f</a> <a id='444' tid='443' class='m'>node</a> <a id='446' tid='445' class='m'>size</a> <a id='448' tid='447' class='m'>&#39;</a><a id='450' tid='449' class='m'>ins</a>))))
