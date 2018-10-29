@@ -1125,4 +1125,15 @@
 </a>(<span class='i'>define</span> <span class='i'>ins</span>
   (<a id='426' tid='425' class='m'>lambda</a> (<a id='428' tid='427' class='m'>node</a>)
     (<a id='430' tid='429' class='m'>let</a> ([<a id='432' tid='431' class='m'>size</a> (<a id='434' tid='433' class='m'>node-size</a> <a id='436' tid='435' class='m'>node</a>)])
-      (<a id='438' tid='437' class='m'>list</a> (<a id='440' tid='439' class='m'>Change</a> <a id='442' tid='441' class='m'>#f</a> <a id='444' tid='443' class='m'>node</a> <a id='446' tid='445' class='m'>size</a> <a id='448' tid='447' class='m'>&#39;</a><a id='450' tid='449' class='m'>ins</a>))))
+      (<a id='438' tid='437' class='m'>list</a> (<a id='440' tid='439' class='m'>Change</a> <a id='442' tid='441' class='m'>#f</a> <a id='444' tid='443' class='m'>node</a> <a id='446' tid='445' class='m'>size</a> <a id='448' tid='447' class='m'>&#39;</a><a id='450' tid='449' class='m'>ins</a>)))))
+
+
+(<span class='i'>define</span> <span class='i'>del</span>
+  (<a id='390' tid='389' class='m'>lambda</a> (<a id='392' tid='391' class='m'>node</a>)
+    (<a id='394' tid='393' class='m'>let</a> ([<a id='396' tid='395' class='m'>size</a> (<a id='398' tid='397' class='m'>node-size</a> <a id='400' tid='399' class='m'>node</a>)])
+      (<a id='402' tid='401' class='m'>list</a> (<a id='404' tid='403' class='m'>Change</a> <a id='406' tid='405' class='m'>node</a> <a id='408' tid='407' class='m'>#f</a> <a id='410' tid='409' class='m'>size</a> <a id='412' tid='411' class='m'>&#39;</a><a id='414' tid='413' class='m'>del</a>)))))
+
+
+(<span class='i'>define</span> <span class='i'>mod</span>
+  (<a id='452' tid='451' class='m'>lambda</a> (<a id='454' tid='453' class='m'>node1</a> <a id='456' tid='455' class='m'>node2</a> <a id='458' tid='457' class='m'>cost</a>)
+    (<a id='460' tid='459' class='m'>list</a> (<a id='462' tid='461' class='m'>Change</a> <a 
