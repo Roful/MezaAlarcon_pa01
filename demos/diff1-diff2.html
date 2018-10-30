@@ -1158,4 +1158,24 @@
 </span>(<a id='1496' tid='1495' class='u'>define</a> <a id='1498' tid='1497' class='u'>mod-&gt;mov</a>
   (<a id='1500' tid='1499' class='u'>lambda</a> (<a id='1502' tid='1501' class='u'>c</a>)
     (<a id='1504' tid='1503' class='u'>match</a> <a id='1506' tid='1505' class='u'>c</a>
-     [(<a id='1508' tid='1507' class='u'>Change</a> <a id='1510' tid='1509' class='u'>nod
+     [(<a id='1508' tid='1507' class='u'>Change</a> <a id='1510' tid='1509' class='u'>node1</a> <a id='1512' tid='1511' class='u'>node2</a> <a id='1514' tid='1513' class='u'>cost</a> <a id='1516' tid='1515' class='u'>&#39;</a><a id='1518' tid='1517' class='u'>mod</a>)
+      (<a id='1520' tid='1519' class='u'>Change</a> <a id='1522' tid='1521' class='u'>node1</a> <a id='1524' tid='1523' class='u'>node2</a> <a id='1526' tid='1525' class='u'>cost</a> <a id='1528' tid='1527' class='u'>&#39;</a><a id='1530' tid='1529' class='u'>mov</a>)]
+     [<a id='1532' tid='1531' class='u'>other</a> <a id='1534' tid='1533' class='u'>other</a>])))
+
+
+
+<span class='i'>;;------------------ frames utils --------------------
+</span><span class='i'>(define deframe
+  (lambda (node)
+    (match node
+      [(Node &#39;frame _ _ elts)
+       (apply append (map deframe elts))]
+     [else (list node)])))</span>
+
+
+<span class='i'>(define deframe-change
+  (lambda (change)
+    (cond
+     [(ins? change)
+      (apply append
+ 
