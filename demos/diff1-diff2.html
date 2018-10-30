@@ -1146,4 +1146,16 @@
 
 <span class='i'>;; create a &quot;total change&quot;
 </span><span class='i'>;; (delete node1 completely and then insert node2)
-</span>(<a id='1748' tid='1747' class='u'>define</a> <a id='1750' tid='1749' class='u'>t
+</span>(<a id='1748' tid='1747' class='u'>define</a> <a id='1750' tid='1749' class='u'>total</a>
+  (<a id='496' tid='495' class='m'>lambda</a> (<a id='498' tid='497' class='m'>node1</a> <a id='500' tid='499' class='m'>node2</a>)
+    (<span class='i'>let</span> ([<a id='502' tid='501' class='m'>size1</a> (<a id='504' tid='503' class='m'>node-size</a> <a id='506' tid='505' class='m'>node1</a>)]
+          [<a id='508' tid='507' class='m'>size2</a> (<a id='510' tid='509' class='m'>node-size</a> <a id='512' tid='511' class='m'>node2</a>)])
+      <span class='i'>(values (append (del node1) (ins node2))
+              (+ size1 size2))</span>)))
+
+
+<span class='i'>;; temporary workaround before the algorithm stablizes
+</span>(<a id='1496' tid='1495' class='u'>define</a> <a id='1498' tid='1497' class='u'>mod-&gt;mov</a>
+  (<a id='1500' tid='1499' class='u'>lambda</a> (<a id='1502' tid='1501' class='u'>c</a>)
+    (<a id='1504' tid='1503' class='u'>match</a> <a id='1506' tid='1505' class='u'>c</a>
+     [(<a id='1508' tid='1507' class='u'>Change</a> <a id='1510' tid='1509' class='u'>nod
