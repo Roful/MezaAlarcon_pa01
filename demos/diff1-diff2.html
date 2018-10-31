@@ -1192,4 +1192,30 @@
        (<span class='i'>let</span> ([<a id='514' tid='513' class='m'>frame-elts</a> (<a id='516' tid='515' class='m'>filter</a> (<a id='518' tid='517' class='m'>lambda</a> (<a id='520' tid='519' class='m'>x</a>)
                                    (<a id='522' tid='521' class='m'>not</a> (<a id='524' tid='523' class='m'>eq?</a> <a id='526' tid='525' class='m'>x</a> <a id='528' tid='527' class='m'>node2</a>)))
                                  <a id='530' tid='529' class='m'>elts1</a>)])
-         <span class='i'
+         <span class='i'>(type (Node &#39;frame start1 start1 frame-elts))</span>)]
+      <span class='i'>[_ fatal &#39;extract-frame &quot;I only accept Node&quot;]</span>)))
+
+
+<span class='i'>;; (define n1 (Token &quot;ok&quot; 0 1))
+</span><span class='i'>;; (define n2 (Expr &#39;ok 0 2 (list n1 (Token &quot;bar&quot; 1 2))))
+</span><span class='i'>;; (map deframe-change (extract-frame n2 n1 ins))
+</span>
+
+
+
+
+
+<span class='i'>;------------------ operations on nodes ---------------------
+</span>
+<span class='i'>;; &quot;virtual function&quot; - get definition name
+</span><span class='i'>;; can be overridden by individual languages
+</span><span class='i'>(define get-name (lambda (node) #f))</span>
+
+<span class='i'>(define set-get-name
+  (lambda (fun)
+    (set! get-name fun)))</span>
+
+
+<span class='i'>;; &quot;virtual function&quot; - get node type
+</span><span class='i'>;; can be overridden by individual languages
+</span><span class='i'>(define get-type Node-type)</span>
