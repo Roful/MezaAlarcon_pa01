@@ -1219,3 +1219,33 @@
 <span class='i'>;; &quot;virtual function&quot; - get node type
 </span><span class='i'>;; can be overridden by individual languages
 </span><span class='i'>(define get-type Node-type)</span>
+
+<span class='i'>(define set-get-type
+  (lambda (fun)
+    (set! get-type fun)))</span>
+
+
+<span class='i'>;; same-def? only depend on get-name, so they need not be overridden
+</span><span class='i'>;; by individual languages.
+</span>(<a id='1556' tid='1555' class='u'>define</a> <a id='1558' tid='1557' class='u'>same-def?</a>
+  <span class='i'>(lambda (e1 e2)
+    (cond
+     [(not (eq? (get-type e1) (get-type e2)))
+      #f]
+     [else
+      (let ([name1 (get-name e1)]
+            [name2 (get-name e2)])
+        (and name1 name2 (equal? name1 name2)))]))</span>)
+
+
+<span class='i'>(define set-same-def
+  (lambda (fun)
+    (set! same-def? fun)))</span>
+
+
+
+<span class='i'>;----------- node size function ------------
+</span>(<a id='816' tid='815' class='u'>define</a> <a id='818' tid='817' class='u'>*node-size-hash*</a> (<a id='820' tid='819' class='u'>make-hasheq</a>))
+
+(<a id='1544' tid='1543' class='u'>define</a> <a id='1546' tid='1545' class='u'>node-size</a>
+  (<a id='560
