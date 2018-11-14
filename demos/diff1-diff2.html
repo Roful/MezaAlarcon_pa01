@@ -1257,4 +1257,19 @@
         <a id='558' tid='557' class='m'>v</a>))
     (<span class='i'>cond</span>
      [(<a id='564' tid='563' class='m'>pair?</a> <a id='566' tid='565' class='m'>node</a>)
-      (<a id='568' tid='567' class='m'>apply</a> <a id='570' tid='569' class='m'>+</a> (<a id='572' tid='571' class='m'>map</a>
+      (<a id='568' tid='567' class='m'>apply</a> <a id='570' tid='569' class='m'>+</a> (<a id='572' tid='571' class='m'>map</a> <a id='574' tid='573' class='m'>node-size</a> <a id='576' tid='575' class='m'>node</a>))]
+     <span class='i'>[(or (token? node) (str? node) (character? node)) 1]</span>
+     [<span class='i'>(Node? node)</span>
+      (<span class='i'>cond</span>
+       [(<a id='166' tid='165' class='m'>hash-has-key?</a> <a id='168' tid='167' class='m'>*node-size-hash*</a> <a id='170' tid='169' class='m'>node</a>)
+        (<a id='172' tid='171' class='m'>hash-ref</a> <a id='174' tid='173' class='m'>*node-size-hash*</a> <a id='176' tid='175' class='m'>node</a>)]
+       <span class='i'>[else
+        (memo (node-size (Node-elts node)))]</span>)]
+     <span class='i'>[else 0]</span>)))
+
+
+(<a id='1540' tid='1539' class='u'>define</a> <a id='1542' tid='1541' class='u'>node-depth</a>
+  (<a id='578' tid='577' class='m'>lambda</a> (<a id='580' tid='579' class='m'>node</a>)
+    (<span class='i'>cond</span>
+     <span class='i'>[(null? node) 0]</span>
+     [(<a id='582' tid='581' clas
