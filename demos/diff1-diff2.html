@@ -1272,4 +1272,17 @@
   (<a id='578' tid='577' class='m'>lambda</a> (<a id='580' tid='579' class='m'>node</a>)
     (<span class='i'>cond</span>
      <span class='i'>[(null? node) 0]</span>
-     [(<a id='582' tid='581' clas
+     [(<a id='582' tid='581' class='m'>pair?</a> <a id='584' tid='583' class='m'>node</a>)
+      (<a id='586' tid='585' class='m'>apply</a> <a id='588' tid='587' class='m'>max</a> (<a id='590' tid='589' class='m'>map</a> <a id='592' tid='591' class='m'>node-depth</a> <a id='594' tid='593' class='m'>node</a>))]
+     <span class='i'>[(Node? node)
+      (add1 (node-depth (Node-elts node)))]</span>
+     <span class='i'>[else 0]</span>)))
+
+
+<span class='i'>; (node-depth (parse-scheme &quot;(lambda (x (x (y)) (y)) x)&quot;))
+</span>
+
+(<a id='1752' tid='1751' class='u'>define</a> <a id='1754' tid='1753' class='u'>uid</a>
+  (<a id='1756' tid='1755' class='u'>let</a> ([<a id='1758' tid='1757' class='u'>count</a> <a id='1760' tid='1759' class='u'>1</a>]
+        [<a id='1762' tid='1761' class='u'>table</a> (<a id='1764' tid='1763' class='u'>box</a> <a id='1766' tid='1765' class='u'>&#39;</a>())])
+    (<a id='1768' tid='1767' class='u'>lambda</a> (<a id='1770' tid
