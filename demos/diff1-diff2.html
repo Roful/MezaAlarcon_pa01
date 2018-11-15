@@ -1291,4 +1291,17 @@
          [(<a id='1786' tid='1785' class='u'>not</a> <a id='1788' tid='1787' class='u'>p</a>)
           (<a id='1790' tid='1789' class='u'>let</a> ([<a id='1792' tid='1791' class='u'>id</a> <a id='1794' tid='1793' class='u'>count</a>])
             (<a id='1796' tid='1795' class='u'>set!</a> <a id='1798' tid='1797' class='u'>count</a> (<a id='1800' tid='1799' class='u'>add1</a> <a id='1802' tid='1801' class='u'>count</a>))
-            (<a id='1804' tid='1803' class='u'>set-box!</a> <a id='1806' tid='1805' class='u'>table</a> (<a id='1808' tid='1807' class='u'>cons</a> <a id='1810' tid='1809' class='u'>`</a>(<a id='1812' tid=
+            (<a id='1804' tid='1803' class='u'>set-box!</a> <a id='1806' tid='1805' class='u'>table</a> (<a id='1808' tid='1807' class='u'>cons</a> <a id='1810' tid='1809' class='u'>`</a>(<a id='1812' tid='1811' class='u'>,</a><a id='1814' tid='1813' class='u'>node</a> <a id='1816' tid='1815' class='u'>.</a> <a id='1818' tid='1817' class='u'>,</a><a id='1820' tid='1819' class='u'>id</a>) (<a id='1822' tid='1821' class='u'>unbox</a> <a id='1824' tid='1823' class='u'>table</a>)))
+            <a id='1826' tid='1825' class='u'>id</a>)]
+         [<a id='1828' tid='1827' class='u'>else</a>
+          (<a id='1830' tid='1829' class='u'>cdr</a> <a id='1832' tid='1831' class='u'>p</a>)])))))
+
+
+
+<span class='i'>;; similarity string from a change
+</span>(<a id='1560' tid='1559' class='u'>define</a> <a id='1562' tid='1561' class='u'>similarity</a>
+  (<a id='596' tid='595' class='m'>lambda</a> (<a id='598' tid='597' class='m'>change</a>)
+    (<span class='i'>let</span> <span class='i'>([total (+ (node-size (Change-old change))
+                    (node-size (Change-new change)))])</span>
+      (<a id='600' tid='599' class='m'>cond</a>
+       [(<a id='602' tid='601' class='m'>or<
