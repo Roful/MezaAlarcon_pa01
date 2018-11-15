@@ -1304,4 +1304,10 @@
     (<span class='i'>let</span> <span class='i'>([total (+ (node-size (Change-old change))
                     (node-size (Change-new change)))])</span>
       (<a id='600' tid='599' class='m'>cond</a>
-       [(<a id='602' tid='601' class='m'>or<
+       [(<a id='602' tid='601' class='m'>or</a> (<a id='604' tid='603' class='m'>=</a> <a id='606' tid='605' class='m'>0</a> <a id='608' tid='607' class='m'>total</a>) (<a id='610' tid='609' class='m'>=</a> <a id='612' tid='611' class='m'>0</a> (<a id='614' tid='613' class='m'>Change-cost</a> <a id='616' tid='615' class='m'>change</a>)))
+        <a id='618' tid='617' class='m'>&quot;100%&quot;</a>]
+       [<a id='620' tid='619' class='m'>else</a>
+        (<a id='622' tid='621' class='m'>string-append</a>
+         (<a id='624' tid='623' class='m'>real-&gt;decimal-string</a>
+          (<a id='626' tid='625' class='m'>*</a> <a id='628' tid='627' class='m'>100</a> (<a id='630' tid='629' class='m'>-</a> <a id='632' tid='631' class='m'>1.0</a> (<a id='634' tid='633' class='m'>/</a> (<a id='636' tid='635' class='m'>Change-cost</a> <a id='638' tid='637' class='m'>change</a>) <a id='640' tid='639' class='m'>total</a>))) <a id='642' tid='641' class='m'>1</a>)
+         <a id='644' tid='64
