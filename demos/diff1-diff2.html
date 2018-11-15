@@ -1322,4 +1322,13 @@
 </span>(<a id='1434' tid='1433' class='u'>define</a> <a id='1436' tid='1435' class='u'>make-table</a>
   (<a id='1438' tid='1437' class='u'>lambda</a> (<a id='1440' tid='1439' class='u'>dim1</a> <a id='1442' tid='1441' class='u'>dim2</a>)
     (<a id='1444' tid='1443' class='u'>let</a> ([<a id='1446' tid='1445' class='u'>vec</a> (<a id='1448' tid='1447' class='u'>make-vector</a> (<a id='1450' tid='1449' class='u'>add1</a> <a id='1452' tid='1451' class='u'>dim1</a>))])
-      (<a id='1454' tid='1453' class='u'>let</a> <a id='1456' tid='1455' class='u'>loop</a> ([<a id='1458' tid='1457' class='u'>n</a> <a id='1460' tid='1459' class='u'>0</
+      (<a id='1454' tid='1453' class='u'>let</a> <a id='1456' tid='1455' class='u'>loop</a> ([<a id='1458' tid='1457' class='u'>n</a> <a id='1460' tid='1459' class='u'>0</a>])
+        (<a id='1462' tid='1461' class='u'>cond</a>
+         [(<a id='1464' tid='1463' class='u'>=</a> <a id='1466' tid='1465' class='u'>n</a> (<a id='1468' tid='1467' class='u'>vector-length</a> <a id='1470' tid='1469' class='u'>vec</a>)) <a id='1472' tid='1471' class='u'>vec</a>]
+         [<a id='1474' tid='1473' class='u'>else</a>
+          (<a id='1476' tid='1475' class='u'>vector-set!</a> <a id='1478' tid='1477' class='u'>vec</a> <a id='1480' tid='1479' class='u'>n</a> (<a id='1482' tid='1481' class='u'>make-vector</a> (<a id='1484' tid='1483' class='u'>add1</a> <a id='1486' tid='1485' class='u'>dim2</a>) <a id='1488' tid='1487' class='u'>#f</a>))
+          (<a id='1490' tid='1489' class='u'>loop</a> (<a id='1492' tid='1491' class='u'>add1</a> <a id='1494' tid='1493' class='u'>n</a>))])))))
+
+
+(<a id='1644' tid='1643' class='u'>define</a> <a id='1646' tid='1645' class='u'>table-ref</a>
+  (<a id='1648' tid='1647' class='u'>lambda</a> (<a id='1650' tid='1649' class='u
