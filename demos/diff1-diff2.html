@@ -1363,4 +1363,10 @@
   (<a id='1160' tid='1159' class='u'>lambda</a> (<a id='1162' tid='1161' class='u'>table</a> <a id='1164' tid='1163' class='u'>s1</a> <a id='1166' tid='1165' class='u'>start1</a> <a id='1168' tid='1167' class='u'>s2</a> <a id='1170' tid='1169' class='u'>start2</a>)
     (<a id='1140' tid='1139' class='u'>define</a> <a id='1142' tid='1141' class='u'>memo</a>
       (<a id='1144' tid='1143' class='u'>lambda</a> (<a id='1146' tid='1145' class='u'>value</a>)
-        (<a id='1148' tid='1147' class='u'>table-set!</a> <a id='1150' tid='1149' class='u'>table</a> <a id='1152' tid='1151' class='u'>start1</a> <a
+        (<a id='1148' tid='1147' class='u'>table-set!</a> <a id='1150' tid='1149' class='u'>table</a> <a id='1152' tid='1151' class='u'>start1</a> <a id='1154' tid='1153' class='u'>start2</a> <a id='1156' tid='1155' class='u'>value</a>)
+        <a id='1158' tid='1157' class='u'>value</a>))
+    (<a id='1172' tid='1171' class='u'>cond</a>
+     [(<a id='1174' tid='1173' class='u'>table-ref</a> <a id='1176' tid='1175' class='u'>table</a> <a id='1178' tid='1177' class='u'>start1</a> <a id='1180' tid='1179' class='u'>start2</a>)
+      <a id='1182' tid='1181' class='u'>=&gt;</a> (<a id='1184' tid='1183' class='u'>lambda</a> (<a id='1186' tid='1185' class='u'>cached</a>) <a id='1188' tid='1187' class='u'>cached</a>)]
+     [(<a id='1190' tid='1189' class='u'>=</a> <a id='1192' tid='1191' class='u'>start1</a> (<a id='1194' tid='1193' class='u'>string-length</a> <a id='1196' tid='1195' class='u'>s1</a>))
+      (<a id='1198' tid='1197' class='u'>memo</a> (<a id='1200' tid='1199' class='u'>-</a> (<a id='1202' tid='1201' class='u'>string-length</a> <a id='1204' tid='1203' clas
