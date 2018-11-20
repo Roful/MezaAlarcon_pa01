@@ -1339,4 +1339,15 @@
 (<a id='1672' tid='1671' class='u'>define</a> <a id='1674' tid='1673' class='u'>table-set!</a>
   (<a id='1676' tid='1675' class='u'>lambda</a> (<a id='1678' tid='1677' class='u'>t</a> <a id='1680' tid='1679' class='u'>x</a> <a id='1682' tid='1681' class='u'>y</a> <a id='1684' tid='1683' class='u'>v</a>)
     (<a id='1686' tid='1685' class='u'>let</a> ([<a id='1688' tid='1687' class='u'>row</a> (<a id='1690' tid='1689' class='u'>vector-ref</a> <a id='1692' tid='1691' class='u'>t</a> <a id='1694' tid='1693' class='u'>x</a>)])
-      (<a id='
+      (<a id='1696' tid='1695' class='u'>vector-set!</a> <a id='1698' tid='1697' class='u'>row</a> <a id='1700' tid='1699' class='u'>y</a> <a id='1702' tid='1701' class='u'>v</a>))))
+
+
+
+<span class='i'>;---------------- string distance function -----------------
+</span>
+<span class='i'>;; string distance is no longer used because string=? saffice to
+</span><span class='i'>;; compare strings in ASTs. Retain it here for possible later uses.
+</span>(<a id='1568' tid='1567' class='u'>define</a> <a id='1570' tid='1569' class='u'>string-dist</a>
+  (<a id='1572' tid='1571' class='u'>lambda</a> (<a id='1574' tid='1573' class='u'>s1</a> <a id='1576' tid='1575' class='u'>s2</a>)
+    (<a id='1578' tid='1577' class='u'>let*</a> ([<a id='1580' tid='1579' class='u'>len1</a> (<a id='1582' tid='1581' class='u'>string-length</a> <a id='1584' tid='1583' class='u'>s1</a>)]
+           [<a id='1586' tid='1585' class='u'>len2</a> (<a id='1588' tid='1587' class='u'>string-length</a> <a id='1590' t
