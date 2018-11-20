@@ -1350,4 +1350,10 @@
 </span>(<a id='1568' tid='1567' class='u'>define</a> <a id='1570' tid='1569' class='u'>string-dist</a>
   (<a id='1572' tid='1571' class='u'>lambda</a> (<a id='1574' tid='1573' class='u'>s1</a> <a id='1576' tid='1575' class='u'>s2</a>)
     (<a id='1578' tid='1577' class='u'>let*</a> ([<a id='1580' tid='1579' class='u'>len1</a> (<a id='1582' tid='1581' class='u'>string-length</a> <a id='1584' tid='1583' class='u'>s1</a>)]
-           [<a id='1586' tid='1585' class='u'>len2</a> (<a id='1588' tid='1587' class='u'>string-length</a> <a id='1590' t
+           [<a id='1586' tid='1585' class='u'>len2</a> (<a id='1588' tid='1587' class='u'>string-length</a> <a id='1590' tid='1589' class='u'>s2</a>)]
+           [<a id='1592' tid='1591' class='u'>t</a> (<a id='1594' tid='1593' class='u'>make-table</a> <a id='1596' tid='1595' class='u'>len1</a> <a id='1598' tid='1597' class='u'>len2</a>)]
+           [<a id='1600' tid='1599' class='u'>char-dist</a> (<a id='1602' tid='1601' class='u'>dist1</a> <a id='1604' tid='1603' class='u'>t</a> <a id='1606' tid='1605' class='u'>s1</a> <a id='1608' tid='1607' class='u'>0</a> <a id='1610' tid='1609' class='u'>s2</a> <a id='1612' tid='1611' class='u'>0</a>)])
+      (<a id='1614' tid='1613' class='u'>cond</a>
+       [(<a id='1616' tid='1615' class='u'>=</a> <a id='1618' tid='1617' class='u'>0</a> (<a id='1620' tid='1619' class='u'>+</a> <a id='1622' tid='1621' class='u'>len1</a> <a id='1624' tid='1623' class='u'>len2</a>)) <a id='1626' tid='1625' class='u'>0</a>]
+       [<a id='1628' tid='1627' class='u'>else</a>
+        (<a id='1630' tid='1629' class='u'>/</a> (<a id='1632' tid='16
