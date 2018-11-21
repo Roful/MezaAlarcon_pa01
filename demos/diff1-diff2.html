@@ -1369,4 +1369,10 @@
      [(<a id='1174' tid='1173' class='u'>table-ref</a> <a id='1176' tid='1175' class='u'>table</a> <a id='1178' tid='1177' class='u'>start1</a> <a id='1180' tid='1179' class='u'>start2</a>)
       <a id='1182' tid='1181' class='u'>=&gt;</a> (<a id='1184' tid='1183' class='u'>lambda</a> (<a id='1186' tid='1185' class='u'>cached</a>) <a id='1188' tid='1187' class='u'>cached</a>)]
      [(<a id='1190' tid='1189' class='u'>=</a> <a id='1192' tid='1191' class='u'>start1</a> (<a id='1194' tid='1193' class='u'>string-length</a> <a id='1196' tid='1195' class='u'>s1</a>))
-      (<a id='1198' tid='1197' class='u'>memo</a> (<a id='1200' tid='1199' class='u'>-</a> (<a id='1202' tid='1201' class='u'>string-length</a> <a id='1204' tid='1203' clas
+      (<a id='1198' tid='1197' class='u'>memo</a> (<a id='1200' tid='1199' class='u'>-</a> (<a id='1202' tid='1201' class='u'>string-length</a> <a id='1204' tid='1203' class='u'>s2</a>) <a id='1206' tid='1205' class='u'>start2</a>))]
+     [(<a id='1208' tid='1207' class='u'>=</a> <a id='1210' tid='1209' class='u'>start2</a> (<a id='1212' tid='1211' class='u'>string-length</a> <a id='1214' tid='1213' class='u'>s2</a>))
+      (<a id='1216' tid='1215' class='u'>memo</a> (<a id='1218' tid='1217' class='u'>-</a> (<a id='1220' tid='1219' class='u'>string-length</a> <a id='1222' tid='1221' class='u'>s1</a>) <a id='1224' tid='1223' class='u'>start1</a>))]
+     [<a id='1226' tid='1225' class='u'>else</a>
+      (<a id='1228' tid='1227' class='u'>let*</a> ([<a id='1230' tid='1229' class='u'>c1</a> (<a id='1232' tid='1231' class='u'>string-ref</a> <a id='1234' tid='1233' class='u'>s1</a> <a id='1236' tid='1235' class='u'>start1</a>)]
+             [<a id='1238' tid='1237' class='u'>c2</a> (<a id='1240' tid='1239' class='u'>string-ref</a> <a id='1242' tid='1241' class='u'>s2</a> <a id='1244' tid='1243' class='u'>start2</a>)]
+             [<a id='1246' tid='12
