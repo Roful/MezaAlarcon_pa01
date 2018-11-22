@@ -1382,4 +1382,17 @@
                   [<a id='1270' tid='1269' class='u'>else</a> <a id='1272' tid='1271' class='u'>2</a>])]
              [<a id='1274' tid='1273' class='u'>d1</a> (<a id='1276' tid='1275' class='u'>+</a> <a id='1278' tid='1277' class='u'>d0</a> (<a id='1280' tid='1279' class='u'>dist1</a> <a id='1282' tid='1281' class='u'>table</a> <a id='1284' tid='1283' class='u'>s1</a> (<a id='1286' tid='1285' class='u'>add1</a> <a id='1288' tid='1287' class='u'>start1</a>) <a id='1290' tid='1289' class='u'>s2</a> (<a id='1292' tid='1291' class='u'>add1</a> <a id='1294' tid='1293' class='u'>start2</a>)))]
              [<a id='1296' tid='1295' class='u'>d2</a> (<a id='1298' tid='1297' class='u'>+</a> <a id='1300' tid='1299' class='u'>1</a> (<a id='1302' tid='1301' class='u'>dist1</a> <a id='1304' tid='1303' class='u'>table</a> <a id='1306' tid='1305' class='u'>s1</a> (<a id='1308' tid='1307' class='u'>add1</a> <a id='1310' tid='1309' class='u'>start1</a>) <a id='1312' tid='1311' class='u'>s2</a> <a id='1314' tid='1313' class='u'>start2</a>))]
-             [<a id='1316' tid='1315' class='u'>d3</a> (<a id='1318' tid='1317' class='u'>+</a> <a id='1320' tid='1319' class='u'>1</a> (<a id='1322' tid='1321' class='u'>dist1</a> <a id='1324' tid='1323' class='u'>table</a> <a id='1326' tid='1325' class='u'>s1</a> <a id='1328' tid='1327' class=
+             [<a id='1316' tid='1315' class='u'>d3</a> (<a id='1318' tid='1317' class='u'>+</a> <a id='1320' tid='1319' class='u'>1</a> (<a id='1322' tid='1321' class='u'>dist1</a> <a id='1324' tid='1323' class='u'>table</a> <a id='1326' tid='1325' class='u'>s1</a> <a id='1328' tid='1327' class='u'>start1</a> <a id='1330' tid='1329' class='u'>s2</a> (<a id='1332' tid='1331' class='u'>add1</a> <a id='1334' tid='1333' class='u'>start2</a>)))])
+        (<a id='1336' tid='1335' class='u'>memo</a> (<a id='1338' tid='1337' class='u'>min</a> <a id='1340' tid='1339' class='u'>d1</a> <a id='1342' tid='1341' class='u'>d2</a> <a id='1344' tid='1343' class='u'>d3</a>)))])))
+
+
+
+
+
+<span class='i'>;--------------------- the primary diff function -------------------
+</span>(<a id='1120' tid='1119' class='u'>define</a> <a id='1122' tid='1121' class='u'>diff-node</a>
+  (<span class='i'>lambda</span> <span class='i'>(node1 node2 move?)</span>
+
+    (<a id='646' tid='645' class='m'>define</a> <a id='648' tid='647' class='m'>memo</a>
+      (<a id='650' tid='649' class='m'>lambda</a> (<a id='652' tid='651' class='m'>v1</a> <a id='654' tid='653' class='m'>v2</a>)
+        (<a id='200' tid='199' class='m'>and</a> (<a id='202' tid='201' class='m'>&gt;</a> (<a id='204' tid='
