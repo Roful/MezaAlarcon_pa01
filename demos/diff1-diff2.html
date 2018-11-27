@@ -1404,4 +1404,19 @@
       (<span class='i'>lambda</span> <span class='i'>(changes cost)</span>
         (<span class='i'>cond</span>
          <span class='i'>[(or (not move?)
-    
+              (zero? cost))
+          (memo changes cost)]</span>
+         [<a id='178' tid='177' class='m'>else</a>
+          (<span class='i'>letv</span> <span class='i'>([(m c) (diff-extract node1 node2 move?)])</span>
+            (<a id='180' tid='179' class='m'>cond</a>
+             [(<a id='182' tid='181' class='m'>not</a> <a id='184' tid='183' class='m'>m</a>)
+              (<a id='186' tid='185' class='m'>memo</a> <a id='188' tid='187' class='m'>changes</a> <a id='190' tid='189' class='m'>cost</a>)]
+             [<a id='192' tid='191' class='m'>else</a>
+              (<a id='194' tid='193' class='m'>memo</a> <a id='196' tid='195' class='m'>m</a> <a id='198' tid='197' class='m'>c</a>)]))])))
+
+
+    <span class='i'>(diff-progress 1)</span> <span class='i'>;; progress bar
+</span>
+    (<span class='i'>cond</span>
+     [(<a id='230' tid='229' class='m'>hash-get</a> <a id='232' tid='231' class='m'>*diff-hash*</a> <a id='234' tid='233' class='m'>node1</a> <a id='236' tid='235' class='m'>node2</a>)
+      <a id='238' tid='237' class='
