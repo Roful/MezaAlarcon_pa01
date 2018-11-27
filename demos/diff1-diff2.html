@@ -1419,4 +1419,15 @@
 </span>
     (<span class='i'>cond</span>
      [(<a id='230' tid='229' class='m'>hash-get</a> <a id='232' tid='231' class='m'>*diff-hash*</a> <a id='234' tid='233' class='m'>node1</a> <a id='236' tid='235' class='m'>node2</a>)
-      <a id='238' tid='237' class='
+      <a id='238' tid='237' class='m'>=&gt;</a> (<a id='334' tid='333' class='m'>lambda</a> (<a id='336' tid='335' class='m'>cached</a>)
+           (<a id='338' tid='337' class='m'>values</a> (<a id='340' tid='339' class='m'>car</a> <a id='342' tid='341' class='m'>cached</a>) (<a id='344' tid='343' class='m'>cdr</a> <a id='346' tid='345' class='m'>cached</a>)))]
+     <span class='i'>[(and (character? node1) (character? node2))
+      (diff-string (char-&gt;string (Node-elts node1))
+                   (char-&gt;string (Node-elts node2))
+                   node1 node2)]</span>
+     <span class='i'>[(and (str? node1) (str? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]</span>
+     <span class='i'>[(and (comment? node1) (comment? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]</span>
+     <span class='i'>[(and (token? node1) (token? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]<
