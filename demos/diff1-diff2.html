@@ -1452,4 +1452,23 @@
 </span>(<a id='1132' tid='1131' class='u'>define</a> <a id='1134' tid='1133' class='u'>diff-string</a>
   (<a id='92' tid='91' class='m'>lambda</a> (<a id='94' tid='93' class='m'>string1</a> <a id='96' tid='95' class='m'>string2</a> <a id='98' tid='97' class='m'>node1</a> <a id='100' tid='99' class='m'>node2</a>)
     (<span class='i'>cond</span>
-     [(<a id='102' tid='101' class='m'>or</a> (<a id='104' tid='103' class
+     [(<a id='102' tid='101' class='m'>or</a> (<a id='104' tid='103' class='m'>&gt;</a> (<a id='106' tid='105' class='m'>string-length</a> <a id='108' tid='107' class='m'>string1</a>) <a id='110' tid='109' class='m'>*max-string-len*</a>)
+          (<a id='112' tid='111' class='m'>&gt;</a> (<a id='114' tid='113' class='m'>string-length</a> <a id='116' tid='115' class='m'>string2</a>) <a id='118' tid='117' class='m'>*max-string-len*</a>))
+      <span class='i'>(cond
+       [(string=? string1 string2)
+        (values (mod node1 node2 0) 0)]
+       [else
+        (total node1 node2)])</span>]
+     <span class='i'>[else
+      (let ([cost (string-dist string1 string2)])
+        (values (mod node1 node2 cost) cost))]</span>)))
+
+
+
+
+
+<span class='i'>;; global 2-D hash for storing known diffs
+</span>(<a id='764' tid='763' class='u'>define</a> <a id='766' tid='765' class='u'>*diff-hash*</a> (<a id='768' tid='767' class='u'>make-hasheq</a>))
+
+(<a id='1116' tid='1115' class='u'>define</a> <a id='1118' tid='1117' class='u'>diff-list</a>
+  <sp
