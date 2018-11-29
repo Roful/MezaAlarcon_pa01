@@ -1430,4 +1430,13 @@
      <span class='i'>[(and (comment? node1) (comment? node2))
       (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]</span>
      <span class='i'>[(and (token? node1) (token? node2))
-      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]<
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]</span>
+     <span class='i'>[(and (Node? node1) (Node? node2)
+           (eq? (get-type node1) (get-type node2)))
+      (letv ([(m c) (diff-list (Node-elts node1) (Node-elts node2) move?)])
+        (try-extract m c))]</span>
+     [(<a id='218' tid='217' class='m'>and</a> (<a id='220' tid='219' class='m'>pair?</a> <a id='222' tid='221' class='m'>node1</a>) (<a id='224' tid='223' class='m'>not</a> (<a id='226' tid='225' class='m'>pair?</a> <a id='228' tid='227' class='m'>node2</a>)))
+      <span class='i'>(diff-list node1 (list node2) move?)</span>]
+     [(<a id='58' tid='57' class='m'>and</a> (<a id='60' tid='59' class='m'>not</a> (<a id='62' tid='61' class='m'>pair?</a> <a id='64' tid='63' class='m'>node1</a>)) (<a id='66' tid='65' class='m'>pair?</a> <a id='68' tid='67' class='m'>node2</a>))
+      <span class='i'>(diff-list (list node1) node2 move?)</span>]
+     [(<a id='82' tid='81' class='m'>and</a> (<a id='84' tid='83' class='m'>pair?</a> <a id='86' tid='85' class='m'>node1</a>)
