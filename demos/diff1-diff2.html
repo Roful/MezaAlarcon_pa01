@@ -1471,4 +1471,18 @@
 </span>(<a id='764' tid='763' class='u'>define</a> <a id='766' tid='765' class='u'>*diff-hash*</a> (<a id='768' tid='767' class='u'>make-hasheq</a>))
 
 (<a id='1116' tid='1115' class='u'>define</a> <a id='1118' tid='1117' class='u'>diff-list</a>
-  <sp
+  <span class='i'>(lambda (ls1 ls2 move?)
+    (let ([ls1 (sort ls1 node-sort-fn)]
+          [ls2 (sort ls2 node-sort-fn)])
+      (diff-list1 (make-hasheq) ls1 ls2 move?)))</span>)
+
+
+(<span class='i'>define</span> <span class='i'>diff-list1</span>
+  (<span class='i'>lambda</span> <span class='i'>(table ls1 ls2 move?)</span>
+
+    (<a id='240' tid='239' class='m'>define</a> <a id='242' tid='241' class='m'>memo</a>
+      (<a id='244' tid='243' class='m'>lambda</a> (<a id='246' tid='245' class='m'>v1</a> <a id='248' tid='247' class='m'>v2</a>)
+        (<a id='250' tid='249' class='m'>hash-put!</a> <a id='252' tid='251' class='m'>table</a> <a id='254' tid='253' class='m'>ls1</a> <a id='256' tid='255' class='m'>ls2</a> (<a id='258' tid='257' class='m'>cons</a> <a id='260' tid='259' class='m'>v1</a> <a id='262' tid='261' class='m'>v2</a>))
+        (<a id='264' tid='263' class='m'>values</a> <a id='266' tid='265' class='m'>v1</a> <a id='268' tid='267' class='m'>v2</a>)))
+
+    (<span class='i'>define</span> <span class='i'
