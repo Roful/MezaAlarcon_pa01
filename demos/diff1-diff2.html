@@ -1485,4 +1485,14 @@
         (<a id='250' tid='249' class='m'>hash-put!</a> <a id='252' tid='251' class='m'>table</a> <a id='254' tid='253' class='m'>ls1</a> <a id='256' tid='255' class='m'>ls2</a> (<a id='258' tid='257' class='m'>cons</a> <a id='260' tid='259' class='m'>v1</a> <a id='262' tid='261' class='m'>v2</a>))
         (<a id='264' tid='263' class='m'>values</a> <a id='266' tid='265' class='m'>v1</a> <a id='268' tid='267' class='m'>v2</a>)))
 
-    (<span class='i'>define</span> <span class='i'
+    (<span class='i'>define</span> <span class='i'>guess</span>
+      (<span class='i'>lambda</span> <span class='i'>(ls1  ls2)</span>
+        (<span class='i'>letv</span> <span class='i'>([(m0 c0) (diff-node (car ls1) (car ls2) move?)]
+               [(m1 c1) (diff-list1 table (cdr ls1) (cdr ls2) move?)]
+               [cost1 (+ c0 c1)])</span>
+          (<a id='120' tid='119' class='m'>cond</a>
+           [(<span class='i'>or</span> (<a id='122' tid='121' class='m'>same-def?</a> (<a id='124' tid='123' class='m'>car</a> <a id='126' tid='125' class='m'>ls1</a>) (<a id='128' tid='127' class='m'>car</a> <a id='130' tid='129' class='m'>ls2</a>))
+                <span class='i'>(zero? c0)</span>)
+            (<a id='132' tid='131' class='m'>memo</a> (<a id='134' tid='133' class='m'>append</a> <a id='136' tid='135' class='m'>m0</a> <a id='138' tid='137' class='m'>m1</a>) <a id='140' tid='139' class='m'>cost1</a>)]
+           [<a id='142' tid='141' class='m'>else</a>
+            (<span class='i'>letv</span> (<s
