@@ -1506,4 +1506,11 @@
                 (memo (append (ins (car ls2)) m3) cost3)])</span>)]))))
 
     (<span class='i'>cond</span>
-     [(<a id='286' tid='285' class='m'>hash-get</a> <a id='288'
+     [(<a id='286' tid='285' class='m'>hash-get</a> <a id='288' tid='287' class='m'>table</a> <a id='290' tid='289' class='m'>ls1</a> <a id='292' tid='291' class='m'>ls2</a>)
+      <a id='294' tid='293' class='m'>=&gt;</a> (<a id='320' tid='319' class='m'>lambda</a> (<a id='322' tid='321' class='m'>cached</a>)
+           (<a id='324' tid='323' class='m'>values</a> (<a id='326' tid='325' class='m'>car</a> <a id='328' tid='327' class='m'>cached</a>) (<a id='330' tid='329' class='m'>cdr</a> <a id='332' tid='331' class='m'>cached</a>)))]
+     [(<a id='270' tid='269' class='m'>and</a> (<a id='272' tid='271' class='m'>null?</a> <a id='274' tid='273' class='m'>ls1</a>) (<a id='276' tid='275' class='m'>null?</a> <a id='278' tid='277' class='m'>ls2</a>))
+      (<a id='280' tid='279' class='m'>values</a> <a id='282' tid='281' class='m'>&#39;</a>() <a id='284' tid='283' class='m'>0</a>)]
+     <span class='i'>[(null? ls1)
+      (let ([changes (apply append (map ins ls2))])
+        (values changes (nod
