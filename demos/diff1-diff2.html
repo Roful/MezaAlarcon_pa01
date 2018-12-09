@@ -1513,4 +1513,26 @@
       (<a id='280' tid='279' class='m'>values</a> <a id='282' tid='281' class='m'>&#39;</a>() <a id='284' tid='283' class='m'>0</a>)]
      <span class='i'>[(null? ls1)
       (let ([changes (apply append (map ins ls2))])
-        (values changes (nod
+        (values changes (node-size ls2)))]</span>
+     <span class='i'>[(null? ls2)
+      (let ([changes (apply append (map del ls1))])
+        (values changes (node-size ls1)))]</span>
+     <span class='i'>[else
+      (guess ls1 ls2)]</span>)))
+
+
+
+
+<span class='i'>;; structure extraction
+</span>(<span class='i'>define</span> <span class='i'>diff-extract</span>
+  (<span class='i'>lambda</span> <span class='i'>(node1 node2 move?)</span>
+    (<span class='i'>cond</span>
+     <span class='i'>[(or (&lt; (node-size node1) *move-size*)
+          (&lt; (node-size node2) *move-size*))
+      (values #f #f)]</span>
+     [<span class='i'>(and (Node? node1) (Node? node2))</span>
+      (<span class='i'>cond</span>
+       [<span class='i'>(&lt;= (node-size node1) (node-size node2))</span>
+        (<span class='i'>let</span> <span class='i'>loop</span> <span class='i'>([elts2 (Node-elts node2)])</span>
+          (<a id='358' tid='357' class='m'>cond</a>
+           [(<a id='416' tid='415' class='m'>nul
