@@ -1535,4 +1535,14 @@
        [<span class='i'>(&lt;= (node-size node1) (node-size node2))</span>
         (<span class='i'>let</span> <span class='i'>loop</span> <span class='i'>([elts2 (Node-elts node2)])</span>
           (<a id='358' tid='357' class='m'>cond</a>
-           [(<a id='416' tid='415' class='m'>nul
+           [(<a id='416' tid='415' class='m'>null?</a> <a id='418' tid='417' class='m'>elts2</a>) (<a id='420' tid='419' class='m'>values</a> <a id='422' tid='421' class='m'>#f</a> <a id='424' tid='423' class='m'>#f</a>)]
+           [<a id='360' tid='359' class='m'>else</a>
+            (<span class='i'>letv</span> <span class='i'>([(m0 c0) (diff-node node1 (car elts2)  move?)])</span>
+              (<a id='296' tid='295' class='m'>cond</a>
+               [<span class='i'>(or (same-def? node1 (car elts2))
+                    (zero? c0))</span>
+                (<span class='i'>let</span> <span class='i'>([frame (extract-frame node2 (car elts2) ins)])</span>
+                  (<a id='362' tid='361' class='m'>values</a> (<a id='364' tid='363' class='m'>append</a> <a id='366' tid='365' class='m'>m0</a> <a id='368' tid='367' class='m'>frame</a>) <a id='370' tid='369' class='m'>c0</a>))]
+               [<a id='298' tid='297' class='m'>else</a>
+                (<a id='300' tid='299' class='m'>loop</a> (<a id='302' tid='301' class='m'>cdr</a> <a id='304' tid='303' class='m'>elts2</a>))]))]))]
+       [<
