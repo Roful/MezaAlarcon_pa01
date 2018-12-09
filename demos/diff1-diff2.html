@@ -1545,4 +1545,14 @@
                   (<a id='362' tid='361' class='m'>values</a> (<a id='364' tid='363' class='m'>append</a> <a id='366' tid='365' class='m'>m0</a> <a id='368' tid='367' class='m'>frame</a>) <a id='370' tid='369' class='m'>c0</a>))]
                [<a id='298' tid='297' class='m'>else</a>
                 (<a id='300' tid='299' class='m'>loop</a> (<a id='302' tid='301' class='m'>cdr</a> <a id='304' tid='303' class='m'>elts2</a>))]))]))]
-       [<
+       [<span class='i'>else</span>
+        (<span class='i'>let</span> <span class='i'>loop</span> <span class='i'>([elts1 (Node-elts node1)])</span>
+          (<a id='306' tid='305' class='m'>cond</a>
+           [(<a id='348' tid='347' class='m'>null?</a> <a id='350' tid='349' class='m'>elts1</a>) (<a id='352' tid='351' class='m'>values</a> <a id='354' tid='353' class='m'>#f</a> <a id='356' tid='355' class='m'>#f</a>)]
+           [<a id='308' tid='307' class='m'>else</a>
+            (<span class='i'>letv</span> <span class='i'>([(m0 c0) (diff-node (car elts1) node2 move?)])</span>
+              (<a id='156' tid='155' class='m'>cond</a>
+               [<span class='i'>(or (same-def? (car elts1) node2)
+                    (zero? c0))</span>
+                (<span class='i'>let</span> <span class='i'>([frame (extract-frame node1 (car elts1) del)])</span>
+                  (<a id='310' tid='309' class='m'>values</a> (<a id='312' 
