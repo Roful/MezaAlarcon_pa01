@@ -1555,4 +1555,19 @@
                [<span class='i'>(or (same-def? (car elts1) node2)
                     (zero? c0))</span>
                 (<span class='i'>let</span> <span class='i'>([frame (extract-frame node1 (car elts1) del)])</span>
-                  (<a id='310' tid='309' class='m'>values</a> (<a id='312' 
+                  (<a id='310' tid='309' class='m'>values</a> (<a id='312' tid='311' class='m'>append</a> <a id='314' tid='313' class='m'>m0</a> <a id='316' tid='315' class='m'>frame</a>) <a id='318' tid='317' class='m'>c0</a>))]
+               [<a id='158' tid='157' class='m'>else</a>
+                (<a id='160' tid='159' class='m'>loop</a> (<a id='162' tid='161' class='m'>cdr</a> <a id='164' tid='163' class='m'>elts1</a>))]))]))])]
+     <span class='i'>[else (values #f #f)]</span>)))
+
+
+
+
+
+<span class='i'>;-------------------------------------------------------------
+</span><span class='i'>;                    finding moves
+</span><span class='i'>;-------------------------------------------------------------
+</span>
+(<a id='1066' tid='1065' class='u'>define</a> <a id='1068' tid='1067' class='u'>big-node?</a>
+  (<a id='1070' tid='1069' class='u'>lambda</a> (<a id='1072' tid='1071' class='u'>node</a>)
+    (<a id='1074' tid='1073' class='u'>&gt;=</a> (<a id='1076' ti
