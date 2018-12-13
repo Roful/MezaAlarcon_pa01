@@ -1596,4 +1596,18 @@
        [(and name1 (not name2)) #t]
        [(and (not name1) name2) #f]
        [else
-        (&lt; (Node-start x) (Node-start y))])))</s
+        (&lt; (Node-start x) (Node-start y))])))</span>)
+
+
+
+<span class='i'>;; iterate diff-list on the list of changes
+</span>(<a id='1104' tid='1103' class='u'>define</a> <a id='1106' tid='1105' class='u'>closure</a>
+  (<a id='676' tid='675' class='m'>lambda</a> (<a id='678' tid='677' class='m'>changes</a>)
+    (<a id='680' tid='679' class='m'>set!</a> <a id='682' tid='681' class='m'>*diff-hash*</a> (<a id='684' tid='683' class='m'>make-hasheq</a>))
+    (<span class='i'>let</span> <span class='i'>loop</span> <span class='i'>([changes changes] [closed &#39;()] [count 1])</span>
+      <span class='i'>(printf &quot;~n[move pass #~a] &quot; count)</span>
+      (<a id='686' tid='685' class='m'>letv</a> (<span class='i'>[dels (filter (predand del? big-change?) changes)]</span>
+             <span class='i'>[adds (filter (predand ins? big-change?) changes)]</span>
+             <span class='i'>[rest (set- changes (append dels adds))]</span>
+             <span class='i'>[ls1 (sort (map Change-old dels) node-sort-fn)]</span>
+             <span class='i'>[ls2 (sort (m
