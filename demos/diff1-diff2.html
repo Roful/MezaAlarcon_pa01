@@ -1570,4 +1570,30 @@
 </span>
 (<a id='1066' tid='1065' class='u'>define</a> <a id='1068' tid='1067' class='u'>big-node?</a>
   (<a id='1070' tid='1069' class='u'>lambda</a> (<a id='1072' tid='1071' class='u'>node</a>)
-    (<a id='1074' tid='1073' class='u'>&gt;=</a> (<a id='1076' ti
+    (<a id='1074' tid='1073' class='u'>&gt;=</a> (<a id='1076' tid='1075' class='u'>node-size</a> <a id='1078' tid='1077' class='u'>node</a>) <a id='1080' tid='1079' class='u'>*move-size*</a>)))
+
+
+(<a id='1062' tid='1061' class='u'>define</a> <a id='1064' tid='1063' class='u'>big-change?</a>
+  <span class='i'>(lambda (c)
+    (cond
+     [(ins? c)
+      (big-node? (Change-new c))]
+     [(del? c)
+      (big-node? (Change-old c))]
+     [(mod? c)
+      (or (big-node? (Change-old c))
+          (big-node? (Change-new c)))]))</span>)
+
+
+(<a id='1548' tid='1547' class='u'>define</a> <a id='1550' tid='1549' class='u'>node-sort-fn</a>
+  <span class='i'>(lambda (x y)
+    (let ([name1 (get-name x)]
+          [name2 (get-name y)])
+      (cond
+       [(and name1 name2)
+        (string&lt;? (symbol-&gt;string name1)
+                  (symbol-&gt;string name2))]
+       [(and name1 (not name2)) #t]
+       [(and (not name1) name2) #f]
+       [else
+        (&lt; (Node-start x) (Node-start y))])))</s
