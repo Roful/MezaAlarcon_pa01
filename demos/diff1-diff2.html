@@ -1610,4 +1610,13 @@
              <span class='i'>[adds (filter (predand ins? big-change?) changes)]</span>
              <span class='i'>[rest (set- changes (append dels adds))]</span>
              <span class='i'>[ls1 (sort (map Change-old dels) node-sort-fn)]</span>
-             <span class='i'>[ls2 (sort (m
+             <span class='i'>[ls2 (sort (map Change-new adds) node-sort-fn)]</span>
+             <span class='i'>[(m c) (diff-list ls1 ls2 #t)]</span>
+             [<a id='688' tid='687' class='m'>new-moves</a> (<a id='690' tid='689' class='m'>map</a> <a id='692' tid='691' class='m'>mod-&gt;mov</a> (<a id='694' tid='693' class='m'>filter</a> <a id='696' tid='695' class='m'>mod?</a> <a id='698' tid='697' class='m'>m</a>))])
+        (<a id='700' tid='699' class='m'>printf</a> <a id='702' tid='701' class='m'>&quot;~n~a new moves found&quot;</a> (<a id='704' tid='703' class='m'>length</a> <a id='706' tid='705' class='m'>new-moves</a>))
+        (<span class='i'>cond</span>
+         <span class='i'>[(null? new-moves)
+          (let ([all-changes (append m rest closed)])
+            (apply append (map deframe-change all-changes)))]</span>
+         [<a id='708' tid='707' class='m'>else</a>
+          (<span class='i'>let</span> ([<a id='710' tid='709' class='m'>new-changes</a> (<a id='712' tid='711' class='m'>filter</a> (<a id='714' tid='713' class='m'>negate</a>
