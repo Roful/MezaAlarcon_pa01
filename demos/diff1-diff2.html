@@ -1650,4 +1650,18 @@
 
 (<a id='1082' tid='1081' class='u'>define</a> <a id='1084' tid='1083' class='u'>change-tags</a>
   (<a id='720' tid='719' class='m'>lambda</a> (<a id='722' tid='721' class='m'>changes</a> <a id='724' tid='723' class='m'>side</a>)
-    (<a id='726' tid='725' class='m'>let</a> <a id='728' tid='727' class='m'>loop</a> ([<a id='730' tid='729' class='m'>cs</a> <a id='732' tid='731
+    (<a id='726' tid='725' class='m'>let</a> <a id='728' tid='727' class='m'>loop</a> ([<a id='730' tid='729' class='m'>cs</a> <a id='732' tid='731' class='m'>changes</a>] [<a id='734' tid='733' class='m'>tags</a> <a id='736' tid='735' class='m'>&#39;</a>()])
+      (<a id='738' tid='737' class='m'>cond</a>
+       [(<a id='740' tid='739' class='m'>null?</a> <a id='742' tid='741' class='m'>cs</a>) <a id='744' tid='743' class='m'>tags</a>]
+       [<a id='746' tid='745' class='m'>else</a>
+        (<span class='i'>let</span> <span class='i'>([key (if (eq? side &#39;left)
+                       (Change-old (car cs))
+                       (Change-new (car cs)))])</span>
+          (<span class='i'>cond</span>
+           <span class='i'>[(or (not key)
+                (= (Node-start key) (Node-end key)))
+            (loop (cdr cs) tags)]</span>
+           [<span class='i'>(and (Change-old (car cs)) (Change-new (car cs)))</span>
+            (<span class='i'>let</span> <span class='i'>([startTag (Tag (link-start (car cs) side)
+                                 (Node-start key) -1)]
+                  [endTag (Tag &quot;&lt;/a&gt;&quot; (Node-end 
