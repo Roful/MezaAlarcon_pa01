@@ -1619,4 +1619,27 @@
           (let ([all-changes (append m rest closed)])
             (apply append (map deframe-change all-changes)))]</span>
          [<a id='708' tid='707' class='m'>else</a>
-          (<span class='i'>let</span> ([<a id='710' tid='709' class='m'>new-changes</a> (<a id='712' tid='711' class='m'>filter</a> (<a id='714' tid='713' class='m'>negate</a>
+          (<span class='i'>let</span> ([<a id='710' tid='709' class='m'>new-changes</a> (<a id='712' tid='711' class='m'>filter</a> (<a id='714' tid='713' class='m'>negate</a> <a id='716' tid='715' class='m'>mod?</a>) <a id='718' tid='717' class='m'>m</a>)])
+            <span class='i'>(loop new-changes
+                  (append new-moves rest closed)
+                  (add1 count))</span>)])))))
+
+
+
+
+
+<span class='i'>;-------------------------------------------------------------
+</span><span class='i'>;                      HTML generation
+</span><span class='i'>;-------------------------------------------------------------
+</span>
+<span class='i'>;----------------- utils ----------------
+</span>(<a id='1552' tid='1551' class='u'>define</a> <a id='1554' tid='1553' class='u'>qs</a>
+  <span class='i'>(lambda (x)
+    (let ([x (cond
+              [(symbol? x) (symbol-&gt;string x)]
+              [(number? x) (number-&gt;string x)]
+              [(string? x) x])])
+      (string-append &quot;&#39;&quot; x &quot;&#39;&quot;)))</span>)
+
+
+(<a id='1404' tid='1403' class='u'>define</a>
