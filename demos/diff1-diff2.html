@@ -1664,4 +1664,10 @@
            [<span class='i'>(and (Change-old (car cs)) (Change-new (car cs)))</span>
             (<span class='i'>let</span> <span class='i'>([startTag (Tag (link-start (car cs) side)
                                  (Node-start key) -1)]
-                  [endTag (Tag &quot;&lt;/a&gt;&quot; (Node-end 
+                  [endTag (Tag &quot;&lt;/a&gt;&quot; (Node-end key) (Node-start key))])</span>
+              (<a id='748' tid='747' class='m'>loop</a> (<a id='750' tid='749' class='m'>cdr</a> <a id='752' tid='751' class='m'>cs</a>) (<a id='754' tid='753' class='m'>cons</a> <a id='756' tid='755' class='m'>endTag</a> (<a id='758' tid='757' class='m'>cons</a> <a id='760' tid='759' class='m'>startTag</a> <a id='762' tid='761' class='m'>tags</a>))))]
+           [<a id='372' tid='371' class='m'>else</a>
+            (<span class='i'>let</span> <span class='i'>([startTag (Tag (span-start (car cs) side)
+                                 (Node-start key) -1)]
+                  [endTag (Tag &quot;&lt;/span&gt;&quot; (Node-end key) (Node-start key))])</span>
+              (<a id='374' tid='373' class='m'>loop</a> (<a id='376' tid='375' class='m'>cdr</a> <a id='378' tid='377' class='m'>cs</a>) (<a id='380' tid='379' class='m'>cons</a> <a id='382' tid='381' class='m'>endTag</a> (<a id='384' tid='383' class='m'>cons</a> <a id='386' 
