@@ -1678,4 +1678,9 @@
     (<a id='832' tid='831' class='u'>let</a> ([<a id='834' tid='833' class='u'>tags</a> (<a id='836' tid='835' class='u'>sort</a> <a id='838' tid='837' class='u'>tags</a> <a id='840' tid='839' class='u'>tag-sort-fn</a>)])
       (<a id='842' tid='841' class='u'>let</a> <a id='844' tid='843' class='u'>loop</a> ([<a id='846' tid='845' class='u'>tags</a> <a id='848' tid='847' class='u'>tags</a>] [<a id='850' tid='849' class='u'>curr</a> <a id='852' tid='851' class='u'>0</a>] [<a id='854' tid='853' class='u'>out</a> <a id='856' tid='855' class='u'>&#39;</a>()])
         (<a id='858' tid='857' class='u'>cond</a>
-   
+         [(<a id='860' tid='859' class='u'>null?</a> <a id='862' tid='861' class='u'>tags</a>)
+          (<a id='864' tid='863' class='u'>cond</a>
+           [(<a id='866' tid='865' class='u'>&lt;</a> <a id='868' tid='867' class='u'>curr</a> (<a id='870' tid='869' class='u'>string-length</a> <a id='872' tid='871' class='u'>s</a>))
+            (<a id='874' tid='873' class='u'>loop</a> <a id='876' tid='875' class='u'>tags</a> (<a id='878' tid='877' class='u'>add1</a> <a id='880' tid='879' class='u'>curr</a>) (<a id='882' tid='881' class='u'>cons</a> (<a id='884' tid='883' class='u'>escape</a> (<a id='886' tid='885' class='u'>string-ref</a> <a id='888' tid='887' class='u'>s</a> <a id='890' tid='889' class='u'>curr</a>)) <a id='892' tid='891' class='u'>out</a>))]
+           [<a id='894' tid='893' class='u'>else</a>
+            (<a id='896' tid='895' class='u'>apply</a> <a id='898' tid='897' class='u'>string-append</a> (<a id='900' tid='899' class='u'>reverse</a> <a id='902
