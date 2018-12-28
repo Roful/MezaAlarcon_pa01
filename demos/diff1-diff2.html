@@ -1699,4 +1699,21 @@
     (<span class='i'>cond</span>
      [(<a id='24' tid='23' class='m'>and</a> (<a id='26' tid='25' class='m'>eq?</a> (<a id='28' tid='27' class='m'>Change-type</a> <a id='30' tid='29' class='m'>change</a>) <a id='32' tid='31' class='m'>&#39;</a><a id='34' tid='33' class='m'>mov</a>)
            (<a id='36' tid='35' class='m'>&gt;</a> (<a id='38' tid='37' class='m'>Change-cost</a> <a id='40' tid='39' class='m'>change</a>) <a id='42' tid='41' class='m'>0</a>))
-      <span class='i'>&quot;mc&quot;</span>]                                     <span class='i'>; move-c
+      <span class='i'>&quot;mc&quot;</span>]                                     <span class='i'>; move-change
+</span>     [(<a id='14' tid='13' class='m'>eq?</a> (<a id='16' tid='15' class='m'>Change-type</a> <a id='18' tid='17' class='m'>change</a>) <a id='20' tid='19' class='m'>&#39;</a><a id='22' tid='21' class='m'>mov</a>) <span class='i'>&quot;m&quot;</span>]      <span class='i'>; move
+</span>     <span class='i'>[(&gt; (Change-cost change) 0) &quot;c&quot;]</span>           <span class='i'>; change
+</span>     <span class='i'>[else &quot;u&quot;]</span>)))                              <span class='i'>; unchanged
+</span>
+
+
+(<a id='1430' tid='1429' class='u'>define</a> <a id='1432' tid='1431' class='u'>link-start</a>
+  <span class='i'>(lambda (change side)
+    (let ([cls (change-class change)]
+          [me (if (eq? side &#39;left)
+                  (Change-old change)
+                  (Change-new change))]
+          [other (if (eq? side &#39;left)
+                     (Change-new change)
+                     (Change-old change))])
+      (string-append
+       &quot;&lt;a id=&quot;  (qs 
