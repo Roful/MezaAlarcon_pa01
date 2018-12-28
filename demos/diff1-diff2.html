@@ -1689,4 +1689,14 @@
            [(<a id='908' tid='907' class='u'>&lt;</a> <a id='910' tid='909' class='u'>curr</a> (<a id='912' tid='911' class='u'>Tag-idx</a> (<a id='914' tid='913' class='u'>car</a> <a id='916' tid='915' class='u'>tags</a>)))
             (<a id='918' tid='917' class='u'>loop</a> <a id='920' tid='919' class='u'>tags</a> (<a id='922' tid='921' class='u'>add1</a> <a id='924' tid='923' class='u'>curr</a>) (<a id='926' tid='925' class='u'>cons</a> (<a id='928' tid='927' class='u'>escape</a> (<a id='930' tid='929' class='u'>string-ref</a> <a id='932' tid='931' class='u'>s</a> <a id='934' tid='933' class='u'>curr</a>)) <a id='936' tid='935' class='u'>out</a>))]
            [<a id='938' tid='937' class='u'>else</a>
-            (<a id='940' tid='939' class='u'>loop</a> (<a id='942' tid='941' class='u'>cdr</a> <a id='944' tid='943' class='u'>tags</a>) <a id='946' 
+            (<a id='940' tid='939' class='u'>loop</a> (<a id='942' tid='941' class='u'>cdr</a> <a id='944' tid='943' class='u'>tags</a>) <a id='946' tid='945' class='u'>curr</a> (<a id='948' tid='947' class='u'>cons</a> (<a id='950' tid='949' class='u'>Tag-tag</a> (<a id='952' tid='951' class='u'>car</a> <a id='954' tid='953' class='u'>tags</a>)) <a id='956' tid='955' class='u'>out</a>))])])))))
+
+
+
+<span class='i'>;; get the CSS class for the change
+</span>(<span class='i'>define</span> <span class='i'>change-class</span>
+  (<span class='i'>lambda</span> <span class='i'>(change)</span>
+    (<span class='i'>cond</span>
+     [(<a id='24' tid='23' class='m'>and</a> (<a id='26' tid='25' class='m'>eq?</a> (<a id='28' tid='27' class='m'>Change-type</a> <a id='30' tid='29' class='m'>change</a>) <a id='32' tid='31' class='m'>&#39;</a><a id='34' tid='33' class='m'>mov</a>)
+           (<a id='36' tid='35' class='m'>&gt;</a> (<a id='38' tid='37' class='m'>Change-cost</a> <a id='40' tid='39' class='m'>change</a>) <a id='42' tid='41' class='m'>0</a>))
+      <span class='i'>&quot;mc&quot;</span>]                                     <span class='i'>; move-c
