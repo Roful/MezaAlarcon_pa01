@@ -1683,4 +1683,10 @@
            [(<a id='866' tid='865' class='u'>&lt;</a> <a id='868' tid='867' class='u'>curr</a> (<a id='870' tid='869' class='u'>string-length</a> <a id='872' tid='871' class='u'>s</a>))
             (<a id='874' tid='873' class='u'>loop</a> <a id='876' tid='875' class='u'>tags</a> (<a id='878' tid='877' class='u'>add1</a> <a id='880' tid='879' class='u'>curr</a>) (<a id='882' tid='881' class='u'>cons</a> (<a id='884' tid='883' class='u'>escape</a> (<a id='886' tid='885' class='u'>string-ref</a> <a id='888' tid='887' class='u'>s</a> <a id='890' tid='889' class='u'>curr</a>)) <a id='892' tid='891' class='u'>out</a>))]
            [<a id='894' tid='893' class='u'>else</a>
-            (<a id='896' tid='895' class='u'>apply</a> <a id='898' tid='897' class='u'>string-append</a> (<a id='900' tid='899' class='u'>reverse</a> <a id='902
+            (<a id='896' tid='895' class='u'>apply</a> <a id='898' tid='897' class='u'>string-append</a> (<a id='900' tid='899' class='u'>reverse</a> <a id='902' tid='901' class='u'>out</a>))])]
+         [<a id='904' tid='903' class='u'>else</a>
+          (<a id='906' tid='905' class='u'>cond</a>
+           [(<a id='908' tid='907' class='u'>&lt;</a> <a id='910' tid='909' class='u'>curr</a> (<a id='912' tid='911' class='u'>Tag-idx</a> (<a id='914' tid='913' class='u'>car</a> <a id='916' tid='915' class='u'>tags</a>)))
+            (<a id='918' tid='917' class='u'>loop</a> <a id='920' tid='919' class='u'>tags</a> (<a id='922' tid='921' class='u'>add1</a> <a id='924' tid='923' class='u'>curr</a>) (<a id='926' tid='925' class='u'>cons</a> (<a id='928' tid='927' class='u'>escape</a> (<a id='930' tid='929' class='u'>string-ref</a> <a id='932' tid='931' class='u'>s</a> <a id='934' tid='933' class='u'>curr</a>)) <a id='936' tid='935' class='u'>out</a>))]
+           [<a id='938' tid='937' class='u'>else</a>
+            (<a id='940' tid='939' class='u'>loop</a> (<a id='942' tid='941' class='u'>cdr</a> <a id='944' tid='943' class='u'>tags</a>) <a id='946' 
