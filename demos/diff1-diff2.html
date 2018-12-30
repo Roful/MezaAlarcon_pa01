@@ -1734,4 +1734,12 @@
   (<a id='1708' tid='1707' class='u'>lambda</a> (<a id='1710' tid='1709' class='u'>t1</a> <a id='1712' tid='1711' class='u'>t2</a>)
     (<a id='1714' tid='1713' class='u'>cond</a>
      [(<a id='1716' tid='1715' class='u'>=</a> (<a id='1718' tid='1717' class='u'>Tag-idx</a> <a id='1720' tid='1719' class='u'>t1</a>) (<a id='1722' tid='1721' class='u'>Tag-idx</a> <a id='1724' tid='1723' class='u'>t2</a>))
-      (<a id='1726' tid='17
+      (<a id='1726' tid='1725' class='u'>&gt;</a> (<a id='1728' tid='1727' class='u'>Tag-start</a> <a id='1730' tid='1729' class='u'>t1</a>) (<a id='1732' tid='1731' class='u'>Tag-start</a> <a id='1734' tid='1733' class='u'>t2</a>))]
+     [<a id='1736' tid='1735' class='u'>else</a>
+      (<a id='1738' tid='1737' class='u'>&lt;</a> (<a id='1740' tid='1739' class='u'>Tag-idx</a> <a id='1742' tid='1741' class='u'>t1</a>) (<a id='1744' tid='1743' class='u'>Tag-idx</a> <a id='1746' tid='1745' class='u'>t2</a>))])))
+
+
+(<a id='770' tid='769' class='u'>define</a> <a id='772' tid='771' class='u'>*escape-table*</a>
+  <a id='774' tid='773' class='u'>&#39;</a>((<a id='776' tid='775' class='u'>#\&quot;</a>  <a id='778' tid='777' class='u'>.</a>   <a id='780' tid='779' class='u'>&quot;&quot;&quot;</a>)
+    (<a id='782' tid='781' class='u'>#\&#39;</a>  <a id='784' tid='783' class='u'>.</a>    <a id='786' tid='785' class='u'>&quot;&#39;&quot;</a>)
+    (<a id='788' tid='787' class='u'>#\&lt;</a>  <a id='790' tid='789' class='u'>.</a>    <a
