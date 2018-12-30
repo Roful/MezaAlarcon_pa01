@@ -1716,4 +1716,22 @@
                      (Change-new change)
                      (Change-old change))])
       (string-append
-       &quot;&lt;a id=&quot;  (qs 
+       &quot;&lt;a id=&quot;  (qs (uid me))
+       &quot; tid=&quot;   (qs (uid other))
+       &quot; class=&quot; (qs cls)
+       &quot;&gt;&quot;)))</span>)
+
+
+
+(<a id='1564' tid='1563' class='u'>define</a> <a id='1566' tid='1565' class='u'>span-start</a>
+  <span class='i'>(lambda (change side)
+    (let ([cls (if (eq? &#39;del (Change-type change)) &quot;d&quot; &quot;i&quot;)]) ; del or ins
+      (string-append &quot;&lt;span class=&quot; (qs cls) &quot;&gt;&quot;)))</span>)
+
+
+
+(<a id='1704' tid='1703' class='u'>define</a> <a id='1706' tid='1705' class='u'>tag-sort-fn</a>
+  (<a id='1708' tid='1707' class='u'>lambda</a> (<a id='1710' tid='1709' class='u'>t1</a> <a id='1712' tid='1711' class='u'>t2</a>)
+    (<a id='1714' tid='1713' class='u'>cond</a>
+     [(<a id='1716' tid='1715' class='u'>=</a> (<a id='1718' tid='1717' class='u'>Tag-idx</a> <a id='1720' tid='1719' class='u'>t1</a>) (<a id='1722' tid='1721' class='u'>Tag-idx</a> <a id='1724' tid='1723' class='u'>t2</a>))
+      (<a id='1726' tid='17
