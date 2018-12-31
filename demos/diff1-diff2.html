@@ -1756,4 +1756,10 @@
 
 <span class='i'>; getting the base name of a path/file name
 </span><span class='i'>; (base-name &quot;mk/mk-c.scm&quot;) =&gt; mk-c
-</span>(<a id='958' tid='957' class='u'>d
+</span>(<a id='958' tid='957' class='u'>define</a> <a id='960' tid='959' class='u'>base-name</a>
+  (<a id='962' tid='961' class='u'>lambda</a> (<a id='964' tid='963' class='u'>fn</a>)
+    (<a id='966' tid='965' class='u'>let</a> <a id='968' tid='967' class='u'>loop</a> ([<a id='970' tid='969' class='u'>i</a> (<a id='972' tid='971' class='u'>-</a> (<a id='974' tid='973' class='u'>string-length</a> <a id='976' tid='975' class='u'>fn</a>) <a id='978' tid='977' class='u'>1</a>)]
+               [<a id='980' tid='979' class='u'>start</a> <a id='982' tid='981' class='u'>-1</a>]
+               [<a id='984' tid='983' class='u'>end</a> (<a id='986' tid='985' class='u'>-</a> (<a id='988' tid='987' class='u'>string-length</a> <a id='990' tid='989' class='u'>fn</a>) <a id='992' tid='991' class='u'>1</a>)])
+      (<a id='994' tid='993' class='u'>cond</a>
+       [(<a id='996' tid='995' class='u'>=</a> <a id='998' tid='997' class='u'>i</a> <a id='1000' 
