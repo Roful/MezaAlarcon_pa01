@@ -1767,4 +1767,18 @@
        [(<a id='1010' tid='1009' class='u'>eq?</a> (<a id='1012' tid='1011' class='u'>string-ref</a> <a id='1014' tid='1013' class='u'>fn</a> <a id='1016' tid='1015' class='u'>i</a>) <a id='1018' tid='1017' class='u'>#\.</a>)
         (<a id='1020' tid='1019' class='u'>loop</a> (<a id='1022' tid='1021' class='u'>sub1</a> <a id='1024' tid='1023' class='u'>i</a>) <a id='1026' tid='1025' class='u'>start</a> <a id='1028' tid='1027' class='u'>i</a>)]
        [(<a id='1030' tid='1029' class='u'>eq?</a> (<a id='1032' tid='1031' class='u'>string-ref</a> <a id='1034' tid='1033' class='u'>fn</a> <a id='1036' tid='1035' class='u'>i</a>) <a id='1038' tid='1037' class='u'>#\/</a>)
-        (<a id='1040' tid='1039' class='u'>substring</a> <a id='1042' tid='1041' class='u'>fn</a> (<a id='1044' tid='1043' class='u'>add
+        (<a id='1040' tid='1039' class='u'>substring</a> <a id='1042' tid='1041' class='u'>fn</a> (<a id='1044' tid='1043' class='u'>add1</a> <a id='1046' tid='1045' class='u'>i</a>) <a id='1048' tid='1047' class='u'>end</a>)]
+       [<a id='1050' tid='1049' class='u'>else</a>
+        (<a id='1052' tid='1051' class='u'>loop</a> (<a id='1054' tid='1053' class='u'>sub1</a> <a id='1056' tid='1055' class='u'>i</a>) <a id='1058' tid='1057' class='u'>start</a> <a id='1060' tid='1059' class='u'>end</a>)]))))
+
+
+
+(<a id='1396' tid='1395' class='u'>define</a> <a id='1398' tid='1397' class='u'>html-header</a>
+  <span class='i'>(lambda (port)
+      (line port &quot;&lt;html&gt;&quot;)
+      (line port &quot;&lt;head&gt;&quot;)
+      (line port &quot;&lt;META http-equiv=\&quot;Content-Type\&quot;&quot;
+                      &quot; content=\&quot;text/html; charset=utf-8\&quot;&gt;&quot;)
+      (line port &quot;&lt;LINK href=\&quot;diff.css\&quot;&quot;
+                      &quot; rel=\&quot;stylesheet\&quot; type=\&quot;text/css\&quot;&gt;&quot;)
+      (line port &
