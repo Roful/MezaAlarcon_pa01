@@ -1781,4 +1781,19 @@
                       &quot; content=\&quot;text/html; charset=utf-8\&quot;&gt;&quot;)
       (line port &quot;&lt;LINK href=\&quot;diff.css\&quot;&quot;
                       &quot; rel=\&quot;stylesheet\&quot; type=\&quot;text/css\&quot;&gt;&quot;)
-      (line port &
+      (line port &quot;&lt;script type=\&quot;text/javascript\&quot;&quot;
+                        &quot; src=\&quot;nav.js\&quot;&gt;&lt;/script&gt;&quot;)
+      (line port &quot;&lt;/head&gt;&quot;)
+      (line port &quot;&lt;body&gt;&quot;))</span>)
+
+
+
+(<a id='1376' tid='1375' class='u'>define</a> <a id='1378' tid='1377' class='u'>html-footer</a>
+  (<a id='1380' tid='1379' class='u'>lambda</a> (<a id='1382' tid='1381' class='u'>port</a>)
+    (<a id='1384' tid='1383' class='u'>line</a> <a id='1386' tid='1385' class='u'>port</a> <a id='1388' tid='1387' class='u'>&quot;&lt;/body&gt;&quot;</a>)
+    (<a id='1390' tid='1389' class='u'>line</a> <a id='1392' tid='1391' class='u'>port</a> <a id='1394' tid='1393' class='u'>&quot;&lt;/html&gt;&quot;</a>)))
+
+
+
+(<a id='1834' tid='1833' class='u'>define</a> <a id='1836' tid='1835' class='u'>write-html</a>
+  (<a id='1838' tid='1837' class='u'>lambda</a> (<a id='1840' tid='1839' class='u'>port</a> <a id='1842' tid='1841' class='u'>text</a> <a id='1844' tid='18
