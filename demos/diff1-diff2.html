@@ -1796,4 +1796,9 @@
 
 
 (<a id='1834' tid='1833' class='u'>define</a> <a id='1836' tid='1835' class='u'>write-html</a>
-  (<a id='1838' tid='1837' class='u'>lambda</a> (<a id='1840' tid='1839' class='u'>port</a> <a id='1842' tid='1841' class='u'>text</a> <a id='1844' tid='18
+  (<a id='1838' tid='1837' class='u'>lambda</a> (<a id='1840' tid='1839' class='u'>port</a> <a id='1842' tid='1841' class='u'>text</a> <a id='1844' tid='1843' class='u'>side</a>)
+    (<a id='1846' tid='1845' class='u'>line</a> <a id='1848' tid='1847' class='u'>port</a> (<a id='1850' tid='1849' class='u'>string-append</a> <a id='1852' tid='1851' class='u'>&quot;&lt;div id=\&quot;&quot;</a> <a id='1854' tid='1853' class='u'>side</a> <a id='1856' tid='1855' class='u'>&quot;\&quot; class=\&quot;src\&quot;&gt;&quot;</a>))
+    (<a id='1858' tid='1857' class='u'>line</a> <a id='1860' tid='1859' class='u'>port</a> <a id='1862' tid='1861' class='u'>&quot;&lt;pre&gt;&quot;</a>)
+    (<a id='1864' tid='1863' class='u'>if</a> (<a id='1866' tid='1865' class='u'>string=?</a> <a id='1868' tid='1867' class='u'>side</a> <a id='1870' tid='1869' class='u'>&quot;left&quot;</a>)
+        (<a id='1872' tid='1871' class='u'>line</a> <a id='1874' tid='1873' class='u'>port</a> <a id='1876' tid='1875' class='u'>&quot;&lt;a id=&#39;leftstart&#39; tid=&#39;rightstart&#39;&gt;&lt;/a&gt;&quot;</a>)
+        (<a id='1878' tid='1877
