@@ -1815,4 +1815,22 @@
 
 
 (<a id='1086' tid='1085' class='u'>define</a> <a id='1088' tid='1087' class='u'>cleanup</a>
-  (<a id='1090
+  (<a id='1090' tid='1089' class='u'>lambda</a> ()
+    (<a id='1092' tid='1091' class='u'>set!</a> <a id='1094' tid='1093' class='u'>*node-size-hash*</a> (<a id='1096' tid='1095' class='u'>make-hasheq</a>))
+    (<a id='1098' tid='1097' class='u'>set!</a> <a id='1100' tid='1099' class='u'>*diff-hash*</a> (<a id='1102' tid='1101' class='u'>make-hasheq</a>))))
+
+
+
+<span class='i'>;; main diff function
+</span><span class='i'>;; returns all changes after diffing and moving
+</span>(<a id='1112' tid='1111' class='u'>define</a> <a id='1114' tid='1113' class='u'>diff</a>
+  <span class='i'>(lambda (node1 node2)
+    (letv ([start (current-seconds)]
+           [(changes _) (diff-node node1 node2 #f)]
+           [_ (diff-progress &quot;\nDone diffing&quot;)]
+;           [changes (closure changes)]
+           [_ (diff-progress &quot;\nDone moving&quot;)]
+           [end (current-seconds)])
+      (printf &quot;finished in ~a seconds~n&quot; (- end start))
+      (cleanup)
+      chan
