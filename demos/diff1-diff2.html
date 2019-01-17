@@ -1847,4 +1847,15 @@
                                     (<a id='52' tid='51' class='m'>base-name</a> <a id='54' tid='53' class='m'>file2</a>) <a id='56' tid='55' class='m'>&quot;.html&quot;</a>)]
            <span class='i'>[port (open-output-file out-file
                                    #:mode &#39;text
-              
+                                   #:exists &#39;replace)]</span>)
+      <span class='i'>(html-header port)</span>
+      <span class='i'>(write-html port tagged-text1 &quot;left&quot;)</span>
+      <span class='i'>(write-html port tagged-text2 &quot;right&quot;)</span>
+      <span class='i'>(html-footer port)</span>
+      <span class='i'>(close-output-port port)</span>)))
+
+
+</pre>
+</div>
+</body>
+</html>
