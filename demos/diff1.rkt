@@ -547,3 +547,481 @@
       (lambda (v1 v2)
         (if (and (> (node-size node1) *memo-node-size*)
                  (> (node-size node2) *memo-node-size*))
+            (hash-put! *diff-hash* node1 node2 (cons v1 v2))
+            (void))
+        (values v1 v2)))
+
+    (define trysub
+      (lambda (changes cost)
+        (cond
+         [(or (not move?)
+              (similar? node1 node2 cost))
+          (memo changes cost)]
+         [else
+          (letv ([(m c) (diff-sub node1 node2 depth move?)])
+            (cond
+             [(not m)
+              (memo changes cost)]
+             [else
+              (memo m c)]))])))
+
+    (diff-progress 1)
+
+    (cond
+     [(hash-get *diff-hash* node1 node2)
+      => (lambda (cached)
+           (values (car cached) (cdr cached)))]
+     [(and (Char? node1) (Char? node2))
+      (diff-string (char->string (Char-c node1))
+                   (char->string (Char-c node2))
+                   node1 node2)]
+     [(and (Str? node1) (Str? node2))
+      (diff-string (Str-s node1) (Str-s node2) node1 node2)]
+     [(and (Comment? node1) (Comment? node2))
+      (diff-string (Comment-text node1) (Comment-text node2) node1 node2)]
+     [(and (Token? node1) (Token? node2))
+      (diff-string (Token-text node1) (Token-text node2) node1 node2)]
+     [(and (Expr? node1) (Expr? node2)
+           (keywords-equal? node1 node2))
+      (letv ([t (make-hasheq)]
+             [(m c) (diff-list t (Expr-elts node1) (Expr-elts node2)
+                               depth move?)])
+        (trysub m c))]
+     [(and (pair? node1) (not (pair? node2)))
+      (let ([t (make-hasheq)])
+        (diff-list t node1 (list node2) depth move?))]
+     [(and (not (pair? node1)) (pair? node2))
+      (let ([t (make-hasheq)])
+        (diff-list t (list node1) node2 depth move?))]
+     [(and (pair? node1) (pair? node2))
+      (let ([t (make-hasheq)])
+        (diff-list t node1 node2 depth move?))]
+     [else
+      (letv ([(m c) (total node1 node2)])
+        (trysub m c))])))
+
+
+
+
+
+
+;; global 2D hash for storing known diffs
+(define *diff-hash* (make-hasheq))
+
+(define diff-list
+  (lambda (table ls1 ls2 depth move?)
+
+    (define memo
+      (lambda (v1 v2)
+        (hash-put! table ls1 ls2 (cons v1 v2))
+        (values v1 v2)))
+
+    (define guess
+      (lambda (ls1  ls2)
+        (letv ([(m0 c0) (diff-node (car ls1) (car ls2) depth move?)]
+               [(m1 c1) (diff-list table (cdr ls1) (cdr ls2) depth move?)]
+               [(cost1) (+ c0 c1)])
+          (cond
+           [(or (same-def? (car ls1) (car ls2))
+                (and (not (different-def? (car ls1) (car ls2)))
+                     (similar? (car ls1) (car ls2) c0)))
+            (memo (append m0 m1) cost1)]
+           [else
+            (letv ([(m2 c2) (diff-list table (cdr ls1) ls2  depth move?)]
+                   [(m3 c3) (diff-list table ls1 (cdr ls2) depth move?)]
+                   [cost2 (+ c2 (node-size (car ls1)))]
+                   [cost3 (+ c3 (node-size (car ls2)))])
+              (cond
+               ;; They can't be same-def now.
+               ;; don't move them. It is quite confusing
+
+               ;; [(and (not (different-def? (car ls1) (car ls2)))
+               ;;       (<= cost1 cost2) (<= cost1 cost3))
+               ;;  (memo (append m0 m1) cost1)]
+               [(<= cost2 cost3)
+                (memo (append (del-node (car ls1)) m2) cost2)]
+               [else
+                (memo (append (ins-node (car ls2)) m3) cost3)]))]))))
+
+    (cond
+     [(hash-get table ls1 ls2)
+      => (lambda (cached)
+           (values (car cached) (cdr cached)))]
+     [(and (null? ls1) (null? ls2))
+      (values '() 0)]
+     [(null? ls1)
+      (let ([changes (apply append (map ins-node ls2))])
+        (values changes (node-size ls2)))]
+     [(null? ls2)
+      (let ([changes (apply append (map del-node ls1))])
+        (values changes (node-size ls1)))]
+     [else
+      (guess ls1 ls2)])))
+
+
+
+
+
+
+(define diff-sub
+  (lambda (node1 node2 depth move?)
+    (cond
+     [(or (>= depth *move-depth*)
+          (< (node-size node1) *min-frame-size*)
+          (< (node-size node2) *min-frame-size*))
+      (values #f #f)]
+     [(and (Expr? node1) (Expr? node2))
+      (cond
+       [(< (node-size node1) (node-size node2))
+        (let loop ([elts2 (Expr-elts node2)])
+          (cond
+           [(null? elts2) (values #f #f)]
+           [else
+            (letv ([(m0 c0) (diff-node node1 (car elts2) (add1 depth) move?)])
+              (cond
+               [(or (same-def? node1 (car elts2))
+                    (similar? node1 (car elts2) c0))
+                (let ([frame (extract-ins-frame node2 (car elts2))]
+                      [frame-size (- (node-size node2) (node-size (car elts2)))])
+                  (values (append m0 frame) c0))]
+               [else
+                (loop (cdr elts2))]))]))]
+       [(> (node-size node1) (node-size node2))
+        (let loop ([elts1 (Expr-elts node1)])
+          (cond
+           [(null? elts1) (values #f #f)]
+           [else
+            (letv ([(m0 c0) (diff-node (car elts1) node2 (add1 depth) move?)])
+              (cond
+               [(or (same-def? (car elts1) node2)
+                    (similar? (car elts1) node2 c0))
+                (let ([frame (extract-del-frame node1 (car elts1))]
+                      [frame-size (- (node-size node1) (node-size (car elts1)))])
+                  (values (append m0 frame) c0))]
+               [else
+                (loop (cdr elts1))]))]))]
+       [else                            ; equal size
+        (values #f #f)])]
+     [else (values #f #f)])))
+
+
+
+
+;-------------------------------------------------------------
+;                    finding moves
+;-------------------------------------------------------------
+
+(define big-node?
+  (lambda (node)
+    (>= (node-size node) *move-size*)))
+
+
+
+(define shallow-frame?
+  (lambda (node)
+    (and (eq? 'frame (node-type node))
+         (< (node-depth node) *min-frame-depth*))))
+
+
+(define big-change?
+  (lambda (c)
+    (cond
+     [(ins? c)
+      (big-node? (Change-cur c))]
+     [(del? c)
+      (big-node? (Change-orig c))]
+     [(mod? c)
+      (or (big-node? (Change-orig c))
+          (big-node? (Change-cur c)))])))
+
+
+(define shallow-change?
+  (lambda (c)
+    (cond
+     [(ins? c)
+      (shallow-frame? (Change-cur c))]
+     [(del? c)
+      (shallow-frame? (Change-orig c))]
+     [(mod? c)
+      (or (shallow-frame? (Change-orig c))
+          (shallow-frame? (Change-cur c)))])))
+
+
+(define large-change?
+  (predand big-change? (negate shallow-frame?)))
+
+
+
+; ((predand number? (lambda (x) (> x 1))) 0)
+; ((predor number? (lambda (x) (> x 1))) 5)
+
+
+(define node-sort-fn
+  (lambda (x y)
+    (< (get-start x) (get-start y))))
+
+
+;; iterate the dynamic programming
+(define closure
+  (lambda (changes)
+    (set! *diff-hash* (make-hasheq))
+    (let loop ([changes changes] [moved '()] [count 1])
+      (cond
+       [(> count *move-iteration*)
+        (let ([all-changes (append changes moved)])
+          (apply append (map disassemble-change all-changes)))]
+       [else
+        (printf "~n[closure loop #~a] " count)
+        (let* ([del-changes (filter (predand del?
+                                             (predor (lambda (c)
+                                                       (language-specific-include?
+                                                        (Change-orig c)))
+                                                     large-change?))
+                                    changes)]
+               [add-changes (filter (predand ins?
+                                             (predor (lambda (c)
+                                                       (language-specific-include?
+                                                        (Change-cur c)))
+                                                     large-change?))
+                                    changes)]
+               [old-moves (filter mod? changes)]
+               [unincluded (set- changes (append old-moves
+                                                 del-changes
+                                                 add-changes))]
+               [dels (map Change-orig del-changes)]
+               [adds (map Change-cur add-changes)]
+               [sorted-dels (sort dels node-sort-fn)]
+               [sorted-adds (sort adds node-sort-fn)])
+
+          (letv ([t (make-hasheq)]
+                 [(m c) (diff-list t sorted-dels sorted-adds 0 #t)]
+                 [new-moves (map mod->mov (filter mod? m))])
+            (printf "~n~a new moves found" (length new-moves))
+            (cond
+             [(null? new-moves)
+              (let ([all-changes (append m old-moves unincluded moved)])
+                (apply append (map disassemble-change all-changes)))]
+             [else
+              (let ([new-changes (filter (negate mod?) m)])
+                (loop new-changes
+                      (append new-moves old-moves unincluded moved)
+                      (add1 count)))])))]))))
+
+
+(define language-specific-similar?
+  (lambda (e1 e2 c)
+    #f))
+
+(define language-specific-include?
+  (lambda (e)
+    #f))
+
+
+
+
+;-------------------------------------------------------------
+;                      HTML generation
+;-------------------------------------------------------------
+
+(define change-tags
+  (lambda (changes side)
+    (let loop ([cs changes] [tags '()])
+      (cond
+       [(null? cs) tags]
+       [else
+        (let ([key (if (eq? side 'left)
+                       (Change-orig (car cs))
+                       (Change-cur (car cs)))])
+          (cond
+           [(or (not key)
+                (= (get-start key) (get-end key)))
+            (loop (cdr cs) tags)]
+           [(and (Change-orig (car cs)) (Change-cur (car cs)))
+            (let ([startTag (Tag (link-start (car cs) side)
+                                 (get-start key) -1)]
+                  [endTag (Tag "</a>" (get-end key) (get-start key))])
+              (loop (cdr cs) (cons endTag (cons startTag tags))))]
+           [else
+            (let ([startTag (Tag (span-start (car cs) side)
+                                 (get-start key) -1)]
+                  [endTag (Tag "</span>" (get-end key) (get-start key))])
+              (loop (cdr cs) (cons endTag (cons startTag tags))))]))]))))
+
+
+(define apply-tags
+  (lambda (s tags)
+    (let ([tags (sort tags tag-sort-fn)])
+      (let loop ([tags tags] [curr 0] [out '()])
+        (cond
+         [(null? tags)
+          (cond
+           [(< curr (string-length s))
+            (loop tags (add1 curr) (cons (escape (string-ref s curr)) out))]
+           [else
+            (apply string-append (reverse out))])]
+         [else
+          (cond
+           [(< curr (Tag-idx (car tags)))
+            (loop tags (add1 curr) (cons (escape (string-ref s curr)) out))]
+           [else
+            (loop (cdr tags) curr (cons (Tag-tag (car tags)) out))])])))))
+
+
+
+(define link-start
+  (lambda (change side)
+    (let ([cls (cond
+                [(and (eq? (Change-type change) 'mov)
+                      (> (Change-cost change) 0))
+                 "move-change"]
+                [(eq? (Change-type change) 'mov) "move"]
+                [(> (Change-cost change) 0) "change"]
+                [else "unchanged"])]
+          [text (string-append "(similarity " (similarity change) ")")]
+          [me (if (eq? side 'left)
+                  (Change-orig change)
+                  (Change-cur change))]
+          [other (if (eq? side 'left)
+                  (Change-cur change)
+                  (Change-orig change))])
+      (string-append
+       "<a id="   (qs (uid me))
+       " tid=" (qs (uid other)) ","
+       " class=\""  cls   "\""
+       " title=\""  text  "\">"))))
+
+
+
+(define span-start
+  (lambda (change side)
+    (let ([cls (if (Change-orig change) "deletion" "insertion")]
+          [text (if (Change-orig change) "deleted" "inserted")])
+      (string-append "<span class=\"" cls "\" title=\"" text "\">"))))
+
+
+
+(define tag-sort-fn
+  (lambda (t1 t2)
+    (cond
+     [(= (Tag-idx t1) (Tag-idx t2))
+      (> (Tag-start t1) (Tag-start t2))]
+     [else
+      (< (Tag-idx t1) (Tag-idx t2))])))
+
+
+(define *escape-table*
+  '((#\"  .   "&quot;")
+    (#\'  .    "&#39;")
+    (#\<  .    "&lt;")
+    (#\>  .    "&gt;")
+    ))
+
+
+(define escape
+  (lambda (c)
+    (cond
+     [(assq c *escape-table*) => cdr]
+     [else (char->string c)])))
+
+
+
+
+; getting the base name of a path/file name
+; (base-name "mk/mk-c.scm") => mk-c
+(define base-name
+  (lambda (fn)
+    (let loop ([i (- (string-length fn) 1)]
+               [start -1]
+               [end (- (string-length fn) 1)])
+      (cond
+       [(= i 0)
+        (substring fn i end)]
+       [(eq? (string-ref fn i) #\.)
+        (loop (sub1 i) start i)]
+       [(eq? (string-ref fn i) #\/)
+        (substring fn (add1 i) end)]
+       [else
+        (loop (sub1 i) start end)]))))
+
+
+
+(define html-header
+  (lambda (port)
+      (line port "<html>")
+      (line port "<head>")
+      (line port "<META http-equiv=\"Content-Type\""
+                      " content=\"text/html; charset=utf-8\">")
+      (line port "<LINK href=\"diff-s.css\""
+                      " rel=\"stylesheet\" type=\"text/css\">")
+      (line port "<script type=\"text/javascript\""
+                        " src=\"nav-div.js\"></script>")
+      (line port "</head>")
+      (line port "<body>")))
+
+(define html-footer
+  (lambda (port)
+    (line port "</body>")
+    (line port "</html>")))
+
+
+(define write-html
+  (lambda (port text side)
+    (line port (string-append "<div id=\"" side "\" class=\"src\">"))
+    (line port "<pre>")
+    (if (string=? side "left")
+        (line port "<a id='leftstart' tid='rightstart'></a>")
+        (line port "<a id='rightstart' tid='leftstart'></a>"))
+    (line port text)
+    (line port "</pre>")
+    (line port "</div>")))
+
+
+;; progress bar :-)
+(define diff-progress
+  (new-progress 10000))
+
+(define cleanup
+  (lambda ()
+    (set! *node-size-hash* (make-hasheq))
+    (set! *diff-hash* (make-hasheq))))
+
+
+;; main command
+(define diff
+  (lambda (file1 file2 parse)
+    (cleanup)
+    (letv ([s1 (read-file file1)]
+           [s2 (read-file file2)]
+           [node1 (parse s1)]
+           [node2 (parse s2)]
+           [_ (diff-progress "\nDone parsing")]
+           [(changes cost) (diff-node node1 node2 0 #f)]
+           [_ (diff-progress "\nDone diffing")]
+           [changes (closure changes)]
+           [_ (diff-progress "\nDone moving")]
+           [_ (set! *diff-hash* (make-hasheq))]
+           [ctags1 (change-tags changes 'left)]
+           [ctags2 (change-tags changes 'right)]
+           [tagged1 (apply-tags s1 ctags1)]
+           [tagged2 (apply-tags s2 ctags2)])
+      (let* ([frame-file (string-append (base-name file1) "-"
+                                        (base-name file2) ".html")]
+             [port (open-output-file frame-file
+                                     #:mode 'text
+                                     #:exists 'replace)])
+        (html-header port)
+        (write-html port tagged1 "left")
+        (write-html port tagged2 "right")
+        (html-footer port)
+        (close-output-port port)
+        (cleanup)))))
+
+
+; (current-directory "d:/prog/schdiff")
+; (diff "t2.ss" "diff.ss")
+
+; (diff "search.ss" "diff.ss")
+; (diff "mk.scm" "mk-c.scm")
+
+; (current-directory "d:/home/.emacs.d")
+; (diff "paredit20.el" "paredit22.el")
