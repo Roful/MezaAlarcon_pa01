@@ -36,4 +36,40 @@
 
 ;; Similar to *move-size*, but this number is used for internal moves inside a
 ;; named body (for example a function). This number can be smaller than
-;; *move-size*, usually set to 2 f
+;; *move-size*, usually set to 2 for maxmum accuracy without much noise.
+(define *inner-move-size* 2)
+
+
+;; How long must a string be in order for us to use string-dist
+;; function, which is costly when used on long strings but the most
+;; accurate method to use. Currently this parameter is set to 0,
+;; effective disables all LCS string comparison. This improves
+;; performance while not sacrificing accuracy because the algorithm is
+;; AST based.
+(define *max-string-len* 0)
+
+
+;; Only memoize the diff of nodes of size larger than this number.
+;; This effectively reduces memory usage.
+(define *memo-node-size* 2)
+
+
+
+
+;;------------------ frames utils --------------------
+(define deframe
+  (lambda (node)
+    (match node
+      [(Node 'frame _ _ elts _ _)
+       (apply append (map deframe elts))]
+     [else (list node)])))
+
+
+(define deframe-change
+  (lambda (change)
+    (cond
+     [(ins? change)
+      (apply append
+             (map ins (deframe (Change-new change))))]
+     [(del? change)
+      (apply ap
