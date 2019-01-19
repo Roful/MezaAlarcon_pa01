@@ -8,4 +8,32 @@
 ;; (at your option) any later version.
 
 ;; This program is distributed in the hope that it will be useful,
-;; but WITHOU
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#lang racket
+
+(require "structs.rkt")
+(require "utils.rkt")
+
+
+(provide (all-defined-out))
+
+
+;-------------------------------------------------------------
+;                      parameters
+;-------------------------------------------------------------
+
+;; The minimum size of a node to be considered as moved. Shouldn't be
+;; too small, otherwise small deleted names may appear in a very
+;; distant place!
+(define *move-size* 5)
+
+
+;; Similar to *move-size*, but this number is used for internal moves inside a
+;; named body (for example a function). This number can be smaller than
+;; *move-size*, usually set to 2 f
