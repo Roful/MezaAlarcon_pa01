@@ -175,4 +175,37 @@
 
     (define memo
       (lambda (v1 v2)
-        (and (> (node-size n
+        (and (> (node-size node1) *memo-node-size*)
+             (> (node-size node2) *memo-node-size*)
+             (hash-put! *diff-hash* node1 node2 (cons v1 v2)))
+        (values v1 v2)))
+
+    (define try-extract
+      (lambda (changes cost)
+        (cond
+         [(or (not move?)
+              (zero? cost))
+          (memo changes cost)]
+         [else
+          (letv ([(m c) (diff-extract node1 node2 move?)])
+            (cond
+             [(not m)
+              (memo changes cost)]
+             [else
+              (memo m c)]))])))
+
+
+    (diff-progress 1) ;; progress bar
+
+    (cond
+     [(hash-get *diff-hash* node1 node2)
+      => (lambda (cached)
+           (values (car cached) (cdr cached)))]
+     [(and (character? node1) (character? node2))
+      (diff-string (char->string (Node-elts node1))
+                   (char->string (Node-elts node2))
+                   node1 node2)]
+     [(and (str? node1) (str? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (comment? node1) (comment? node2))
+      (
