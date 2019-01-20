@@ -143,4 +143,36 @@
   (lambda (table s1 start1 s2 start2)
     (define memo
       (lambda (value)
-        (table-set! table start1 
+        (table-set! table start1 start2 value)
+        value))
+    (cond
+     [(table-ref table start1 start2)
+      => (lambda (cached) cached)]
+     [(= start1 (string-length s1))
+      (memo (- (string-length s2) start2))]
+     [(= start2 (string-length s2))
+      (memo (- (string-length s1) start1))]
+     [else
+      (let* ([c1 (string-ref s1 start1)]
+             [c2 (string-ref s2 start2)]
+             [d0 (cond
+                  [(char=? c1 c2) 0]
+                  [(char=? (char-downcase c1)
+                           (char-downcase c2)) 1]
+                  [else 2])]
+             [d1 (+ d0 (dist1 table s1 (add1 start1) s2 (add1 start2)))]
+             [d2 (+ 1 (dist1 table s1 (add1 start1) s2 start2))]
+             [d3 (+ 1 (dist1 table s1 start1 s2 (add1 start2)))])
+        (memo (min d1 d2 d3)))])))
+
+
+
+
+
+;--------------------- the primary diff function -------------------
+(define diff-node
+  (lambda (node1 node2 move?)
+
+    (define memo
+      (lambda (v1 v2)
+        (and (> (node-size n
