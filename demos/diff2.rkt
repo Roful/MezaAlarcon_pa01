@@ -208,4 +208,29 @@
      [(and (str? node1) (str? node2))
       (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
      [(and (comment? node1) (comment? node2))
-      (
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (token? node1) (token? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (Node? node1) (Node? node2)
+           (eq? (get-type node1) (get-type node2)))
+      (letv ([(m c) (diff-list (Node-elts node1) (Node-elts node2) move?)])
+        (try-extract m c))]
+     [(and (pair? node1) (not (pair? node2)))
+      (diff-list node1 (list node2) move?)]
+     [(and (not (pair? node1)) (pair? node2))
+      (diff-list (list node1) node2 move?)]
+     [(and (pair? node1) (pair? node2))
+      (diff-list node1 node2 move?)]
+     [else
+      (letv ([(m c) (total node1 node2)])
+        (try-extract m c))])))
+
+
+
+
+;; helper for nodes with string contents (Str, Comment, Token etc.)
+(define diff-string
+  (lambda (string1 string2 node1 node2)
+    (cond
+     [(or (> (string-length string1) *max-string-len*)
+          (> (string-length str
