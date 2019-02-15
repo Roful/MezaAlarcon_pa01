@@ -274,4 +274,36 @@
            [(or (same-def? (car ls1) (car ls2))
                 (zero? c0))
             (memo (append m0 m1) cost1)]
-       
+           [else
+            (letv ([(m2 c2) (diff-list1 table (cdr ls1) ls2  move?)]
+                   [(m3 c3) (diff-list1 table ls1 (cdr ls2) move?)]
+                   [cost2 (+ c2 (node-size (car ls1)))]
+                   [cost3 (+ c3 (node-size (car ls2)))])
+              (cond
+               [(<= cost2 cost3)
+                (memo (append (del (car ls1)) m2) cost2)]
+               [else
+                (memo (append (ins (car ls2)) m3) cost3)]))]))))
+
+    (cond
+     [(hash-get table ls1 ls2)
+      => (lambda (cached)
+           (values (car cached) (cdr cached)))]
+     [(and (null? ls1) (null? ls2))
+      (values '() 0)]
+     [(null? ls1)
+      (let ([changes (apply append (map ins ls2))])
+        (values changes (node-size ls2)))]
+     [(null? ls2)
+      (let ([changes (apply append (map del ls1))])
+        (values changes (node-size ls1)))]
+     [else
+      (guess ls1 ls2)])))
+
+
+
+(define same-ctx?
+  (lambda (x y)
+    (and (Node? x)
+         (Node? y)
+         (Node-ctx x)
