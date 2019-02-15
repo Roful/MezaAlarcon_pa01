@@ -307,3 +307,30 @@
     (and (Node? x)
          (Node? y)
          (Node-ctx x)
+         (Node-ctx y)
+         (>= (node-size x) *inner-move-size*)
+         (>= (node-size y) *inner-move-size*)
+         (eq? (Node-ctx x) (Node-ctx y)))))
+
+
+;; structure extraction
+(define diff-extract
+  (lambda (node1 node2 move?)
+    (cond
+     [(and (Node? node1) (Node? node2)
+           (or (same-ctx? node1 node2)
+               (and (>= (node-size node1) *move-size*)
+                    (>= (node-size node2) *move-size*))))
+      (cond
+       [(<= (node-size node1) (node-size node2))
+        (let loop ([elts2 (Node-elts node2)])
+          (cond
+           [(pair? elts2)
+            (letv ([(m0 c0) (diff-node node1 (car elts2) move?)])
+              (cond
+               [(or (same-def? node1 (car elts2))
+                    (and (zero? c0)
+                         (or (> (node-size node1) *move-size*)
+                             (same-ctx? node1 (car elts2)))))
+                (let ([frame (extract-frame node2 (car elts2) ins)])
+                  (values (append m0 fram
