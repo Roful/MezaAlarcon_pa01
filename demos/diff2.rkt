@@ -233,4 +233,45 @@
   (lambda (string1 string2 node1 node2)
     (cond
      [(or (> (string-length string1) *max-string-len*)
-          (> (string-length str
+          (> (string-length string2) *max-string-len*))
+      (cond
+       [(string=? string1 string2)
+        (values (mod node1 node2 0) 0)]
+       [else
+        (total node1 node2)])]
+     [else
+      (let ([cost (string-dist string1 string2)])
+        (values (mod node1 node2 cost) cost))])))
+
+
+
+
+
+;; global 2-D hash for storing known diffs
+(define *diff-hash* (make-hasheq))
+
+(define diff-list
+  (lambda (ls1 ls2 move?)
+    (let ([ls1 (sort ls1 node-sort-fn)]
+          [ls2 (sort ls2 node-sort-fn)])
+      (diff-list1 (make-hasheq) ls1 ls2 move?))))
+
+
+(define diff-list1
+  (lambda (table ls1 ls2 move?)
+
+    (define memo
+      (lambda (v1 v2)
+        (hash-put! table ls1 ls2 (cons v1 v2))
+        (values v1 v2)))
+
+    (define guess
+      (lambda (ls1  ls2)
+        (letv ([(m0 c0) (diff-node (car ls1) (car ls2) move?)]
+               [(m1 c1) (diff-list1 table (cdr ls1) (cdr ls2) move?)]
+               [cost1 (+ c0 c1)])
+          (cond
+           [(or (same-def? (car ls1) (car ls2))
+                (zero? c0))
+            (memo (append m0 m1) cost1)]
+       
