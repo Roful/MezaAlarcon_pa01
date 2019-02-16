@@ -364,4 +364,43 @@
 ;                    finding moves
 ;-------------------------------------------------------------
 
-(define 
+(define big-node?
+  (lambda (node)
+    (>= (node-size node) *move-size*)))
+
+
+(define big-change?
+  (lambda (c)
+    (cond
+     [(ins? c)
+      (big-node? (Change-new c))]
+     [(del? c)
+      (big-node? (Change-old c))]
+     [(mod? c)
+      (or (big-node? (Change-old c))
+          (big-node? (Change-new c)))])))
+
+
+(define node-sort-fn
+  (lambda (x y)
+    (let ([name1 (get-name x)]
+          [name2 (get-name y)])
+      (cond
+       [(and name1 name2)
+        (string<? (symbol->string name1)
+                  (symbol->string name2))]
+       [(and name1 (not name2)) #t]
+       [(and (not name1) name2) #f]
+       [else
+        (< (Node-start x) (Node-start y))]))))
+
+
+
+;; iterate diff-list on the list of changes
+(define find-moves
+  (lambda (changes)
+    (set! *diff-hash* (make-hasheq))
+    (let loop ([changes changes] [closed '()] [count 1])
+      (letv ([dels (filter (predand del? big-change?) changes)]
+             [adds (filter (predand ins? big-change?) changes)]
+             [rest (set- changes (append
