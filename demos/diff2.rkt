@@ -403,4 +403,36 @@
     (let loop ([changes changes] [closed '()] [count 1])
       (letv ([dels (filter (predand del? big-change?) changes)]
              [adds (filter (predand ins? big-change?) changes)]
-             [rest (set- changes (append
+             [rest (set- changes (append dels adds))]
+             [ls1 (sort (map Change-old dels) node-sort-fn)]
+             [ls2 (sort (map Change-new adds) node-sort-fn)]
+             [(m c) (diff-list ls1 ls2 #t)]
+             [new-moves (map mod->mov (filter mod? m))])
+        (cond
+         [(null? new-moves)
+          (let ([all-changes (append m rest closed)])
+            (apply append (map deframe-change all-changes)))]
+         [else
+          (let ([new-changes (filter (negate mod?) m)])
+            (loop new-changes
+                  (append new-moves rest closed)
+                  (add1 count)))])))))
+
+
+;; poor man's progress bar
+(define diff-progress
+  (new-progress 10000))
+
+
+(define cleanup
+  (lambda ()
+    (set! *diff-hash* (make-hasheq))))
+
+
+;; main diff function
+;; returns all changes after diffing and moving
+(define diff
+  (lambda (node1 node2)
+    (letv ([start (current-seconds)]    ; start timer
+           [size1 (node-size node1)]
+           [size2 (
