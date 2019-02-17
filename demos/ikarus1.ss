@@ -1358,3 +1358,986 @@
       [(fix lhs* rhs* body)
        (do-fix lhs* rhs* body Pred)]
       [(conditional e0 e1 e2)
+       (let ([e0 (Pred e0)])
+         (cond
+           [(predicate-value e0) =>
+            (lambda (t0)
+              (mk-seq e0 (if (eq? t0 't) (Pred e1) (Pred e2))))]
+           [else
+            (let ([e1 (Pred e1)] [e2 (Pred e2)])
+              (cond
+                [(predicate-value e1) =>
+                 (lambda (t1)
+                   (cond
+                     [(predicate-value e2) =>
+                      (lambda (t2)
+                        (if (eq? t1 t2)
+                            (mk-seq (make-conditional e0 e1 e2) 
+                                    (make-constant (if (eq? t1 't) #t #f)))
+                            (make-conditional e0 e1 e2)))]
+                     [else (make-conditional e0 e1 e2)]))]
+                [else (make-conditional e0 e1 e2)]))]))]
+      [(seq e0 e1) (mk-seq (Effect e0) (Pred e1))]
+      [(clambda g cls*) (make-constant #t)]
+      [(primcall rator rand*) 
+       (optimize-primcall 'p rator (map Value rand*))]
+      [(funcall rator rand*)
+       (let ([rator (Value rator)])
+         (cond
+           [(known-value rator) =>
+            (lambda (v)
+              (struct-case v
+                [(primref op)
+                 (mk-seq rator
+                    (optimize-primcall 'p op (map Value rand*)))]
+                [else
+                 (make-funcall rator (map Value rand*))]))]
+           [else (make-funcall rator (map Value rand*))]))]
+      [(forcall rator rand*) 
+       (make-forcall rator (map Value rand*))]
+      [(assign lhs rhs)
+       (mk-seq (Effect x) (make-constant #t))]
+      [(mvcall p c)
+       (mk-mvcall (Value p) (Value c))]
+      [else (error who "invalid pred expression" (unparse x))]))
+  (define (Value x)
+    (struct-case x
+      [(constant) x]
+      [(var) 
+       (let ([r (var-referenced x)])
+         (case r
+           [(#t) x]
+           [(#f) (error who "Reference to a var that should not be" x)]
+           [else r]))]
+      [(primref) x]
+      [(bind lhs* rhs* body)
+       (do-bind lhs* rhs* body Value)]
+      [(fix lhs* rhs* body)
+       (do-fix lhs* rhs* body Value)]
+      [(conditional e0 e1 e2)
+       (let ([e0 (Pred e0)])
+         (cond
+           [(predicate-value e0) =>
+            (lambda (t0)
+              (mk-seq e0 (if (eq? t0 't) (Value e1) (Value e2))))]
+           [else
+            (let ([e1 (Value e1)] [e2 (Value e2)])
+              (let ([t1 (known-value e1)] [t2 (known-value e2)])
+                (cond
+                  [(and t1 t2) 
+                   (if (same-values? t1 t2)
+                       (mk-seq (make-conditional e0 e1 e2) t1)
+                       (make-conditional e0 e1 e2))]
+                  [else (make-conditional e0 e1 e2)])))]))]
+      [(seq e0 e1) (mk-seq (Effect e0) (Value e1))]
+      [(clambda g cls* cp free name) 
+       (do-clambda g cls* cp free name)]
+      [(primcall rator rand*) 
+       (optimize-primcall 'v rator (map Value rand*))]
+      [(funcall rator rand*)
+       (let ([rator (Value rator)])
+         (cond
+           [(known-value rator) =>
+            (lambda (v)
+              (struct-case v
+                [(primref op)
+                 (mk-seq rator
+                    (optimize-primcall 'v op (map Value rand*)))]
+                [else
+                 (make-funcall rator (map Value rand*))]))]
+           [else (make-funcall rator (map Value rand*))]))]
+      [(forcall rator rand*) 
+       (make-forcall rator (map Value rand*))]
+      [(assign lhs rhs)
+       (mk-seq (Effect x) the-void)]
+      [(mvcall p c)
+       (mk-mvcall (Value p) (Value c))]
+      [else (error who "invalid value expression" (unparse x))]))
+  (let ([x (Value x)])
+    ;;; since we messed up the references and assignments here, we
+    ;;; redo them
+    (uncover-assigned/referenced x)))
+
+
+(define (rewrite-assignments x)
+  (define who 'rewrite-assignments)
+  (define (fix-lhs* lhs*)
+    (cond
+      [(null? lhs*) (values '() '() '())]
+      [else
+       (let ([x (car lhs*)])
+         (let-values ([(lhs* a-lhs* a-rhs*) (fix-lhs* (cdr lhs*))])
+           (cond
+             [(and (var-assigned x) (not (var-global-loc x)))
+              (let ([t (unique-var 'assignment-tmp)])
+                (values (cons t lhs*) (cons x a-lhs*) (cons t a-rhs*)))]
+             [else
+              (values (cons x lhs*) a-lhs* a-rhs*)])))]))
+  (define (bind-assigned lhs* rhs* body)
+    (cond
+      [(null? lhs*) body]
+      [else
+       (make-bind lhs*
+         (map (lambda (rhs) (make-funcall (make-primref 'vector) (list rhs))) rhs*)
+         body)]))
+  (define (Expr x)
+    (struct-case x
+      [(constant) x]
+      [(var) 
+       (cond
+         [(var-assigned x)
+          (cond
+            [(var-global-loc x) =>
+             (lambda (loc) 
+               (make-funcall 
+                 (make-primref '$symbol-value)
+                 (list (make-constant loc))))]
+            [else
+             (make-funcall (make-primref '$vector-ref)
+               (list x (make-constant 0)))])]
+         [else x])]
+      [(primref) x]
+      [(bind lhs* rhs* body)
+       (let-values ([(lhs* a-lhs* a-rhs*) (fix-lhs* lhs*)]) 
+         (make-bind lhs* (map Expr rhs*) 
+           (bind-assigned a-lhs* a-rhs* (Expr body))))]
+      [(fix lhs* rhs* body)
+       (make-fix lhs* (map Expr rhs*) (Expr body))]
+      [(conditional test conseq altern)
+       (make-conditional (Expr test) (Expr conseq) (Expr altern))]
+      [(seq e0 e1) (make-seq (Expr e0) (Expr e1))]
+      [(clambda g cls* cp free name) 
+       (make-clambda g
+         (map (lambda (cls)
+                (struct-case cls
+                  [(clambda-case info body)
+                   (struct-case info
+                     [(case-info label fml* proper)
+                      (let-values ([(fml* a-lhs* a-rhs*) (fix-lhs* fml*)])
+                        (make-clambda-case 
+                          (make-case-info label fml* proper)
+                          (bind-assigned a-lhs* a-rhs* (Expr body))))])]))
+              cls*)
+         cp free name)]
+      [(forcall op rand*)
+       (make-forcall op (map Expr rand*))]
+      [(funcall rator rand*)
+       (make-funcall (Expr rator) (map Expr rand*))]
+      [(assign lhs rhs)
+       (unless (var-assigned lhs)
+         (error 'rewrite-assignments "not assigned" lhs x))
+       (cond
+         [(var-global-loc lhs) =>
+          (lambda (loc) 
+            (make-funcall (make-primref '$set-symbol-value!)
+              (list (make-constant loc) (Expr rhs))))]
+         [else
+          (make-funcall (make-primref '$vector-set!)
+            (list lhs (make-constant 0) (Expr rhs)))])]
+      [(mvcall p c) (make-mvcall (Expr p) (Expr c))]
+      [else (error who "invalid expression" (unparse x))]))
+  (Expr x))
+
+
+
+
+
+(define (optimize-for-direct-jumps x)
+  (define who 'optimize-for-direct-jumps)
+  (define (init-var x)
+    (set-var-referenced! x #f))
+  (define (set-var x v)
+    (struct-case v
+      [(clambda) (set-var-referenced! x v)]
+      [(var) 
+       (cond
+         [(bound-var v) => (lambda (v) (set-var-referenced! x v))]
+         [else (void)])]
+      [else (void)]))
+  (define (bound-var x)
+    (var-referenced x))
+  (define (optimize c rator rand*)
+    (let ([n (length rand*)])
+      (struct-case c
+        [(clambda main-label cls*)
+         (let f ([cls* cls*])
+           (cond
+             [(null? cls*) 
+              ;;; none matching?
+              (make-funcall rator rand*)]
+             [else
+              (struct-case (clambda-case-info (car cls*))
+                [(case-info label fml* proper)
+                 (cond
+                   [proper
+                    (if (fx= n (length fml*))
+                        (make-jmpcall label rator rand*)
+                        (f (cdr cls*)))]
+                   [else
+                    (if (fx<= (length (cdr fml*)) n)
+                        (make-jmpcall label rator
+                           (let f ([fml* (cdr fml*)] [rand* rand*])
+                             (cond
+                               [(null? fml*) 
+                                ;;; FIXME: construct list afterwards
+                                (list (make-funcall (make-primref 'list) rand*))]
+                               [else
+                                (cons (car rand*)
+                                      (f (cdr fml*) (cdr rand*)))])))
+                        (f (cdr cls*)))])])]))])))
+  (define (Expr x)
+    (struct-case x
+      [(constant) x]
+      [(var)      x]
+      [(primref)  x]
+      [(bind lhs* rhs* body)
+       (for-each init-var lhs*)
+       (let ([rhs* (map Expr rhs*)])
+         (for-each set-var lhs* rhs*)
+         (make-bind lhs* rhs* (Expr body)))]
+      [(fix lhs* rhs* body)
+       (for-each set-var lhs* rhs*)
+       (make-fix lhs* (map Expr rhs*) (Expr body))]
+      [(conditional test conseq altern)
+       (make-conditional (Expr test) (Expr conseq) (Expr altern))]
+      [(seq e0 e1) (make-seq (Expr e0) (Expr e1))]
+      [(clambda g cls* cp free name) 
+       (make-clambda g
+         (map (lambda (cls)
+                (struct-case cls
+                  [(clambda-case info body)
+                   (for-each init-var (case-info-args info))
+                   (make-clambda-case info (Expr body))]))
+              cls*)
+         cp free name)]
+      [(forcall op rand*)
+       (make-forcall op (map Expr rand*))]
+      [(funcall rator rand*)
+       (let ([rator (Expr rator)])
+         (cond
+           [(and (var? rator) (bound-var rator)) =>
+            (lambda (c)
+              (optimize c rator (map Expr rand*)))]
+           [(and (primref? rator)
+                 (eq? (primref-name rator) '$$apply))
+            (make-jmpcall (sl-apply-label) 
+                          (Expr (car rand*))
+                          (map Expr (cdr rand*)))]
+           [else
+            (make-funcall rator (map Expr rand*))]))]
+      [(mvcall p c) (make-mvcall (Expr p) (Expr c))]
+      [else (error who "invalid expression" (unparse x))]))
+  (Expr x))
+
+
+ 
+
+(define (convert-closures prog)
+  (define who 'convert-closures)
+  (define (Expr* x*)
+    (cond
+      [(null? x*) (values '() '())]
+      [else
+       (let-values ([(a a-free) (Expr (car x*))]
+                    [(d d-free) (Expr* (cdr x*))])
+         (values (cons a d) (union a-free d-free)))]))
+   (define (do-clambda* lhs* x*)
+    (cond
+      [(null? x*) (values '() '())]
+      [else
+       (let-values ([(a a-free) (do-clambda (car lhs*) (car x*))]
+                    [(d d-free) (do-clambda* (cdr lhs*) (cdr x*))])
+         (values (cons a d) (union a-free d-free)))]))
+  (define (do-clambda lhs x)
+    (struct-case x 
+      [(clambda g cls* _cp _free name)
+       (let-values ([(cls* free) 
+                     (let f ([cls* cls*])
+                       (cond
+                         [(null? cls*) (values '() '())]
+                         [else
+                          (struct-case (car cls*)
+                            [(clambda-case info body)
+                             (let-values ([(body body-free) (Expr body)]
+                                          [(cls* cls*-free) (f (cdr cls*))])
+                               (values
+                                 (cons (make-clambda-case info body) cls*)
+                                 (union (difference body-free (case-info-args info))
+                                        cls*-free)))])]))])
+          (let ([free (difference free (list lhs))])
+            (values 
+              (make-closure 
+                (make-clambda g cls* lhs free name)
+                free)
+              free)))]))
+  (define (Expr ex)
+    (struct-case ex
+      [(constant) (values ex '())]
+      [(var) (values ex (singleton ex))]
+      [(primref) (values ex '())]
+      [(bind lhs* rhs* body)
+       (let-values ([(rhs* rhs-free) (Expr* rhs*)] 
+                    [(body body-free) (Expr body)])
+          (values (make-bind lhs* rhs* body)
+                  (union rhs-free (difference body-free lhs*))))]
+      [(fix lhs* rhs* body)
+       (let-values ([(rhs* rfree) (do-clambda* lhs* rhs*)]
+                    [(body bfree) (Expr body)])
+          (values (make-fix lhs* rhs* body)
+                  (difference (union bfree rfree) lhs*)))]
+      [(conditional test conseq altern)
+       (let-values ([(test test-free) (Expr test)]
+                    [(conseq conseq-free) (Expr conseq)]
+                    [(altern altern-free) (Expr altern)])
+         (values (make-conditional test conseq altern)
+                 (union test-free (union conseq-free altern-free))))]
+      [(seq e0 e1) 
+       (let-values ([(e0 e0-free) (Expr e0)]
+                    [(e1 e1-free) (Expr e1)])
+         (values (make-seq e0 e1) (union e0-free e1-free)))]
+      [(clambda)
+       (do-clambda #f ex)]
+      [(forcall op rand*)
+       (let-values ([(rand* rand*-free) (Expr* rand*)])
+         (values (make-forcall op rand*)  rand*-free))]
+      [(funcall rator rand*)
+       (let-values ([(rator rat-free) (Expr rator)]
+                    [(rand* rand*-free) (Expr* rand*)])
+         (values (make-funcall rator rand*) 
+                 (union rat-free rand*-free)))]
+      [(jmpcall label rator rand*)
+       (let-values ([(rator rat-free) (Expr rator)]
+                    [(rand* rand*-free) (Expr* rand*)])
+         (values (make-jmpcall label rator rand*) 
+                 (union rat-free rand*-free)))] 
+      [(mvcall p c)
+       (let-values ([(p p-free) (Expr p)]
+                    [(c c-free) (Expr c)])
+         (struct-case c
+           [(closure code free^) 
+            (values (make-mvcall p code)
+                    (union p-free c-free))]
+           [else (error who "invalid mvcall consumer" 
+                        (unparse c))]))]
+      [else (error who "invalid expression" (unparse ex))]))
+  (let-values ([(prog free) (Expr prog)])
+    (unless (null? free) 
+      (error 'convert-closures "free vars encountered in program"
+          free (unparse prog)))
+   prog))
+
+
+ 
+
+
+
+
+(define (optimize-closures/lift-codes x)
+  (define who 'optimize-closures/lift-codes)
+  (define all-codes '())
+  (define (init-non-thunk var)
+    (set-var-assigned! var #f)
+    (set-var-referenced! var #f))
+  (define (var-thunk var)
+    (var-referenced var))
+  (define (make-thunk-var var thunk)
+    (set-var-referenced! var thunk))
+  (define (thunk? x)
+    (struct-case x
+      [(closure code free*)
+       (null? free*)]
+      [else #f]))
+  (define (trim/lift-code code free*)
+    (struct-case code
+      [(clambda label cls* cp free*/dropped name)
+       (let ([cls* (map
+                     (lambda (x)
+                       (struct-case x 
+                         [(clambda-case info body)
+                          (for-each init-non-thunk
+                              (case-info-args info))
+                          (make-clambda-case info (E body))]))
+                     cls*)])
+         (let ([g (make-code-loc label)])
+           (set! all-codes
+             (cons (make-clambda label cls* cp free* name) all-codes))
+           g))]))
+  (define (optimize-one-closure code free)
+    (let ([free (trim-vars free)])
+      (make-closure (trim/lift-code code free) free)))
+  (define (trim p? ls)
+    (cond
+      [(null? ls) '()]
+      [(p? (car ls)) (trim p? (cdr ls))]
+      [else
+       (cons (car ls) (trim p? (cdr ls)))]))
+  (define (trim-vars ls)
+    (trim var-thunk ls))
+  (define (trim-thunks ls)
+    (trim thunk? ls))
+  (define (do-bind lhs* rhs* body)
+    (for-each init-non-thunk lhs*)
+    (let ([rhs* (map E rhs*)])
+      (for-each (lambda (x v) 
+                  (when (thunk? v) (make-thunk-var x v)))
+                lhs* rhs*)
+      (make-bind (trim-vars lhs*) (trim-thunks rhs*) (E body))))
+  (define (do-fix lhs* rhs* body)
+    (for-each init-non-thunk lhs*)
+    (let ([free** ;;; trim the free lists first; after init.
+           (map (lambda (x) (trim-vars (closure-free* x))) rhs*)])
+      (define-struct node (name code deps whacked free))
+      (let ([node* (map (lambda (lhs rhs) 
+                          (let ([n (make-node lhs (closure-code rhs) '() #f '())])
+                            (make-thunk-var lhs n)
+                            n))
+                        lhs* rhs*)])
+        ;;; if x is free in y, then whenever x becomes a non-thunk,
+        ;;; y also becomes a non-thunk.  Here, we mark these
+        ;;; dependencies.
+        (for-each 
+          (lambda (my-node free*)
+            (for-each (lambda (fvar)
+                        (cond
+                          [(var-thunk fvar) => ;;; one of ours
+                           (lambda (her-node)
+                             (set-node-deps! her-node 
+                               (cons my-node (node-deps her-node))))]
+                          [else ;;; not one of ours
+                           (set-node-free! my-node
+                             (cons fvar (node-free my-node)))]))
+                      free*))
+           node* free**)
+        ;;; Next, we go over the list of nodes, and if we find one
+        ;;; that has any free variables, we know it's a non-thunk,
+        ;;; so we whack it and add it to all of its dependents.
+        (let ()
+          (define (process-node x)
+            (unless (null? (node-free x))
+              (unless (node-whacked x)
+                (set-node-whacked! x #t)
+                (for-each 
+                  (lambda (y)
+                    (set-node-free! y 
+                      (cons (node-name x) (node-free y)))
+                    (process-node y))
+                  (node-deps x)))))
+          (for-each process-node node*))
+        ;;; Now those that have free variables are actual closures.
+        ;;; Those with no free variables are actual thunks.
+        (let ([rhs*
+               (map
+                 (lambda (node)
+                   (let ([free (node-free node)])
+                     (let ([closure
+                            (make-closure (node-code node) free)])
+                       (if (null? free)
+                           (make-thunk-var (node-name node) closure)
+                           (init-non-thunk (node-name node)))
+                       closure)))
+                 node*)])
+          (for-each 
+            (lambda (x)
+              (set-closure-code! x
+                (trim/lift-code 
+                  (closure-code x)
+                  (closure-free* x))))
+            rhs*)
+          ;;;
+          (make-fix (trim-vars lhs*)
+                    (trim-thunks rhs*)
+                    (E body))))))
+  (define (E x)
+    (struct-case x
+      [(constant) x]
+      [(var)      (or (var-thunk x) x)]
+      [(primref)  x]
+      [(bind lhs* rhs* body) (do-bind lhs* rhs* body)]
+      [(fix lhs* rhs* body) (do-fix lhs* rhs* body)]
+      [(conditional test conseq altern)
+       (make-conditional (E test) (E conseq) (E altern))]
+      [(seq e0 e1)           (make-seq (E e0) (E e1))]
+      [(closure c free)      (optimize-one-closure c free)]
+      [(forcall op rand*)    (make-forcall op (map E rand*))]
+      [(funcall rator rand*) (make-funcall (E rator) (map E rand*))]
+      [(jmpcall label rator rand*) (make-jmpcall label (E rator) (map E rand*))]
+      [(mvcall p c)
+       (struct-case c 
+         [(clambda label cases cp free name)
+          (make-mvcall (E p) 
+            (make-clambda label
+              (map (lambda (x)
+                     (struct-case x
+                       [(clambda-case info body)
+                        (make-clambda-case info (E body))]))
+                   cases)
+              cp free name))])]
+      [else (error who "invalid expression" (unparse x))]))
+  ;(when (assembler-output) 
+  ;  (printf "BEFORE\n")
+  ;  (pretty-print (unparse x)))
+  (let ([x (E x)])
+    (let ([v (make-codes all-codes x)])
+      ;(when (assembler-output) 
+      ;  (printf "AFTER\n")
+      ;  (pretty-print (unparse v)))
+      v)))
+
+
+
+
+(define (insert-engine-checks x)
+  (define (Tail x)
+    (make-seq
+      (make-interrupt-call 
+        (make-primcall '$engine-check '())
+        (make-funcall (make-primref '$do-event) '()))
+      x))
+  (define (CaseExpr x)
+    (struct-case x 
+      [(clambda-case info body)
+       (make-clambda-case info (Tail body))]))
+  (define (CodeExpr x)
+    (struct-case x
+      [(clambda L cases cp free name)
+       (make-clambda L (map CaseExpr cases) cp free name)]))
+  (define (CodesExpr x)
+    (struct-case x 
+      [(codes list body)
+       (make-codes (map CodeExpr list) (Tail body))]))
+  (CodesExpr x))
+
+
+(begin ;;; DEFINITIONS
+  (module (wordsize)
+    (include "ikarus.config.ss"))
+  (define wordshift
+    (case wordsize
+      [(4) 2]
+      [(8) 3]
+      [else 
+       (error 'ikarus "wordsize is neither 4 nor 8" wordsize)]))
+  (define fx-scale wordsize)
+  (define object-alignment (* 2 wordsize))
+  (define align-shift (+ wordshift 1))
+  (define fx-shift  wordshift)
+  (define fx-mask   (- wordsize 1))
+  (define fx-tag    0)
+  (define bool-f #x2F)
+  (define bool-t #x3F)
+  (define bool-mask #xEF)
+  (define bool-tag #x2F)
+  (define bool-shift 4)
+  (define nil     #x4F)
+  (define eof     #x5F) ; double check
+  (define unbound #x6F) ; double check
+  (define void-object #x7F) ; double check
+  (define bwp-object  #x8F) ; double check
+  (define char-shift 8)
+  (define char-tag #x0F)
+  (define char-mask #xFF)
+  (define pair-mask 7)
+  (define pair-tag  1)
+  (define disp-car  0)
+  (define disp-cdr  wordsize)
+  (define pair-size (* 2 wordsize))
+
+  (define flonum-tag    #x17)
+  (define flonum-size     16)
+  (define disp-flonum-data 8)
+
+  (define ratnum-tag    #x27)
+  (define disp-ratnum-num  (* 1 wordsize))
+  (define disp-ratnum-den  (* 2 wordsize))
+  (define ratnum-size      (* 4 wordsize))
+
+  (define bignum-mask        #b111)
+  (define bignum-tag         #b011)
+  (define bignum-sign-mask  #b1000)
+  (define bignum-sign-shift   3)
+  (define bignum-length-shift 4) 
+  (define disp-bignum-data    wordsize)
+
+  (define pagesize 4096)
+  (define pageshift 12)
+  
+  (define bytevector-mask 7)
+  (define bytevector-tag 2)
+  (define disp-bytevector-length 0)
+  (define disp-bytevector-data   8)
+
+  (define ptag-mask 7)
+  (define symbol-ptag 5)
+  (define symbol-record-tag #x5F)
+  (define disp-symbol-record-string  (* 1 wordsize))
+  (define disp-symbol-record-ustring (* 2 wordsize))
+  (define disp-symbol-record-value   (* 3 wordsize))
+  (define disp-symbol-record-proc    (* 4 wordsize))
+  (define disp-symbol-record-plist   (* 5 wordsize))
+  (define symbol-record-size         (* 6 wordsize))
+  
+  (define record-tag  5)
+  (define record-mask 7)
+
+  (define vector-tag 5)
+  (define vector-mask 7)
+  (define disp-vector-length          0)
+  (define disp-vector-data            wordsize)
+  (define string-mask 7)
+  (define string-tag 6)
+  (define disp-string-length          0)
+  (define disp-string-data            wordsize)
+  (define closure-mask 7)
+  (define closure-tag 3)
+  (define disp-closure-code           0)
+  (define disp-closure-data           wordsize)
+  (define continuation-tag      #x1F)
+  (define disp-continuation-top       (* 1 wordsize))
+  (define disp-continuation-size      (* 2 wordsize))
+  (define disp-continuation-next      (* 3 wordsize))
+  (define continuation-size           (* 4 wordsize))
+  (define code-tag              #x2F)
+  (define disp-code-instrsize         (* 1 wordsize))
+  (define disp-code-relocsize         (* 2 wordsize))
+  (define disp-code-freevars          (* 3 wordsize))
+  (define disp-code-annotation        (* 4 wordsize))
+  (define disp-code-unused            (* 5 wordsize))
+  (define disp-code-data              (* 6 wordsize))
+  
+  (define transcoder-mask                  #xFF) ;;; 0011
+  (define transcoder-tag                   #x7F) ;;; 0011
+  (define transcoder-payload-shift           10)
+
+  (define transcoder-write-utf8-mask     #x1000) 
+  (define transcoder-write-byte-mask     #x2000) 
+  (define transcoder-read-utf8-mask      #x4000) 
+  (define transcoder-read-byte-mask      #x8000) 
+  (define transcoder-handling-mode-shift     16)
+  (define transcoder-handling-mode-bits       2)
+  (define transcoder-eol-style-shift         18)
+  (define transcoder-eol-style-bits           3)
+  (define transcoder-codec-shift             21)
+  (define transcoder-codec-bits               3)
+  
+  (define transcoder-handling-mode:none    #b00)
+  (define transcoder-handling-mode:ignore  #b01)
+  (define transcoder-handling-mode:raise   #b10)
+  (define transcoder-handling-mode:replace #b11)
+
+  (define transcoder-eol-style:none       #b000)
+  (define transcoder-eol-style:lf         #b001)
+  (define transcoder-eol-style:cr         #b010)
+  (define transcoder-eol-style:crlf       #b011)
+  (define transcoder-eol-style:nel        #b100)
+  (define transcoder-eol-style:crnel      #b101)
+  (define transcoder-eol-style:ls         #b110)
+  
+  (define transcoder-codec:none           #b000)
+  (define transcoder-codec:latin-1        #b001)
+  (define transcoder-codec:utf-8          #b010)
+  (define transcoder-codec:utf-16         #b011)
+
+  (define port-tag               #x3F)
+  (define port-mask              #x3F)
+  (define disp-port-attrs           0)
+  (define disp-port-index           (* 1 wordsize))
+  (define disp-port-size            (* 2 wordsize))
+  (define disp-port-buffer          (* 3 wordsize))
+  (define disp-port-transcoder      (* 4 wordsize))
+  (define disp-port-id              (* 5 wordsize))
+  (define disp-port-read!           (* 6 wordsize))
+  (define disp-port-write!          (* 7 wordsize))
+  (define disp-port-get-position    (* 8 wordsize))
+  (define disp-port-set-position!   (* 9 wordsize))
+  (define disp-port-close           (* 10 wordsize))
+  (define disp-port-cookie          (* 11 wordsize))
+  (define disp-port-position        (* 12 wordsize))
+  (define disp-port-unused          (* 13 wordsize))
+  (define port-size                 (* 14 wordsize))
+
+  (define disp-tcbucket-tconc 0)
+  (define disp-tcbucket-key         (* 1 wordsize))
+  (define disp-tcbucket-val         (* 2 wordsize))
+  (define disp-tcbucket-next        (* 3 wordsize))
+  (define tcbucket-size             (* 4 wordsize))
+  (define record-ptag  5)
+  (define record-pmask 7)
+  (define disp-struct-rtd     0)
+  (define disp-struct-data    wordsize)
+
+  ;;; refer to the picture in src/ikarus-collect.c for details
+  ;;; on how call-frames are laid out.  (search for livemask)
+  (define call-instruction-size 
+    (case wordsize
+      [(4) 5]
+      [(8) 10]
+      [else (die 'call-instruction-size "invalid" wordsize)]))
+  (define disp-frame-size    (- (+ call-instruction-size (* 3 wordsize))))
+  (define disp-frame-offset  (- (+ call-instruction-size (* 2 wordsize))))
+  (define disp-multivalue-rp (- (+ call-instruction-size (* 1 wordsize))))
+
+  (define dirty-word -1))
+
+;(define pcb-allocation-pointer    (*  0 wordsize)) NOT USED
+(define pcb-allocation-redline     (* 1 wordsize))
+;(define pcb-frame-pointer         (*  2 wordsize)) NOT USED
+(define pcb-frame-base             (* 3 wordsize))
+(define pcb-frame-redline          (* 4 wordsize))
+(define pcb-next-continuation      (* 5 wordsize))
+;(define pcb-system-stack          (*  6 wordsize)) NOT USED
+(define pcb-dirty-vector           (* 7 wordsize))
+(define pcb-arg-list               (* 8 wordsize))
+(define pcb-engine-counter         (* 9 wordsize))
+(define pcb-interrupted            (* 10 wordsize))
+(define pcb-base-rtd               (* 11 wordsize))
+(define pcb-collect-key            (* 12 wordsize))
+
+
+(define (fx? x)
+  (let* ([intbits (* wordsize 8)]
+         [fxbits (- intbits fx-shift)])
+    (and (or (fixnum? x) (bignum? x))
+         (<= (- (expt 2 (- fxbits 1)))
+             x
+             (- (expt 2 (- fxbits 1)) 1)))))
+
+
+(module ()
+  ;;; initialize the cogen
+  (code-entry-adjustment (- disp-code-data vector-tag)))
+
+(begin ;;; COGEN HELERS
+  (define (align n)
+    (fxsll (fxsra (fx+ n (fxsub1 object-alignment)) align-shift) align-shift))
+  (define (mem off val)
+    (cond
+      [(fixnum? off) (list 'disp (int off) val)]
+      [(register? off) (list 'disp off val)]
+      [else (error 'mem "invalid disp" off)]))
+  (define-syntax int
+    (syntax-rules ()
+      [(_ x) x]))
+  (define (obj x) (list 'obj x))
+  (define (byte x) (list 'byte x))
+  (define (byte-vector x) (list 'byte-vector x))
+  (define (movzbl src targ) (list 'movzbl src targ))
+  (define (sall src targ) (list 'sall src targ))
+  (define (sarl src targ) (list 'sarl src targ))
+  (define (shrl src targ) (list 'shrl src targ))
+  (define (notl src) (list 'notl src))
+  (define (pushl src) (list 'pushl src))
+  (define (popl src) (list 'popl src))
+  (define (orl src targ) (list 'orl src targ))
+  (define (xorl src targ) (list 'xorl src targ))
+  (define (andl src targ) (list 'andl src targ))
+  (define (movl src targ) (list 'movl src targ))
+  (define (leal src targ) (list 'leal src targ))
+  (define (movb src targ) (list 'movb src targ))
+  (define (addl src targ) (list 'addl src targ))
+  (define (imull src targ) (list 'imull src targ))
+  (define (idivl src) (list 'idivl src))
+  (define (subl src targ) (list 'subl src targ))
+  (define (push src) (list 'push src))
+  (define (pop targ) (list 'pop targ))
+  (define (sete targ) (list 'sete targ))
+  (define (call targ) (list 'call targ))
+  (define (tail-indirect-cpr-call)
+    (jmp (mem (fx- disp-closure-code closure-tag) cpr)))
+  (define (indirect-cpr-call)
+    (call (mem (fx- disp-closure-code closure-tag) cpr)))
+  (define (negl targ) (list 'negl targ))
+  (define (label x) (list 'label x))
+  (define (label-address x) (list 'label-address x))
+  (define (ret) '(ret))
+  (define (cltd) '(cltd))
+  (define (cmpl arg1 arg2) (list 'cmpl arg1 arg2))
+  (define (je label) (list 'je label))
+  (define (jne label) (list 'jne label))
+  (define (jle label) (list 'jle label))
+  (define (jge label) (list 'jge label))
+  (define (jg label) (list 'jg label))
+  (define (jl label) (list 'jl label))
+  (define (jb label) (list 'jb label))
+  (define (ja label) (list 'ja label))
+  (define (jo label) (list 'jo label))
+  (define (jmp label) (list 'jmp label))
+  (define esp '%esp) ; stack base pointer 
+  (define al '%al)
+  (define ah '%ah)
+  (define bh '%bh)
+  (define cl '%cl)
+  (define eax '%eax)
+  (define ebx '%ebx)
+  (define ecx '%ecx)
+  (define edx '%edx)
+  (define apr '%ebp) ; allocation pointer
+  (define fpr '%esp) ; frame pointer
+  (define cpr '%edi) ; closure pointer
+  (define pcr '%esi) ; pcb pointer
+  (define register? symbol?)
+  (define (argc-convention n)
+    (fx- 0 (fxsll n fx-shift))))
+
+
+(define (primref->symbol op)
+  (unless (symbol? op) (error 'primref->symbol "not a symbol" op))
+  (cond
+    [((current-primitive-locations) op) =>
+     (lambda (x)
+       (unless (symbol? x) 
+         (error 'primitive-location 
+            "not a valid location for ~s" x op))
+       x)]
+    [else
+     (let ()
+       (define-condition-type &url &condition
+         make-url-condition
+         url-condition?
+        (url condition-url))
+       (raise 
+         (condition 
+           (make-error)
+           (make-who-condition 'ikarus)
+           (make-message-condition "primitive not supported yet")
+           (make-message-condition
+             "please file a bug report to help us prioritize our goals")
+           (make-url-condition 
+             "https://bugs.launchpad.net/ikarus/+filebug")
+           (make-irritants-condition (list op)))))]))
+
+(define (primref-loc op)
+  (mem (fx- disp-symbol-record-proc record-tag) 
+       (obj (primref->symbol op))))
+
+
+
+(module ;assembly-labels
+  (refresh-cached-labels!
+   sl-apply-label sl-fx+-type-label sl-fx+-types-label
+   sl-continuation-code-label sl-invalid-args-label
+   sl-mv-ignore-rp-label sl-mv-error-rp-label sl-values-label 
+   sl-cwv-label sl-top-level-value-error-label sl-cadr-error-label
+   sl-cdr-error-label sl-car-error-label sl-nonprocedure-error-label
+   sl-fxsub1-error-label sl-fxadd1-error-label sl-fx+-overflow-label)
+  (define-syntax define-cached
+    (lambda (x)
+      (syntax-case x ()
+        [(_ refresh [(name*) b* b** ...] ...)
+         (with-syntax ([(v* ...) (generate-temporaries #'(name* ...))])
+           #'(begin
+               (define v* #f) ...
+               (define (name*)
+                 (or v* (error 'name* "uninitialized label"))) ...
+               (define (refresh)
+                 (define-syntax name* 
+                   (lambda (stx)
+                     (syntax-error stx 
+                        "cannot use label before it is defined")))
+                 ...
+                 (let* ([name* (let ([label (let () b* b** ...)])
+                                 (set! v* label)
+                                 (lambda () label))] ...)
+                   (void)))))])))
+  (define-cached refresh-cached-labels!
+   [(sl-apply-label)
+    (let ([SL_apply (gensym "SL_apply")]
+          [L_apply_done (gensym)]
+          [L_apply_loop (gensym)])
+      (assemble-sources (lambda (x) #f)
+        (list
+          (list 0 
+              (label SL_apply)
+              (movl (mem fpr eax) ebx)
+              (cmpl (int nil) ebx)
+              (je (label L_apply_done))
+              (label L_apply_loop)
+              (movl (mem (fx- disp-car pair-tag) ebx) ecx)
+              (movl (mem (fx- disp-cdr pair-tag) ebx) ebx)
+              (movl ecx (mem fpr eax))
+              (subl (int wordsize) eax)
+              (cmpl (int nil) ebx)
+              (jne (label L_apply_loop))
+              (label L_apply_done)
+              (addl (int wordsize) eax)
+              (tail-indirect-cpr-call))))
+      SL_apply)]
+   [(sl-fx+-type-label)
+    (define SL_fx+_type (gensym "SL_fx+_type"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+              (label SL_fx+_type)
+              (movl eax (mem (fx- 0 wordsize) fpr))
+              (movl (primref-loc 'fx+-type-error) cpr)
+              (movl (int (argc-convention 1)) eax)
+              (tail-indirect-cpr-call))))
+    SL_fx+_type]
+   [(sl-fx+-types-label)
+    (define SL_fx+_types (gensym "SL_fx+_types"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_fx+_types)
+          (movl eax (mem (fx- 0 wordsize) fpr))
+          (movl ebx (mem (fx- wordsize wordsize) fpr))
+          (movl (primref-loc 'fx+-types-error) cpr)
+          (movl (int (argc-convention 2)) eax)
+          (tail-indirect-cpr-call))))
+    SL_fx+_types]
+   [(sl-continuation-code-label)
+    (define SL_continuation_code (gensym "SL_continuation_code"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (let ([L_cont_zero_args      (gensym)] 
+              [L_cont_mult_args      (gensym)]
+              [L_cont_one_arg        (gensym)]
+              [L_cont_mult_move_args (gensym)]
+              [L_cont_mult_copy_loop (gensym)])
+          (list  1 ; freevars
+              (label SL_continuation_code)
+              (movl (mem (fx- disp-closure-data closure-tag) cpr) ebx) ; captured-k
+              (movl ebx (mem pcb-next-continuation pcr)) ; set
+              (movl (mem pcb-frame-base pcr) ebx)
+              (cmpl (int (argc-convention 1)) eax)
+              (jg (label L_cont_zero_args))
+              (jl (label L_cont_mult_args))
+              (label L_cont_one_arg)
+              (movl (mem (fx- 0 wordsize) fpr) eax)
+              (movl ebx fpr)
+              (subl (int wordsize) fpr)
+              (ret)
+              (label L_cont_zero_args)
+              (subl (int wordsize) ebx)
+              (movl ebx fpr)
+              (movl (mem 0 ebx) ebx) ; return point
+              (jmp (mem disp-multivalue-rp ebx))  ; go
+              (label L_cont_mult_args)
+              (subl (int wordsize) ebx)
+              (cmpl ebx fpr)
+              (jne (label L_cont_mult_move_args))
+              (movl (mem 0 ebx) ebx)
+              (jmp (mem disp-multivalue-rp ebx))
+              (label L_cont_mult_move_args)
+              ; move args from fpr to ebx
+              (movl (int 0) ecx)
+              (label L_cont_mult_copy_loop)
+              (subl (int wordsize) ecx)
+              (movl (mem fpr ecx) edx)
+              (movl edx (mem ebx ecx))
+              (cmpl ecx eax)
+              (jne (label L_cont_mult_copy_loop))
+              (movl ebx fpr)
+              (movl (mem 0 ebx) ebx)
+              (jmp (mem disp-multivalue-rp ebx))))))
+    SL_continuation_code]
+   [(sl-invalid-args-label)
+    (define SL_invalid_args (gensym "SL_invalid_args"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_invalid_args)
+          ;;;
+          (movl cpr (mem (fx- 0 wordsize) fpr)) ; first arg
+          (negl eax)
+          (movl eax (mem (fx- 0 (fx* 2 wordsize)) fpr))
+          (movl (primref-loc '$incorrect-args-error-handler) cpr)
