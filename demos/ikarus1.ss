@@ -2341,3 +2341,260 @@
           (negl eax)
           (movl eax (mem (fx- 0 (fx* 2 wordsize)) fpr))
           (movl (primref-loc '$incorrect-args-error-handler) cpr)
+          (movl (int (argc-convention 2)) eax)
+          (tail-indirect-cpr-call))))
+    SL_invalid_args]
+   [(sl-mv-ignore-rp-label)
+    (define SL_multiple_values_ignore_rp (gensym "SL_multiple_ignore_error_rp"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+           (label SL_multiple_values_ignore_rp)
+           (ret))))
+    SL_multiple_values_ignore_rp]
+   [(sl-mv-error-rp-label)
+    (define SL_multiple_values_error_rp (gensym "SL_multiple_values_error_rp"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_multiple_values_error_rp)
+          (movl (primref-loc '$multiple-values-error) cpr)
+          (tail-indirect-cpr-call))))
+    SL_multiple_values_error_rp]
+   [(sl-values-label)
+    (define SL_values (gensym "SL_values"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (let ([L_values_one_value (gensym)]
+              [L_values_many_values (gensym)])
+          (list 0 ; no freevars
+              '(name values)
+              (label SL_values)
+              (cmpl (int (argc-convention 1)) eax)
+              (je (label L_values_one_value))
+              (label L_values_many_values)
+              (movl (mem 0 fpr) ebx) ; return point
+              (jmp (mem disp-multivalue-rp ebx))     ; go
+              (label L_values_one_value)
+              (movl (mem (fx- 0 wordsize) fpr) eax)
+              (ret)))))
+    SL_values]
+   [(sl-nonprocedure-error-label)
+    (define SL_nonprocedure (gensym "SL_nonprocedure"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_nonprocedure)
+          (movl cpr (mem (fx- 0 wordsize) fpr)) ; first arg
+          (movl (primref-loc '$apply-nonprocedure-error-handler) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_nonprocedure]
+   [(sl-cwv-label)
+    (define SL_call_with_values (gensym "SL_call_with_values"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (let ([L_cwv_done (gensym)]
+              [L_cwv_loop (gensym)]
+              [L_cwv_multi_rp (gensym)]
+              [L_cwv_call (gensym)])
+          (list 
+              0 ; no free vars
+              '(name call-with-values)
+              (label SL_call_with_values)
+              (cmpl (int (argc-convention 2)) eax)
+              (jne (label (sl-invalid-args-label)))
+              (movl (mem (fx- 0 wordsize) fpr) ebx) ; producer
+              (movl ebx cpr)
+              (andl (int closure-mask) ebx)
+              (cmpl (int closure-tag) ebx)
+              (jne (label (sl-nonprocedure-error-label)))
+              (movl (int (argc-convention 0)) eax)
+              ;(subl (int (fx* wordsize 2)) fpr)
+              (compile-call-frame
+                 3
+                 '#(#b110)
+                 (label-address L_cwv_multi_rp)
+                 (indirect-cpr-call))
+              ;;; one value returned
+              ;(addl (int (fx* wordsize 2)) fpr)
+              (movl (mem (fx* -2 wordsize) fpr) ebx) ; consumer
+              (movl ebx cpr)
+              (movl eax (mem (fx- 0 wordsize) fpr))
+              (movl (int (argc-convention 1)) eax)
+              (andl (int closure-mask) ebx)
+              (cmpl (int closure-tag) ebx)
+              (jne (label (sl-nonprocedure-error-label)))
+              (tail-indirect-cpr-call)
+              ;;; multiple values returned
+              (label L_cwv_multi_rp)
+              ; because values does not pop the return point
+              ; we have to adjust fp one more word here
+              (addl (int (fx* wordsize 3)) fpr) 
+              (movl (mem (fx* -2 wordsize) fpr) cpr) ; consumer
+              (cmpl (int (argc-convention 0)) eax)
+              (je (label L_cwv_done))
+              (movl (int (fx* -4 wordsize)) ebx)
+              (addl fpr ebx)  ; ebx points to first value
+              (movl ebx ecx)
+              (addl eax ecx)  ; ecx points to the last value
+              (label L_cwv_loop)
+              (movl (mem 0 ebx) edx)
+              (movl edx (mem (fx* 3 wordsize) ebx))
+              (subl (int wordsize) ebx)
+              (cmpl ecx ebx)
+              (jge (label L_cwv_loop))
+              (label L_cwv_done)
+              (movl cpr ebx)
+              (andl (int closure-mask) ebx)
+              (cmpl (int closure-tag) ebx)
+              (jne (label (sl-nonprocedure-error-label)))
+              (tail-indirect-cpr-call)))))
+    SL_call_with_values]
+   [(sl-top-level-value-error-label)
+    (define SL_top_level_value_error (gensym "SL_top_level_value_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_top_level_value_error)
+          (movl ebx (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'top-level-value-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_top_level_value_error]
+   [(sl-cadr-error-label)
+    (define SL_cadr_error (gensym "SL_cadr_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_cadr_error)
+          (movl ebx (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'cadr-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_cadr_error]
+   [(sl-cdr-error-label)
+    (define SL_cdr_error (gensym "SL_cdr_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_cdr_error)
+          (movl ebx (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'cdr-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_cdr_error]
+   [(sl-car-error-label)
+    (define SL_car_error (gensym "SL_car_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_car_error)
+          (movl ebx (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'car-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_car_error]
+   [(sl-fxsub1-error-label)
+    (define SL_fxsub1_error (gensym "SL_fxsub1_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_fxsub1_error)
+          (movl eax (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'fxsub1-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_fxsub1_error]
+   [(sl-fxadd1-error-label)
+    (define SL_fxadd1_error (gensym "SL_fxadd1_error"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_fxadd1_error)
+          (movl eax (mem (fx- 0 wordsize) fpr))
+          (movl (primref-loc 'fxadd1-error) cpr)
+          (movl (int (argc-convention 1)) eax)
+          (tail-indirect-cpr-call))))
+    SL_fxadd1_error]
+   [(sl-fx+-overflow-label)
+    (define SL_fx+_overflow (gensym "SL_fx+_overflow"))
+    (assemble-sources (lambda (x) #f)
+      (list
+        (list 0
+          (label SL_fx+_overflow)
+          (movl eax (mem (fx- 0 wordsize) fpr))
+          (movl ebx (mem (fx- wordsize wordsize) fpr))
+          (movl (primref-loc 'fx+-overflow-error) cpr)
+          (movl (int (argc-convention 2)) eax)
+          (tail-indirect-cpr-call))))
+    SL_fx+_overflow]))
+
+(define (print-instr x)
+  (cond
+    [(and (pair? x) (eq? (car x) 'seq))
+     (for-each print-instr (cdr x))]
+    [else 
+     (printf "    ~s\n" x)]))
+
+(define (compile-core-expr->code p)
+  (let* ([p (recordize p)]
+         [p (parameterize ([open-mvcalls #f])
+              (optimize-direct-calls p))]
+         [p (optimize-letrec p)]
+         [p (uncover-assigned/referenced p)]
+         [p (copy-propagate p)]
+         [p (rewrite-assignments p)]
+         [p (optimize-for-direct-jumps p)]
+         [p (convert-closures p)]
+         [p (optimize-closures/lift-codes p)])
+    (let ([ls* (alt-cogen p)])
+      (when (assembler-output)
+        (parameterize ([gensym-prefix "L"]
+                       [print-gensym #f])
+          (for-each 
+            (lambda (ls)
+              (newline)
+              (for-each print-instr ls))
+            ls*)))
+      (let ([code* 
+             (assemble-sources 
+               (lambda (x)
+                 (if (closure? x)
+                     (if (null? (closure-free* x))
+                         (code-loc-label (closure-code x))
+                         (error 'compile "BUG: non-thunk escaped" x))
+                     #f))
+               ls*)])
+        (car code*)))))
+
+(define compile-core-expr-to-port
+  (lambda (expr port)
+    (fasl-write (compile-core-expr->code expr) port)))
+
+
+(define (compile-core-expr x)
+  (let ([code (compile-core-expr->code x)])
+    ($code->closure code)))
+
+(define assembler-output (make-parameter #f))
+
+
+(define eval-core
+  (lambda (x) ((compile-core-expr x))))
+
+(include "ikarus.compiler.altcogen.ss")
+
+(define current-primitive-locations
+  (let ([plocs (lambda (x) #f)])
+    (case-lambda
+      [() plocs]
+      [(p)
+       (if (procedure? p)
+           (begin 
+             (set! plocs p) 
+             (refresh-cached-labels!))
+           (error 'current-primitive-locations "not a procedure" p))])))
+
+)
+
