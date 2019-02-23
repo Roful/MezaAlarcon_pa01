@@ -436,3 +436,953 @@ Deprecated: use `paredit-mode&#39; instead.&quot;</span>
 (<a id='1603' tid='1604' class='u'>defun</a> <a id='1605' tid='1606' class='u'>paredit-annotate-mode-with-examples</a> ()
   (<a id='1607' tid='1608' class='u'>let</a> ((<a id='1609' tid='1610' class='u'>contents</a>
          (<a id='1611' tid='1612' class='u'>list</a> (<a id='1613' tid='1614' class='u'>paredit-function-documentation</a> <a id='1615' tid='1616' class='u'>&#39;</a><a id='1617' tid='1618' class='u'>paredit-mode</a>))))
+    (<a id='1619' tid='1620' class='u'>paredit-do-commands</a> (<a id='1621' tid='1622' class='u'>spec</a> <a id='1623' tid='1624' class='u'>keys</a> <a id='1625' tid='1626' class='u'>fn</a> <a id='1627' tid='1628' class='u'>examples</a>)
+        (<a id='1629' tid='1630' class='u'>push</a> (<a id='1631' tid='1632' class='u'>concat</a> <a id='1633' tid='1634' class='u'>&quot;\n\n&quot;</a> <a id='1635' tid='1636' class='u'>spec</a> <a id='1637' tid='1638' class='u'>&quot;\n&quot;</a>)
+              <a id='1639' tid='1640' class='u'>contents</a>)
+      (<a id='1641' tid='1642' class='u'>let</a> ((<a id='1643' tid='1644' class='u'>name</a> (<a id='1645' tid='1646' class='u'>symbol-name</a> <a id='1647' tid='1648' class='u'>fn</a>)))
+        (<a id='1649' tid='1650' class='u'>if</a> (<a id='1651' tid='1652' class='u'>string-match</a> (<a id='1653' tid='1654' class='u'>symbol-name</a> <a id='1655' tid='1656' class='u'>&#39;</a><a id='1657' tid='1658' class='u'>paredit-</a>) <a id='1659' tid='1660' class='u'>name</a>)
+            (<a id='1661' tid='1662' class='u'>push</a> (<a id='1663' tid='1664' class='u'>concat</a> <a id='1665' tid='1666' class='u'>&quot;\n\n\\[&quot;</a> <a id='1667' tid='1668' class='u'>name</a> <a id='1669' tid='1670' class='u'>&quot;]\t&quot;</a> <a id='1671' tid='1672' class='u'>name</a>
+                          (<a id='1673' tid='1674' class='u'>if</a> <a id='1675' tid='1676' class='u'>examples</a>
+                              (<a id='1677' tid='1678' class='u'>mapconcat</a> (<a id='1679' tid='1680' class='u'>lambda</a> (<a id='1681' tid='1682' class='u'>example</a>)
+                                           (<a id='1683' tid='1684' class='u'>concat</a>
+                                            <a id='1685' tid='1686' class='u'>&quot;\n&quot;</a>
+                                            (<a id='1687' tid='1688' class='u'>mapconcat</a> <a id='1689' tid='1690' class='u'>&#39;</a><a id='1691' tid='1692' class='u'>identity</a>
+                                                       <a id='1693' tid='1694' class='u'>example</a>
+                                                       <a id='1695' tid='1696' class='u'>&quot;\n  ---&gt;\n&quot;</a>)
+                                            <a id='1697' tid='1698' class='u'>&quot;\n&quot;</a>))
+                                         <a id='1699' tid='1700' class='u'>examples</a>
+                                         <a id='1701' tid='1702' class='u'>&quot;&quot;</a>)
+                              <a id='1703' tid='1704' class='u'>&quot;\n  (no examples)\n&quot;</a>))
+                  <a id='1705' tid='1706' class='u'>contents</a>))))
+    (<a id='1707' tid='1708' class='u'>put</a> <a id='1709' tid='1710' class='u'>&#39;</a><a id='1711' tid='1712' class='u'>paredit-mode</a> <a id='1713' tid='1714' class='u'>&#39;</a><a id='1715' tid='1716' class='u'>function-documentation</a>
+         (<a id='1717' tid='1718' class='u'>apply</a> <a id='1719' tid='1720' class='u'>&#39;</a><a id='1721' tid='1722' class='u'>concat</a> (<a id='1723' tid='1724' class='u'>reverse</a> <a id='1725' tid='1726' class='u'>contents</a>))))
+  <a id='1727' tid='1728' class='u'>;; PUT returns the huge string we just constructed, which we don&#39;t
+</a>  <a id='1729' tid='1730' class='u'>;; want it to return.
+</a>  <a id='1731' tid='1732' class='u'>nil</a>)
+
+(<a id='1537' tid='1538' class='u'>defun</a> <a id='1539' tid='1540' class='u'>paredit-annotate-functions-with-examples</a> ()
+  (<a id='1541' tid='1542' class='u'>paredit-do-commands</a> (<a id='1543' tid='1544' class='u'>spec</a> <a id='1545' tid='1546' class='u'>keys</a> <a id='1547' tid='1548' class='u'>fn</a> <a id='1549' tid='1550' class='u'>examples</a>)
+      <a id='1551' tid='1552' class='u'>nil</a>       <a id='1553' tid='1554' class='u'>; string case
+</a>    (<a id='1555' tid='1556' class='u'>put</a> <a id='1557' tid='1558' class='u'>fn</a> <a id='1559' tid='1560' class='u'>&#39;</a><a id='1561' tid='1562' class='u'>function-documentation</a>
+         (<a id='1563' tid='1564' class='u'>concat</a> (<a id='1565' tid='1566' class='u'>paredit-function-documentation</a> <a id='1567' tid='1568' class='u'>fn</a>)
+                 <a id='1569' tid='1570' class='u'>&quot;\n\n\\&lt;paredit-mode-map&gt;\\[&quot;</a> (<a id='1571' tid='1572' class='u'>symbol-name</a> <a id='1573' tid='1574' class='u'>fn</a>) <a id='1575' tid='1576' class='u'>&quot;]\n&quot;</a>
+                 (<a id='1577' tid='1578' class='u'>mapconcat</a> (<a id='1579' tid='1580' class='u'>lambda</a> (<a id='1581' tid='1582' class='u'>example</a>)
+                              (<a id='1583' tid='1584' class='u'>concat</a> <a id='1585' tid='1586' class='u'>&quot;\n&quot;</a>
+                                      (<a id='1587' tid='1588' class='u'>mapconcat</a> <a id='1589' tid='1590' class='u'>&#39;</a><a id='1591' tid='1592' class='u'>identity</a>
+                                                 <a id='1593' tid='1594' class='u'>example</a>
+                                                 <a id='1595' tid='1596' class='u'>&quot;\n  -&gt;\n&quot;</a>)
+                                      <a id='1597' tid='1598' class='u'>&quot;\n&quot;</a>))
+                            <a id='1599' tid='1600' class='u'>examples</a>
+                            <a id='1601' tid='1602' class='u'>&quot;&quot;</a>)))))
+
+<a id='4783' tid='4784' class='u'>;;;;; HTML Examples
+</a>
+(<a id='3325' tid='3326' class='u'>defun</a> <a id='3327' tid='3328' class='u'>paredit-insert-html-examples</a> ()
+  <a id='3329' tid='3330' class='u'>&quot;Insert HTML for a paredit quick reference table.&quot;</a>
+  (<a id='3331' tid='3332' class='u'>interactive</a>)
+  (<a id='3333' tid='3334' class='u'>let</a> ((<a id='3335' tid='3336' class='u'>insert-lines</a> (<a id='3337' tid='3338' class='u'>lambda</a> (<a id='3339' tid='3340' class='u'>&rest</a> <a id='3341' tid='3342' class='u'>lines</a>)
+                        (<a id='3343' tid='3344' class='u'>mapc</a> (<a id='3345' tid='3346' class='u'>lambda</a> (<a id='3347' tid='3348' class='u'>line</a>) (<a id='3349' tid='3350' class='u'>insert</a> <a id='3351' tid='3352' class='u'>line</a>) (<a id='3353' tid='3354' class='u'>newline</a>))
+                              <a id='3355' tid='3356' class='u'>lines</a>)))
+        (<a id='3357' tid='3358' class='u'>html-keys</a> (<a id='3359' tid='3360' class='u'>lambda</a> (<a id='3361' tid='3362' class='u'>keys</a>)
+                     (<a id='3363' tid='3364' class='u'>mapconcat</a> <a id='3365' tid='3366' class='u'>&#39;</a><a id='3367' tid='3368' class='u'>paredit-html-quote</a> <a id='3369' tid='3370' class='u'>keys</a> <a id='3371' tid='3372' class='u'>&quot;, &quot;</a>)))
+        (<a id='3373' tid='3374' class='u'>html-example</a>
+         (<a id='3375' tid='3376' class='u'>lambda</a> (<a id='3377' tid='3378' class='u'>example</a>)
+           (<a id='3379' tid='3380' class='u'>concat</a> <a id='3381' tid='3382' class='u'>&quot;&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>
+                   (<a id='3383' tid='3384' class='u'>mapconcat</a> <a id='3385' tid='3386' class='u'>&#39;</a><a id='3387' tid='3388' class='u'>paredit-html-quote</a>
+                              <a id='3389' tid='3390' class='u'>example</a>
+                              (<a id='3391' tid='3392' class='u'>concat</a> <a id='3393' tid='3394' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&quot;</a>
+                                      <a id='3395' tid='3396' class='u'>&quot;&nbsp;&nbsp;&nbsp;&nbsp;---&gt;&quot;</a>
+                                      <a id='3397' tid='3398' class='u'>&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>))
+                   <a id='3399' tid='3400' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;</a>)))
+        (<a id='3401' tid='3402' class='u'>firstp</a> <a id='3403' tid='3404' class='u'>t</a>))
+    (<a id='3405' tid='3406' class='u'>paredit-do-commands</a> (<a id='3407' tid='3408' class='u'>spec</a> <a id='3409' tid='3410' class='u'>keys</a> <a id='3411' tid='3412' class='u'>fn</a> <a id='3413' tid='3414' class='u'>examples</a>)
+        (<a id='3415' tid='3416' class='u'>progn</a> (<a id='3417' tid='3418' class='u'>if</a> (<a id='3419' tid='3420' class='u'>not</a> <a id='3421' tid='3422' class='u'>firstp</a>)
+                   (<a id='3423' tid='3424' class='u'>insert</a> <a id='3425' tid='3426' class='u'>&quot;&lt;/table&gt;\n&quot;</a>)
+                   (<a id='3427' tid='3428' class='u'>setq</a> <a id='3429' tid='3430' class='u'>firstp</a> <a id='3431' tid='3432' class='u'>nil</a>))
+               (<a id='3433' tid='3434' class='u'>funcall</a> <a id='3435' tid='3436' class='u'>insert-lines</a>
+                        (<a id='3437' tid='3438' class='u'>concat</a> <a id='3439' tid='3440' class='u'>&quot;&lt;h3&gt;&quot;</a> <a id='3441' tid='3442' class='u'>spec</a> <a id='3443' tid='3444' class='u'>&quot;&lt;/h3&gt;&quot;</a>)
+                        <a id='3445' tid='3446' class='u'>&quot;&lt;table border=\&quot;1\&quot; cellpadding=\&quot;1\&quot;&gt;&quot;</a>
+                        <a id='3447' tid='3448' class='u'>&quot;  &lt;tr&gt;&quot;</a>
+                        <a id='3449' tid='3450' class='u'>&quot;    &lt;th&gt;Command&lt;/th&gt;&quot;</a>
+                        <a id='3451' tid='3452' class='u'>&quot;    &lt;th&gt;Keys&lt;/th&gt;&quot;</a>
+                        <a id='3453' tid='3454' class='u'>&quot;    &lt;th&gt;Examples&lt;/th&gt;&quot;</a>
+                        <a id='3455' tid='3456' class='u'>&quot;  &lt;/tr&gt;&quot;</a>))
+      (<a id='3457' tid='3458' class='u'>let</a> ((<a id='3459' tid='3460' class='u'>name</a> (<a id='3461' tid='3462' class='u'>symbol-name</a> <a id='3463' tid='3464' class='u'>fn</a>)))
+        (<a id='3465' tid='3466' class='u'>if</a> (<a id='3467' tid='3468' class='u'>string-match</a> (<a id='3469' tid='3470' class='u'>symbol-name</a> <a id='3471' tid='3472' class='u'>&#39;</a><a id='3473' tid='3474' class='u'>paredit-</a>) <a id='3475' tid='3476' class='u'>name</a>)
+            (<a id='3477' tid='3478' class='u'>funcall</a> <a id='3479' tid='3480' class='u'>insert-lines</a>
+                     <a id='3481' tid='3482' class='u'>&quot;  &lt;tr&gt;&quot;</a>
+                     (<a id='3483' tid='3484' class='u'>concat</a> <a id='3485' tid='3486' class='u'>&quot;    &lt;td&gt;&lt;tt&gt;&quot;</a> <a id='3487' tid='3488' class='u'>name</a> <a id='3489' tid='3490' class='u'>&quot;&lt;/tt&gt;&lt;/td&gt;&quot;</a>)
+                     (<a id='3491' tid='3492' class='u'>concat</a> <a id='3493' tid='3494' class='u'>&quot;    &lt;td align=\&quot;center\&quot;&gt;&quot;</a>
+                             (<a id='3495' tid='3496' class='u'>funcall</a> <a id='3497' tid='3498' class='u'>html-keys</a> <a id='3499' tid='3500' class='u'>keys</a>)
+                             <a id='3501' tid='3502' class='u'>&quot;&lt;/td&gt;&quot;</a>)
+                     (<a id='3503' tid='3504' class='u'>concat</a> <a id='3505' tid='3506' class='u'>&quot;    &lt;td&gt;&quot;</a>
+                             (<a id='3507' tid='3508' class='u'>if</a> <a id='3509' tid='3510' class='u'>examples</a>
+                                 (<a id='3511' tid='3512' class='u'>mapconcat</a> <a id='3513' tid='3514' class='u'>html-example</a> <a id='3515' tid='3516' class='u'>examples</a>
+                                            <a id='3517' tid='3518' class='u'>&quot;&lt;hr&gt;&quot;</a>)
+                                 <a id='3519' tid='3520' class='u'>&quot;(no examples)&quot;</a>)
+                             <a id='3521' tid='3522' class='u'>&quot;&lt;/td&gt;&quot;</a>)
+                     <a id='3523' tid='3524' class='u'>&quot;  &lt;/tr&gt;&quot;</a>)))))
+  (<a id='3525' tid='3526' class='u'>insert</a> <a id='3527' tid='3528' class='u'>&quot;&lt;/table&gt;\n&quot;</a>))
+
+(<a id='3151' tid='3152' class='u'>defun</a> <a id='3153' tid='3154' class='u'>paredit-html-quote</a> (<a id='3155' tid='3156' class='u'>string</a>)
+  (<a id='3157' tid='3158' class='u'>with-temp-buffer</a>
+    (<a id='3159' tid='3160' class='u'>dotimes</a> (<a id='3161' tid='3162' class='u'>i</a> (<a id='3163' tid='3164' class='u'>length</a> <a id='3165' tid='3166' class='u'>string</a>))
+      (<a id='3167' tid='3168' class='u'>insert</a> (<a id='3169' tid='3170' class='u'>let</a> ((<a id='3171' tid='3172' class='u'>c</a> (<a id='3173' tid='3174' class='u'>elt</a> <a id='3175' tid='3176' class='u'>string</a> <a id='3177' tid='3178' class='u'>i</a>)))
+                (<a id='3179' tid='3180' class='u'>cond</a> ((<a id='3181' tid='3182' class='u'>eq</a> <a id='3183' tid='3184' class='u'>c</a> <a id='3185' tid='3186' class='u'>?\&lt;</a>) <a id='3187' tid='3188' class='u'>&quot;&lt;&quot;</a>)
+                      ((<a id='3189' tid='3190' class='u'>eq</a> <a id='3191' tid='3192' class='u'>c</a> <a id='3193' tid='3194' class='u'>?\&gt;</a>) <a id='3195' tid='3196' class='u'>&quot;&gt;&quot;</a>)
+                      ((<a id='3197' tid='3198' class='u'>eq</a> <a id='3199' tid='3200' class='u'>c</a> <a id='3201' tid='3202' class='u'>?\&</a>) <a id='3203' tid='3204' class='u'>&quot;&amp;&quot;</a>)
+                      ((<a id='3205' tid='3206' class='u'>eq</a> <a id='3207' tid='3208' class='u'>c</a> <a id='3209' tid='3210' class='u'>?\&#39;</a>) <a id='3211' tid='3212' class='u'>&quot;&apos;&quot;</a>)
+                      ((<a id='3213' tid='3214' class='u'>eq</a> <a id='3215' tid='3216' class='u'>c</a> <a id='3217' tid='3218' class='u'>?\&quot;</a>) <a id='3219' tid='3220' class='u'>&quot;&quot;&quot;</a>)
+                      (<a id='3221' tid='3222' class='u'>t</a> <a id='3223' tid='3224' class='u'>c</a>)))))
+    (<a id='3225' tid='3226' class='u'>buffer-string</a>)))
+
+<a id='4785' tid='4786' class='u'>;;;; Delimiter Insertion
+</a>
+(<a id='827' tid='828' class='m'>eval-and-compile</a>
+  (<a id='809' tid='810' class='m'>defun</a> <a id='811' tid='812' class='m'>paredit-conc-name</a> (<a id='813' tid='814' class='m'>&rest</a> <a id='815' tid='816' class='m'>strings</a>)
+    (<a id='817' tid='818' class='m'>intern</a> (<a id='819' tid='820' class='m'>apply</a> <a id='821' tid='822' class='m'>&#39;</a><a id='823' tid='824' class='m'>concat</a> <a id='825' tid='826' class='m'>strings</a>)))
+
+  (<a id='829' tid='830' class='m'>defmacro</a> <a id='831' tid='832' class='m'>define-paredit-pair</a> (<a id='833' tid='834' class='m'>open</a> <a id='835' tid='836' class='m'>close</a> <a id='837' tid='838' class='m'>name</a>)
+    <a id='839' tid='840' class='m'>`</a>(<span class='d'>progn</span>
+       (<a id='841' tid='842' class='m'>defun</a> <a id='843' tid='844' class='m'>,</a>(<a id='845' tid='846' class='m'>paredit-conc-name</a> <a id='847' tid='848' class='m'>&quot;paredit-open-&quot;</a> <a id='849' tid='850' class='m'>name</a>) (<a id='851' tid='852' class='m'>&optional</a> <a id='853' tid='854' class='m'>n</a>)
+         <a id='855' tid='856' class='m'>,</a>(<a id='857' tid='858' class='m'>concat</a> <a id='859' tid='860' class='m'>&quot;Insert a balanced &quot;</a> <a id='861' tid='862' class='m'>name</a> <a id='863' tid='864' class='m'>&quot; pair.
+With a prefix argument N, put the closing &quot;</a> <a id='865' tid='866' class='m'>name</a> <a id='867' tid='868' class='m'>&quot; after N
+  S-expressions forward.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  &quot;</a> <a id='869' tid='870' class='m'>name</a> <a id='871' tid='872' class='m'>&quot; pair around the region.
+If in a string or a comment, insert a single &quot;</a> <a id='873' tid='874' class='m'>name</a> <a id='875' tid='876' class='m'>&quot;.
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
+         (<a id='877' tid='878' class='m'>interactive</a> <a id='879' tid='880' class='m'>&quot;P&quot;</a>)
+         (<a id='881' tid='882' class='m'>cond</a> ((<a id='883' tid='884' class='m'>or</a> (<a id='885' tid='886' class='m'>paredit-in-string-p</a>)
+                    (<a id='887' tid='888' class='m'>paredit-in-comment-p</a>))
+                (<a id='889' tid='890' class='m'>insert</a> <a id='891' tid='892' class='m'>,</a><a id='893' tid='894' class='m'>open</a>))
+               ((<a id='895' tid='896' class='m'>not</a> (<a id='897' tid='898' class='m'>paredit-in-char-p</a>))
+                (<a id='899' tid='900' class='m'>paredit-insert-pair</a> <a id='901' tid='902' class='m'>n</a> <a id='903' tid='904' class='m'>,</a><a id='905' tid='906' class='m'>open</a> <a id='907' tid='908' class='m'>,</a><a id='909' tid='910' class='m'>close</a> <a id='911' tid='912' class='m'>&#39;</a><a id='913' tid='914' class='m'>goto-char</a>))))
+       (<a id='513' tid='514' class='m'>defun</a> <a id='515' tid='516' class='m'>,</a>(<a id='517' tid='518' class='m'>paredit-conc-name</a> <a id='519' tid='520' class='m'>&quot;paredit-close-&quot;</a> <a id='521' tid='522' class='m'>name</a>) ()
+         <a id='523' tid='524' class='m'>,</a>(<a id='525' tid='526' class='m'>concat</a> <a id='527' tid='528' class='m'>&quot;Move past one closing delimiter and reindent.
+\(Agnostic to the specific closing delimiter.)
+If in a string or comment, insert a single closing &quot;</a> <a id='529' tid='530' class='m'>name</a> <a id='531' tid='532' class='m'>&quot;.
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
+         (<a id='533' tid='534' class='m'>interactive</a>)
+         (<a id='535' tid='536' class='m'>paredit-move-past-close</a> <a id='537' tid='538' class='m'>,</a><a id='539' tid='540' class='m'>close</a>))
+       (<a id='405' tid='406' class='m'>defun</a> <a id='407' tid='408' class='m'>,</a>(<a id='409' tid='410' class='m'>paredit-conc-name</a> <a id='411' tid='412' class='m'>&quot;paredit-close-&quot;</a> <a id='413' tid='414' class='m'>name</a> <a id='415' tid='416' class='m'>&quot;-and-newline&quot;</a>) ()
+         <a id='417' tid='418' class='m'>,</a>(<a id='419' tid='420' class='m'>concat</a> <a id='421' tid='422' class='m'>&quot;Move past one closing delimiter, add a newline,&quot;</a>
+                  <a id='423' tid='424' class='m'>&quot; and reindent.
+If there was a margin comment after the closing delimiter, preserve it
+  on the same line.&quot;</a>)
+         (<a id='425' tid='426' class='m'>interactive</a>)
+         (<a id='427' tid='428' class='m'>paredit-move-past-close-and-newline</a> <a id='429' tid='430' class='m'>,</a><a id='431' tid='432' class='m'>close</a>)))))
+
+<span class='d'>(define-paredit-pair ?\( ?\) &quot;parenthesis&quot;)</span>
+<span class='d'>(define-paredit-pair ?\[ ?\] &quot;bracket&quot;)</span>
+<span class='d'>(define-paredit-pair ?\{ ?\} &quot;brace&quot;)</span>
+<span class='d'>(define-paredit-pair ?\&lt; ?\&gt; &quot;brocket&quot;)</span>
+
+(<a id='4197' tid='4198' class='u'>defun</a> <a id='4199' tid='4200' class='u'>paredit-move-past-close</a> (<a id='4201' tid='4202' class='u'>close</a>)
+  (<span class='d'>cond</span> ((<a id='915' tid='916' class='m'>or</a> (<a id='917' tid='918' class='m'>paredit-in-string-p</a>)
+             (<a id='919' tid='920' class='m'>paredit-in-comment-p</a>))
+         (<a id='921' tid='922' class='m'>insert</a> <a id='923' tid='924' class='m'>close</a>))
+        <span class='d'>((not (paredit-in-char-p))
+         (paredit-move-past-close-and-reindent)
+         (paredit-blink-paren-match nil))</span>))
+
+(<a id='4203' tid='4204' class='u'>defun</a> <a id='4205' tid='4206' class='u'>paredit-move-past-close-and-newline</a> (<a id='4207' tid='4208' class='u'>close</a>)
+  (<span class='d'>cond</span> <span class='d'>((or (paredit-in-string-p)
+             (paredit-in-comment-p))
+         (insert close))</span>
+        (<span class='d'>t</span> <span class='d'>(if (paredit-in-char-p) (forward-char))</span>
+           <span class='d'>(paredit-move-past-close-and-reindent)</span>
+           (<a id='925' tid='926' class='m'>let</a> ((<a id='927' tid='928' class='m'>comment.point</a> (<a id='929' tid='930' class='m'>paredit-find-comment-on-line</a>)))
+             (<a id='931' tid='932' class='m'>newline</a>)
+             (<a id='933' tid='934' class='m'>if</a> <a id='935' tid='936' class='m'>comment.point</a>
+                 (<a id='937' tid='938' class='m'>save-excursion</a>
+                   (<a id='939' tid='940' class='m'>forward-line</a> <a id='941' tid='942' class='m'>-1</a>)
+                   (<a id='943' tid='944' class='m'>end-of-line</a>)
+                   (<a id='945' tid='946' class='m'>indent-to</a> (<a id='947' tid='948' class='m'>cdr</a> <a id='949' tid='950' class='m'>comment.point</a>))
+                   (<a id='951' tid='952' class='m'>insert</a> (<a id='953' tid='954' class='m'>car</a> <a id='955' tid='956' class='m'>comment.point</a>)))))
+           <span class='d'>(lisp-indent-line)</span>
+           <span class='d'>(paredit-ignore-sexp-errors (indent-sexp))</span>
+           <span class='d'>(paredit-blink-paren-match t)</span>)))
+
+(<a id='2429' tid='2430' class='u'>defun</a> <a id='2431' tid='2432' class='u'>paredit-find-comment-on-line</a> ()
+  <span class='d'>&quot;Find a margin comment on the current line.
+If such a comment exists, delete the comment (including all leading
+  whitespace) and return a cons whose car is the comment as a string
+  and whose cdr is the point of the comment&#39;s initial semicolon,
+  relative to the start of the line.&quot;</span>
+  (<span class='d'>save-excursion</span>
+    (<span class='d'>catch</span> <span class='d'>&#39;</span><span class='d'>return</span>
+      (<span class='d'>while</span> <span class='d'>t</span>
+        (<span class='d'>if</span> <span class='d'>(search-forward &quot;;&quot; (point-at-eol) t)</span>
+            (<span class='d'>if</span> <span class='d'>(not (or (paredit-in-string-p)
+                         (paredit-in-char-p)))</span>
+                (<a id='957' tid='958' class='m'>let*</a> ((<a id='959' tid='960' class='m'>start</a> (<a id='961' tid='962' class='m'>progn</a> (<a id='963' tid='964' class='m'>backward-char</a>)  <span class='d'>;before semicolon
+</span>                                     (<a id='965' tid='966' class='m'>point</a>)))
+                       (<a id='967' tid='968' class='m'>comment</a> (<a id='969' tid='970' class='m'>buffer-substring</a> <a id='971' tid='972' class='m'>start</a>
+                                                  (<a id='973' tid='974' class='m'>point-at-eol</a>))))
+                  (<a id='975' tid='976' class='m'>paredit-skip-whitespace</a> <a id='977' tid='978' class='m'>nil</a> (<a id='979' tid='980' class='m'>point-at-bol</a>))
+                  (<a id='981' tid='982' class='m'>delete-region</a> (<a id='983' tid='984' class='m'>point</a>) (<a id='985' tid='986' class='m'>point-at-eol</a>))
+                  (<span class='d'>throw</span> <span class='d'>&#39;</span><span class='d'>return</span>
+                         (<a id='987' tid='988' class='m'>cons</a> <a id='989' tid='990' class='m'>comment</a> (<a id='991' tid='992' class='m'>-</a> <a id='993' tid='994' class='m'>start</a> (<a id='995' tid='996' class='m'>point-at-bol</a>))))))
+            <span class='d'>(throw &#39;return nil)</span>)))))
+
+(<a id='3529' tid='3530' class='u'>defun</a> <a id='3531' tid='3532' class='u'>paredit-insert-pair</a> (<a id='3533' tid='3534' class='u'>n</a> <a id='3535' tid='3536' class='u'>open</a> <a id='3537' tid='3538' class='u'>close</a> <a id='3539' tid='3540' class='u'>forward</a>)
+  (<a id='3541' tid='3542' class='u'>let*</a> ((<a id='3543' tid='3544' class='u'>regionp</a> (<a id='3545' tid='3546' class='u'>and</a> (<a id='3547' tid='3548' class='u'>paredit-region-active-p</a>)
+                       (<a id='3549' tid='3550' class='u'>paredit-region-safe-for-insert-p</a>)))
+         (<a id='3551' tid='3552' class='u'>end</a> (<a id='3553' tid='3554' class='u'>and</a> <a id='3555' tid='3556' class='u'>regionp</a>
+                   (<a id='3557' tid='3558' class='u'>not</a> <a id='3559' tid='3560' class='u'>n</a>)
+                   (<a id='3561' tid='3562' class='u'>prog1</a> (<a id='3563' tid='3564' class='u'>region-end</a>)
+                     (<a id='3565' tid='3566' class='u'>goto-char</a> (<a id='3567' tid='3568' class='u'>region-beginning</a>))))))
+    (<a id='3569' tid='3570' class='u'>let</a> ((<a id='3571' tid='3572' class='u'>spacep</a> (<a id='3573' tid='3574' class='u'>paredit-space-for-delimiter-p</a> <a id='3575' tid='3576' class='u'>nil</a> <a id='3577' tid='3578' class='u'>open</a>)))
+      (<a id='3579' tid='3580' class='u'>if</a> <a id='3581' tid='3582' class='u'>spacep</a> (<a id='3583' tid='3584' class='u'>insert</a> <a id='3585' tid='3586' class='u'>&quot; &quot;</a>))
+      (<a id='3587' tid='3588' class='u'>insert</a> <a id='3589' tid='3590' class='u'>open</a>)
+      (<a id='3591' tid='3592' class='u'>save-excursion</a>
+        <a id='3593' tid='3594' class='u'>;; Move past the desired region.
+</a>        (<a id='3595' tid='3596' class='u'>cond</a> (<a id='3597' tid='3598' class='u'>n</a> (<a id='3599' tid='3600' class='u'>funcall</a> <a id='3601' tid='3602' class='u'>forward</a>
+                          (<a id='3603' tid='3604' class='u'>save-excursion</a>
+                            (<a id='3605' tid='3606' class='u'>forward-sexp</a> (<a id='3607' tid='3608' class='u'>prefix-numeric-value</a> <a id='3609' tid='3610' class='u'>n</a>))
+                            (<a id='3611' tid='3612' class='u'>point</a>))))
+              (<a id='3613' tid='3614' class='u'>regionp</a> (<a id='3615' tid='3616' class='u'>funcall</a> <a id='3617' tid='3618' class='u'>forward</a> (<a id='3619' tid='3620' class='u'>+</a> <a id='3621' tid='3622' class='u'>end</a> (<a id='3623' tid='3624' class='u'>if</a> <a id='3625' tid='3626' class='u'>spacep</a> <a id='3627' tid='3628' class='u'>2</a> <a id='3629' tid='3630' class='u'>1</a>)))))
+        (<a id='3631' tid='3632' class='u'>insert</a> <a id='3633' tid='3634' class='u'>close</a>)
+        (<a id='3635' tid='3636' class='u'>if</a> (<a id='3637' tid='3638' class='u'>paredit-space-for-delimiter-p</a> <a id='3639' tid='3640' class='u'>t</a> <a id='3641' tid='3642' class='u'>close</a>)
+            (<a id='3643' tid='3644' class='u'>insert</a> <a id='3645' tid='3646' class='u'>&quot; &quot;</a>))))))
+
+(<a id='4329' tid='4330' class='u'>defun</a> <a id='4331' tid='4332' class='u'>paredit-region-safe-for-insert-p</a> ()
+  (<a id='4333' tid='4334' class='u'>save-excursion</a>
+    (<a id='4335' tid='4336' class='u'>let</a> ((<a id='4337' tid='4338' class='u'>beginning</a> (<a id='4339' tid='4340' class='u'>region-beginning</a>))
+          (<a id='4341' tid='4342' class='u'>end</a> (<a id='4343' tid='4344' class='u'>region-end</a>)))
+      (<a id='4345' tid='4346' class='u'>goto-char</a> <a id='4347' tid='4348' class='u'>beginning</a>)
+      (<a id='4349' tid='4350' class='u'>let*</a> ((<a id='4351' tid='4352' class='u'>beginning-state</a> (<a id='4353' tid='4354' class='u'>paredit-current-parse-state</a>))
+             (<a id='4355' tid='4356' class='u'>end-state</a> (<a id='4357' tid='4358' class='u'>parse-partial-sexp</a> <a id='4359' tid='4360' class='u'>beginning</a> <a id='4361' tid='4362' class='u'>end</a>
+                                            <a id='4363' tid='4364' class='u'>nil</a> <a id='4365' tid='4366' class='u'>nil</a> <a id='4367' tid='4368' class='u'>beginning-state</a>)))
+        (<a id='4369' tid='4370' class='u'>and</a> (<a id='4371' tid='4372' class='u'>=</a>  (<a id='4373' tid='4374' class='u'>nth</a> <a id='4375' tid='4376' class='u'>0</a> <a id='4377' tid='4378' class='u'>beginning-state</a>)   <a id='4379' tid='4380' class='u'>; 0. depth in parens
+</a>                 (<a id='4381' tid='4382' class='u'>nth</a> <a id='4383' tid='4384' class='u'>0</a> <a id='4385' tid='4386' class='u'>end-state</a>))
+             (<a id='4387' tid='4388' class='u'>eq</a> (<a id='4389' tid='4390' class='u'>nth</a> <a id='4391' tid='4392' class='u'>3</a> <a id='4393' tid='4394' class='u'>beginning-state</a>)   <a id='4395' tid='4396' class='u'>; 3. non-nil if inside a
+</a>                 (<a id='4397' tid='4398' class='u'>nth</a> <a id='4399' tid='4400' class='u'>3</a> <a id='4401' tid='4402' class='u'>end-state</a>))        <a id='4403' tid='4404' class='u'>;    string
+</a>             (<a id='4405' tid='4406' class='u'>eq</a> (<a id='4407' tid='4408' class='u'>nth</a> <a id='4409' tid='4410' class='u'>4</a> <a id='4411' tid='4412' class='u'>beginning-state</a>)   <a id='4413' tid='4414' class='u'>; 4. comment status, yada
+</a>                 (<a id='4415' tid='4416' class='u'>nth</a> <a id='4417' tid='4418' class='u'>4</a> <a id='4419' tid='4420' class='u'>end-state</a>))
+             (<a id='4421' tid='4422' class='u'>eq</a> (<a id='4423' tid='4424' class='u'>nth</a> <a id='4425' tid='4426' class='u'>5</a> <a id='4427' tid='4428' class='u'>beginning-state</a>)   <a id='4429' tid='4430' class='u'>; 5. t if following char
+</a>                 (<a id='4431' tid='4432' class='u'>nth</a> <a id='4433' tid='4434' class='u'>5</a> <a id='4435' tid='4436' class='u'>end-state</a>)))))))   <span class='d'>;    quote
+</span>
+(<a id='4477' tid='4478' class='u'>defun</a> <a id='4479' tid='4480' class='u'>paredit-space-for-delimiter-p</a> (<a id='4481' tid='4482' class='u'>endp</a> <a id='4483' tid='4484' class='u'>delimiter</a>)
+  <a id='4485' tid='4486' class='u'>;; If at the buffer limit, don&#39;t insert a space.  If there is a word,
+</a>  <a id='4487' tid='4488' class='u'>;; symbol, other quote, or non-matching parenthesis delimiter (i.e. a
+</a>  <a id='4489' tid='4490' class='u'>;; close when want an open the string or an open when we want to
+</a>  <a id='4491' tid='4492' class='u'>;; close the string), do insert a space.
+</a>  (<span class='d'>and</span> (<a id='997' tid='998' class='m'>not</a> (<a id='999' tid='1000' class='m'>if</a> <a id='1001' tid='1002' class='m'>endp</a> (<a id='1003' tid='1004' class='m'>eobp</a>) (<a id='1005' tid='1006' class='m'>bobp</a>)))
+       (<a id='433' tid='434' class='m'>memq</a> (<a id='541' tid='542' class='m'>char-syntax</a> (<a id='543' tid='544' class='m'>if</a> <a id='545' tid='546' class='m'>endp</a>
+                              (<a id='547' tid='548' class='m'>char-after</a>)
+                              (<a id='549' tid='550' class='m'>char-before</a>)))
+             (<span class='d'>list</span> <span class='d'>?w</span> <span class='d'>?_</span> <span class='d'>?\&quot;</span>
+                   (<a id='435' tid='436' class='m'>let</a> ((<a id='437' tid='438' class='m'>matching</a> (<a id='439' tid='440' class='m'>matching-paren</a> <a id='441' tid='442' class='m'>delimiter</a>)))
+                     (<a id='443' tid='444' class='m'>and</a> <a id='445' tid='446' class='m'>matching</a> (<a id='447' tid='448' class='m'>char-syntax</a> <a id='449' tid='450' class='m'>matching</a>)))))))
+
+(<a id='4209' tid='4210' class='u'>defun</a> <a id='4211' tid='4212' class='u'>paredit-move-past-close-and-reindent</a> <span class='d'>()</span>
+  (<span class='d'>let</span> <span class='d'>((orig (point)))</span>
+    <span class='d'>(up-list)</span>
+    (<a id='1007' tid='1008' class='m'>if</a> (<a id='1009' tid='1010' class='m'>catch</a> <a id='1011' tid='1012' class='m'>&#39;</a><a id='1013' tid='1014' class='m'>return</a>                  <a id='1015' tid='1016' class='m'>; This CATCH returns T if it
+</a>          (<a id='1017' tid='1018' class='m'>while</a> <a id='1019' tid='1020' class='m'>t</a>                      <a id='1021' tid='1022' class='m'>; should delete leading spaces
+</a>            (<a id='1023' tid='1024' class='m'>save-excursion</a>             <a id='1025' tid='1026' class='m'>; and NIL if not.
+</a>              (<a id='1027' tid='1028' class='m'>let</a> ((<a id='1029' tid='1030' class='m'>before-paren</a> (<a id='1031' tid='1032' class='m'>1-</a> (<a id='1033' tid='1034' class='m'>point</a>))))
+                (<a id='1035' tid='1036' class='m'>back-to-indentation</a>)
+                (<a id='1037' tid='1038' class='m'>cond</a> ((<a id='1039' tid='1040' class='m'>not</a> (<a id='1041' tid='1042' class='m'>eq</a> (<a id='1043' tid='1044' class='m'>point</a>) <a id='1045' tid='1046' class='m'>before-paren</a>))
+                       <a id='1047' tid='1048' class='m'>;; Can&#39;t call PAREDIT-DELETE-LEADING-WHITESPACE
+</a>                       <a id='1049' tid='1050' class='m'>;; here -- we must return from SAVE-EXCURSION
+</a>                       <a id='1051' tid='1052' class='m'>;; first.
+</a>                       (<a id='1053' tid='1054' class='m'>throw</a> <a id='1055' tid='1056' class='m'>&#39;</a><a id='1057' tid='1058' class='m'>return</a> <a id='1059' tid='1060' class='m'>t</a>))
+                      ((<a id='1061' tid='1062' class='m'>save-excursion</a> (<a id='1063' tid='1064' class='m'>forward-line</a> <a id='1065' tid='1066' class='m'>-1</a>)
+                                       (<a id='1067' tid='1068' class='m'>end-of-line</a>)
+                                       (<a id='1069' tid='1070' class='m'>paredit-in-comment-p</a>))
+                       <span class='d'>;; Moving the closing parenthesis any further
+</span>                       <a id='1071' tid='1072' class='m'>;; would put it into a comment, so we just
+</a>                       <span class='d'>;; indent the closing parenthesis where it is
+</span>                       <span class='d'>;; and abort the loop, telling its continuation
+</span>                       <span class='d'>;; that no leading whitespace should be deleted.
+</span>                       (<a id='1073' tid='1074' class='m'>lisp-indent-line</a>)
+                       (<a id='1075' tid='1076' class='m'>throw</a> <a id='1077' tid='1078' class='m'>&#39;</a><a id='1079' tid='1080' class='m'>return</a> <a id='1081' tid='1082' class='m'>nil</a>))
+                      (<a id='1083' tid='1084' class='m'>t</a> (<a id='1085' tid='1086' class='m'>delete-indentation</a>)))))))
+        (<a id='1087' tid='1088' class='m'>paredit-delete-leading-whitespace</a>))))
+
+(<a id='2281' tid='2282' class='u'>defun</a> <a id='2283' tid='2284' class='u'>paredit-delete-leading-whitespace</a> ()
+  <span class='d'>;; This assumes that we&#39;re on the closing parenthesis already.
+</span>  (<a id='2285' tid='2286' class='u'>save-excursion</a>
+    (<a id='2287' tid='2288' class='u'>backward-char</a>)
+    (<a id='2289' tid='2290' class='u'>while</a> (<a id='2291' tid='2292' class='u'>let</a> ((<a id='2293' tid='2294' class='u'>syn</a> (<a id='2295' tid='2296' class='u'>char-syntax</a> (<a id='2297' tid='2298' class='u'>char-before</a>))))
+             (<a id='2299' tid='2300' class='u'>and</a> (<a id='2301' tid='2302' class='u'>or</a> (<a id='2303' tid='2304' class='u'>eq</a> <a id='2305' tid='2306' class='u'>syn</a> <a id='2307' tid='2308' class='u'>?\ </a>) (<a id='2309' tid='2310' class='u'>eq</a> <a id='2311' tid='2312' class='u'>syn</a> <a id='2313' tid='2314' class='u'>?-</a>))     <a id='2315' tid='2316' class='u'>; whitespace syntax
+</a>                  <a id='2317' tid='2318' class='u'>;; The above line is a perfect example of why the
+</a>                  <a id='2319' tid='2320' class='u'>;; following test is necessary.
+</a>                  (<a id='2321' tid='2322' class='u'>not</a> (<a id='2323' tid='2324' class='u'>paredit-in-char-p</a> (<a id='2325' tid='2326' class='u'>1-</a> (<a id='2327' tid='2328' class='u'>point</a>))))))
+      (<a id='2329' tid='2330' class='u'>backward-delete-char</a> <a id='2331' tid='2332' class='u'>1</a>))))
+
+(<a id='2159' tid='2160' class='u'>defun</a> <a id='2161' tid='2162' class='u'>paredit-blink-paren-match</a> (<a id='2163' tid='2164' class='u'>another-line-p</a>)
+  (<a id='2165' tid='2166' class='u'>if</a> (<a id='2167' tid='2168' class='u'>and</a> <a id='2169' tid='2170' class='u'>blink-matching-paren</a>
+           (<a id='2171' tid='2172' class='u'>or</a> (<a id='2173' tid='2174' class='u'>not</a> <a id='2175' tid='2176' class='u'>show-paren-mode</a>) <a id='2177' tid='2178' class='u'>another-line-p</a>))
+      (<a id='2179' tid='2180' class='u'>paredit-ignore-sexp-errors</a>
+        (<a id='2181' tid='2182' class='u'>save-excursion</a>
+          (<a id='2183' tid='2184' class='u'>backward-sexp</a>)
+          (<a id='2185' tid='2186' class='u'>forward-sexp</a>)
+          <a id='2187' tid='2188' class='u'>;; SHOW-PAREN-MODE inhibits any blinking, so we disable it
+</a>          <a id='2189' tid='2190' class='u'>;; locally here.
+</a>          (<a id='2191' tid='2192' class='u'>let</a> ((<a id='2193' tid='2194' class='u'>show-paren-mode</a> <a id='2195' tid='2196' class='u'>nil</a>))
+            (<a id='2197' tid='2198' class='u'>blink-matching-open</a>))))))
+
+(<a id='2333' tid='2334' class='u'>defun</a> <a id='2335' tid='2336' class='u'>paredit-doublequote</a> (<a id='2337' tid='2338' class='u'>&optional</a> <a id='2339' tid='2340' class='u'>n</a>)
+  <a id='2341' tid='2342' class='u'>&quot;Insert a pair of double-quotes.
+With a prefix argument N, wrap the following N S-expressions in
+  double-quotes, escaping intermediate characters if necessary.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  pair of double-quotes around the region, again escaping intermediate
+  characters if necessary.
+Inside a comment, insert a literal double-quote.
+At the end of a string, move past the closing double-quote.
+In the middle of a string, insert a backslash-escaped double-quote.
+If in a character literal, do nothing.  This prevents accidentally
+  changing a what was in the character literal to become a meaningful
+  delimiter unintentionally.&quot;</a>
+  (<a id='2343' tid='2344' class='u'>interactive</a> <a id='2345' tid='2346' class='u'>&quot;P&quot;</a>)
+  (<a id='2347' tid='2348' class='u'>cond</a> ((<a id='2349' tid='2350' class='u'>paredit-in-string-p</a>)
+         (<a id='2351' tid='2352' class='u'>if</a> (<a id='2353' tid='2354' class='u'>eq</a> (<a id='2355' tid='2356' class='u'>cdr</a> (<a id='2357' tid='2358' class='u'>paredit-string-start+end-points</a>))
+                 (<a id='2359' tid='2360' class='u'>point</a>))
+             (<a id='2361' tid='2362' class='u'>forward-char</a>)             <a id='2363' tid='2364' class='u'>; We&#39;re on the closing quote.
+</a>             (<a id='2365' tid='2366' class='u'>insert</a> <a id='2367' tid='2368' class='u'>?\\</a> <a id='2369' tid='2370' class='u'>?\&quot;</a> )))
+        ((<a id='2371' tid='2372' class='u'>paredit-in-comment-p</a>)
+         (<a id='2373' tid='2374' class='u'>insert</a> <a id='2375' tid='2376' class='u'>?\&quot;</a> ))
+        ((<a id='2377' tid='2378' class='u'>not</a> (<a id='2379' tid='2380' class='u'>paredit-in-char-p</a>))
+         (<a id='2381' tid='2382' class='u'>paredit-insert-pair</a> <a id='2383' tid='2384' class='u'>n</a> <a id='2385' tid='2386' class='u'>?\&quot;</a> <a id='2387' tid='2388' class='u'>?\&quot;</a> <a id='2389' tid='2390' class='u'>&#39;</a><a id='2391' tid='2392' class='u'>paredit-forward-for-quote</a>))))
+
+(<a id='4063' tid='4064' class='u'>defun</a> <a id='4065' tid='4066' class='u'>paredit-meta-doublequote</a> (<a id='4067' tid='4068' class='u'>&optional</a> <a id='4069' tid='4070' class='u'>n</a>)
+  <a id='4071' tid='4072' class='u'>&quot;Move to the end of the string, insert a newline, and indent.
+If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
+  is specified and the region is not active or `transient-mark-mode&#39; is
+  disabled, the default is to wrap one S-expression, however, not
+  zero.&quot;</a>
+  (<a id='4073' tid='4074' class='u'>interactive</a> <a id='4075' tid='4076' class='u'>&quot;P&quot;</a>)
+  (<a id='4077' tid='4078' class='u'>if</a> (<a id='4079' tid='4080' class='u'>not</a> (<a id='4081' tid='4082' class='u'>paredit-in-string-p</a>))
+      (<a id='4083' tid='4084' class='u'>paredit-doublequote</a> (<a id='4085' tid='4086' class='u'>or</a> <a id='4087' tid='4088' class='u'>n</a>
+                               (<a id='4089' tid='4090' class='u'>and</a> (<a id='4091' tid='4092' class='u'>not</a> (<a id='4093' tid='4094' class='u'>paredit-region-active-p</a>))
+                                    <a id='4095' tid='4096' class='u'>1</a>)))
+    (<a id='4097' tid='4098' class='u'>let</a> ((<a id='4099' tid='4100' class='u'>start+end</a> (<a id='4101' tid='4102' class='u'>paredit-string-start+end-points</a>)))
+      (<a id='4103' tid='4104' class='u'>goto-char</a> (<a id='4105' tid='4106' class='u'>1+</a> (<a id='4107' tid='4108' class='u'>cdr</a> <a id='4109' tid='4110' class='u'>start+end</a>)))
+      (<a id='4111' tid='4112' class='u'>newline</a>)
+      (<a id='4113' tid='4114' class='u'>lisp-indent-line</a>)
+      (<a id='4115' tid='4116' class='u'>paredit-ignore-sexp-errors</a> (<a id='4117' tid='4118' class='u'>indent-sexp</a>)))))
+
+(<a id='2615' tid='2616' class='u'>defun</a> <a id='2617' tid='2618' class='u'>paredit-forward-for-quote</a> (<a id='2619' tid='2620' class='u'>end</a>)
+  (<a id='2621' tid='2622' class='u'>let</a> ((<a id='2623' tid='2624' class='u'>state</a> (<a id='2625' tid='2626' class='u'>paredit-current-parse-state</a>)))
+    (<a id='2627' tid='2628' class='u'>while</a> (<a id='2629' tid='2630' class='u'>&lt;</a> (<a id='2631' tid='2632' class='u'>point</a>) <a id='2633' tid='2634' class='u'>end</a>)
+      (<a id='2635' tid='2636' class='u'>let</a> ((<a id='2637' tid='2638' class='u'>new-state</a> (<a id='2639' tid='2640' class='u'>parse-partial-sexp</a> (<a id='2641' tid='2642' class='u'>point</a>) (<a id='2643' tid='2644' class='u'>1+</a> (<a id='2645' tid='2646' class='u'>point</a>))
+                                           <a id='2647' tid='2648' class='u'>nil</a> <a id='2649' tid='2650' class='u'>nil</a> <a id='2651' tid='2652' class='u'>state</a>)))
+        (<a id='2653' tid='2654' class='u'>if</a> (<a id='2655' tid='2656' class='u'>paredit-in-string-p</a> <a id='2657' tid='2658' class='u'>new-state</a>)
+            (<a id='2659' tid='2660' class='u'>if</a> (<a id='2661' tid='2662' class='u'>not</a> (<a id='2663' tid='2664' class='u'>paredit-in-string-escape-p</a>))
+                (<a id='2665' tid='2666' class='u'>setq</a> <a id='2667' tid='2668' class='u'>state</a> <a id='2669' tid='2670' class='u'>new-state</a>)
+              <a id='2671' tid='2672' class='u'>;; Escape character: turn it into an escaped escape
+</a>              <a id='2673' tid='2674' class='u'>;; character by appending another backslash.
+</a>              (<a id='2675' tid='2676' class='u'>insert</a> <a id='2677' tid='2678' class='u'>?\\</a> )
+              <a id='2679' tid='2680' class='u'>;; Now the point is after both escapes, and we want to
+</a>              <a id='2681' tid='2682' class='u'>;; rescan from before the first one to after the second
+</a>              <a id='2683' tid='2684' class='u'>;; one.
+</a>              (<a id='2685' tid='2686' class='u'>setq</a> <a id='2687' tid='2688' class='u'>state</a>
+                    (<a id='2689' tid='2690' class='u'>parse-partial-sexp</a> (<a id='2691' tid='2692' class='u'>-</a> (<a id='2693' tid='2694' class='u'>point</a>) <a id='2695' tid='2696' class='u'>2</a>) (<a id='2697' tid='2698' class='u'>point</a>)
+                                        <a id='2699' tid='2700' class='u'>nil</a> <a id='2701' tid='2702' class='u'>nil</a> <a id='2703' tid='2704' class='u'>state</a>))
+              <a id='2705' tid='2706' class='u'>;; Advance the end point, since we just inserted a new
+</a>              <a id='2707' tid='2708' class='u'>;; character.
+</a>              (<a id='2709' tid='2710' class='u'>setq</a> <a id='2711' tid='2712' class='u'>end</a> (<a id='2713' tid='2714' class='u'>1+</a> <a id='2715' tid='2716' class='u'>end</a>)))
+          <a id='2717' tid='2718' class='u'>;; String: escape by inserting a backslash before the quote.
+</a>          (<a id='2719' tid='2720' class='u'>backward-char</a>)
+          (<a id='2721' tid='2722' class='u'>insert</a> <a id='2723' tid='2724' class='u'>?\\</a> )
+          <a id='2725' tid='2726' class='u'>;; The point is now between the escape and the quote, and we
+</a>          <a id='2727' tid='2728' class='u'>;; want to rescan from before the escape to after the quote.
+</a>          (<a id='2729' tid='2730' class='u'>setq</a> <a id='2731' tid='2732' class='u'>state</a>
+                (<a id='2733' tid='2734' class='u'>parse-partial-sexp</a> (<a id='2735' tid='2736' class='u'>1-</a> (<a id='2737' tid='2738' class='u'>point</a>)) (<a id='2739' tid='2740' class='u'>1+</a> (<a id='2741' tid='2742' class='u'>point</a>))
+                                    <a id='2743' tid='2744' class='u'>nil</a> <a id='2745' tid='2746' class='u'>nil</a> <a id='2747' tid='2748' class='u'>state</a>))
+          <a id='2749' tid='2750' class='u'>;; Advance the end point for the same reason as above.
+</a>          (<a id='2751' tid='2752' class='u'>setq</a> <a id='2753' tid='2754' class='u'>end</a> (<a id='2755' tid='2756' class='u'>1+</a> <a id='2757' tid='2758' class='u'>end</a>)))))))
+
+<span class='d'>;;;; Escape Insertion
+</span>
+(<a id='1733' tid='1734' class='u'>defun</a> <a id='1735' tid='1736' class='u'>paredit-backslash</a> ()
+  <a id='1737' tid='1738' class='u'>&quot;Insert a backslash followed by a character to escape.&quot;</a>
+  (<a id='1739' tid='1740' class='u'>interactive</a>)
+  (<a id='1741' tid='1742' class='u'>insert</a> <a id='1743' tid='1744' class='u'>?\\</a> )
+  <a id='1745' tid='1746' class='u'>;; This funny conditional is necessary because PAREDIT-IN-COMMENT-P
+</a>  <a id='1747' tid='1748' class='u'>;; assumes that PAREDIT-IN-STRING-P already returned false; otherwise
+</a>  <a id='1749' tid='1750' class='u'>;; it may give erroneous answers.
+</a>  (<a id='1751' tid='1752' class='u'>if</a> (<a id='1753' tid='1754' class='u'>or</a> (<a id='1755' tid='1756' class='u'>paredit-in-string-p</a>)
+          (<a id='1757' tid='1758' class='u'>not</a> (<a id='1759' tid='1760' class='u'>paredit-in-comment-p</a>)))
+      (<a id='1761' tid='1762' class='u'>let</a> ((<a id='1763' tid='1764' class='u'>delp</a> <a id='1765' tid='1766' class='u'>t</a>))
+        (<a id='1767' tid='1768' class='u'>unwind-protect</a> (<a id='1769' tid='1770' class='u'>setq</a> <a id='1771' tid='1772' class='u'>delp</a>
+                              (<a id='1773' tid='1774' class='u'>call-interactively</a> <a id='1775' tid='1776' class='u'>&#39;</a><a id='1777' tid='1778' class='u'>paredit-escape</a>))
+          <a id='1779' tid='1780' class='u'>;; We need this in an UNWIND-PROTECT so that the backlash is
+</a>          <a id='1781' tid='1782' class='u'>;; left in there *only* if PAREDIT-ESCAPE return NIL normally
+</a>          <a id='1783' tid='1784' class='u'>;; -- in any other case, such as the user hitting C-g or an
+</a>          <a id='1785' tid='1786' class='u'>;; error occurring, we must delete the backslash to avoid
+</a>          <a id='1787' tid='1788' class='u'>;; leaving a dangling escape.  (This control structure is a
+</a>          <a id='1789' tid='1790' class='u'>;; crock.)
+</a>          (<a id='1791' tid='1792' class='u'>if</a> <a id='1793' tid='1794' class='u'>delp</a> (<a id='1795' tid='1796' class='u'>backward-delete-char</a> <a id='1797' tid='1798' class='u'>1</a>))))))
+
+<span class='d'>;;; This auxiliary interactive function returns true if the backslash
+</span><span class='d'>;;; should be deleted and false if not.
+</span>
+(<a id='2393' tid='2394' class='u'>defun</a> <a id='2395' tid='2396' class='u'>paredit-escape</a> (<a id='2397' tid='2398' class='u'>char</a>)
+  <a id='2399' tid='2400' class='u'>;; I&#39;m too lazy to figure out how to do this without a separate
+</a>  <a id='2401' tid='2402' class='u'>;; interactive function.
+</a>  (<a id='2403' tid='2404' class='u'>interactive</a> <a id='2405' tid='2406' class='u'>&quot;cEscaping character...&quot;</a>)
+  (<a id='2407' tid='2408' class='u'>if</a> (<a id='2409' tid='2410' class='u'>eq</a> <a id='2411' tid='2412' class='u'>char</a> <a id='2413' tid='2414' class='u'>127</a>)                     <a id='2415' tid='2416' class='u'>; The backslash was a typo, so
+</a>      <a id='2417' tid='2418' class='u'>t</a>                                 <a id='2419' tid='2420' class='u'>; the luser wants to delete it.
+</a>    (<a id='2421' tid='2422' class='u'>insert</a> <a id='2423' tid='2424' class='u'>char</a>)                       <a id='2425' tid='2426' class='u'>; (Is there a better way to
+</a>    <a id='2427' tid='2428' class='u'>nil</a>))                               <span class='d'>; express the rubout char?
+</span>                                        <span class='d'>; ?\^? works, but ugh...)
+</span>
+<span class='d'>;;; The placement of this function in this file is totally random.
+</span>
+(<a id='4213' tid='4214' class='u'>defun</a> <a id='4215' tid='4216' class='u'>paredit-newline</a> ()
+  <span class='d'>&quot;Insert a newline and indent it.
+This is like `newline-and-indent&#39;, but it not only indents the line
+  that the point is on but also the S-expression following the point,
+  if there is one.
+Move forward one character first if on an escaped character.
+If in a string, just insert a literal newline.&quot;</span>
+  (<a id='4217' tid='4218' class='u'>interactive</a>)
+  <span class='d'>(if (paredit-in-string-p)
+      (newline)
+    (if (and (not (paredit-in-comment-p)) (paredit-in-char-p))
+        (forward-char))
+    (newline-and-indent)
+    ;; Indent the following S-expression, but don&#39;t signal an error if
+    ;; there&#39;s only a closing parenthesis after the point.
+    (paredit-ignore-sexp-errors (indent-sexp)))</span>)
+
+<span class='d'>;;;; Comment Insertion
+</span>
+(<a id='4437' tid='4438' class='u'>defun</a> <a id='4439' tid='4440' class='u'>paredit-semicolon</a> (<a id='4441' tid='4442' class='u'>&optional</a> <a id='4443' tid='4444' class='u'>n</a>)
+  <span class='d'>&quot;Insert a semicolon, moving any code after the point to a new line.
+If in a string, comment, or character literal, insert just a literal
+  semicolon, and do not move anything to the next line.
+With a prefix argument N, insert N semicolons.&quot;</span>
+  <span class='d'>(interactive &quot;P&quot;)</span>
+  (<span class='d'>if</span> (<span class='d'>not</span> (<span class='d'>or</span> <span class='d'>(paredit-in-string-p)</span>
+               <span class='d'>(paredit-in-comment-p)</span>
+               <span class='d'>(paredit-in-char-p)</span>
+               <span class='d'>;; No more code on the line after the point.
+</span>               (<a id='243' tid='244' class='m'>save-excursion</a>
+                 (<a id='245' tid='246' class='m'>paredit-skip-whitespace</a> <a id='247' tid='248' class='m'>t</a> (<a id='249' tid='250' class='m'>point-at-eol</a>))
+                 (<a id='251' tid='252' class='m'>or</a> (<a id='253' tid='254' class='m'>eolp</a>)
+                     <span class='d'>;; Let the user prefix semicolons to existing
+</span>                     <span class='d'>;; comments.
+</span>                     (<a id='255' tid='256' class='m'>eq</a> (<a id='257' tid='258' class='m'>char-after</a>) <a id='259' tid='260' class='m'>?\;</a>)))))
+      <span class='d'>;; Don&#39;t use NEWLINE-AND-INDENT, because that will delete all of
+</span>      <span class='d'>;; the horizontal whitespace first, but we just want to move the
+</span>      <span class='d'>;; code following the point onto the next line while preserving
+</span>      <span class='d'>;; the point on this line.
+</span>      <span class='d'>;++ Why indent only the line?
+</span>      <span class='d'>(save-excursion (newline) (lisp-indent-line))</span>)
+  <span class='d'>(insert (make-string (if n (prefix-numeric-value n) 1)
+                       ?\; ))</span>)
+
+(<a id='2207' tid='2208' class='u'>defun</a> <a id='2209' tid='2210' class='u'>paredit-comment-dwim</a> <span class='d'>(&optional arg)</span>
+  <a id='2211' tid='2212' class='u'>&quot;Call the Lisp comment command you want (Do What I Mean).
+This is like `comment-dwim&#39;, but it is specialized for Lisp editing.
+If transient mark mode is enabled and the mark is active, comment or
+  uncomment the selected region, depending on whether it was entirely
+  commented not not already.
+If there is already a comment on the current line, with no prefix
+  argument, indent to that comment; with a prefix argument, kill that
+  comment.
+Otherwise, insert a comment appropriate for the context and ensure that
+  any code following the comment is moved to the next line.
+At the top level, where indentation is calculated to be at column 0,
+  insert a triple-semicolon comment; within code, where the indentation
+  is calculated to be non-zero, and on the line there is either no code
+  at all or code after the point, insert a double-semicolon comment;
+  and if the point is after all code on the line, insert a single-
+  semicolon margin comment at `comment-column&#39;.&quot;</a>
+  (<a id='2213' tid='2214' class='u'>interactive</a> <a id='2215' tid='2216' class='u'>&quot;*P&quot;</a>)
+  <span class='d'>(require &#39;newcomment)</span>
+  <span class='d'>(comment-normalize-vars)</span>
+  <span class='d'>(cond ((paredit-region-active-p)
+         (comment-or-uncomment-region (region-beginning)
+                                      (region-end)
+                                      arg))
+        ((paredit-comment-on-line-p)
+         (if arg
+             (comment-kill (if (integerp arg) arg nil))
+             (comment-indent)))
+        (t (paredit-insert-comment)))</span>)
+
+(<a id='2217' tid='2218' class='u'>defun</a> <a id='2219' tid='2220' class='u'>paredit-comment-on-line-p</a> ()
+  (<a id='1089' tid='1090' class='m'>save-excursion</a>
+    (<a id='1091' tid='1092' class='m'>beginning-of-line</a>)
+    (<a id='1093' tid='1094' class='m'>let</a> ((<a id='1095' tid='1096' class='m'>comment-p</a> <a id='1097' tid='1098' class='m'>nil</a>))
+      <a id='1099' tid='1100' class='m'>;; Search forward for a comment beginning.  If there is one, set
+</a>      <a id='1101' tid='1102' class='m'>;; COMMENT-P to true; if not, it will be nil.
+</a>      (<a id='1103' tid='1104' class='m'>while</a> (<span class='d'>progn</span> <span class='d'>(setq comment-p
+                          (search-forward &quot;;&quot; (point-at-eol)
+                                          ;; t -&gt; no error
+                                          t))</span>
+                    (<a id='1105' tid='1106' class='m'>and</a> <a id='1107' tid='1108' class='m'>comment-p</a>
+                         (<a id='1109' tid='1110' class='m'>or</a> (<a id='1111' tid='1112' class='m'>paredit-in-string-p</a>)
+                             (<a id='1113' tid='1114' class='m'>paredit-in-char-p</a> (<a id='1115' tid='1116' class='m'>1-</a> (<a id='1117' tid='1118' class='m'>point</a>))))))
+        (<a id='1119' tid='1120' class='m'>forward-char</a>))
+      <a id='1121' tid='1122' class='m'>comment-p</a>)))
+
+(<a id='3321' tid='3322' class='u'>defun</a> <a id='3323' tid='3324' class='u'>paredit-insert-comment</a> ()
+  (<a id='1123' tid='1124' class='m'>let</a> ((<a id='1125' tid='1126' class='m'>code-after-p</a>
+         (<a id='1127' tid='1128' class='m'>save-excursion</a> (<a id='1129' tid='1130' class='m'>paredit-skip-whitespace</a> <a id='1131' tid='1132' class='m'>t</a> (<a id='1133' tid='1134' class='m'>point-at-eol</a>))
+                         (<a id='1135' tid='1136' class='m'>not</a> (<a id='1137' tid='1138' class='m'>eolp</a>))))
+        (<a id='1139' tid='1140' class='m'>code-before-p</a>
+         (<a id='1141' tid='1142' class='m'>save-excursion</a> (<a id='1143' tid='1144' class='m'>paredit-skip-whitespace</a> <a id='1145' tid='1146' class='m'>nil</a> (<a id='1147' tid='1148' class='m'>point-at-bol</a>))
+                         (<a id='1149' tid='1150' class='m'>not</a> (<a id='1151' tid='1152' class='m'>bolp</a>)))))
+    (<span class='d'>if</span> (<a id='1153' tid='1154' class='m'>and</a> (<a id='1155' tid='1156' class='m'>bolp</a>)
+             <span class='d'>;; We have to use EQ 0 here and not ZEROP because ZEROP
+</span>             <span class='d'>;; signals an error if its argument is non-numeric, but
+</span>             <span class='d'>;; CALCULATE-LISP-INDENT may return nil.
+</span>             (<span class='d'>eq</span> (<a id='1157' tid='1158' class='m'>let</a> ((<a id='1159' tid='1160' class='m'>indent</a> (<a id='1161' tid='1162' class='m'>calculate-lisp-indent</a>)))
+                   (<a id='1163' tid='1164' class='m'>if</a> (<a id='1165' tid='1166' class='m'>consp</a> <a id='1167' tid='1168' class='m'>indent</a>)
+                       (<a id='1169' tid='1170' class='m'>car</a> <a id='1171' tid='1172' class='m'>indent</a>)
+                     <a id='1173' tid='1174' class='m'>indent</a>))
+                 <span class='d'>0</span>))
+        <span class='d'>;; Top-level comment
+</span>        <span class='d'>(progn (if code-after-p (save-excursion (newline)))
+               (insert &quot;;;; &quot;))</span>
+      <span class='d'>(if code-after-p
+          ;; Code comment
+          (progn (if code-before-p
+                     ;++ Why NEWLINE-AND-INDENT here and not just
+                     ;++ NEWLINE, or PAREDIT-NEWLINE?
+                     (newline-and-indent))
+                 (lisp-indent-line)
+                 (insert &quot;;; &quot;)
+                 ;; Move the following code.  (NEWLINE-AND-INDENT will
+                 ;; delete whitespace after the comment, though, so use
+                 ;; NEWLINE & LISP-INDENT-LINE manually here.)
+                 (save-excursion (newline)
+                                 (lisp-indent-line)))
+          ;; Margin comment
+          (progn (indent-to comment-column
+                            1)          ; 1 -&gt; force one leading space
+                 (insert ?\; )))</span>)))
+
+<span class='d'>;;;; Character Deletion
+</span>
+(<a id='2503' tid='2504' class='u'>defun</a> <a id='2505' tid='2506' class='u'>paredit-forward-delete</a> <span class='d'>(&optional arg)</span>
+  <span class='d'>&quot;Delete a character forward or move forward over a delimiter.
+If on an opening S-expression delimiter, move forward into the
+  S-expression.
+If on a closing S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a prefix argument, simply delete a character forward, without
+  regard for delimiter balancing.&quot;</span>
+  (<a id='2507' tid='2508' class='u'>interactive</a> <a id='2509' tid='2510' class='u'>&quot;P&quot;</a>)
+  (<span class='d'>cond</span> <span class='d'>((or arg (eobp))
+         (delete-char 1))</span>
+        <span class='d'>((paredit-in-string-p)
+         (paredit-forward-delete-in-string))</span>
+        <span class='d'>((paredit-in-comment-p)
+         ;++ What to do here?  This could move a partial S-expression
+         ;++ into a comment and thereby invalidate the file&#39;s form,
+         ;++ or move random text out of a comment.
+         (delete-char 1))</span>
+        ((<a id='1175' tid='1176' class='m'>paredit-in-char-p</a>)            <a id='1177' tid='1178' class='m'>; Escape -- delete both chars.
+</a>         (<a id='1179' tid='1180' class='m'>backward-delete-char</a> <a id='1181' tid='1182' class='m'>1</a>)
+         (<a id='1183' tid='1184' class='m'>delete-char</a> <a id='1185' tid='1186' class='m'>1</a>))
+        ((<a id='551' tid='552' class='m'>eq</a> (<a id='553' tid='554' class='m'>char-after</a>) <a id='555' tid='556' class='m'>?\\</a> )         <a id='557' tid='558' class='m'>; ditto
+</a>         (<a id='559' tid='560' class='m'>delete-char</a> <a id='561' tid='562' class='m'>2</a>))
+        ((<a id='451' tid='452' class='m'>let</a> ((<a id='453' tid='454' class='m'>syn</a> (<a id='455' tid='456' class='m'>char-syntax</a> (<a id='457' tid='458' class='m'>char-after</a>))))
+           (<a id='459' tid='460' class='m'>or</a> (<a id='461' tid='462' class='m'>eq</a> <a id='463' tid='464' class='m'>syn</a> <a id='465' tid='466' class='m'>?\(</a> )
+               (<a id='467' tid='468' class='m'>eq</a> <a id='469' tid='470' class='m'>syn</a> <a id='471' tid='472' class='m'>?\&quot;</a> )))
+         <span class='d'>(forward-char)</span>)
+        ((<a id='329' tid='330' class='m'>and</a> (<a id='331' tid='332' class='m'>not</a> (<a id='333' tid='334' class='m'>paredit-in-char-p</a> (<a id='335' tid='336' class='m'>1-</a> (<a id='337' tid='338' class='m'>point</a>))))
+              (<a id='339' tid='340' class='m'>eq</a> (<a id='341' tid='342' class='m'>char-syntax</a> (<a id='343' tid='344' class='m'>char-after</a>)) <a id='345' tid='346' class='m'>?\)</a> )
+              (<a id='347' tid='348' class='m'>eq</a> (<a id='349' tid='350' class='m'>char-before</a>) (<a id='351' tid='352' class='m'>matching-paren</a> (<a id='353' tid='354' class='m'>char-after</a>))))
+         (<a id='355' tid='356' class='m'>backward-delete-char</a> <a id='357' tid='358' class='m'>1</a>)       <a id='359' tid='360' class='m'>; Empty list -- delete both
+</a>         (<a id='361' tid='362' class='m'>delete-char</a> <a id='363' tid='364' class='m'>1</a>))               <span class='d'>;   delimiters.
+</span>        <span class='d'>;; Just delete a single character, if it&#39;s not a closing
+</span>        <span class='d'>;; parenthesis.  (The character literal case is already
+</span>        <span class='d'>;; handled by now.)
+</span>        ((<a id='277' tid='278' class='m'>not</a> (<a id='279' tid='280' class='m'>eq</a> (<a id='281' tid='282' class='m'>char-syntax</a> (<a id='283' tid='284' class='m'>char-after</a>)) <a id='285' tid='286' class='m'>?\)</a> ))
+         (<a id='287' tid='288' class='m'>delete-char</a> <a id='289' tid='290' class='m'>1</a>))))
+
+(<a id='2511' tid='2512' class='u'>defun</a> <a id='2513' tid='2514' class='u'>paredit-forward-delete-in-string</a> ()
+  (<a id='2515' tid='2516' class='u'>let</a> ((<a id='2517' tid='2518' class='u'>start+end</a> (<a id='2519' tid='2520' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='2521' tid='2522' class='u'>cond</a> ((<a id='2523' tid='2524' class='u'>not</a> (<a id='2525' tid='2526' class='u'>eq</a> (<a id='2527' tid='2528' class='u'>point</a>) (<a id='2529' tid='2530' class='u'>cdr</a> <a id='2531' tid='2532' class='u'>start+end</a>)))
+           <a id='2533' tid='2534' class='u'>;; If it&#39;s not the close-quote, it&#39;s safe to delete.  But
+</a>           <a id='2535' tid='2536' class='u'>;; first handle the case that we&#39;re in a string escape.
+</a>           (<a id='2537' tid='2538' class='u'>cond</a> ((<a id='2539' tid='2540' class='u'>paredit-in-string-escape-p</a>)
+                  <a id='2541' tid='2542' class='u'>;; We&#39;re right after the backslash, so backward
+</a>                  <a id='2543' tid='2544' class='u'>;; delete it before deleting the escaped character.
+</a>                  (<a id='2545' tid='2546' class='u'>backward-delete-char</a> <a id='2547' tid='2548' class='u'>1</a>))
+                 ((<a id='2549' tid='2550' class='u'>eq</a> (<a id='2551' tid='2552' class='u'>char-after</a>) <a id='2553' tid='2554' class='u'>?\\</a> )
+                  <a id='2555' tid='2556' class='u'>;; If we&#39;re not in a string escape, but we are on a
+</a>                  <a id='2557' tid='2558' class='u'>;; backslash, it must start the escape for the next
+</a>                  <a id='2559' tid='2560' class='u'>;; character, so delete the backslash before deleting
+</a>                  <a id='2561' tid='2562' class='u'>;; the next character.
+</a>                  (<a id='2563' tid='2564' class='u'>delete-char</a> <a id='2565' tid='2566' class='u'>1</a>)))
+           (<a id='2567' tid='2568' class='u'>delete-char</a> <a id='2569' tid='2570' class='u'>1</a>))
+          ((<a id='2571' tid='2572' class='u'>eq</a> (<a id='2573' tid='2574' class='u'>1-</a> (<a id='2575' tid='2576' class='u'>point</a>)) (<a id='2577' tid='2578' class='u'>car</a> <a id='2579' tid='2580' class='u'>start+end</a>))
+           <a id='2581' tid='2582' class='u'>;; If it is the close-quote, delete only if we&#39;re also right
+</a>           <a id='2583' tid='2584' class='u'>;; past the open-quote (i.e. it&#39;s empty), and then delete
+</a>           <a id='2585' tid='2586' class='u'>;; both quotes.  Otherwise we refuse to delete it.
+</a>           (<a id='2587' tid='2588' class='u'>backward-delete-char</a> <a id='2589' tid='2590' class='u'>1</a>)
+           (<a id='2591' tid='2592' class='u'>delete-char</a> <a id='2593' tid='2594' class='u'>1</a>)))))
+
+(<a id='1867' tid='1868' class='u'>defun</a> <a id='1869' tid='1870' class='u'>paredit-backward-delete</a> <span class='d'>(&optional arg)</span>
+  <span class='d'>&quot;Delete a character backward or move backward over a delimiter.
+If on a closing S-expression delimiter, move backward into the
+  S-expression.
+If on an opening S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a prefix argument, simply delete a character backward, without
+  regard for delimiter balancing.&quot;</span>
+  (<a id='1871' tid='1872' class='u'>interactive</a> <a id='1873' tid='1874' class='u'>&quot;P&quot;</a>)
+  (<span class='d'>cond</span> <span class='d'>((or arg (bobp))
+         (backward-delete-char 1))</span>      <span class='d'>;++ should this untabify?
+</span>        <span class='d'>((paredit-in-string-p)
+         (paredit-backward-delete-in-string))</span>
+        <span class='d'>((paredit-in-comment-p)
+         (backward-delete-char 1))</span>
+        ((<a id='1187' tid='1188' class='m'>paredit-in-char-p</a>)            <a id='1189' tid='1190' class='m'>; Escape -- delete both chars.
+</a>         (<a id='1191' tid='1192' class='m'>backward-delete-char</a> <a id='1193' tid='1194' class='m'>1</a>)
+         (<a id='1195' tid='1196' class='m'>delete-char</a> <a id='1197' tid='1198' class='m'>1</a>))
+        ((<a id='563' tid='564' class='m'>paredit-in-char-p</a> (<a id='565' tid='566' class='m'>1-</a> (<a id='567' tid='568' class='m'>point</a>)))
+         (<a id='569' tid='570' class='m'>backward-delete-char</a> <a id='571' tid='572' class='m'>2</a>))      <span class='d'>; ditto
+</span>        ((<a id='473' tid='474' class='m'>let</a> ((<a id='475' tid='476' class='m'>syn</a> (<a id='477' tid='478' class='m'>char-syntax</a> (<a id='479' tid='480' class='m'>char-before</a>))))
+           (<a id='481' tid='482' class='m'>or</a> (<a id='483' tid='484' class='m'>eq</a> <a id='485' tid='486' class='m'>syn</a> <a id='487' tid='488' class='m'>?\)</a> )
+               (<a id='489' tid='490' class='m'>eq</a> <a id='491' tid='492' class='m'>syn</a> <a id='493' tid='494' class='m'>?\&quot;</a> )))
+         <span class='d'>(backward-char)</span>)
+        ((<a id='365' tid='366' class='m'>and</a> (<a id='367' tid='368' class='m'>eq</a> (<a id='369' tid='370' class='m'>char-syntax</a> (<a id='371' tid='372' class='m'>char-before</a>)) <a id='373' tid='374' class='m'>?\(</a> )
+              (<a id='375' tid='376' class='m'>eq</a> (<a id='377' tid='378' class='m'>char-after</a>) (<a id='379' tid='380' class='m'>matching-paren</a> (<a id='381' tid='382' class='m'>char-before</a>))))
+         (<a id='383' tid='384' class='m'>backward-delete-char</a> <a id='385' tid='386' class='m'>1</a>)       <a id='387' tid='388' class='m'>; Empty list -- delete both
+</a>         (<a id='389' tid='390' class='m'>delete-char</a> <a id='391' tid='392' class='m'>1</a>))               <span class='d'>;   delimiters.
+</span>        <span class='d'>;; Delete it, unless it&#39;s an opening parenthesis.  The case
+</span>        <span class='d'>;; of character literals is already handled by now.
+</span>        ((<a id='291' tid='292' class='m'>not</a> (<a id='293' tid='294' class='m'>eq</a> (<a id='295' tid='296' class='m'>char-syntax</a> (<a id='297' tid='298' class='m'>char-before</a>)) <a id='299' tid='300' class='m'>?\(</a> ))
+         (<a id='301' tid='302' class='m'>backward-delete-char-untabify</a> <a id='303' tid='304' class='m'>1</a>))))
+
+(<a id='1875' tid='1876' class='u'>defun</a> <a id='1877' tid='1878' class='u'>paredit-backward-delete-in-string</a> ()
+  (<a id='1879' tid='1880' class='u'>let</a> ((<a id='1881' tid='1882' class='u'>start+end</a> (<a id='1883' tid='1884' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='1885' tid='1886' class='u'>cond</a> ((<a id='1887' tid='1888' class='u'>not</a> (<a id='1889' tid='1890' class='u'>eq</a> (<a id='1891' tid='1892' class='u'>1-</a> (<a id='1893' tid='1894' class='u'>point</a>)) (<a id='1895' tid='1896' class='u'>car</a> <a id='1897' tid='1898' class='u'>start+end</a>)))
+           <a id='1899' tid='1900' class='u'>;; If it&#39;s not the open-quote, it&#39;s safe to delete.
+</a>           (<a id='1901' tid='1902' class='u'>if</a> (<a id='1903' tid='1904' class='u'>paredit-in-string-escape-p</a>)
+               <a id='1905' tid='1906' class='u'>;; If we&#39;re on a string escape, since we&#39;re about to
+</a>               <a id='1907' tid='1908' class='u'>;; delete the backslash, we must first delete the
+</a>               <a id='1909' tid='1910' class='u'>;; escaped char.
+</a>               (<a id='1911' tid='1912' class='u'>delete-char</a> <a id='1913' tid='1914' class='u'>1</a>))
+           (<a id='1915' tid='1916' class='u'>backward-delete-char</a> <a id='1917' tid='1918' class='u'>1</a>)
+           (<a id='1919' tid='1920' class='u'>if</a> (<a id='1921' tid='1922' class='u'>paredit-in-string-escape-p</a>)
+               <a id='1923' tid='1924' class='u'>;; If, after deleting a character, we find ourselves in
+</a>               <a id='1925' tid='1926' class='u'>;; a string escape, we must have deleted the escaped
+</a>               <a id='1927' tid='1928' class='u'>;; character, and the backslash is behind the point, so
+</a>               <a id='1929' tid='1930' class='u'>;; backward delete it.
+</a>               (<a id='1931' tid='1932' class='u'>backward-delete-char</a> <a id='1933' tid='1934' class='u'>1</a>)))
+          ((<a id='1935' tid='1936' class='u'>eq</a> (<a id='1937' tid='1938' class='u'>point</a>) (<a id='1939' tid='1940' class='u'>cdr</a> <a id='1941' tid='1942' class='u'>start+end</a>))
+           <a id='1943' tid='1944' class='u'>;; If it is the open-quote, delete only if we&#39;re also right
+</a>           <a id='1945' tid='1946' class='u'>;; past the close-quote (i.e. it&#39;s empty), and then delete
+</a>           <a id='1947' tid='1948' class='u'>;; both quotes.  Otherwise we refuse to delete it.
+</a>           (<a id='1949' tid='1950' class='u'>backward-delete-char</a> <a id='1951' tid='1952' class='u'>1</a>)
+           (<a id='1953' tid='1954' class='u'>delete-char</a> <a id='1955' tid='1956' class='u'>1</a>)))))
+
+<span class='d'>;;;; Killing
+</span>
+(<a id='3657' tid='3658' class='u'>defun</a> <a id='3659' tid='3660' class='u'>paredit-kill</a> <span class='d'>(&optional arg)</span>
+  <span class='d'>&quot;Kill a line as if with `kill-line&#39;, but respecting delimiters.
+In a string, act exactly as `kill-line&#39; but do not kill past the
+  closing string delimiter.
+On a line with no S-expressions on it starting after the point or
+  within a comment, act exactly as `kill-line&#39;.
+Otherwise, kill all S-expressions that start after the point.&quot;</span>
+  (<a id='3661' tid='3662' class='u'>interactive</a> <a id='3663' tid='3664' class='u'>&quot;P&quot;</a>)
+  <span class='d'>(cond (arg (kill-line))
+        ((paredit-in-string-p)
+         (paredit-kill-line-in-string))
+        ((or (paredit-in-comment-p)
+             (save-excursion
+               (paredit-skip-whitespace t (point-at-eol))
+               (or (eq (char-after) ?\; )
+                   (eolp))))
+         ;** Be careful about trailing backslashes.
+         (kill-line))
+        (t (paredit-kill-sexps-on-line)))</span>)
+
+(<a id='3665' tid='3666' class='u'>defun</a> <a id='3667' tid='3668' class='u'>paredit-kill-line-in-string</a> ()
+  (<span class='d'>if</span> (<a id='1199' tid='1200' class='m'>save-excursion</a> (<a id='1201' tid='1202' class='m'>paredit-skip-whitespace</a> <a id='1203' tid='1204' class='m'>t</a> (<a id='1205' tid='1206' class='m'>point-at-eol</a>))
+                      (<a id='1207' tid='1208' class='m'>eolp</a>))
+      <span class='d'>(kill-line)</span>
+    <span class='d'>(save-excursion
+      ;; Be careful not to split an escape sequence.
+      (if (paredit-in-string-escape-p)
+          (backward-char))
+      (let ((beginning (point)))
+        (while (not (or (eolp)
+                        (eq (char-after) ?\&quot; )))
+          (forward-char)
+          ;; Skip past escaped characters.
+          (if (eq (char-before) ?\\ )
+              (forward-char)))
+        (kill-region beginning (point))))</span>))
+
+(<a id='3669' tid='3670' class='u'>defun</a> <a id='3671' tid='3672' class='u'>paredit-kill-sexps-on-line</a> ()
+  (<a id='3673' tid='3674' class='u'>if</a> (<a id='3675' tid='3676' class='u'>paredit-in-char-p</a>)               <a id='3677' tid='3678' class='u'>; Move past the \ and prefix.
+</a>      (<a id='3679' tid='3680' class='u'>backward-char</a> <a id='3681' tid='3682' class='u'>2</a>))                <a id='3683' tid='3684' class='u'>; (# in Scheme/CL, ? in elisp)
+</a>  (<a id='3685' tid='3686' class='u'>let</a> ((<a id='3687' tid='3688' class='u'>beginning</a> (<a id='3689' tid='3690' class='u'>point</a>))
+        (<a id='3691' tid='3692' class='u'>eol</a> (<a id='3693' tid='3694' class='u'>point-at-eol</a>)))
+    (<a id='3695' tid='3696' class='u'>let</a> ((<a id='3697' tid='3698' class='u'>end-of-list-p</a> (<a id='3699' tid='3700' class='u'>paredit-forward-sexps-to-kill</a> <a id='3701' tid='3702' class='u'>beginning</a> <a id='3703' tid='3704' class='u'>eol</a>)))
+      <a id='3705' tid='3706' class='u'>;; If we got to the end of the list and it&#39;s on the same line,
+</a>      <a id='3707' tid='3708' class='u'>;; move backward past the closing delimiter before killing.  (This
+</a>      <a id='3709' tid='3710' class='u'>;; allows something like killing the whitespace in (    ).)
+</a>      (<a id='3711' tid='3712' class='u'>if</a> <a id='3713' tid='3714' class='u'>end-of-list-p</a> (<a id='3715' tid='3716' class='u'>progn</a> (<a id='3717' tid='3718' class='u'>up-list</a>) (<a id='3719' tid='3720' class='u'>backward-char</a>)))
+      (<a id='3721' tid='3722' class='u'>if</a> <a id='3723' tid='3724' class='u'>kill-whole-line</a>
+          (<a id='3725' tid='3726' class='u'>paredit-kill-sexps-on-whole-line</a> <a id='3727' tid='3728' class='u'>beginning</a>)
+        (<a id='3729' tid='3730' class='u'>kill-region</a> <a id='3731' tid='3732' class='u'>beginning</a>
+                     <a id='3733' tid='3734' class='u'>;; If all of the S-expressions were on one line,
+</a>                     <a id='3735' tid='3736' class='u'>;; i.e. we&#39;re still on that line after moving past
+</a>                     <a id='3737' tid='3738' class='u'>;; the last one, kill the whole line, including
+</a>                     <a id='3739' tid='3740' class='u'>;; any comments; otherwise just kill to the end of
+</a>                     <a id='3741' tid='3742' class='u'>;; the last S-expression we found.  Be sure,
+</a>                     <a id='3743' tid='3744' class='u'>;; though, not to kill any closing parentheses.
+</a>                     (<a id='3745' tid='3746' class='u'>if</a> (<a id='3747' tid='3748' class='u'>and</a> (<a id='3749' tid='3750' class='u'>not</a> <a id='3751' tid='3752' class='u'>end-of-list-p</a>)
+                              (<a id='3753' tid='3754' class='u'>eq</a> (<a id='3755' tid='3756' class='u'>point-at-eol</a>) <a id='3757' tid='3758' class='u'>eol</a>))
+                         <a id='3759' tid='3760' class='u'>eol</a>
+                         (<a id='3761' tid='3762' class='u'>point</a>)))))))
+
+<span class='d'>;;; Please do not try to understand this code unless you have a VERY
+</span><span class='d'>;;; good reason to do so.  I gave up trying to figure it out well
+</span><span class='d'>;;; enough to explain it, long ago.
+</span>
+(<a id='2889' tid='2890' class='u'>defun</a> <a id='2891' tid='2892' class='u'>paredit-forward-sexps-to-kill</a> (<a id='2893' tid='2894' class='u'>beginning</a> <a id='2895' tid='2896' class='u'>eol</a>)
+  (<a id='2897' tid='2898' class='u'>let</a> ((<a id='2899' tid='2900' class='u'>end-of-list-p</a> <a id='2901' tid='2902' class='u'>nil</a>)
+        (<a id='2903' tid='2904' class='u'>firstp</a> <a id='2905' tid='2906' class='u'>t</a>))
+    <a id='2907' tid='2908' class='u'>;; Move to the end of the last S-expression that started on this
+</a>    <a id='2909' tid='2910' class='u'>;; line, or to the closing delimiter if the last S-expression in
+</a>    <a id='2911' tid='2912' class='u'>;; this list is on the line.
+</a>    (<a id='2913' tid='2914' class='u'>catch</a> <a id='2915' tid='2916' class='u'>&#39;</a><a id='2917' tid='2918' class='u'>return</a>
+      (<a id='2919' tid='2920' class='u'>while</a> <a id='2921' tid='2922' class='u'>t</a>
+        <a id='2923' tid='2924' class='u'>;; This and the `kill-whole-line&#39; business below fix a bug that
+</a>        <a id='2925' tid='2926' class='u'>;; inhibited any S-expression at the very end of the buffer
+</a>        <a id='2927' tid='2928' class='u'>;; (with no trailing newline) from being deleted.  It&#39;s a
+</a>        <a id='2929' tid='2930' class='u'>;; bizarre fix that I ought to document at some point, but I am
+</a>        <a id='2931' tid='2932' class='u'>;; too busy at the moment to do so.
+</a>        (<a id='2933' tid='2934' class='u'>if</a> (<a id='2935' tid='2936' class='u'>and</a> <a id='2937' tid='2938' class='u'>kill-whole-line</a> (<a id='2939' tid='2940' class='u'>eobp</a>)) (<a id='2941' tid='2942' class='u'>throw</a> <a id='2943' tid='2944' class='u'>&#39;</a><a id='2945' tid='2946' class='u'>return</a> <a id='2947' tid='2948' class='u'>nil</a>))
+        (<a id='2949' tid='2950' class='u'>save-excursion</a>
+          (<a id='2951' tid='2952' class='u'>paredit-handle-sexp-errors</a> (<a id='2953' tid='2954' class='u'>forward-sexp</a>)
+            (<a id='2955' tid='2956' class='u'>up-list</a>)
+            (<a id='2957' tid='2958' class='u'>setq</a> <a id='2959' tid='2960' class='u'>end-of-list-p</a> (<a id='2961' tid='2962' class='u'>eq</a> (<a id='2963' tid='2964' class='u'>point-at-eol</a>) <a id='2965' tid='2966' class='u'>eol</a>))
+            (<a id='2967' tid='2968' class='u'>throw</a> <a id='2969' tid='2970' class='u'>&#39;</a><a id='2971' tid='2972' class='u'>return</a> <a id='2973' tid='2974' class='u'>nil</a>))
+          (<a id='2975' tid='2976' class='u'>if</a> (<a id='2977' tid='2978' class='u'>or</a> (<a id='2979' tid='2980' class='u'>and</a> (<a id='2981' tid='2982' class='u'>not</a> <a id='2983' tid='2984' class='u'>firstp</a>)
+                       (<a id='2985' tid='2986' class='u'>not</a> <a id='2987' tid='2988' class='u'>kill-whole-line</a>)
+                       (<a id='2989' tid='2990' class='u'>eobp</a>))
+                  (<a id='2991' tid='2992' class='u'>paredit-handle-sexp-errors</a>
+                      (<a id='2993' tid='2994' class='u'>progn</a> (<a id='2995' tid='2996' class='u'>backward-sexp</a>) <a id='2997' tid='2998' class='u'>nil</a>)
+                    <a id='2999' tid='3000' class='u'>t</a>)
+                  (<a id='3001' tid='3002' class='u'>not</a> (<a id='3003' tid='3004' class='u'>eq</a> (<a id='3005' tid='3006' class='u'>point-at-eol</a>) <a id='3007' tid='3008' class='u'>eol</a>)))
+              (<a id='3009' tid='3010' class='u'>throw</a> <a id='3011' tid='3012' class='u'>&#39;</a><a id='3013' tid='3014' class='u'>return</a> <a id='3015' tid='3016' class='u'>nil</a>)))
+        (<a id='3017' tid='3018' class='u'>forward-sexp</a>)
+        (<a id='3019' tid='3020' class='u'>if</a> (<a id='3021' tid='3022' class='u'>and</a> <a id='3023' tid='3024' class='u'>firstp</a>
+                 (<a id='3025' tid='3026' class='u'>not</a> <a id='3027' tid='3028' class='u'>kill-whole-line</a>)
+                 (<a id='3029' tid='3030' class='u'>eobp</a>))
+            (<a id='3031' tid='3032' class='u'>throw</a> <a id='3033' tid='3034' class='u'>&#39;</a><a id='3035' tid='3036' class='u'>return</a> <a id='3037' tid='3038' class='u'>nil</a>))
+        (<a id='3039' tid='3040' class='u'>setq</a> <a id='3041' tid='3042' class='u'>firstp</a> <a id='3043' tid='3044' class='u'>nil</a>)))
+    <a id='3045' tid='3046' class='u'>end-of-list-p</a>))
+
+(<a id='3763' tid='3764' class='u'>defun</a> <a id='3765' tid='3766' class='u'>paredit-kill-sexps-on-whole-line</a> (<a id='3767' tid='3768' class='u'>beginning</a>)
+  (<a id='3769' tid='3770' class='u'>kill-region</a> <a id='3771' tid='3772' class='u'>beginning</a>
+               (<a id='3773' tid='3774' class='u'>or</a> (<a id='3775' tid='3776' class='u'>save-excursion</a>     <a id='3777' tid='3778' class='u'>; Delete trailing indentation...
+</a>                     (<a id='3779' tid='3780' class='u'>paredit-skip-whitespace</a> <a id='3781' tid='3782' class='u'>t</a>)
+                     (<a id='3783' tid='3784' class='u'>and</a> (<a id='3785' tid='3786' class='u'>not</a> (<a id='3787' tid='3788' class='u'>eq</a> (<a id='3789' tid='3790' class='u'>char-after</a>) <a id='3791' tid='3792' class='u'>?\;</a> ))
+                          (<a id='3793' tid='3794' class='u'>point</a>)))
+                   <a id='3795' tid='3796' class='u'>;; ...or just use the point past the newline, if
+</a>                   <a id='3797' tid='3798' class='u'>;; we encounter a comment.
+</a>                   (<a id='3799' tid='3800' class='u'>point-at-eol</a>)))
+  (<a id='3801' tid='3802' class='u'>cond</a> ((<a id='3803' tid='3804' class='u'>save-excursion</a> (<a id='3805' tid='3806' class='u'>paredit-skip-whitespace</a> <a id='3807' tid='3808' class='u'>nil</a> (<a id='3809' tid='3810' class='u'>point-at-bol</a>))
+                         (<a id='3811' tid='3812' class='u'>bolp</a>))
+         <a id='3813' tid='3814' class='u'>;; Nothing but indentation before the point, so indent it.
+</a>         (<a id='3815' tid='3816' class='u'>lisp-indent-line</a>))
+        ((<a id='3817' tid='3818' class='u'>eobp</a>) <a id='3819' tid='3820' class='u'>nil</a>)       <a id='3821' tid='3822' class='u'>; Protect the CHAR-SYNTAX below against NIL.
+</a>        <a id='3823' tid='3824' class='u'>;; Insert a space to avoid invalid joining if necessary.
+</a>        ((<a id='3825' tid='3826' class='u'>let</a> ((<a id='3827' tid='3828' class='u'>syn-before</a> (<a id='3829' tid='3830' class='u'>char-syntax</a> (<a id='3831' tid='3832' class='u'>char-before</a>)))
+               (<a id='3833' tid='3834' class='u'>syn-after</a>  (<a id='3835' tid='3836' class='u'>char-syntax</a> (<a id='3837' tid='3838' class='u'>char-after</a>))))
+           (<a id='3839' tid='3840' class='u'>or</a> (<a id='3841' tid='3842' class='u'>and</a> (<a id='3843' tid='3844' class='u'>eq</a> <a id='3845' tid='3846' class='u'>syn-before</a> <a id='3847' tid='3848' class='u'>?\)</a> )            <a id='3849' tid='3850' class='u'>; Separate opposing
+</a>                    (<a id='3851' tid='3852' class='u'>eq</a> <a id='3853' tid='3854' class='u'>syn-after</a>  <a id='3855' tid='3856' class='u'>?\(</a> ))           <a id='3857' tid='3858' class='u'>;   parentheses,
+</a>               (<a id='3859' tid='3860' class='u'>and</a> (<a id='3861' tid='3862' class='u'>eq</a> <a id='3863' tid='3864' class='u'>syn-before</a> <a id='3865' tid='3866' class='u'>?\&quot;</a> )            <a id='3867' tid='3868' class='u'>; string delimiter
+</a>                    (<a id='3869' tid='3870' class='u'>eq</a> <a id='3871' tid='3872' class='u'>syn-after</a>  <a id='3873' tid='3874' class='u'>?\&quot;</a> ))           <a id='3875' tid='3876' class='u'>;   pairs,
+</a>               (<a id='3877' tid='3878' class='u'>and</a> (<a id='3879' tid='3880' class='u'>memq</a> <a id='3881' tid='3882' class='u'>syn-before</a> <a id='3883' tid='3884' class='u'>&#39;</a>(<a id='3885' tid='3886' class='u'>?_</a> <a id='3887' tid='3888' class='u'>?w</a>))      <a id='3889' tid='3890' class='u'>; or word or symbol
+</a>                    (<a id='3891' tid='3892' class='u'>memq</a> <a id='3893' tid='3894' class='u'>syn-after</a>  <a id='3895' tid='3896' class='u'>&#39;</a>(<a id='3897' tid='3898' class='u'>?_</a> <a id='3899' tid='3900' class='u'>?w</a>)))))   <a id='3901' tid='3902' class='u'>;   constituents.
+</a>         (<a id='3903' tid='3904' class='u'>insert</a> <a id='3905' tid='3906' class='u'>&quot; &quot;</a>))))
+
+<span class='d'>;;;;; Killing Words
+</span>
+<span class='d'>;;; This is tricky and asymmetrical because backward parsing is
+</span><span class='d'>;;; extraordinarily difficult or impossible, so we have to implement
+</span><span class='d'>;;; killing in both directions by parsing forward.
+</span>
+(<a id='2759' tid='2760' class='u'>defun</a> <a id='2761' tid='2762' class='u'>paredit-forward-kill-word</a> ()
+  <a id='2763' tid='2764' class='u'>&quot;Kill a word forward, skipping over intervening delimiters.&quot;</a>
+  (<a id='2765' tid='2766' class='u'>interactive</a>)
+  (<a id='2767' tid='2768' class='u'>let</a> ((<a id='2769' tid='2770' class='u'>beginning</a> (<a id='2771' tid='2772' class='u'>point</a>)))
+    (<a id='2773' tid='2774' class='u'>skip-syntax-forward</a> <a id='2775' tid='2776' class='u'>&quot; -&quot;</a>)
+    (<a id='2777' tid='2778' class='u'>let*</a> ((<a id='2779' tid='2780' class='u'>parse-state</a> (<a id='2781' tid='2782' class='u'>paredit-current-parse-state</a>))
+           (<a id='2783' tid='2784' class='u'>state</a> (<a id='2785' tid='2786' class='u'>paredit-kill-word-state</a> <a id='2787' tid='2788' class='u'>parse-state</a> <a id='2789' tid='2790' class='u'>&#39;</a><a id='2791' tid='2792' class='u'>char-after</a>)))
+      (<a id='2793' tid='2794' class='u'>while</a> (<a id='2795' tid='2796' class='u'>not</a> (<a id='2797' tid='2798' class='u'>or</a> (<a id='2799' tid='2800' class='u'>eobp</a>)
+                      (<a id='2801' tid='2802' class='u'>eq</a> <a id='2803' tid='2804' class='u'>?w</a> (<a id='2805' tid='2806' class='u'>char-syntax</a> (<a id='2807' tid='2808' class='u'>char-after</a>)))))
+        (<a id='2809' tid='2810' class='u'>setq</a> <a id='2811' tid='2812' class='u'>parse-state</a>
+              (<a id='2813' tid='2814' class='u'>progn</a> (<a id='2815' tid='2816' class='u'>forward-char</a> <a id='2817' tid='2818' class='u'>1</a>) (<a id='2819' tid='2820' class='u'>paredit-current-parse-state</a>))
+<a id='2821' tid='2822' class='u'>;;               (parse-partial-sexp (point) (1+ (point))
+</a><a id='2823' tid='2824' class='u'>;;                                   nil nil parse-state)
+</a>              )
+        (<a id='2825' tid='2826' class='u'>let*</a> ((<a id='2827' tid='2828' class='u'>old-state</a> <a id='2829' tid='2830' class='u'>state</a>)
+               (<a id='2831' tid='2832' class='u'>new-state</a>
+                (<a id='2833' tid='2834' class='u'>paredit-kill-word-state</a> <a id='2835' tid='2836' class='u'>parse-state</a> <a id='2837' tid='2838' class='u'>&#39;</a><a id='2839' tid='2840' class='u'>char-after</a>)))
+          (<a id='2841' tid='2842' class='u'>cond</a> ((<a id='2843' tid='2844' class='u'>not</a> (<a id='2845' tid='2846' class='u'>eq</a> <a id='2847' tid='2848' class='u'>old-state</a> <a id='2849' tid='2850' class='u'>new-state</a>))
+                 (<a id='2851' tid='2852' class='u'>setq</a> <a id='2853' tid='2854' class='u'>parse-state</a>
+                       (<a id='2855' tid='2856' class='u'>paredit-kill-word-hack</a> <a id='2857' tid='2858' class='u'>old-state</a>
+                                               <a id='2859' tid='2860' class='u'>new-state</a>
+                                               <a id='2861' tid='2862' class='u'>parse-state</a>))
+                 (<a id='2863' tid='2864' class='u'>setq</a> <a id='2865' tid='2866' class='u'>state</a>
+                       (<a id='2867' tid='2868' class='u'>paredit-kill-word-state</a> <a id='2869' tid='2870' class='u'>parse-state</a>
+                                                <a id='2871' tid='2872' class='u'>&#39;</a><a id='2873' tid='2874' class='u'>char-after</a>))
+                 (<a id='2875' tid='2876' class='u'>setq</a> <a id='2877' tid='2878' class='u'>beginning</a> (<a id='2879' tid='2880' class='u'>point</a>)))))))
+    (<a id='2881' tid='2882' class='u'>goto-char</a> <a id='2883' tid='2884' class='u'>beginning</a>)
+    (<a id='2885' tid='2886' class='u'>kill-word</a> <a id='2887' tid='2888' class='u'>1</a>)))
+
+(<a id='1971' tid='1972' class='u'>defun</a> <a id='1973' tid='1974' class='u'>paredit-backward-kill-word</a> ()
+  <a id='1975' tid='1976' class='u'>&quot;Kill a word backward, skipping over any intervening delimiters.&quot;</a>
+  (<a id='1977' tid='1978' class='u'>interactive</a>)
+  (<a id='1979' tid='1980' class='u'>if</a> (<a id='1981' tid='1982' class='u'>not</a> (<a id='1983' tid='1984' class='u'>or</a> (<a id='1985' tid='1986' class='u'>bobp</a>)
+               (<a id='1987' tid='1988' class='u'>eq</a> (<a id='1989' tid='1990' class='u'>char-syntax</a> (<a id='1991' tid='1992' class='u'>char-before</a>)) <a id='1993' tid='1994' class='u'>?w</a>)))
+      (<a id='1995' tid='1996' class='u'>let</a> ((<a id='1997' tid='1998' class='u'>end</a> (<a id='1999' tid='2000' class='u'>point</a>)))
+        (<a id='2001' tid='2002' class='u'>backward-word</a> <a id='2003' tid='2004' class='u'>1</a>)
+        (<a id='2005' tid='2006' class='u'>forward-word</a> <a id='2007' tid='2008' class='u'>1</a>)
+        (<a id='2009' tid='2010' class='u'>goto-char</a> (<a id='2011' tid='2012' class='u'>min</a> <a id='2013' tid='2014' class='u'>end</a> (<a id='2015' tid='2016' class='u'>point</a>)))
+        (<a id='2017' tid='2018' class='u'>let*</a> ((<a id='2019' tid='2020' class='u'>parse-state</a> (<a id='2021' tid='2022' class='u'>paredit-current-parse-state</a>))
+               (<a id='2023' tid='2024' class='u'>state</a>
+                (<a id='2025' tid='2026' class='u'>paredit-kill-word-state</a> <a id='2027' tid='2028' class='u'>parse-state</a> <a id='2029' tid='2030' class='u'>&#39;</a><a id='2031' tid='2032' class='u'>char-before</a>)))
+          (<a id='2033' tid='2034' class='u'>while</a> (<a id='2035' tid='2036' class='u'>and</a> (<a id='2037' tid='2038' class='u'>&lt;</a> (<a id='2039' tid='2040' class='u'>point</a>) <a id='2041' tid='2042' class='u'>end</a>)
+                      (<a id='2043' tid='2044' class='u'>progn</a>
+                        (<a id='2045' tid='2046' class='u'>setq</a> <a id='2047' tid='2048' class='u'>parse-state</a>
+                              (<a id='2049' tid='2050' class='u'>parse-partial-sexp</a> (<a id='2051' tid='2052' class='u'>point</a>) (<a id='2053' tid='2054' class='u'>1+</a> (<a id='2055' tid='2056' class='u'>point</a>))
+                                                  <a id='2057' tid='2058' class='u'>nil</a> <a id='2059' tid='2060' class='u'>nil</a> <a id='2061' tid='2062' class='u'>parse-state</a>))
+                        (<a id='2063' tid='2064' class='u'>or</a> (<a id='2065' tid='2066' class='u'>eq</a> <a id='2067' tid='2068' class='u'>state</a>
+                                (<a id='2069' tid='2070' class='u'>paredit-kill-word-state</a> <a id='2071' tid='2072' class='u'>parse-state</a>
+                                                         <a id='2073' tid='2074' class='u'>&#39;</a><a id='2075' tid='2076' class='u'>char-before</a>))
+                            (<a id='2077' tid='2078' class='u'>progn</a> (<a id='2079' tid='2080' class='u'>backward-char</a> <a id='2081' tid='2082' class='u'>1</a>) <a id='2083' tid='2084' class='u'>nil</a>)))))
+          (<a id='2085' tid='2086' class='u'>if</a> (<a id='2087' tid='2088' class='u'>and</a> (<a id='2089' tid='2090' class='u'>eq</a> <a id='2091' tid='2092' class='u'>state</a> <a id='2093' tid='2094' class='u'>&#39;</a><a id='2095' tid='2096' class='u'>comment</a>)
+                   (<a id='2097' tid='2098' class='u'>eq</a> <a id='2099' tid='2100' class='u'>?\#</a> (<a id='2101' tid='2102' class='u'>char-after</a> (<a id='2103' tid='2104' class='u'>point</a>)))
+                   (<a id='2105' tid='2106' class='u'>eq</a> <a id='2107' tid='2108' class='u'>?\|</a> (<a id='2109' tid='2110' class='u'>char-before</a> (<a id='2111' tid='2112' class='u'>point</a>))))
+              (<a id='2113' tid='2114' class='u'>backward-char</a> <a id='2115' tid='2116' class='u'>1</a>)))))
+  (<a id='2117' tid='2118' class='u'>backward-kill-word</a> <a id='2119' tid='2120' class='u'>1</a>))
+
+<span class='d'>;;; Word-Killing Auxiliaries
+</span>
+(<a id='4013' tid='4014' class='u'>defun</a> <a id='4015' tid='4016' class='u'>paredit-kill-word-state</a> (<a id='4017' tid='4018' class='u'>parse-state</a> <a id='4019' tid='4020' class='u'>adjacent-char-fn</a>)
+  (<a id='4021' tid='4022' class='u'>cond</a> ((<a id='4023' tid='4024' class='u'>paredit-in-comment-p</a> <a id='4025' tid='4026' class='u'>parse-state</a>) <a id='4027' tid='4028' class='u'>&#39;</a><a id='4029' tid='4030' class='u'>comment</a>)
+        ((<a id='4031' tid='4032' class='u'>paredit-in-string-p</a>  <a id='4033' tid='4034' class='u'>parse-state</a>) <a id='4035' tid='4036' class='u'>&#39;</a><a id='4037' tid='4038' class='u'>string</a>)
+        ((<a id='4039' tid='4040' class='u'>memq</a> (<a id='4041' tid='4042' class='u'>char-syntax</a> (<a id='4043' tid='4044' class='u'>funcall</a> <a id='4045' tid='4046' class='u'>adjacent-char-fn</a>))
+               <a id='4047' tid='4048' class='u'>&#39;</a>(<a id='4049' tid='4050' class='u'>?\(</a> <a id='4051' tid='4052' class='u'>?\)</a> ))
+         <a id='4053' tid='4054' class='u'>&#39;</a><a id='4055' tid='4056' class='u'>delimiter</a>)
+        (<a id='4057' tid='4058' class='u'>t</a> <a id='4059' tid='4060' class='u'>&#39;</a><a id='4061' tid='4062' class='u'>other</a>)))
+
+<span class='d'>;;; This optionally advances the point past any comment delimiters that
+</span><span class='d'>;;; should probably not be touched, based on the last state change and
+</span><span class='d'>;;; the characters around the point.  It returns a new parse state,
+</span><span class='d'>;;; starting from the PARSE-STATE parameter.
+</span>
+(<a id='3911' tid='3912' class='u'>defun</a> <a id='3913' tid='3914' class='u'>paredit-kill-word-hack</a> (<a id='3915' tid='3916' class='u'>old-state</a> <a id='3917' tid='3918' class='u'>new-state</a> <a id='3919' tid='3920' class='u'>parse-state</a>)
+  (<a id='3921' tid='3922' class='u'>cond</a> ((<a id='3923' tid='3924' class='u'>and</a> (<a id='3925' tid='3926' class='u'>not</a> (<a id='3927' tid='3928' class='u'>eq</a> <a id='3929' tid='3930' class='u'>old-state</a> <a id='3931' tid='3932' class='u'>&#39;</a><a id='3933' tid='3934' class='u'>comment</a>))
+              (<a id='3935' tid='3936' class='u'>not</a> (<a id='3937' tid='3938' class='u'>eq</a> <a id='3939' tid='3940' class='u'>new-state</a> <a id='3941' tid='3942' class='u'>&#39;</a><a id='3943' tid='3944' class='u'>comment</a>))
+              (<a id='3945' tid='3946' class='u'>not</a> (<a id='3947' tid='3948' class='u'>paredit-in-string-escape-p</a>))
+              (<a id='3949' tid='3950' class='u'>eq</a> <a id='3951' tid='3952' class='u'>?\#</a> (<a id='3953' tid='3954' class='u'>char-before</a>))
+              (<a id='3955' tid='3956' class='u'>eq</a> <a id='3957' tid='3958' class='u'>?\|</a> (<a id='3959' tid='3960' class='u'>char-after</a>)))
+         (<a id='3961' tid='3962' class='u'>forward-char</a> <a id='3963' tid='3964' class='u'>1</a>)
+         (<a id='3965' tid='3966' class='u'>paredit-current-parse-state</a>)
+<a id='3967' tid='3968' class='u'>;;          (parse-partial-sexp (point) (1+ (point))
+</a><a id='3969' tid='3970' class='u'>;;                              nil nil parse-state)
+</a>         )
+        ((<a id='3971' tid='3972' class='u'>and</a> (<a id='3973' tid='3974' class='u'>not</a> (<a id='3975' tid='3976' class='u'>eq</a> <a id='3977' tid='3978' class='u'>old-state</a> <a id='3979' tid='3980' class='u'>&#39;</a><a id='3981' tid='3982' class='u'>comment</a>))
+              (<a id='3983' tid='3984' class='u'>eq</a> <a id='3985' tid='3986' class='u'>new-state</a> <a id='3987' tid='3988' class='u'>&#39;</a><a id='3989' tid='3990' class='u'>comment</a>)
+              (<a id='3991' tid='3992' class='u'>eq</a> <a id='3993' tid='3994' class='u'>?\;</a> (<a id='3995' tid='3996' class='u'>char-before</a>)))
+         (<a id='3997' tid='3998' class='u'>skip-chars-forward</a> <a id='3999' tid='4000' class='u'>&quot;;&quot;</a>)
+         (<a id='4001' tid='4002' class='u'>paredit-current-parse-state</a>)
+<a id='4003' tid='4004' class='u'>;;          (parse-partial-sexp (point) (save-excursion
+</a><a id='4005' tid='4006' class='u'>;;                                        (skip-chars-forward &quot;;&quot;))
+</a><a id='4007' tid='4008' class='u'>;;                              nil nil parse-state)
+</a>         )
+        (<a id='4009' tid='4010' class='u'>t</a> <a id='4011' tid='4012' class='u'>parse-state</a>)))
+
+<span class='d'>;;;; Cursor and Screen Movement
+</span>
+(<a id='4787' tid='4788' class='u'>eval-and-compile</a>
+  (<a id='4825' tid='4826' class='u'>defmacro</a> <a id='4827' tid='4828' class='u'>defun-saving-mark</a> (<a id='4829' tid='4830' class='u'>name</a> <a id='4831' tid='4832' class='u'>bvl</a> <a id='4833' tid='4834' class='u'>doc</a> <a id='4835' tid='4836' class='u'>&rest</a> <a id='4837' tid='4838' class='u'>body</a>)
+    <a id='4839' tid='4840' class='u'>`</a>(<a id='4789' tid='4790' class='u'>defun</a> <a id='4791' tid='4792' class='u'>,</a><a id='4793' tid='4794' class='u'>name</a> <a id='4795' tid='4796' class='u'>,</a><a id='4797' tid='4798' class='u'>bvl</a>
+       <a id='4799' tid='4800' class='u'>,</a><a id='4801' tid='4802' class='u'>doc</a>
+       <a id='4803' tid='4804' class='u'>,</a>(<a id='4805' tid='4806' class='u'>xcond</a> ((<a id='4807' tid='4808' class='u'>paredit-xemacs-p</a>)
+                <a id='4809' tid='4810' class='u'>&#39;</a>(<a id='4811' tid='4812' class='u'>interactive</a> <a id='4813' tid='4814' class='u'>&quot;_&quot;</a>))
+               ((<a id='4815' tid='4816' class='u'>paredit-gnu-emacs-p</a>)
+                <a id='4817' tid='4818' class='u'>&#39;</a>(<a id='4819' tid='4820' class='u'>interactive</a>)))
+       <a id='4821' tid='4822' class='u'>,</a><a id='4823' tid='4824' class='u'>@body</a>)))
+
+(<a id='4841' tid='4842' class='u'>defun-saving-mark</a> <a id='4843' tid='4844' class='u'>paredit-forward</a> ()
+  <a id='4845' tid='4846' class='u'>&quot;Move forward an S-expression, or up an S-expression forward.
+If there are no more S-expressions in this one before the closing
+  delimiter, move past that closing delimiter; otherwise, move forward
+  past the S-expression following the point.&quot;</a>
+  (<a id='4847' tid='4848' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='4849' tid='4850' class='u'>forward-sexp</a>)
+    <a id='4851' tid='4852' class='u'>;++ Is it necessary to use UP-LIST and not just FORWARD-CHAR?
+</a>    (<a id='4853' tid='4854' class='u'>if</a> (<a id='4855' tid='4856' class='u'>paredit-in-string-p</a>) (<a id='4857' tid='4858' class='u'>forward-char</a>) (<a id='4859' tid='4860' class='u'>up-list</a>))))
+
+(<a id='4861' tid='4862' class='u'>defun-saving-mark</a> <a id='4863' tid='4864' class='u'>paredit-backward</a> ()
+  <a id='4865' tid='4866' class='u'>&quot;Move backward an S-expression, or up an S-expression backward.
+If there are no more S-expressions in this one before the opening
+  delimiter, move past that opening delimiter backward; otherwise, move
+  move backward past the S-expression preceding the point.&quot;</a>
+  (<a id='4867' tid='4868' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='4869' tid='4870' class='u'>backward-sexp</a>)
+    (<a id='4871' tid='4872' class='u'>if</a> (<a id='4873' tid='4874' class='u'>paredit-in-string-p</a>) (<a id='4875' tid='4876' class='u'>backward-char</a>) (<a id='4877' tid='4878' class='u'>backward-up-list</a>))))
+
+<a id='4879' tid='4880' class='u'>;;; Why is this not in lisp.el?
+</a>
+(<a id='1493' tid='1494' class='u'>defun</a> <a id='1495' tid='1496' class='u'>backward-down-list</a> (<a id='1497' tid='1498' class='u'>&optional</a> <a id='1499' tid='1500' class='u'>arg</a>)
+  <a id='1501' tid='1502' class='u'>&quot;Move backward and descend into one level of parentheses.
+With ARG, do this that many times.
+A negative argument means move forward but still descend a level.&quot;</a>
+  (<a id='1503' tid='1504' class='u'>interactive</a> <a id='1505' tid='1506' class='u'>&quot;p&quot;</a>)
+  (<a id='1507' tid='1508' class='u'>down-list</a> (<a id='1509' tid='1510' class='u'>-</a> (<a id='1511' tid='1512' class='u'>or</a> <a id='1513' tid='1514' class='u'>arg</a> <a id='1515' tid='1516' class='u'>1</a>))))
+
+<a id='4881' tid='4882' class='u'>;;; Thanks to Marco Baringer for suggesting & writing this function.
+</a>
+(<a id='4263' tid='4264' class='u'>defun</a> <a id='4265' tid='4266' class='u'>paredit-recentre-on-sexp</a> (<a id='4267' tid='4268' class='u'>&optional</a> <a id='4269' tid='4270' class='u'>n</a>)
+  <a id='4271' tid='4272' class='u'>&quot;Recentre the screen on the S-expression following the point.
+With a prefix argument N, encompass all N S-expressions forward.&quot;</a>
+  (<a id='4273' tid='4274' class='u'>interactive</a> <a id='4275' tid='4276' class='u'>&quot;P&quot;</a>)
+  (<a id='4277' tid='4278' class='u'>save-excursion</a>
+    (<a id='4279' tid='4280' class='u'>forward-sexp</a> <a id='4281' tid='4282' class='u'>n</a>)
+    (<a id='4283' tid='4284' class='u'>let</a> ((<a id='4285' tid='4286' class='u'>end-point</a> (<a id='4287' tid='4288' class='u'>point</a>)))
+      (<a id='4289' tid='4290' class='u'>backward-sexp</a> <a id='4291' tid='4292' class='u'>n</a>)
+      (<a id='4293' tid='4294' class='u'>let*</a> ((<a id='4295' tid='4296' class='u'>start-point</a> (<a id='4297' tid='4298' class='u'>point</a>))
+             (<a id='4299' tid='4300' class='u'>start-line</a> (<a id='4301' tid='4302' class='u'>count-lines</a> (<a id='4303' tid='4304' class='u'>point-min</a>) (<a id='4305' tid='4306' class='u'>point</a>)))
+             (<a id='4307' tid='4308' class='u'>lines-on-sexps</a> (<a id='4309' tid='4310' class='u'>count-lines</a> <a id='4311' tid='4312' class='u'>start-point</a> <a id='4313' tid='4314' class='u'>end-point</a>)))
+        (<a id='4315' tid='4316' class='u'>goto-line</a> (<a id='4317' tid='4318' class='u'>+</a> <a id='4319' tid='4320' class='u'>start-line</a> (<a id='4321' tid='4322' class='u'>/</a> <a id='4323' tid='4324' class='u'>lines-on-sexps</a> <a id='4325' tid='4326' class='u'>2</a>)))
+        (<a id='4327' tid='4328' class='u'>recenter</a>)))))
+
+<span class='d'>;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
+</span>
+(<a id='4613' tid='4614' class='u'>defun</a> <a id='4615' tid='4616' class='u'>paredit-wrap-sexp</a> <span class='d'>(&optional n)</span>
+  <span class='d'>&quot;Wrap the following S-expression in a list.
+If a prefix argument N is given, wrap N S-expressions.
+Automatically indent the newly wrapped S-expression.
+As a special case, if the point is at the end of a list, simply insert
+  a pair of parentheses, rather than insert a lone opening parenthesis
+  and then signal an error, in the interest of preserving structure.&quot;</span>
+  (<a id='4617' tid='4618' class='u'>interactive</a> <a id='4619' tid='4620' class='u'>&quot;P&quot;</a>)
+  <span class='d'>(paredit-handle-sexp-errors
+      (paredit-insert-pair (or n
+                               (and (not (paredit-region-active-p))
+                                    1))
+                           ?\( ?\)
+                           &#39;goto-char)
+    (insert ?\) )
+    (backward-char))</span>
+  (<a id='4621' tid='4622' class='u'>save-excursion</a> (<a id='4623' tid='4624' class='u'>backward-up-list</a>) (<a id='4625' tid='4626' class='u'>indent-sexp</a>)))
