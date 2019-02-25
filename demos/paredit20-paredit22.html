@@ -3381,3 +3381,970 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</spa
                (backward-char))
            (copy-region-as-kill (point) (point-at-eol))))
         (t (paredit-copy-sexps-as-kill))))</span>
+
+<span class='i'>(defun paredit-copy-as-kill-in-string ()
+  (save-excursion
+    (if (paredit-in-string-escape-p)
+        (backward-char))
+    (copy-region-as-kill (point)
+                         (min (point-at-eol)
+                              (cdr (paredit-string-start+end-points))))))</span>
+
+<span class='i'>(defun paredit-copy-sexps-as-kill ()
+  (save-excursion
+    (if (paredit-in-char-p)
+        (backward-char 2))
+    (let ((beginning (point))
+          (eol (point-at-eol)))
+      (let ((end-of-list-p (paredit-forward-sexps-to-kill beginning eol)))
+        (if end-of-list-p (progn (up-list) (backward-char)))
+        (copy-region-as-kill beginning
+                             (cond (kill-whole-line
+                                    (or (save-excursion
+                                          (paredit-skip-whitespace t)
+                                          (and (not (eq (char-after) ?\; ))
+                                               (point)))
+                                        (point-at-eol)))
+                                   ((and (not end-of-list-p)
+                                         (eq (point-at-eol) eol))
+                                    eol)
+                                   (t
+                                    (point))))))))</span>
+
+<span class='i'>;;;; Safe Region Killing/Copying
+</span>
+<span class='i'>;;; This is an experiment.  It&#39;s not enough: `paredit-kill-ring-save&#39;
+</span><span class='i'>;;; is always safe; it&#39;s `yank&#39; that&#39;s not safe, but even trickier to
+</span><span class='i'>;;; implement than `paredit-kill-region&#39;.  Also, the heuristics for
+</span><span class='i'>;;; `paredit-kill-region&#39; are slightly too conservative -- they will
+</span><span class='i'>;;; sometimes reject killing regions that would be safe to kill.
+</span><span class='i'>;;; (Consider, e,g., a region that starts in a comment and ends in the
+</span><span class='i'>;;; middle of a symbol at the end of a line: that&#39;s safe to kill, but
+</span><span class='i'>;;; `paredit-kill-region&#39; won&#39;t allow it.)  I don&#39;t know whether they
+</span><span class='i'>;;; are too liberal: I haven&#39;t constructed a region that is unsafe to
+</span><span class='i'>;;; kill but which `paredit-kill-region&#39; will kill, but I haven&#39;t ruled
+</span><span class='i'>;;; out the possibility either.
+</span>
+<span class='i'>(defun paredit-kill-ring-save (beginning end)
+  &quot;Save the balanced region, but don&#39;t kill it, like `kill-ring-save&#39;.
+If the text of the region is imbalanced, signal an error instead.
+With a prefix argument, disregard any imbalance.&quot;
+  (interactive &quot;r&quot;)
+  (if (not current-prefix-arg)
+      (paredit-check-region beginning end))
+  (setq this-command &#39;kill-ring-save)
+  (kill-ring-save beginning end))</span>
+
+<span class='i'>(defun paredit-kill-region (beginning end &optional yank-handler)
+  &quot;Kill balanced text between point and mark, like `kill-region&#39;.
+If that text is imbalanced, signal an error instead.&quot;
+  (interactive &quot;r&quot;)
+  (if (and beginning end)
+      ;; Check that region begins and ends in a sufficiently similar
+      ;; state, so that deleting it will leave the buffer balanced.
+      (save-excursion
+        (goto-char beginning)
+        (let* ((state (paredit-current-parse-state))
+               (state* (parse-partial-sexp beginning end nil nil state)))
+          (paredit-check-region-state state state*))))
+  (setq this-command &#39;kill-region)
+  (kill-region beginning end yank-handler))</span>
+
+<span class='i'>(defun paredit-check-region-state (beginning-state end-state)
+  (paredit-check-region-state-depth beginning-state end-state)
+  (paredit-check-region-state-string beginning-state end-state)
+  (paredit-check-region-state-comment beginning-state end-state)
+  (paredit-check-region-state-char-quote beginning-state end-state))</span>
+
+<span class='i'>(defun paredit-check-region-state-depth (beginning-state end-state)
+  (let ((beginning-depth (nth 0 beginning-state))
+        (end-depth (nth 0 end-state)))
+    (if (not (= beginning-depth end-depth))
+        (error &quot;Mismatched parenthesis depth: %S at start, %S at end.&quot;
+               beginning-depth
+               end-depth))))</span>
+
+<span class='i'>(defun paredit-check-region-state-string (beginning-state end-state)
+  (let ((beginning-string-p (nth 3 beginning-state))
+        (end-string-p (nth 3 end-state)))
+    (if (not (eq beginning-string-p end-string-p))
+        (error &quot;Mismatched string state: start %sin string, end %sin string.&quot;
+               (if beginning-string-p &quot;&quot; &quot;not &quot;)
+               (if end-string-p &quot;&quot; &quot;not &quot;)))))</span>
+
+<span class='i'>(defun paredit-check-region-state-comment (beginning-state end-state)
+  (let ((beginning-comment-state (nth 4 beginning-state))
+        (end-comment-state (nth 4 end-state)))
+    (if (not (or (eq beginning-comment-state end-comment-state)
+                 (and (eq beginning-comment-state nil)
+                      (eq end-comment-state t)
+                      (eolp))))
+        (error &quot;Mismatched comment state: %s&quot;
+               (cond ((and (integerp beginning-comment-state)
+                           (integerp end-comment-state))
+                      (format &quot;depth %S at start, depth %S at end.&quot;
+                              beginning-comment-state
+                              end-comment-state))
+                     ((integerp beginning-comment-state)
+                      &quot;start in nested comment, end otherwise.&quot;)
+                     ((integerp end-comment-state)
+                      &quot;end in nested comment, start otherwise.&quot;)
+                     (beginning-comment-state
+                      &quot;start in comment, end not in comment.&quot;)
+                     (end-comment-state
+                      &quot;end in comment, start not in comment.&quot;)
+                     (t
+                      (format &quot;start %S, end %S.&quot;
+                              beginning-comment-state
+                              end-comment-state)))))))</span>
+
+<span class='i'>(defun paredit-check-region-state-char-quote (beginning-state end-state)
+  (let ((beginning-char-quote (nth 5 beginning-state))
+        (end-char-quote (nth 5 end-state)))
+    (if (not (eq beginning-char-quote end-char-quote))
+        (let ((phrase &quot;character quotation&quot;))
+          (error &quot;Mismatched %s: start %sin %s, end %sin %s.&quot;
+                 phrase
+                 (if beginning-char-quote &quot;&quot; &quot;not &quot;)
+                 phrase
+                 (if end-char-quote &quot;&quot; &quot;not &quot;)
+                 phrase)))))</span>
+
+<span class='i'>;;;; Cursor and Screen Movement
+</span>
+(<a id='4788' tid='4787' class='u'>eval-and-compile</a>
+  (<a id='4826' tid='4825' class='u'>defmacro</a> <a id='4828' tid='4827' class='u'>defun-saving-mark</a> (<a id='4830' tid='4829' class='u'>name</a> <a id='4832' tid='4831' class='u'>bvl</a> <a id='4834' tid='4833' class='u'>doc</a> <a id='4836' tid='4835' class='u'>&rest</a> <a id='4838' tid='4837' class='u'>body</a>)
+    <a id='4840' tid='4839' class='u'>`</a>(<a id='4790' tid='4789' class='u'>defun</a> <a id='4792' tid='4791' class='u'>,</a><a id='4794' tid='4793' class='u'>name</a> <a id='4796' tid='4795' class='u'>,</a><a id='4798' tid='4797' class='u'>bvl</a>
+       <a id='4800' tid='4799' class='u'>,</a><a id='4802' tid='4801' class='u'>doc</a>
+       <a id='4804' tid='4803' class='u'>,</a>(<a id='4806' tid='4805' class='u'>xcond</a> ((<a id='4808' tid='4807' class='u'>paredit-xemacs-p</a>)
+                <a id='4810' tid='4809' class='u'>&#39;</a>(<a id='4812' tid='4811' class='u'>interactive</a> <a id='4814' tid='4813' class='u'>&quot;_&quot;</a>))
+               ((<a id='4816' tid='4815' class='u'>paredit-gnu-emacs-p</a>)
+                <a id='4818' tid='4817' class='u'>&#39;</a>(<a id='4820' tid='4819' class='u'>interactive</a>)))
+       <a id='4822' tid='4821' class='u'>,</a><a id='4824' tid='4823' class='u'>@body</a>)))
+
+(<a id='4842' tid='4841' class='u'>defun-saving-mark</a> <a id='4844' tid='4843' class='u'>paredit-forward</a> ()
+  <a id='4846' tid='4845' class='u'>&quot;Move forward an S-expression, or up an S-expression forward.
+If there are no more S-expressions in this one before the closing
+  delimiter, move past that closing delimiter; otherwise, move forward
+  past the S-expression following the point.&quot;</a>
+  (<a id='4848' tid='4847' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='4850' tid='4849' class='u'>forward-sexp</a>)
+    <a id='4852' tid='4851' class='u'>;++ Is it necessary to use UP-LIST and not just FORWARD-CHAR?
+</a>    (<a id='4854' tid='4853' class='u'>if</a> (<a id='4856' tid='4855' class='u'>paredit-in-string-p</a>) (<a id='4858' tid='4857' class='u'>forward-char</a>) (<a id='4860' tid='4859' class='u'>up-list</a>))))
+
+(<a id='4862' tid='4861' class='u'>defun-saving-mark</a> <a id='4864' tid='4863' class='u'>paredit-backward</a> ()
+  <a id='4866' tid='4865' class='u'>&quot;Move backward an S-expression, or up an S-expression backward.
+If there are no more S-expressions in this one before the opening
+  delimiter, move past that opening delimiter backward; otherwise, move
+  move backward past the S-expression preceding the point.&quot;</a>
+  (<a id='4868' tid='4867' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='4870' tid='4869' class='u'>backward-sexp</a>)
+    (<a id='4872' tid='4871' class='u'>if</a> (<a id='4874' tid='4873' class='u'>paredit-in-string-p</a>) (<a id='4876' tid='4875' class='u'>backward-char</a>) (<a id='4878' tid='4877' class='u'>backward-up-list</a>))))
+
+<a id='4880' tid='4879' class='u'>;;; Why is this not in lisp.el?
+</a>
+(<a id='1494' tid='1493' class='u'>defun</a> <a id='1496' tid='1495' class='u'>backward-down-list</a> (<a id='1498' tid='1497' class='u'>&optional</a> <a id='1500' tid='1499' class='u'>arg</a>)
+  <a id='1502' tid='1501' class='u'>&quot;Move backward and descend into one level of parentheses.
+With ARG, do this that many times.
+A negative argument means move forward but still descend a level.&quot;</a>
+  (<a id='1504' tid='1503' class='u'>interactive</a> <a id='1506' tid='1505' class='u'>&quot;p&quot;</a>)
+  (<a id='1508' tid='1507' class='u'>down-list</a> (<a id='1510' tid='1509' class='u'>-</a> (<a id='1512' tid='1511' class='u'>or</a> <a id='1514' tid='1513' class='u'>arg</a> <a id='1516' tid='1515' class='u'>1</a>))))
+
+<a id='4882' tid='4881' class='u'>;;; Thanks to Marco Baringer for suggesting & writing this function.
+</a>
+(<a id='4264' tid='4263' class='u'>defun</a> <a id='4266' tid='4265' class='u'>paredit-recentre-on-sexp</a> (<a id='4268' tid='4267' class='u'>&optional</a> <a id='4270' tid='4269' class='u'>n</a>)
+  <a id='4272' tid='4271' class='u'>&quot;Recentre the screen on the S-expression following the point.
+With a prefix argument N, encompass all N S-expressions forward.&quot;</a>
+  (<a id='4274' tid='4273' class='u'>interactive</a> <a id='4276' tid='4275' class='u'>&quot;P&quot;</a>)
+  (<a id='4278' tid='4277' class='u'>save-excursion</a>
+    (<a id='4280' tid='4279' class='u'>forward-sexp</a> <a id='4282' tid='4281' class='u'>n</a>)
+    (<a id='4284' tid='4283' class='u'>let</a> ((<a id='4286' tid='4285' class='u'>end-point</a> (<a id='4288' tid='4287' class='u'>point</a>)))
+      (<a id='4290' tid='4289' class='u'>backward-sexp</a> <a id='4292' tid='4291' class='u'>n</a>)
+      (<a id='4294' tid='4293' class='u'>let*</a> ((<a id='4296' tid='4295' class='u'>start-point</a> (<a id='4298' tid='4297' class='u'>point</a>))
+             (<a id='4300' tid='4299' class='u'>start-line</a> (<a id='4302' tid='4301' class='u'>count-lines</a> (<a id='4304' tid='4303' class='u'>point-min</a>) (<a id='4306' tid='4305' class='u'>point</a>)))
+             (<a id='4308' tid='4307' class='u'>lines-on-sexps</a> (<a id='4310' tid='4309' class='u'>count-lines</a> <a id='4312' tid='4311' class='u'>start-point</a> <a id='4314' tid='4313' class='u'>end-point</a>)))
+        (<a id='4316' tid='4315' class='u'>goto-line</a> (<a id='4318' tid='4317' class='u'>+</a> <a id='4320' tid='4319' class='u'>start-line</a> (<a id='4322' tid='4321' class='u'>/</a> <a id='4324' tid='4323' class='u'>lines-on-sexps</a> <a id='4326' tid='4325' class='u'>2</a>)))
+        (<a id='4328' tid='4327' class='u'>recenter</a>)))))
+
+<span class='i'>(defun paredit-focus-on-defun ()
+  &quot;Moves display to the top of the definition at point.&quot;
+  (interactive)
+  (beginning-of-defun)
+  (recenter 0))</span>
+
+<span class='i'>;;;; Generalized Upward/Downward Motion
+</span>
+<span class='i'>(defun paredit-up/down (n vertical-direction)
+  (let ((horizontal-direction (if (&lt; 0 n) +1 -1)))
+    (while (/= n 0)
+      (goto-char
+       (paredit-next-up/down-point horizontal-direction vertical-direction))
+      (setq n (- n horizontal-direction)))))</span>
+
+<span class='i'>(defun paredit-next-up/down-point (horizontal-direction vertical-direction)
+  (let ((state (paredit-current-parse-state))
+        (scan-lists
+         (lambda ()
+           (scan-lists (point) horizontal-direction vertical-direction))))
+    (cond ((paredit-in-string-p state)
+           (let ((start+end (paredit-string-start+end-points state)))
+             (if (&lt; 0 vertical-direction)
+                 (if (&lt; 0 horizontal-direction)
+                     (+ 1 (cdr start+end))
+                     (car start+end))
+                 ;; We could let the user try to descend into lists
+                 ;; within the string, but that would be asymmetric
+                 ;; with the up case, which rises out of the whole
+                 ;; string and not just out of a list within the
+                 ;; string, so this case will just be an error.
+                 (error &quot;Can&#39;t descend further into string.&quot;))))
+          ((&lt; 0 vertical-direction)
+           ;; When moving up, just try to rise up out of the list.
+           (or (funcall scan-lists)
+               (buffer-end horizontal-direction)))
+          ((&lt; vertical-direction 0)
+           ;; When moving down, look for a string closer than a list,
+           ;; and use that if we find it.
+           (let* ((list-start
+                   (paredit-handle-sexp-errors (funcall scan-lists) nil))
+                  (string-start
+                   (paredit-find-next-string-start horizontal-direction
+                                                   list-start)))
+             (if (and string-start list-start)
+                 (if (&lt; 0 horizontal-direction)
+                     (min string-start list-start)
+                     (max string-start list-start))
+                 (or string-start
+                     ;; Scan again: this is a kludgey way to report the
+                     ;; error if there really was one.
+                     (funcall scan-lists)
+                     (buffer-end horizontal-direction)))))
+          (t
+           (error &quot;Vertical direction must be nonzero in `%s&#39;.&quot;
+                  &#39;paredit-up/down)))))</span>
+
+<span class='i'>(defun paredit-find-next-string-start (horizontal-direction limit)
+  (let ((next-char (if (&lt; 0 horizontal-direction) &#39;char-after &#39;char-before))
+        (pastp (if (&lt; 0 horizontal-direction) &#39;&lt; &#39;&gt;)))
+    (paredit-handle-sexp-errors
+        (save-excursion
+          (catch &#39;exit
+            (while t
+              (if (and limit (funcall pastp (point) limit))
+                  (throw &#39;exit nil))
+              (forward-sexp horizontal-direction)
+              (save-excursion
+                (backward-sexp horizontal-direction)
+                (if (eq ?\&quot; (char-syntax (funcall next-char)))
+                    (throw &#39;exit (+ (point) horizontal-direction)))))))
+      nil)))</span>
+
+<span class='i'>(defun paredit-forward-down (&optional argument)
+  &quot;Move forward down into a list.
+With a positive argument, move forward down that many levels.
+With a negative argument, move backward down that many levels.&quot;
+  (interactive &quot;p&quot;)
+  (paredit-up/down (or argument +1) -1))</span>
+
+<span class='i'>(defun paredit-backward-up (&optional argument)
+  &quot;Move backward up out of the enclosing list.
+With a positive argument, move backward up that many levels.
+With a negative argument, move forward up that many levels.
+If in a string initially, that counts as one level.&quot;
+  (interactive &quot;p&quot;)
+  (paredit-up/down (- 0 (or argument +1)) +1))</span>
+
+<span class='i'>(defun paredit-forward-up (&optional argument)
+  &quot;Move forward up out of the enclosing list.
+With a positive argument, move forward up that many levels.
+With a negative argument, move backward up that many levels.
+If in a string initially, that counts as one level.&quot;
+  (interactive &quot;p&quot;)
+  (paredit-up/down (or argument +1) +1))</span>
+
+<span class='i'>(defun paredit-backward-down (&optional argument)
+  &quot;Move backward down into a list.
+With a positive argument, move backward down that many levels.
+With a negative argument, move forward down that many levels.&quot;
+  (interactive &quot;p&quot;)
+  (paredit-up/down (- 0 (or argument +1)) -1))</span>
+
+<span class='i'>;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
+</span>
+(<a id='4614' tid='4613' class='u'>defun</a> <a id='4616' tid='4615' class='u'>paredit-wrap-sexp</a> <span class='i'>(&optional argument open close)</span>
+  <span class='i'>&quot;Wrap the following S-expression.
+If a `C-u&#39; prefix argument is given, wrap all S-expressions following
+  the point until the end of the buffer or of the enclosing list.
+If a numeric prefix argument N is given, wrap N S-expressions.
+Automatically indent the newly wrapped S-expression.
+As a special case, if the point is at the end of a list, simply insert
+  a parenthesis pair, rather than inserting a lone opening delimiter
+  and then signalling an error, in the interest of preserving
+  structure.
+By default OPEN and CLOSE are round delimiters.&quot;</span>
+  (<a id='4618' tid='4617' class='u'>interactive</a> <a id='4620' tid='4619' class='u'>&quot;P&quot;</a>)
+  <span class='i'>(paredit-lose-if-not-in-sexp &#39;paredit-wrap-sexp)</span>
+  <span class='i'>(let ((open (or open ?\( ))
+        (close (or close ?\) )))
+    (paredit-handle-sexp-errors
+        ((lambda (n) (paredit-insert-pair n open close &#39;goto-char))
+         (cond ((integerp argument) argument)
+               ((consp argument) (paredit-count-sexps-forward))
+               ((paredit-region-active-p) nil)
+               (t 1)))
+      (insert close)
+      (backward-char)))</span>
+  (<a id='4622' tid='4621' class='u'>save-excursion</a> (<a id='4624' tid='4623' class='u'>backward-up-list</a>) (<a id='4626' tid='4625' class='u'>indent-sexp</a>)))
+
+<span class='i'>(defun paredit-count-sexps-forward ()
+  (save-excursion
+    (let ((n 0))
+      (paredit-ignore-sexp-errors
+        (while (not (eobp))
+          (forward-sexp)
+          (setq n (+ n 1))))
+      n)))</span>
+
+<span class='i'>(defun paredit-yank-pop (&optional argument)
+  &quot;Replace just-yanked text with the next item in the kill ring.
+If this command follows a `yank&#39;, just run `yank-pop&#39;.
+If this command follows a `paredit-wrap-sexp&#39;, or any other paredit
+  wrapping command (see `paredit-wrap-commands&#39;), run `yank&#39; and
+  reindent the enclosing S-expression.
+If this command is repeated, run `yank-pop&#39; and reindent the enclosing
+  S-expression.
+
+The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
+  documentation for details.&quot;
+  (interactive &quot;*p&quot;)
+  (cond ((eq last-command &#39;yank)
+         (yank-pop argument))
+        ((memq last-command paredit-wrap-commands)
+         (yank argument)
+         ;; `yank&#39; futzes with `this-command&#39;.
+         (setq this-command &#39;paredit-yank-pop)
+         (save-excursion (backward-up-list) (indent-sexp)))
+        ((eq last-command &#39;paredit-yank-pop)
+         ;; Pretend we just did a `yank&#39;, so that we can use
+         ;; `yank-pop&#39; without duplicating its definition.
+         (setq last-command &#39;yank)
+         (yank-pop argument)
+         ;; Return to our original state.
+         (setq last-command &#39;paredit-yank-pop)
+         (setq this-command &#39;paredit-yank-pop)
+         (save-excursion (backward-up-list) (indent-sexp)))
+        (t (error &quot;Last command was not a yank or a wrap: %s&quot; last-command))))</span>
+
+<span class='i'>;;; Thanks to Marco Baringer for the suggestion of a prefix argument
+</span><span class='i'>;;; for PAREDIT-SPLICE-SEXP.  (I, Taylor R. Campbell, however, still
+</span><span class='i'>;;; implemented it, in case any of you lawyer-folk get confused by the
+</span><span class='i'>;;; remark in the top of the file about explicitly noting code written
+</span><span class='i'>;;; by other people.)
+</span>
+(<a id='4494' tid='4493' class='u'>defun</a> <a id='4496' tid='4495' class='u'>paredit-splice-sexp</a> <span class='i'>(&optional argument)</span>
+  <span class='i'>&quot;Splice the list that the point is on by removing its delimiters.
+With a prefix argument as in `C-u&#39;, kill all S-expressions backward in
+  the current list before splicing all S-expressions forward into the
+  enclosing list.
+With two prefix arguments as in `C-u C-u&#39;, kill all S-expressions
+  forward in the current list before splicing all S-expressions
+  backward into the enclosing list.
+With a numerical prefix argument N, kill N S-expressions backward in
+  the current list before splicing the remaining S-expressions into the
+  enclosing list.  If N is negative, kill forward.
+Inside a string, unescape all backslashes, or signal an error if doing
+  so would invalidate the buffer&#39;s structure.&quot;</span>
+  (<a id='4498' tid='4497' class='u'>interactive</a> <a id='4500' tid='4499' class='u'>&quot;P&quot;</a>)
+  <span class='i'>(if (paredit-in-string-p)
+      (paredit-splice-string argument)
+      (save-excursion
+        (paredit-kill-surrounding-sexps-for-splice argument)
+        (let ((end (point)))
+          (backward-up-list)            ; Go up to the beginning...
+          (save-excursion
+            (forward-char 1)            ; (Skip over leading whitespace
+            (paredit-skip-whitespace t end)
+            (setq end (point)))         ;   for the `delete-region&#39;.)
+          (let ((indent-start nil) (indent-end nil))
+            (save-excursion
+              (setq indent-start (point))
+              (forward-sexp)            ; Go forward an expression, to
+              (backward-delete-char 1)  ;   delete the end delimiter.
+              (setq indent-end (point)))
+            (delete-region (point) end) ; ...to delete the open char.
+            ;; Reindent only the region we preserved.
+            (indent-region indent-start indent-end)))))</span>)
+
+(<a id='3908' tid='3907' class='u'>defun</a> <a id='3910' tid='3909' class='u'>paredit-kill-surrounding-sexps-for-splice</a> <span class='i'>(argument)</span>
+  (<span class='i'>cond</span> <span class='i'>((or (paredit-in-string-p)
+             (paredit-in-comment-p))
+         (error &quot;Invalid context for splicing S-expressions.&quot;))</span>
+        <span class='i'>((or (not argument) (eq argument 0)) nil)</span>
+        <span class='i'>((or (numberp argument) (eq argument &#39;-))
+         ;; Kill S-expressions before/after the point by saving the
+         ;; point, moving across them, and killing the region.
+         (let* ((argument (if (eq argument &#39;-) -1 argument))
+                (saved (paredit-point-at-sexp-boundary (- argument))))
+           (goto-char saved)
+           (paredit-ignore-sexp-errors (backward-sexp argument))
+           (paredit-hack-kill-region saved (point))))</span>
+        (<span class='i'>(consp argument)</span>
+         (<span class='i'>let</span> <span class='i'>((v (car argument)))</span>
+           (<a id='1210' tid='1209' class='m'>if</a> (<a id='1212' tid='1211' class='m'>=</a> <a id='1214' tid='1213' class='m'>v</a> <a id='1216' tid='1215' class='m'>4</a>)                  <span class='i'>;One `C-u&#39;.
+</span>               <a id='1218' tid='1217' class='m'>;; Move backward until we hit the open paren; then
+</a>               <a id='1220' tid='1219' class='m'>;; kill that selected region.
+</a>               (<span class='i'>let</span> <span class='i'>((end (point)))</span>
+                 (<a id='1222' tid='1221' class='m'>paredit-ignore-sexp-errors</a>
+                   (<a id='1224' tid='1223' class='m'>while</a> (<a id='1226' tid='1225' class='m'>not</a> (<a id='1228' tid='1227' class='m'>bobp</a>))
+                     (<a id='1230' tid='1229' class='m'>backward-sexp</a>)))
+                 <span class='i'>(paredit-hack-kill-region (point) end)</span>)
+               <a id='1232' tid='1231' class='m'>;; Move forward until we hit the close paren; then
+</a>               <a id='1234' tid='1233' class='m'>;; kill that selected region.
+</a>               (<span class='i'>let</span> <span class='i'>((beginning (point)))</span>
+                 (<a id='1236' tid='1235' class='m'>paredit-ignore-sexp-errors</a>
+                   (<a id='1238' tid='1237' class='m'>while</a> (<a id='1240' tid='1239' class='m'>not</a> (<a id='1242' tid='1241' class='m'>eobp</a>))
+                     (<a id='1244' tid='1243' class='m'>forward-sexp</a>)))
+                 <span class='i'>(paredit-hack-kill-region beginning (point))</span>))))
+        <span class='i'>(t (error &quot;Bizarre prefix argument `%s&#39;.&quot; argument))</span>))
+
+(<a id='4502' tid='4501' class='u'>defun</a> <a id='4504' tid='4503' class='u'>paredit-splice-sexp-killing-backward</a> (<a id='4506' tid='4505' class='u'>&optional</a> <a id='4508' tid='4507' class='u'>n</a>)
+  <a id='4510' tid='4509' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions before the point in the current list.
+With a prefix argument N, kill only the preceding N S-expressions.&quot;</a>
+  (<a id='4512' tid='4511' class='u'>interactive</a> <a id='4514' tid='4513' class='u'>&quot;P&quot;</a>)
+  (<a id='4516' tid='4515' class='u'>paredit-splice-sexp</a> (<a id='4518' tid='4517' class='u'>if</a> <a id='4520' tid='4519' class='u'>n</a>
+                           (<a id='4522' tid='4521' class='u'>prefix-numeric-value</a> <a id='4524' tid='4523' class='u'>n</a>)
+                           <a id='4526' tid='4525' class='u'>&#39;</a>(<a id='4528' tid='4527' class='u'>4</a>))))
+
+(<a id='4530' tid='4529' class='u'>defun</a> <a id='4532' tid='4531' class='u'>paredit-splice-sexp-killing-forward</a> (<a id='4534' tid='4533' class='u'>&optional</a> <a id='4536' tid='4535' class='u'>n</a>)
+  <a id='4538' tid='4537' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions after the point in the current list.
+With a prefix argument N, kill only the following N S-expressions.&quot;</a>
+  (<a id='4540' tid='4539' class='u'>interactive</a> <a id='4542' tid='4541' class='u'>&quot;P&quot;</a>)
+  (<a id='4544' tid='4543' class='u'>paredit-splice-sexp</a> (<a id='4546' tid='4545' class='u'>if</a> <a id='4548' tid='4547' class='u'>n</a>
+                           (<a id='4550' tid='4549' class='u'>-</a> (<a id='4552' tid='4551' class='u'>prefix-numeric-value</a> <a id='4554' tid='4553' class='u'>n</a>))
+                           <a id='4556' tid='4555' class='u'>&#39;</a>(<a id='4558' tid='4557' class='u'>16</a>))))
+
+(<a id='4260' tid='4259' class='u'>defun</a> <a id='4262' tid='4261' class='u'>paredit-raise-sexp</a> <span class='i'>(&optional argument)</span>
+  <span class='i'>&quot;Raise the following S-expression in a tree, deleting its siblings.
+With a prefix argument N, raise the following N S-expressions.  If N
+  is negative, raise the preceding N S-expressions.
+If the point is on an S-expression, such as a string or a symbol, not
+  between them, that S-expression is considered to follow the point.&quot;</span>
+  <span class='i'>(interactive &quot;P&quot;)</span>
+  <span class='i'>(save-excursion
+    (cond ((paredit-in-string-p)
+           (goto-char (car (paredit-string-start+end-points))))
+          ((paredit-in-char-p)
+           (backward-sexp))
+          ((paredit-in-comment-p)
+           (error &quot;No S-expression to raise in comment.&quot;)))
+    ;; Select the S-expressions we want to raise in a buffer substring.
+    (let* ((n (prefix-numeric-value argument))
+           (bound (scan-sexps (point) n))
+           (sexps
+            (if (&lt; n 0)
+                (buffer-substring bound (paredit-point-at-sexp-end))
+                (buffer-substring (paredit-point-at-sexp-start) bound))))
+      ;; Move up to the list we&#39;re raising those S-expressions out of and
+      ;; delete it.
+      (backward-up-list)
+      (delete-region (point) (scan-sexps (point) 1))
+      (let* ((indent-start (point))
+             (indent-end (save-excursion (insert sexps) (point))))
+        (indent-region indent-start indent-end))))</span>)
+
+<span class='i'>(defun paredit-convolute-sexp (&optional n)
+  &quot;Convolute S-expressions.
+Save the S-expressions preceding point and delete them.
+Splice the S-expressions following point.
+Wrap the enclosing list in a new list prefixed by the saved text.
+With a prefix argument N, move up N lists before wrapping.&quot;
+  (interactive &quot;p&quot;)
+  (paredit-lose-if-not-in-sexp &#39;paredit-convolute-sexp)
+  (let (open close)                     ;++ Is this a good idea?
+    (let ((prefix
+           (let ((end (point)))
+             (paredit-ignore-sexp-errors
+               (while (not (bobp)) (backward-sexp)))
+             (prog1 (buffer-substring (point) end)
+               (backward-up-list)
+               (save-excursion (forward-sexp)
+                               (setq close (char-before))
+                               (backward-delete-char 1))
+               (setq open (char-after))
+               (delete-region (point) end)))))
+      (backward-up-list n)
+      (paredit-insert-pair 1 open close &#39;goto-char)
+      (insert prefix)
+      (backward-up-list)
+      (paredit-ignore-sexp-errors (indent-sexp)))))</span>
+
+<span class='i'>(defun paredit-splice-string (argument)
+  (let ((original-point (point))
+        (start+end (paredit-string-start+end-points)))
+    (let ((start (car start+end))
+          (end (cdr start+end)))
+      ;; START and END both lie before the respective quote
+      ;; characters, which we want to delete; thus we increment START
+      ;; by one to extract the string, and we increment END by one to
+      ;; delete the string.
+      (let* ((escaped-string
+              (cond ((not (consp argument))
+                     (buffer-substring (1+ start) end))
+                    ((= 4 (car argument))
+                     (buffer-substring original-point end))
+                    (t
+                     (buffer-substring (1+ start) original-point))))
+             (unescaped-string
+              (paredit-unescape-string escaped-string)))
+        (if (not unescaped-string)
+            (error &quot;Unspliceable string.&quot;)
+          (save-excursion
+            (goto-char start)
+            (delete-region start (1+ end))
+            (insert unescaped-string))
+          (if (not (and (consp argument)
+                        (= 4 (car argument))))
+              (goto-char (- original-point 1))))))))</span>
+
+<span class='i'>(defun paredit-unescape-string (string)
+  (with-temp-buffer
+    (insert string)
+    (goto-char (point-min))
+    (while (and (not (eobp))
+                ;; nil -&gt; no bound; t -&gt; no errors.
+                (search-forward &quot;\\&quot; nil t))
+      (delete-char -1)
+      (forward-char))
+    (condition-case condition
+        (progn (check-parens) (buffer-string))
+      (error nil))))</span>
+
+<a id='4884' tid='4883' class='u'>;;;; Slurpage & Barfage
+</a>
+(<a id='3098' tid='3097' class='u'>defun</a> <a id='3100' tid='3099' class='u'>paredit-forward-slurp-sexp</a> ()
+  <a id='3102' tid='3101' class='u'>&quot;Add the S-expression following the current list into that list
+  by moving the closing delimiter.
+Automatically reindent the newly slurped S-expression with respect to
+  its new enclosing form.
+If in a string, move the opening double-quote forward by one
+  S-expression and escape any intervening characters as necessary,
+  without altering any indentation or formatting.&quot;</a>
+  (<a id='3104' tid='3103' class='u'>interactive</a>)
+  <span class='i'>(save-excursion
+    (cond ((or (paredit-in-comment-p)
+               (paredit-in-char-p))
+           (error &quot;Invalid context for slurping S-expressions.&quot;))
+          ((paredit-in-string-p)
+           (paredit-forward-slurp-into-string))
+          (t
+           (paredit-forward-slurp-into-list))))</span>)
+
+(<a id='3048' tid='3047' class='u'>defun</a> <a id='3050' tid='3049' class='u'>paredit-forward-slurp-into-list</a> ()
+  (<a id='3052' tid='3051' class='u'>up-list</a>)                             <a id='3054' tid='3053' class='u'>; Up to the end of the list to
+</a>  (<a id='1246' tid='1245' class='m'>let</a> ((<a id='1248' tid='1247' class='m'>close</a> (<a id='1250' tid='1249' class='m'>char-before</a>)))          <a id='1252' tid='1251' class='m'>;   save and delete the closing
+</a>    (<a id='1254' tid='1253' class='m'>backward-delete-char</a> <a id='1256' tid='1255' class='m'>1</a>)            <a id='1258' tid='1257' class='m'>;   delimiter.
+</a>    (<a id='1260' tid='1259' class='m'>catch</a> <a id='1262' tid='1261' class='m'>&#39;</a><a id='1264' tid='1263' class='m'>return</a>                      <a id='1266' tid='1265' class='m'>; Go to the end of the desired
+</a>      (<a id='1268' tid='1267' class='m'>while</a> <a id='1270' tid='1269' class='m'>t</a>                          <a id='1272' tid='1271' class='m'>;   S-expression, going up a
+</a>        (<span class='i'>paredit-handle-sexp-errors</span>     <span class='i'>;   list if it&#39;s not in this,
+</span>            (<a id='1274' tid='1273' class='m'>progn</a> (<a id='1276' tid='1275' class='m'>paredit-forward-and-indent</a>)
+                   (<a id='1278' tid='1277' class='m'>throw</a> <a id='1280' tid='1279' class='m'>&#39;</a><a id='1282' tid='1281' class='m'>return</a> <a id='1284' tid='1283' class='m'>nil</a>))
+          <span class='i'>(up-list)</span>
+          <span class='i'>(setq close                   ; adjusting for mixed
+                (prog1 (char-before)    ;   delimiters as necessary,
+                  (backward-delete-char 1)
+                  (insert close)))</span>)))
+    (<a id='1286' tid='1285' class='m'>insert</a> <a id='1288' tid='1287' class='m'>close</a>)))                    <a id='4886' tid='4885' class='u'>; to insert that delimiter.
+</a>
+(<a id='3056' tid='3055' class='u'>defun</a> <a id='3058' tid='3057' class='u'>paredit-forward-slurp-into-string</a> ()
+  (<a id='3060' tid='3059' class='u'>goto-char</a> (<a id='3062' tid='3061' class='u'>1+</a> (<a id='3064' tid='3063' class='u'>cdr</a> (<a id='3066' tid='3065' class='u'>paredit-string-start+end-points</a>))))
+  <a id='3068' tid='3067' class='u'>;; Signal any errors that we might get first, before mucking with the
+</a>  <a id='3070' tid='3069' class='u'>;; buffer&#39;s contents.
+</a>  (<a id='3072' tid='3071' class='u'>save-excursion</a> (<a id='3074' tid='3073' class='u'>forward-sexp</a>))
+  (<a id='3076' tid='3075' class='u'>let</a> ((<a id='3078' tid='3077' class='u'>close</a> (<a id='3080' tid='3079' class='u'>char-before</a>)))
+    (<a id='3082' tid='3081' class='u'>backward-delete-char</a> <a id='3084' tid='3083' class='u'>1</a>)
+    (<a id='3086' tid='3085' class='u'>paredit-forward-for-quote</a> (<a id='3088' tid='3087' class='u'>save-excursion</a> (<a id='3090' tid='3089' class='u'>forward-sexp</a>) (<a id='3092' tid='3091' class='u'>point</a>)))
+    (<a id='3094' tid='3093' class='u'>insert</a> <a id='3096' tid='3095' class='u'>close</a>)))
+
+(<a id='2438' tid='2437' class='u'>defun</a> <a id='2440' tid='2439' class='u'>paredit-forward-barf-sexp</a> ()
+  <a id='2442' tid='2441' class='u'>&quot;Remove the last S-expression in the current list from that list
+  by moving the closing delimiter.
+Automatically reindent the newly barfed S-expression with respect to
+  its new enclosing form.&quot;</a>
+  (<a id='2444' tid='2443' class='u'>interactive</a>)
+  <span class='i'>(paredit-lose-if-not-in-sexp &#39;paredit-forward-barf-sexp)</span>
+  (<a id='2446' tid='2445' class='u'>save-excursion</a>
+    (<a id='2448' tid='2447' class='u'>up-list</a>)                           <a id='2450' tid='2449' class='u'>; Up to the end of the list to
+</a>    (<a id='2452' tid='2451' class='u'>let</a> ((<a id='2454' tid='2453' class='u'>close</a> (<a id='2456' tid='2455' class='u'>char-before</a>)))        <a id='2458' tid='2457' class='u'>;   save and delete the closing
+</a>      (<a id='2460' tid='2459' class='u'>backward-delete-char</a> <a id='2462' tid='2461' class='u'>1</a>)          <a id='2464' tid='2463' class='u'>;   delimiter.
+</a>      (<a id='2466' tid='2465' class='u'>paredit-ignore-sexp-errors</a>       <a id='2468' tid='2467' class='u'>; Go back to where we want to
+</a>        (<a id='2470' tid='2469' class='u'>backward-sexp</a>))                <a id='2472' tid='2471' class='u'>;   insert the delimiter.
+</a>      (<a id='2474' tid='2473' class='u'>paredit-skip-whitespace</a> <a id='2476' tid='2475' class='u'>nil</a>)     <a id='2478' tid='2477' class='u'>; Skip leading whitespace.
+</a>      (<a id='2480' tid='2479' class='u'>cond</a> ((<a id='2482' tid='2481' class='u'>bobp</a>)
+             (<a id='2484' tid='2483' class='u'>error</a> <a id='2486' tid='2485' class='u'>&quot;Barfing all subexpressions with no open-paren?&quot;</a>))
+            ((<a id='2488' tid='2487' class='u'>paredit-in-comment-p</a>)     <a id='2490' tid='2489' class='u'>; Don&#39;t put the close-paren in
+</a>             (<a id='2492' tid='2491' class='u'>newline-and-indent</a>)))     <a id='2494' tid='2493' class='u'>;   a comment.
+</a>      (<a id='2496' tid='2495' class='u'>insert</a> <a id='2498' tid='2497' class='u'>close</a>))
+    <a id='2500' tid='2499' class='u'>;; Reindent all of the newly barfed S-expressions.
+</a>    (<a id='2502' tid='2501' class='u'>paredit-forward-and-indent</a>)))
+
+(<a id='2152' tid='2151' class='u'>defun</a> <a id='2154' tid='2153' class='u'>paredit-backward-slurp-sexp</a> ()
+  <a id='2156' tid='2155' class='u'>&quot;Add the S-expression preceding the current list into that list
+  by moving the closing delimiter.
+Automatically reindent the whole form into which new S-expression was
+  slurped.
+If in a string, move the opening double-quote backward by one
+  S-expression and escape any intervening characters as necessary,
+  without altering any indentation or formatting.&quot;</a>
+  (<a id='2158' tid='2157' class='u'>interactive</a>)
+  <span class='i'>(save-excursion
+    (cond ((or (paredit-in-comment-p)
+               (paredit-in-char-p))
+           (error &quot;Invalid context for slurping S-expressions.&quot;))
+          ((paredit-in-string-p)
+           (paredit-backward-slurp-into-string))
+          (t
+           (paredit-backward-slurp-into-list))))</span>)
+
+(<a id='2122' tid='2121' class='u'>defun</a> <a id='2124' tid='2123' class='u'>paredit-backward-slurp-into-list</a> ()
+  (<a id='2126' tid='2125' class='u'>backward-up-list</a>)
+  (<a id='1290' tid='1289' class='m'>let</a> ((<a id='1292' tid='1291' class='m'>open</a> (<a id='1294' tid='1293' class='m'>char-after</a>)))
+    (<a id='1296' tid='1295' class='m'>delete-char</a> <a id='1298' tid='1297' class='m'>1</a>)
+    (<a id='1300' tid='1299' class='m'>catch</a> <a id='1302' tid='1301' class='m'>&#39;</a><a id='1304' tid='1303' class='m'>return</a>
+      (<a id='1306' tid='1305' class='m'>while</a> <a id='1308' tid='1307' class='m'>t</a>
+        (<span class='i'>paredit-handle-sexp-errors</span>
+            (<a id='1310' tid='1309' class='m'>progn</a> (<a id='1312' tid='1311' class='m'>backward-sexp</a>) (<a id='1314' tid='1313' class='m'>throw</a> <a id='1316' tid='1315' class='m'>&#39;</a><a id='1318' tid='1317' class='m'>return</a> <a id='1320' tid='1319' class='m'>nil</a>))
+          <span class='i'>(backward-up-list)</span>
+          <span class='i'>(setq open
+                (prog1 (char-after)
+                  (save-excursion (insert open) (delete-char 1))))</span>)))
+    (<a id='1322' tid='1321' class='m'>insert</a> <a id='1324' tid='1323' class='m'>open</a>))
+  <span class='i'>;; Reindent the line at the beginning of wherever we inserted the
+</span>  <span class='i'>;; opening delimiter, and then indent the whole S-expression.
+</span>  (<a id='2128' tid='2127' class='u'>backward-up-list</a>)
+  (<a id='2130' tid='2129' class='u'>lisp-indent-line</a>)
+  (<a id='2132' tid='2131' class='u'>indent-sexp</a>))
+
+(<a id='2134' tid='2133' class='u'>defun</a> <a id='2136' tid='2135' class='u'>paredit-backward-slurp-into-string</a> ()
+  (<a id='2138' tid='2137' class='u'>goto-char</a> (<a id='2140' tid='2139' class='u'>car</a> (<a id='2142' tid='2141' class='u'>paredit-string-start+end-points</a>)))
+  <a id='2144' tid='2143' class='u'>;; Signal any errors that we might get first, before mucking with the
+</a>  <a id='2146' tid='2145' class='u'>;; buffer&#39;s contents.
+</a>  (<a id='2148' tid='2147' class='u'>save-excursion</a> (<a id='2150' tid='2149' class='u'>backward-sexp</a>))
+  <span class='i'>(let ((open (char-after))
+        (target (point)))
+    (delete-char 1)
+    (backward-sexp)
+    (insert open)
+    (paredit-forward-for-quote target))</span>)
+
+(<a id='1800' tid='1799' class='u'>defun</a> <a id='1802' tid='1801' class='u'>paredit-backward-barf-sexp</a> ()
+  <a id='1804' tid='1803' class='u'>&quot;Remove the first S-expression in the current list from that list
+  by moving the closing delimiter.
+Automatically reindent the barfed S-expression and the form from which
+  it was barfed.&quot;</a>
+  (<a id='1806' tid='1805' class='u'>interactive</a>)
+  <span class='i'>(paredit-lose-if-not-in-sexp &#39;paredit-backward-barf-sexp)</span>
+  (<a id='1808' tid='1807' class='u'>save-excursion</a>
+    (<a id='1810' tid='1809' class='u'>backward-up-list</a>)
+    (<a id='1812' tid='1811' class='u'>let</a> ((<a id='1814' tid='1813' class='u'>open</a> (<a id='1816' tid='1815' class='u'>char-after</a>)))
+      (<a id='1818' tid='1817' class='u'>delete-char</a> <a id='1820' tid='1819' class='u'>1</a>)
+      (<a id='1822' tid='1821' class='u'>paredit-ignore-sexp-errors</a>
+        (<a id='1824' tid='1823' class='u'>paredit-forward-and-indent</a>))
+      (<a id='1826' tid='1825' class='u'>while</a> (<a id='1828' tid='1827' class='u'>progn</a> (<a id='1830' tid='1829' class='u'>paredit-skip-whitespace</a> <a id='1832' tid='1831' class='u'>t</a>)
+                    (<a id='1834' tid='1833' class='u'>eq</a> (<a id='1836' tid='1835' class='u'>char-after</a>) <a id='1838' tid='1837' class='u'>?\;</a> ))
+        (<a id='1840' tid='1839' class='u'>forward-line</a> <a id='1842' tid='1841' class='u'>1</a>))
+      (<a id='1844' tid='1843' class='u'>if</a> (<a id='1846' tid='1845' class='u'>eobp</a>)
+          (<a id='1848' tid='1847' class='u'>error</a> <a id='1850' tid='1849' class='u'>&quot;Barfing all subexpressions with no close-paren?&quot;</a>))
+      <a id='1852' tid='1851' class='u'>;** Don&#39;t use `insert&#39; here.  Consider, e.g., barfing from
+</a>      <a id='1854' tid='1853' class='u'>;**   (foo|)
+</a>      <a id='1856' tid='1855' class='u'>;** and how `save-excursion&#39; works.
+</a>      (<a id='1858' tid='1857' class='u'>insert-before-markers</a> <a id='1860' tid='1859' class='u'>open</a>))
+    (<a id='1862' tid='1861' class='u'>backward-up-list</a>)
+    (<a id='1864' tid='1863' class='u'>lisp-indent-line</a>)
+    (<a id='1866' tid='1865' class='u'>indent-sexp</a>)))
+
+<a id='4888' tid='4887' class='u'>;;;; Splitting & Joining
+</a>
+(<a id='4560' tid='4559' class='u'>defun</a> <a id='4562' tid='4561' class='u'>paredit-split-sexp</a> ()
+  <a id='4564' tid='4563' class='u'>&quot;Split the list or string the point is on into two.&quot;</a>
+  (<a id='4566' tid='4565' class='u'>interactive</a>)
+  (<span class='i'>cond</span> ((<a id='1326' tid='1325' class='m'>paredit-in-string-p</a>)
+         (<a id='1328' tid='1327' class='m'>insert</a> <a id='1330' tid='1329' class='m'>&quot;\&quot;&quot;</a>)
+         (<a id='1332' tid='1331' class='m'>save-excursion</a> (<a id='1334' tid='1333' class='m'>insert</a> <a id='1336' tid='1335' class='m'>&quot; \&quot;&quot;</a>)))
+        <span class='i'>((or (paredit-in-comment-p)
+             (paredit-in-char-p))
+         (error &quot;Invalid context for splitting S-expression.&quot;))</span>
+        (<a id='574' tid='573' class='m'>t</a> (<a id='576' tid='575' class='m'>let</a> ((<a id='578' tid='577' class='m'>open</a>  (<a id='580' tid='579' class='m'>save-excursion</a> (<a id='582' tid='581' class='m'>backward-up-list</a>)
+                                        (<a id='584' tid='583' class='m'>char-after</a>)))
+                 (<a id='586' tid='585' class='m'>close</a> (<a id='588' tid='587' class='m'>save-excursion</a> (<a id='590' tid='589' class='m'>up-list</a>)
+                                        (<a id='592' tid='591' class='m'>char-before</a>))))
+             (<a id='594' tid='593' class='m'>delete-horizontal-space</a>)
+             (<a id='596' tid='595' class='m'>insert</a> <a id='598' tid='597' class='m'>close</a>)
+             (<a id='600' tid='599' class='m'>save-excursion</a> (<a id='602' tid='601' class='m'>insert</a> <a id='604' tid='603' class='m'>?\ </a>)
+                             (<a id='606' tid='605' class='m'>insert</a> <a id='608' tid='607' class='m'>open</a>)
+                             (<a id='610' tid='609' class='m'>backward-char</a>)
+                             (<a id='612' tid='611' class='m'>indent-sexp</a>))))))
+
+(<a id='3648' tid='3647' class='u'>defun</a> <a id='3650' tid='3649' class='u'>paredit-join-sexps</a> ()
+  <a id='3652' tid='3651' class='u'>&quot;Join the S-expressions adjacent on either side of the point.
+Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
+  (<a id='3654' tid='3653' class='u'>interactive</a>)
+  <a id='3656' tid='3655' class='u'>;++ How ought this to handle comments intervening symbols or strings?
+</a>  (<a id='1338' tid='1337' class='m'>save-excursion</a>
+    (<span class='i'>if</span> <span class='i'>(or (paredit-in-comment-p)
+            (paredit-in-string-p)
+            (paredit-in-char-p))</span>
+        <span class='i'>(error &quot;Invalid context for joining S-expressions.&quot;)</span>
+      (<span class='i'>let</span> <span class='i'>((left-point  (paredit-point-at-sexp-end))
+            (right-point (paredit-point-at-sexp-start)))</span>
+        (<a id='1340' tid='1339' class='m'>let</a> ((<a id='1342' tid='1341' class='m'>left-char</a> (<a id='1344' tid='1343' class='m'>char-before</a> <a id='1346' tid='1345' class='m'>left-point</a>))
+              (<a id='1348' tid='1347' class='m'>right-char</a> (<a id='1350' tid='1349' class='m'>char-after</a> <a id='1352' tid='1351' class='m'>right-point</a>)))
+          (<a id='1354' tid='1353' class='m'>let</a> ((<a id='1356' tid='1355' class='m'>left-syntax</a> (<a id='1358' tid='1357' class='m'>char-syntax</a> <a id='1360' tid='1359' class='m'>left-char</a>))
+                (<a id='1362' tid='1361' class='m'>right-syntax</a> (<a id='1364' tid='1363' class='m'>char-syntax</a> <a id='1366' tid='1365' class='m'>right-char</a>)))
+            (<a id='1368' tid='1367' class='m'>cond</a> ((<a id='1370' tid='1369' class='m'>&gt;=</a> <a id='1372' tid='1371' class='m'>left-point</a> <a id='1374' tid='1373' class='m'>right-point</a>)
+                   (<a id='1376' tid='1375' class='m'>error</a> <a id='1378' tid='1377' class='m'>&quot;Can&#39;t join a datum with itself.&quot;</a>))
+                  ((<a id='1380' tid='1379' class='m'>and</a> (<a id='1382' tid='1381' class='m'>eq</a> <a id='1384' tid='1383' class='m'>left-syntax</a>  <a id='1386' tid='1385' class='m'>?\)</a> )
+                        (<a id='1388' tid='1387' class='m'>eq</a> <a id='1390' tid='1389' class='m'>right-syntax</a> <a id='1392' tid='1391' class='m'>?\(</a> )
+                        (<a id='1394' tid='1393' class='m'>eq</a> <a id='1396' tid='1395' class='m'>left-char</a> (<a id='1398' tid='1397' class='m'>matching-paren</a> <a id='1400' tid='1399' class='m'>right-char</a>))
+                        (<a id='1402' tid='1401' class='m'>eq</a> <a id='1404' tid='1403' class='m'>right-char</a> (<a id='1406' tid='1405' class='m'>matching-paren</a> <a id='1408' tid='1407' class='m'>left-char</a>)))
+                   <a id='1410' tid='1409' class='m'>;; Leave intermediate formatting alone.
+</a>                   (<a id='1412' tid='1411' class='m'>goto-char</a> <a id='1414' tid='1413' class='m'>right-point</a>)
+                   (<a id='1416' tid='1415' class='m'>delete-char</a> <a id='1418' tid='1417' class='m'>1</a>)
+                   (<a id='1420' tid='1419' class='m'>goto-char</a> <a id='1422' tid='1421' class='m'>left-point</a>)
+                   (<a id='1424' tid='1423' class='m'>backward-delete-char</a> <a id='1426' tid='1425' class='m'>1</a>)
+                   (<a id='1428' tid='1427' class='m'>backward-up-list</a>)
+                   (<a id='1430' tid='1429' class='m'>indent-sexp</a>))
+                  ((<a id='1432' tid='1431' class='m'>and</a> (<a id='1434' tid='1433' class='m'>eq</a> <a id='1436' tid='1435' class='m'>left-syntax</a>  <a id='1438' tid='1437' class='m'>?\&quot;</a> )
+                        (<a id='1440' tid='1439' class='m'>eq</a> <a id='1442' tid='1441' class='m'>right-syntax</a> <a id='1444' tid='1443' class='m'>?\&quot;</a> ))
+                   <a id='1446' tid='1445' class='m'>;; Delete any intermediate formatting.
+</a>                   (<a id='1448' tid='1447' class='m'>delete-region</a> (<a id='1450' tid='1449' class='m'>1-</a> <a id='1452' tid='1451' class='m'>left-point</a>)
+                                  (<a id='1454' tid='1453' class='m'>1+</a> <a id='1456' tid='1455' class='m'>right-point</a>)))
+                  ((<a id='1458' tid='1457' class='m'>and</a> (<a id='1460' tid='1459' class='m'>memq</a> <a id='1462' tid='1461' class='m'>left-syntax</a>  <a id='1464' tid='1463' class='m'>&#39;</a>(<a id='1466' tid='1465' class='m'>?w</a> <a id='1468' tid='1467' class='m'>?_</a>)) <a id='1470' tid='1469' class='m'>; Word or symbol
+</a>                        (<a id='1472' tid='1471' class='m'>memq</a> <a id='1474' tid='1473' class='m'>right-syntax</a> <a id='1476' tid='1475' class='m'>&#39;</a>(<a id='1478' tid='1477' class='m'>?w</a> <a id='1480' tid='1479' class='m'>?_</a>)))
+                   (<a id='1482' tid='1481' class='m'>delete-region</a> <a id='1484' tid='1483' class='m'>left-point</a> <a id='1486' tid='1485' class='m'>right-point</a>))
+                  (<a id='1488' tid='1487' class='m'>t</a>
+                   (<a id='1490' tid='1489' class='m'>error</a> <a id='1492' tid='1491' class='m'>&quot;Mismatched S-expressions to join.&quot;</a>)))))))))
+
+<span class='i'>;;;; Variations on the Lurid Theme
+</span>
+<span class='i'>;;; I haven&#39;t the imagination to concoct clever names for these.
+</span>
+<span class='i'>(defun paredit-add-to-previous-list ()
+  &quot;Add the S-expression following point to the list preceding point.&quot;
+  (interactive)
+  (paredit-lose-if-not-in-sexp &#39;paredit-add-to-previous-list)
+  (save-excursion
+    (backward-down-list)
+    (paredit-forward-slurp-sexp)))</span>
+
+<span class='i'>(defun paredit-add-to-next-list ()
+  &quot;Add the S-expression preceding point to the list following point.
+If no S-expression precedes point, move up the tree until one does.&quot;
+  (interactive)
+  (paredit-lose-if-not-in-sexp &#39;paredit-add-to-next-list)
+  (save-excursion
+    (down-list)
+    (paredit-backward-slurp-sexp)))</span>
+
+<span class='i'>(defun paredit-join-with-previous-list ()
+  &quot;Join the list the point is on with the previous list in the buffer.&quot;
+  (interactive)
+  (paredit-lose-if-not-in-sexp &#39;paredit-join-with-previous-list)
+  (save-excursion
+    (while (paredit-handle-sexp-errors (save-excursion (backward-sexp) nil)
+             (backward-up-list)
+             t))
+    (paredit-join-sexps)))</span>
+
+<span class='i'>(defun paredit-join-with-next-list ()
+  &quot;Join the list the point is on with the next list in the buffer.&quot;
+  (interactive)
+  (paredit-lose-if-not-in-sexp &#39;paredit-join-with-next-list)
+  (save-excursion
+    (while (paredit-handle-sexp-errors (save-excursion (forward-sexp) nil)
+             (up-list)
+             t))
+    (paredit-join-sexps)))</span>
+
+<span class='i'>;;;; Utilities
+</span>
+(<a id='3262' tid='3261' class='u'>defun</a> <a id='3264' tid='3263' class='u'>paredit-in-string-escape-p</a> ()
+  <a id='3266' tid='3265' class='u'>&quot;True if the point is on a character escape of a string.
+This is true only if the character is preceded by an odd number of
+  backslashes.
+This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
+  (<a id='3268' tid='3267' class='u'>let</a> ((<a id='3270' tid='3269' class='u'>oddp</a> <a id='3272' tid='3271' class='u'>nil</a>))
+    (<a id='3274' tid='3273' class='u'>save-excursion</a>
+      (<a id='3276' tid='3275' class='u'>while</a> (<a id='3278' tid='3277' class='u'>eq</a> (<a id='3280' tid='3279' class='u'>char-before</a>) <a id='3282' tid='3281' class='u'>?\\</a> )
+        (<a id='3284' tid='3283' class='u'>setq</a> <a id='3286' tid='3285' class='u'>oddp</a> (<a id='3288' tid='3287' class='u'>not</a> <a id='3290' tid='3289' class='u'>oddp</a>))
+        (<a id='3292' tid='3291' class='u'>backward-char</a>)))
+    <a id='3294' tid='3293' class='u'>oddp</a>))
+
+(<a id='3228' tid='3227' class='u'>defun</a> <a id='3230' tid='3229' class='u'>paredit-in-char-p</a> <span class='i'>(&optional argument)</span>
+  <a id='3232' tid='3231' class='u'>&quot;True if the point is immediately after a character literal.
+A preceding escape character, not preceded by another escape character,
+  is considered a character literal prefix.  (This works for elisp,
+  Common Lisp, and Scheme.)
+Assumes that `paredit-in-string-p&#39; is false, so that it need not handle
+  long sequences of preceding backslashes in string escapes.  (This
+  assumes some other leading character token -- ? in elisp, # in Scheme
+  and Common Lisp.)&quot;</a>
+  <span class='i'>(let ((argument (or argument (point))))
+    (and (eq (char-before argument) ?\\ )
+         (not (eq (char-before (1- argument)) ?\\ ))))</span>)
+
+<span class='i'>(defun paredit-indent-sexps ()
+  &quot;If in a list, indent all following S-expressions in the list.&quot;
+  (let ((start (point))
+        (end (paredit-handle-sexp-errors (progn (up-list) (point)) nil)))
+    (if end
+        (indent-region start end))))</span>
+
+(<a id='2434' tid='2433' class='u'>defun</a> <a id='2436' tid='2435' class='u'>paredit-forward-and-indent</a> ()
+  <span class='i'>&quot;Move forward an S-expression, indenting it with `indent-region&#39;.&quot;</span>
+  <span class='i'>(let ((start (point)))
+    (forward-sexp)
+    (indent-region start (point)))</span>)
+
+(<a id='4446' tid='4445' class='u'>defun</a> <a id='4448' tid='4447' class='u'>paredit-skip-whitespace</a> (<a id='4450' tid='4449' class='u'>trailing-p</a> <a id='4452' tid='4451' class='u'>&optional</a> <a id='4454' tid='4453' class='u'>limit</a>)
+  <a id='4456' tid='4455' class='u'>&quot;Skip past any whitespace, or until the point LIMIT is reached.
+If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
+  whitespace.&quot;</a>
+  (<a id='4458' tid='4457' class='u'>funcall</a> (<a id='4460' tid='4459' class='u'>if</a> <a id='4462' tid='4461' class='u'>trailing-p</a> <a id='4464' tid='4463' class='u'>&#39;</a><a id='4466' tid='4465' class='u'>skip-chars-forward</a> <a id='4468' tid='4467' class='u'>&#39;</a><a id='4470' tid='4469' class='u'>skip-chars-backward</a>)
+           <a id='4472' tid='4471' class='u'>&quot; \t\n&quot;</a>  <a id='4474' tid='4473' class='u'>; This should skip using the syntax table, but LF
+</a>           <a id='4476' tid='4475' class='u'>limit</a>))    <span class='i'>; is a comment end, not newline, in Lisp mode.
+</span>
+(<a id='4890' tid='4889' class='u'>defalias</a> <a id='4892' tid='4891' class='u'>&#39;</a><a id='4894' tid='4893' class='u'>paredit-region-active-p</a>
+  (<a id='4896' tid='4895' class='u'>xcond</a> ((<a id='4898' tid='4897' class='u'>paredit-xemacs-p</a>) <a id='4900' tid='4899' class='u'>&#39;</a><a id='4902' tid='4901' class='u'>region-active-p</a>)
+         ((<a id='4904' tid='4903' class='u'>paredit-gnu-emacs-p</a>)
+          (<a id='4906' tid='4905' class='u'>lambda</a> ()
+            (<a id='4908' tid='4907' class='u'>and</a> <a id='4910' tid='4909' class='u'>mark-active</a> <a id='4912' tid='4911' class='u'>transient-mark-mode</a>)))))
+
+<span class='i'>(defun paredit-hack-kill-region (start end)
+  &quot;Kill the region between START and END.
+Do not append to any current kill, and
+ do not let the next kill append to this one.&quot;
+  (interactive &quot;r&quot;)                     ;Eh, why not?
+  ;; KILL-REGION sets THIS-COMMAND to tell the next kill that the last
+  ;; command was a kill.  It also checks LAST-COMMAND to see whether it
+  ;; should append.  If we bind these locally, any modifications to
+  ;; THIS-COMMAND will be masked, and it will not see LAST-COMMAND to
+  ;; indicate that it should append.
+  (let ((this-command nil)
+        (last-command nil))
+    (kill-region start end)))</span>
+
+<a id='4914' tid='4913' class='u'>;;;;; S-expression Parsing Utilities
+</a>
+<a id='4916' tid='4915' class='u'>;++ These routines redundantly traverse S-expressions a great deal.
+</a><a id='4918' tid='4917' class='u'>;++ If performance issues arise, this whole section will probably have
+</a><a id='4920' tid='4919' class='u'>;++ to be refactored to preserve the state longer, like paredit.scm
+</a><a id='4922' tid='4921' class='u'>;++ does, rather than to traverse the definition N times for every key
+</a><a id='4924' tid='4923' class='u'>;++ stroke as it presently does.
+</a>
+(<a id='2222' tid='2221' class='u'>defun</a> <a id='2224' tid='2223' class='u'>paredit-current-parse-state</a> ()
+  <a id='2226' tid='2225' class='u'>&quot;Return parse state of point from beginning of defun.&quot;</a>
+  (<a id='2228' tid='2227' class='u'>let</a> ((<a id='2230' tid='2229' class='u'>point</a> (<a id='2232' tid='2231' class='u'>point</a>)))
+    (<a id='2234' tid='2233' class='u'>beginning-of-defun</a>)
+    <a id='2236' tid='2235' class='u'>;; Calling PARSE-PARTIAL-SEXP will advance the point to its second
+</a>    <a id='2238' tid='2237' class='u'>;; argument (unless parsing stops due to an error, but we assume it
+</a>    <a id='2240' tid='2239' class='u'>;; won&#39;t in paredit-mode).
+</a>    (<a id='2242' tid='2241' class='u'>parse-partial-sexp</a> (<a id='2244' tid='2243' class='u'>point</a>) <a id='2246' tid='2245' class='u'>point</a>)))
+
+(<a id='3296' tid='3295' class='u'>defun</a> <a id='3298' tid='3297' class='u'>paredit-in-string-p</a> (<a id='3300' tid='3299' class='u'>&optional</a> <a id='3302' tid='3301' class='u'>state</a>)
+  <a id='3304' tid='3303' class='u'>&quot;True if the parse state is within a double-quote-delimited string.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point.&quot;</a>
+  <a id='3306' tid='3305' class='u'>;; 3. non-nil if inside a string (the terminator character, really)
+</a>  (<a id='3308' tid='3307' class='u'>and</a> (<a id='3310' tid='3309' class='u'>nth</a> <a id='3312' tid='3311' class='u'>3</a> (<a id='3314' tid='3313' class='u'>or</a> <a id='3316' tid='3315' class='u'>state</a> (<a id='3318' tid='3317' class='u'>paredit-current-parse-state</a>)))
+       <a id='3320' tid='3319' class='u'>t</a>))
+
+(<a id='4568' tid='4567' class='u'>defun</a> <a id='4570' tid='4569' class='u'>paredit-string-start+end-points</a> (<a id='4572' tid='4571' class='u'>&optional</a> <a id='4574' tid='4573' class='u'>state</a>)
+  <a id='4576' tid='4575' class='u'>&quot;Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from the beginning of the defun to the point.
+This assumes that `paredit-in-string-p&#39; has already returned true, i.e.
+  that the point is already within a string.&quot;</a>
+  (<a id='4578' tid='4577' class='u'>save-excursion</a>
+    <a id='4580' tid='4579' class='u'>;; 8. character address of start of comment or string; nil if not
+</a>    <a id='4582' tid='4581' class='u'>;;    in one
+</a>    (<a id='4584' tid='4583' class='u'>let</a> ((<a id='4586' tid='4585' class='u'>start</a> (<a id='4588' tid='4587' class='u'>nth</a> <a id='4590' tid='4589' class='u'>8</a> (<a id='4592' tid='4591' class='u'>or</a> <a id='4594' tid='4593' class='u'>state</a> (<a id='4596' tid='4595' class='u'>paredit-current-parse-state</a>)))))
+      (<a id='4598' tid='4597' class='u'>goto-char</a> <a id='4600' tid='4599' class='u'>start</a>)
+      (<a id='4602' tid='4601' class='u'>forward-sexp</a> <a id='4604' tid='4603' class='u'>1</a>)
+      (<a id='4606' tid='4605' class='u'>cons</a> <a id='4608' tid='4607' class='u'>start</a> (<a id='4610' tid='4609' class='u'>1-</a> (<a id='4612' tid='4611' class='u'>point</a>))))))
+
+(<a id='3234' tid='3233' class='u'>defun</a> <a id='3236' tid='3235' class='u'>paredit-in-comment-p</a> (<a id='3238' tid='3237' class='u'>&optional</a> <a id='3240' tid='3239' class='u'>state</a>)
+  <a id='3242' tid='3241' class='u'>&quot;True if parse state STATE is within a comment.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point.&quot;</a>
+  <a id='3244' tid='3243' class='u'>;; 4. nil if outside a comment, t if inside a non-nestable comment,
+</a>  <a id='3246' tid='3245' class='u'>;;    else an integer (the current comment nesting)
+</a>  (<a id='3248' tid='3247' class='u'>and</a> (<a id='3250' tid='3249' class='u'>nth</a> <a id='3252' tid='3251' class='u'>4</a> (<a id='3254' tid='3253' class='u'>or</a> <a id='3256' tid='3255' class='u'>state</a> (<a id='3258' tid='3257' class='u'>paredit-current-parse-state</a>)))
+       <a id='3260' tid='3259' class='u'>t</a>))
+
+(<a id='4220' tid='4219' class='u'>defun</a> <a id='4222' tid='4221' class='u'>paredit-point-at-sexp-boundary</a> (<a id='4224' tid='4223' class='u'>n</a>)
+  (<a id='4226' tid='4225' class='u'>cond</a> ((<a id='4228' tid='4227' class='u'>&lt;</a> <a id='4230' tid='4229' class='u'>n</a> <a id='4232' tid='4231' class='u'>0</a>) (<a id='4234' tid='4233' class='u'>paredit-point-at-sexp-start</a>))
+        ((<a id='4236' tid='4235' class='u'>=</a> <a id='4238' tid='4237' class='u'>n</a> <a id='4240' tid='4239' class='u'>0</a>) (<a id='4242' tid='4241' class='u'>point</a>))
+        ((<a id='4244' tid='4243' class='u'>&gt;</a> <a id='4246' tid='4245' class='u'>n</a> <a id='4248' tid='4247' class='u'>0</a>) (<a id='4250' tid='4249' class='u'>paredit-point-at-sexp-end</a>))))
+
+(<a id='4256' tid='4255' class='u'>defun</a> <a id='4258' tid='4257' class='u'>paredit-point-at-sexp-start</a> ()
+  <span class='i'>(save-excursion
+    (forward-sexp)
+    (backward-sexp)
+    (point))</span>)
+
+(<a id='4252' tid='4251' class='u'>defun</a> <a id='4254' tid='4253' class='u'>paredit-point-at-sexp-end</a> ()
+  <span class='i'>(save-excursion
+    (backward-sexp)
+    (forward-sexp)
+    (point))</span>)
+
+<span class='i'>(defun paredit-lose-if-not-in-sexp (command)
+  (if (or (paredit-in-string-p)
+          (paredit-in-comment-p)
+          (paredit-in-char-p))
+      (error &quot;Invalid context for command `%s&#39;.&quot; command)))</span>
+
+<span class='i'>(defun paredit-check-region (start end)
+  (save-restriction
+    (narrow-to-region start end)
+    (if (fboundp &#39;check-parens)
+        (check-parens)
+        (save-excursion
+          (goto-char (point-min))
+          (while (not (eobp))
+            (forward-sexp))))))</span>
+
+<span class='i'>(defun paredit-region-ok-p (start end)
+  (paredit-handle-sexp-errors
+      (progn
+        (save-restriction
+          (narrow-to-region start end)
+          ;; Can&#39;t use `check-parens&#39; here -- it signals the wrong kind
+          ;; of errors.
+          (save-excursion
+            (goto-char (point-min))
+            (while (not (eobp))
+              (forward-sexp))))
+        t)
+    nil))</span>
+
+<a id='4926' tid='4925' class='u'>;;;; Initialization
+</a>
+(<a id='4928' tid='4927' class='u'>paredit-define-keys</a>)
+(<a id='4930' tid='4929' class='u'>paredit-annotate-mode-with-examples</a>)
+(<a id='4932' tid='4931' class='u'>paredit-annotate-functions-with-examples</a>)
+
+(<a id='4934' tid='4933' class='u'>provide</a> <a id='4936' tid='4935' class='u'>&#39;</a><a id='4938' tid='4937' class='u'>paredit</a>)
+
+<span class='i'>;;; Local Variables:
+</span><span class='i'>;;; outline-regexp: &quot;\n;;;;+&quot;
+</span><span class='i'>;;; End:
+</span>
+<span class='i'>;;; paredit.el ends here
+</span>
+</pre>
+</div>
+</body>
+</html>
