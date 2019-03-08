@@ -47,4 +47,18 @@
 </a><a id='6807' tid='6808' class='u'>;;;
 </a><a id='6809' tid='6810' class='u'>;;;   (add-to-list &#39;load-path &quot;/path/to/elisp&quot;)
 </a><a id='6811' tid='6812' class='u'>;;;   (autoload &#39;enable-paredit-mode &quot;paredit&quot;
-</a><a id='6
+</a><a id='6813' tid='6814' class='u'>;;;     &quot;Turn on pseudo-structural editing of Lisp code.&quot;
+</a><a id='6815' tid='6816' class='u'>;;;     t)
+</a><a id='6817' tid='6818' class='u'>;;;
+</a><span class='d'>;;; Enable Paredit Mode on the fly with `M-x enable-paredit-mode RET&#39;,
+</span><span class='d'>;;; or always enable it in a major mode `M&#39; (e.g., `lisp&#39;) with:
+</span><a id='6819' tid='6820' class='u'>;;;
+</a><a id='6821' tid='6822' class='u'>;;;   (add-hook M-mode-hook &#39;enable-paredit-mode)
+</a><a id='6823' tid='6824' class='u'>;;;
+</a><a id='6825' tid='6826' class='u'>;;; Customize paredit using `eval-after-load&#39;:
+</a><a id='6827' tid='6828' class='u'>;;;
+</a><a id='6829' tid='6830' class='u'>;;;   (eval-after-load &#39;paredit
+</a><span class='d'>;;;     &#39;(progn ...redefine keys, &c....))
+</span><span class='d'>;;;
+</span><span class='d'>;;; Paredit should run in GNU Emacs 21 or later and XEmacs 21.5 or
+</span><span class='d'>;;; later.  Paredit is highly unlikely to work i
