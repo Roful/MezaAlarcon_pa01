@@ -122,4 +122,17 @@
 </span><span class='d'>;;;
 </span><span class='d'>;;; The key bindings are designed so that when typing new code in
 </span><span class='d'>;;; Paredit Mode, you can generally use exactly the same keystrokes as
-</span><span
+</span><span class='d'>;;; you would have used without Paredit Mode.  Earlier versions of
+</span><span class='d'>;;; paredit.el did not conform to this, because Paredit Mode bound `)&#39;
+</span><span class='d'>;;; to a command that would insert a newline.  Now `)&#39; is bound to a
+</span><span class='d'>;;; command that does not insert a newline, and `M-)&#39; is bound to the
+</span><span class='d'>;;; command that inserts a newline.  To revert to the former behaviour,
+</span><span class='d'>;;; add the following forms to an `eval-after-load&#39; form for paredit.el
+</span><span class='d'>;;; in your .emacs file:
+</span><span class='d'>;;;
+</span><span class='d'>;;;   (define-key paredit-mode-map (kbd &quot;)&quot;)
+</span><span class='d'>;;;     &#39;paredit-close-round-and-newline)
+</span><span class='d'>;;;   (define-key paredit-mode-map (kbd &quot;M-)&quot;)
+</span><span class='d'>;;;     &#39;paredit-close-round)
+</span><span class='d'>;;;
+</span><span class='d'>;;; Pa
