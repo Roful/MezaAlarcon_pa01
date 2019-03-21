@@ -135,4 +135,14 @@
 </span><span class='d'>;;;   (define-key paredit-mode-map (kbd &quot;M-)&quot;)
 </span><span class='d'>;;;     &#39;paredit-close-round)
 </span><span class='d'>;;;
-</span><span class='d'>;;; Pa
+</span><span class='d'>;;; Paredit Mode also binds the usual keys for deleting and killing, so
+</span><span class='d'>;;; that they will not destroy any S-expression structure by killing or
+</span><span class='d'>;;; deleting only one side of a parenthesis or quote pair.  If the
+</span><span class='d'>;;; point is on a closing delimiter, `DEL&#39; will move left over it; if
+</span><span class='d'>;;; it is on an opening delimiter, `C-d&#39; will move right over it.  Only
+</span><span class='d'>;;; if the point is between a pair of delimiters will `C-d&#39; or `DEL&#39;
+</span><span class='d'>;;; delete them, and in that case it will delete both simultaneously.
+</span><span class='d'>;;; `M-d&#39; and `M-DEL&#39; kill words, but skip over any S-expression
+</span><span class='d'>;;; structure.  `C-k&#39; kills from the start of the line, either to the
+</span><span class='d'>;;; line&#39;s end, if it contains only balanced expressions; to the first
+</span><span class='d'>;;; closing delimiter, if the point is with
