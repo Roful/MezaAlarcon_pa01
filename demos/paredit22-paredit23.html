@@ -110,4 +110,16 @@
 </span>
 <span class='d'>;;; The paredit minor mode, Paredit Mode, binds a number of simple
 </span><span class='d'>;;; keys, notably `(&#39;, `)&#39;, `&quot;&#39;, and `\&#39;, to commands that more
-</span><span class='d'>;;; carefully insert S-expression structures in th
+</span><span class='d'>;;; carefully insert S-expression structures in the buffer.  The
+</span><span class='d'>;;; parenthesis delimiter keys (round or square) are defined to insert
+</span><span class='d'>;;; parenthesis pairs and move past the closing delimiter,
+</span><span class='d'>;;; respectively; the double-quote key is multiplexed to do both, and
+</span><span class='d'>;;; also to insert an escape if within a string; and backslashes prompt
+</span><span class='d'>;;; the user for the next character to input, because a lone backslash
+</span><span class='d'>;;; can break structure inadvertently.  These all have their ordinary
+</span><span class='d'>;;; behaviour when inside comments, and, outside comments, if truly
+</span><span class='d'>;;; necessary, you can insert them literally with `C-q&#39;.
+</span><span class='d'>;;;
+</span><span class='d'>;;; The key bindings are designed so that when typing new code in
+</span><span class='d'>;;; Paredit Mode, you can generally use exactly the same keystrokes as
+</span><span
