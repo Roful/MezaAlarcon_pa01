@@ -158,4 +158,18 @@
 </span><span class='d'>;;; be avoided.
 </span><span class='d'>;;;
 </span><span class='d'>;;; Paredit performs automatic reindentation as locally as possible, to
-</span><span class='d'>;;; avoid interfering wi
+</span><span class='d'>;;; avoid interfering with custom indentation used elsewhere in some
+</span><span class='d'>;;; S-expression.  Only the advanced S-expression manipulation commands
+</span><span class='d'>;;; automatically reindent, and only the forms that were immediately
+</span><span class='d'>;;; operated upon (and their subforms).
+</span><span class='d'>;;;
+</span><span class='d'>;;; This code is written for clarity, not efficiency.  It frequently
+</span><span class='d'>;;; walks over S-expressions redundantly.  If you have problems with
+</span><span class='d'>;;; the time it takes to execute some of the commands, let me know, but
+</span><span class='d'>;;; first be sure that what you&#39;re doing is reasonable: it is
+</span><span class='d'>;;; preferable to avoid immense S-expressions in code anyway.
+</span>
+<span class='d'>;;; This assumes Unix-style LF line endings.
+</span>
+<span class='d'>(defconst paredit-version 22)</span>
+(<a id='6833' tid='6834' class='u'>defconst</a> <a id='
