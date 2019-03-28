@@ -172,4 +172,17 @@
 <span class='d'>;;; This assumes Unix-style LF line endings.
 </span>
 <span class='d'>(defconst paredit-version 22)</span>
-(<a id='6833' tid='6834' class='u'>defconst</a> <a id='
+(<a id='6833' tid='6834' class='u'>defconst</a> <a id='6835' tid='6836' class='u'>paredit-beta-p</a> <a id='6837' tid='6838' class='u'>nil</a>)
+
+(<a id='6915' tid='6916' class='u'>eval-and-compile</a>
+
+  (<a id='6897' tid='6898' class='u'>defun</a> <a id='6899' tid='6900' class='u'>paredit-xemacs-p</a> ()
+    <a id='6901' tid='6902' class='u'>;; No idea where I got this definition from.  Edward O&#39;Connor
+</a>    <a id='6903' tid='6904' class='u'>;; (hober in #emacs) suggested the current definition.
+</a>    <a id='6905' tid='6906' class='u'>;;   (and (boundp &#39;running-xemacs)
+</a>    <a id='6907' tid='6908' class='u'>;;        running-xemacs)
+</a>    (<a id='6909' tid='6910' class='u'>featurep</a> <a id='6911' tid='6912' class='u'>&#39;</a><a id='6913' tid='6914' class='u'>xemacs</a>))
+
+  (<a id='6839' tid='6840' class='u'>defun</a> <a id='6841' tid='6842' class='u'>paredit-gnu-emacs-p</a> ()
+    <a id='6843' tid='6844' class='u'>;++ This could probably be improved.
+</a>    (<a id='6845' tid='6846' class='u'>not</a> (<a id='6847' tid='6848
