@@ -185,4 +185,12 @@
 
   (<a id='6839' tid='6840' class='u'>defun</a> <a id='6841' tid='6842' class='u'>paredit-gnu-emacs-p</a> ()
     <a id='6843' tid='6844' class='u'>;++ This could probably be improved.
-</a>    (<a id='6845' tid='6846' class='u'>not</a> (<a id='6847' tid='6848
+</a>    (<a id='6845' tid='6846' class='u'>not</a> (<a id='6847' tid='6848' class='u'>paredit-xemacs-p</a>)))
+
+  (<a id='6917' tid='6918' class='u'>defmacro</a> <a id='6919' tid='6920' class='u'>xcond</a> (<a id='6921' tid='6922' class='u'>&rest</a> <a id='6923' tid='6924' class='u'>clauses</a>)
+    <a id='6925' tid='6926' class='u'>&quot;Exhaustive COND.
+Signal an error if no clause matches.&quot;</a>
+    <a id='6927' tid='6928' class='u'>`</a>(<a id='6929' tid='6930' class='u'>cond</a> <a id='6931' tid='6932' class='u'>,</a><a id='6933' tid='6934' class='u'>@clauses</a>
+           (<a id='6935' tid='6936' class='u'>t</a> (<a id='6937' tid='6938' class='u'>error</a> <a id='6939' tid='6940' class='u'>&quot;XCOND lost.&quot;</a>))))
+
+  (<a id='6941' tid='6942' class='u'>defalias</a> <a id='6943' tid='6944' class='u'>&#39;</a><a id='6945' tid='6946' class='u'>paredit-warn</a> (<a id='6947' tid='6948' class='u'>if</a> (<a id='6949' tid='6950' class='u'>fboundp</a> <a id='6951' tid='6952' class='u'>&#39;</a><a id='6953' tid='6954' class='u'
