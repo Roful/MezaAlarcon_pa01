@@ -201,4 +201,12 @@ Signal an error if no clause matches.&quot;</a>
       (<a id='6859' tid='6860' class='u'>condition-case</a> <a id='6861' tid='6862' class='u'>condition</a>
           (<a id='6863' tid='6864' class='u'>backward-sexp</a>)
         (<a id='6865' tid='6866' class='u'>error</a> (<a id='6867' tid='6868' class='u'>if</a> (<a id='6869' tid='6870' class='u'>eq</a> (<a id='6871' tid='6872' class='u'>car</a> <a id='6873' tid='6874' class='u'>condition</a>) <a id='6875' tid='6876' class='u'>&#39;</a><a id='6877' tid='6878' class='u'>error</a>)
-      
+                   (<a id='6879' tid='6880' class='u'>paredit-warn</a> <a id='6881' tid='6882' class='u'>&quot;%s%s%s%s%s&quot;</a>
+                                 <a id='6883' tid='6884' class='u'>&quot;Paredit is unable to discriminate&quot;</a>
+                                 <a id='6885' tid='6886' class='u'>&quot; S-expression parse errors from&quot;</a>
+                                 <a id='6887' tid='6888' class='u'>&quot; other errors. &quot;</a>
+                                 <a id='6889' tid='6890' class='u'>&quot; This may cause obscure problems. &quot;</a>
+                                 <a id='6891' tid='6892' class='u'>&quot; Please upgrade Emacs.&quot;</a>))
+               (<a id='6893' tid='6894' class='u'>car</a> <a id='6895' tid='6896' class='u'>condition</a>)))))
+
+  (<a id='6963' tid='6964' class='u'>defmacro</a> <a id='6965' tid='6966' class='u'>paredit-handle-sexp-errors</a> (<a id='6967' tid='6968' c
