@@ -227,4 +227,19 @@ Signal an error if no clause matches.&quot;</a>
 <a id='7035' tid='7036' class='u'>;;;; Minor Mode Definition
 </a>
 (<a id='5301' tid='5302' class='u'>defvar</a> <a id='5303' tid='5304' class='u'>paredit-mode-map</a> (<a id='5305' tid='5306' class='u'>make-sparse-keymap</a>)
-  <a id='5307' tid='5308' class='u'>&quot;Keymap for the paredit minor mode.
+  <a id='5307' tid='5308' class='u'>&quot;Keymap for the paredit minor mode.&quot;</a>)
+
+<a id='7037' tid='7038' class='u'>;;;###autoload
+</a>(<a id='5293' tid='5294' class='u'>define-minor-mode</a> <a id='5295' tid='5296' class='u'>paredit-mode</a>
+  <span class='d'>&quot;Minor mode for pseudo-structurally editing Lisp code.
+With a prefix argument, enable Paredit Mode even if there are
+  imbalanced parentheses in the buffer.
+Paredit behaves badly if parentheses are imbalanced, so exercise
+  caution when forcing Paredit Mode to be enabled, and consider
+  fixing imbalanced parentheses instead.
+\\&lt;paredit-mode-map&gt;&quot;</span>
+  <a id='5297' tid='5298' class='u'>:lighter</a> <a id='5299' tid='5300' class='u'>&quot; Paredit&quot;</a>
+  <span class='d'>;; If we&#39;re enabling paredit-mode, the prefix to this code that
+</span>  <span class='d'>;; DEFINE-MINOR-MODE inserts will have already set PAREDIT-MODE to
+</span>  <span class='d'>;; true.  If this is the case, then first check the parentheses, and
+</span>  <span cl
