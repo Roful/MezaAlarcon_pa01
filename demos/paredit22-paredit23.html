@@ -209,4 +209,11 @@ Signal an error if no clause matches.&quot;</a>
                                  <a id='6891' tid='6892' class='u'>&quot; Please upgrade Emacs.&quot;</a>))
                (<a id='6893' tid='6894' class='u'>car</a> <a id='6895' tid='6896' class='u'>condition</a>)))))
 
-  (<a id='6963' tid='6964' class='u'>defmacro</a> <a id='6965' tid='6966' class='u'>paredit-handle-sexp-errors</a> (<a id='6967' tid='6968' c
+  (<a id='6963' tid='6964' class='u'>defmacro</a> <a id='6965' tid='6966' class='u'>paredit-handle-sexp-errors</a> (<a id='6967' tid='6968' class='u'>body</a> <a id='6969' tid='6970' class='u'>&rest</a> <a id='6971' tid='6972' class='u'>handler</a>)
+    <a id='6973' tid='6974' class='u'>`</a>(<a id='6975' tid='6976' class='u'>condition-case</a> ()
+         <a id='6977' tid='6978' class='u'>,</a><a id='6979' tid='6980' class='u'>body</a>
+       (<a id='6981' tid='6982' class='u'>,</a><a id='6983' tid='6984' class='u'>paredit-sexp-error-type</a> <a id='6985' tid='6986' class='u'>,</a><a id='6987' tid='6988' class='u'>@handler</a>)))
+
+  (<a id='6989' tid='6990' class='u'>put</a> <a id='6991' tid='6992' class='u'>&#39;</a><a id='6993' tid='6994' class='u'>paredit-handle-sexp-errors</a> <a id='6995' tid='6996' class='u'>&#39;</a><a id='6997' tid='6998' class='u'>lisp-indent-function</a> <a id='6999' tid='7000' class='u'>1</a>)
+
+  (<a id='7001' tid='7002' class='u'>defmacro</a> <a id='7003' tid='7004' class='u'>paredit-ignore-sexp-errors</a> (<a id='7005' tid='7006' class='u'>&rest</a> <a id='7007' tid='7008' clas
