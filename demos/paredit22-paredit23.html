@@ -242,4 +242,14 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
   <span class='d'>;; If we&#39;re enabling paredit-mode, the prefix to this code that
 </span>  <span class='d'>;; DEFINE-MINOR-MODE inserts will have already set PAREDIT-MODE to
 </span>  <span class='d'>;; true.  If this is the case, then first check the parentheses, and
-</span>  <span cl
+</span>  <span class='d'>;; if there are any imbalanced ones we must inhibit the activation of
+</span>  <span class='d'>;; paredit mode.  We skip the check, though, if the user supplied a
+</span>  <span class='d'>;; prefix argument interactively.
+</span>  (<a id='717' tid='718' class='m'>if</a> (<a id='719' tid='720' class='m'>and</a> <a id='721' tid='722' class='m'>paredit-mode</a>
+           (<a id='723' tid='724' class='m'>not</a> <a id='725' tid='726' class='m'>current-prefix-arg</a>))
+      (<span class='d'>if</span> <span class='d'>(not (fboundp &#39;check-parens))</span>
+          <span class='d'>(paredit-warn &quot;`check-parens&#39; is not defined; %s&quot;
+                        &quot;be careful of malformed S-expressions.&quot;)</span>
+          (<a id='727' tid='728' class='m'>condition-case</a> <a id='729' tid='730' class='m'>condition</a>
+              (<a id='731' tid='732' class='m'>check-parens</a>)
+            (<span class='d'>error</span> <span class='d'
