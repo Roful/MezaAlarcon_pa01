@@ -216,4 +216,15 @@ Signal an error if no clause matches.&quot;</a>
 
   (<a id='6989' tid='6990' class='u'>put</a> <a id='6991' tid='6992' class='u'>&#39;</a><a id='6993' tid='6994' class='u'>paredit-handle-sexp-errors</a> <a id='6995' tid='6996' class='u'>&#39;</a><a id='6997' tid='6998' class='u'>lisp-indent-function</a> <a id='6999' tid='7000' class='u'>1</a>)
 
-  (<a id='7001' tid='7002' class='u'>defmacro</a> <a id='7003' tid='7004' class='u'>paredit-ignore-sexp-errors</a> (<a id='7005' tid='7006' class='u'>&rest</a> <a id='7007' tid='7008' clas
+  (<a id='7001' tid='7002' class='u'>defmacro</a> <a id='7003' tid='7004' class='u'>paredit-ignore-sexp-errors</a> (<a id='7005' tid='7006' class='u'>&rest</a> <a id='7007' tid='7008' class='u'>body</a>)
+    <a id='7009' tid='7010' class='u'>`</a>(<a id='7011' tid='7012' class='u'>paredit-handle-sexp-errors</a> (<a id='7013' tid='7014' class='u'>progn</a> <a id='7015' tid='7016' class='u'>,</a><a id='7017' tid='7018' class='u'>@body</a>)
+       <a id='7019' tid='7020' class='u'>nil</a>))
+
+  (<a id='7021' tid='7022' class='u'>put</a> <a id='7023' tid='7024' class='u'>&#39;</a><a id='7025' tid='7026' class='u'>paredit-ignore-sexp-errors</a> <a id='7027' tid='7028' class='u'>&#39;</a><a id='7029' tid='7030' class='u'>lisp-indent-function</a> <a id='7031' tid='7032' class='u'>0</a>)
+
+  <a id='7033' tid='7034' class='u'>nil</a>)
+
+<a id='7035' tid='7036' class='u'>;;;; Minor Mode Definition
+</a>
+(<a id='5301' tid='5302' class='u'>defvar</a> <a id='5303' tid='5304' class='u'>paredit-mode-map</a> (<a id='5305' tid='5306' class='u'>make-sparse-keymap</a>)
+  <a id='5307' tid='5308' class='u'>&quot;Keymap for the paredit minor mode.
