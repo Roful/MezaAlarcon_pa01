@@ -297,4 +297,16 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 (<a id='759' tid='760' class='m'>&quot;(foo \&quot;bar |baz\&quot; quux)&quot;</a>
                  <a id='761' tid='762' class='m'>&quot;(foo \&quot;bar (|baz\&quot; quux)&quot;</a>))
    (<a id='525' tid='526' class='m'>&quot;)&quot;</a>         <a id='527' tid='528' class='m'>paredit-close-round</a>
-                (<a id='52
+                (<a id='529' tid='530' class='m'>&quot;(a b |c   )&quot;</a> <a id='531' tid='532' class='m'>&quot;(a b c)|&quot;</a>)
+                (<a id='533' tid='534' class='m'>&quot;; Hello,| world!&quot;</a>
+                 <a id='535' tid='536' class='m'>&quot;; Hello,)| world!&quot;</a>))
+   (<a id='459' tid='460' class='m'>&quot;M-)&quot;</a>       <a id='461' tid='462' class='m'>paredit-close-round-and-newline</a>
+                (<a id='463' tid='464' class='m'>&quot;(defun f (x|  ))&quot;</a>
+                 <a id='465' tid='466' class='m'>&quot;(defun f (x)\n  |)&quot;</a>)
+                (<a id='467' tid='468' class='m'>&quot;; (Foo.|&quot;</a>
+                 <a id='469' tid='470' class='m'>&quot;; (Foo.)|&quot;</a>))
+   <span class='d'>(&quot;[&quot;         paredit-open-square
+                (&quot;(a b |c d)&quot;
+                 &quot;(a b [|] c d)&quot;)
+                (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
+                 &quot;(foo \&quot;bar [baz
