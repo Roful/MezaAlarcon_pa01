@@ -309,4 +309,15 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 (&quot;(a b |c d)&quot;
                  &quot;(a b [|] c d)&quot;)
                 (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
-                 &quot;(foo \&quot;bar [baz
+                 &quot;(foo \&quot;bar [baz\&quot; quux)&quot;))</span>
+   (<a id='425' tid='426' class='m'>&quot;]&quot;</a>         <a id='427' tid='428' class='m'>paredit-close-square</a>
+                (<a id='429' tid='430' class='m'>&quot;(define-key keymap [frob|  ] &#39;frobnicate)&quot;</a>
+                 <a id='431' tid='432' class='m'>&quot;(define-key keymap [frob]| &#39;frobnicate)&quot;</a>)
+                (<a id='433' tid='434' class='m'>&quot;; [Bar.|&quot;</a>
+                 <a id='435' tid='436' class='m'>&quot;; [Bar.]|&quot;</a>))
+   <span class='d'>(&quot;\&quot;&quot;        paredit-doublequote
+                (&quot;(frob grovel |full lexical)&quot;
+                 &quot;(frob grovel \&quot;|\&quot; full lexical)&quot;)
+                (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
+                 &quot;(foo \&quot;bar \\\&quot;|baz\&quot; quux)&quot;))</span>
+   (<a id='315' tid='316' class='m'>&quot;M-\&quot;&quot;</a>      <a id='317' tid='318' class='m'>paredit
