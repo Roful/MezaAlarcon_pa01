@@ -331,3 +331,20 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  &quot;(string #\\x|)&quot;)
                 (&quot;\&quot;foo|bar\&quot;\n  ; Escaping character... (\&quot;)&quot;
                  &quot;\&quot;foo\\\&quot;|bar\&quot;&quot;))</span>
+   <span class='d'>(&quot;;&quot;         paredit-semicolon
+                (&quot;|(frob grovel)&quot;
+                 &quot;;|(frob grovel)&quot;)
+                (&quot;(frob |grovel)&quot;
+                 &quot;(frob ;grovel\n)&quot;)
+                (&quot;(frob |grovel (bloit\n               zargh))&quot;
+                 &quot;(frob ;|grovel\n (bloit\n  zargh))&quot;)
+                (&quot;(frob grovel)          |&quot;
+                 &quot;(frob grovel)          ;|&quot;))</span>
+   <span class='d'>(&quot;M-;&quot;       paredit-comment-dwim
+                (&quot;(foo |bar)   ; baz&quot;
+                 &quot;(foo bar)                               ; |baz&quot;)
+                (&quot;(frob grovel)|&quot;
+                 &quot;(frob grovel)                           ;|&quot;)
+                (&quot;    (foo bar)\n|\n    (baz quux)&quot;
+                 &quot;    (foo bar)\n    ;; |\n    (baz quux)&quot;)
+                (&quot;    (foo bar) |(baz quux
