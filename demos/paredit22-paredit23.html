@@ -347,4 +347,18 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  &quot;(frob grovel)                           ;|&quot;)
                 (&quot;    (foo bar)\n|\n    (baz quux)&quot;
                  &quot;    (foo bar)\n    ;; |\n    (baz quux)&quot;)
-                (&quot;    (foo bar) |(baz quux
+                (&quot;    (foo bar) |(baz quux)&quot;
+                 &quot;    (foo bar)\n    ;; |\n    (baz quux)&quot;)
+                (&quot;|(defun hello-world ...)&quot;
+                 &quot;;;; |\n(defun hello-world ...)&quot;))</span>
+
+   <span class='d'>(&quot;C-j&quot;       paredit-newline
+                (&quot;(let ((n (frobbotz))) |(display (+ n 1)\nport))&quot;
+                 ,(concat &quot;(let ((n (frobbotz)))&quot;
+                          &quot;\n  |(display (+ n 1)&quot;
+                          &quot;\n            port))&quot;)))</span>
+
+   <span class='d'>&quot;Deleting & Killing&quot;</span>
+   ((<a id='225' tid='226' class='m'>&quot;C-d&quot;</a> <a id='227' tid='228' class='m'>,</a><a id='229' tid='230' class='m'>@paredit-forward-delete-keys</a>)
+                <a id='231' tid='232' class='m'>paredit-forward-delete</a>
+                (<a id='233' tid='234' class='m'>&quot;(quu|x \&quot;zot\&quot;)&quot;</a> <a id='235' tid='236' class='m'>
