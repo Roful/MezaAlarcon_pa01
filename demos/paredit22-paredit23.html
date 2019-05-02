@@ -370,4 +370,13 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
    (<a id='173' tid='174' class='m'>,</a><a id='175' tid='176' class='m'>paredit-backward-delete-key</a>
                 <a id='177' tid='178' class='m'>paredit-backward-delete</a>
                 (<a id='179' tid='180' class='m'>&quot;(\&quot;zot\&quot; q|uux)&quot;</a> <a id='181' tid='182' class='m'>&quot;(\&quot;zot\&quot; |uux)&quot;</a>)
-                (<a id='183' tid='184' class='m'>&quot;(\&quot;zo
+                (<a id='183' tid='184' class='m'>&quot;(\&quot;zot\&quot;| quux)&quot;</a>
+                 <a id='185' tid='186' class='m'>&quot;(\&quot;zot|\&quot; quux)&quot;</a>
+                 <a id='187' tid='188' class='m'>&quot;(\&quot;zo|\&quot; quux)&quot;</a>)
+                (<a id='189' tid='190' class='m'>&quot;(foo (|) bar)&quot;</a> <a id='191' tid='192' class='m'>&quot;(foo | bar)&quot;</a>)
+                (<a id='193' tid='194' class='m'>&quot;(foo bar)|&quot;</a> <a id='195' tid='196' class='m'>&quot;(foo bar|)&quot;</a>))
+   (<a id='153' tid='154' class='m'>&quot;C-k&quot;</a>       <a id='155' tid='156' class='m'>paredit-kill</a>
+                (<a id='157' tid='158' class='m'>&quot;(foo bar)|     ; Useless comment!&quot;</a>
+                 <a id='159' tid='160' class='m'>&quot;(foo bar)|&quot;</a>)
+                (<a id='161' tid='162' class='m'>&quot;(|foo bar)     ; Useful comment!&quot;</a>
+                 <a id='163' tid='164' class='m'>&quot;(|)  
