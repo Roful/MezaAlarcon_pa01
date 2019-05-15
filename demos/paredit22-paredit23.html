@@ -379,4 +379,15 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 (<a id='157' tid='158' class='m'>&quot;(foo bar)|     ; Useless comment!&quot;</a>
                  <a id='159' tid='160' class='m'>&quot;(foo bar)|&quot;</a>)
                 (<a id='161' tid='162' class='m'>&quot;(|foo bar)     ; Useful comment!&quot;</a>
-                 <a id='163' tid='164' class='m'>&quot;(|)  
+                 <a id='163' tid='164' class='m'>&quot;(|)     ; Useful comment!&quot;</a>)
+                (<a id='165' tid='166' class='m'>&quot;|(foo bar)     ; Useless line!&quot;</a>
+                 <a id='167' tid='168' class='m'>&quot;|&quot;</a>)
+                (<a id='169' tid='170' class='m'>&quot;(foo \&quot;|bar baz\&quot;\n     quux)&quot;</a>
+                 <a id='171' tid='172' class='m'>&quot;(foo \&quot;|\&quot;\n     quux)&quot;</a>))
+   (<a id='135' tid='136' class='m'>&quot;M-d&quot;</a>       <a id='137' tid='138' class='m'>paredit-forward-kill-word</a>
+                (<a id='139' tid='140' class='m'>&quot;|(foo bar)    ; baz&quot;</a>
+                 <a id='141' tid='142' class='m'>&quot;(| bar)    ; baz&quot;</a>
+                 <a id='143' tid='144' class='m'>&quot;(|)    ; baz&quot;</a>
+                 <a id='145' tid='146' class='m'>&quot;()    ;|&quot;</a>)
+                (<a id='147' tid='148' class='m'>&quot;;;;| Frobnicate\n(defun frobnicate ...)&quot;</a>
+         
