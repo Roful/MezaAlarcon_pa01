@@ -390,4 +390,15 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  <a id='143' tid='144' class='m'>&quot;(|)    ; baz&quot;</a>
                  <a id='145' tid='146' class='m'>&quot;()    ;|&quot;</a>)
                 (<a id='147' tid='148' class='m'>&quot;;;;| Frobnicate\n(defun frobnicate ...)&quot;</a>
-         
+                 <a id='149' tid='150' class='m'>&quot;;;;|\n(defun frobnicate ...)&quot;</a>
+                 <a id='151' tid='152' class='m'>&quot;;;;\n(| frobnicate ...)&quot;</a>))
+   (<a id='115' tid='116' class='m'>,</a>(<a id='117' tid='118' class='m'>concat</a> <a id='119' tid='120' class='m'>&quot;M-&quot;</a> <a id='121' tid='122' class='m'>paredit-backward-delete-key</a>)
+                <a id='123' tid='124' class='m'>paredit-backward-kill-word</a>
+                (<a id='125' tid='126' class='m'>&quot;(foo bar)    ; baz\n(quux)|&quot;</a>
+                 <a id='127' tid='128' class='m'>&quot;(foo bar)    ; baz\n(|)&quot;</a>
+                 <a id='129' tid='130' class='m'>&quot;(foo bar)    ; |\n()&quot;</a>
+                 <a id='131' tid='132' class='m'>&quot;(foo |)    ; \n()&quot;</a>
+                 <a id='133' tid='134' class='m'>&quot;(|)    ; \n()&quot;</a>))
+
+   <span class='d'>&quot;Movement & Navigation&quot;</span>
+   (<a id='103' tid='104' class='m'>&quot;C-M-f&quot;</
