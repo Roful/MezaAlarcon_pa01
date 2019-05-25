@@ -413,4 +413,18 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  <a id='101' tid='102' class='m'>&quot;|((foo) bar)&quot;</a>))
    <span class='d'>(&quot;C-M-u&quot;     paredit-backward-up)</span>
    <span class='d'>(&quot;C-M-d&quot;     paredit-forward-down)</span>
-   <span class='d'>(&quot;C-M-p&quot;     p
+   <span class='d'>(&quot;C-M-p&quot;     paredit-backward-down)</span>  <span class='d'>; Built-in, these are FORWARD-
+</span>   <span class='d'>(&quot;C-M-n&quot;     paredit-forward-up)</span>     <span class='d'>; & BACKWARD-LIST, which have
+</span>                                        <span class='d'>; no need given C-M-f & C-M-b.
+</span>
+   <span class='d'>&quot;Depth-Changing Commands&quot;</span>
+   <span class='d'>(&quot;M-(&quot;       paredit-wrap-round
+                (&quot;(foo |bar baz)&quot;
+                 &quot;(foo (|bar) baz)&quot;))</span>
+   <span class='d'>(&quot;M-s&quot;       paredit-splice-sexp
+                (&quot;(foo (bar| baz) quux)&quot;
+                 &quot;(foo bar| baz quux)&quot;))</span>
+   <span class='d'>((&quot;M-&lt;up&gt;&quot; &quot;ESC &lt;up&gt;&quot;)
+                paredit-splice-sexp-killing-backward
+                (&quot;(foo (let ((x 5)) |(sqrt n)) bar)&quot;
+                 &q
