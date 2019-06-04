@@ -451,4 +451,16 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
    ((<a id='41' tid='42' class='m'>&quot;C-(&quot;</a> <a id='43' tid='44' class='m'>&quot;C-M-&lt;left&gt;&quot;</a> <a id='45' tid='46' class='m'>&quot;ESC C-&lt;left&gt;&quot;</a>)
                 <a id='47' tid='48' class='m'>paredit-backward-slurp-sexp</a>
                 (<a id='49' tid='50' class='m'>&quot;(foo bar (baz| quux) zot)&quot;</a>
-                 <a id='51' tid='52' class='m'>&quot;(foo (bar baz| quux) zot)&quot;<
+                 <a id='51' tid='52' class='m'>&quot;(foo (bar baz| quux) zot)&quot;</a>)
+                (<a id='53' tid='54' class='m'>&quot;(a b ((c| d)) e f)&quot;</a>
+                 <a id='55' tid='56' class='m'>&quot;(a (b (c| d)) e f)&quot;</a>))
+   ((<a id='29' tid='30' class='m'>&quot;C-{&quot;</a> <a id='31' tid='32' class='m'>&quot;C-M-&lt;right&gt;&quot;</a> <a id='33' tid='34' class='m'>&quot;ESC C-&lt;right&gt;&quot;</a>)
+                <a id='35' tid='36' class='m'>paredit-backward-barf-sexp</a>
+                (<a id='37' tid='38' class='m'>&quot;(foo (bar baz |quux) zot)&quot;</a>
+                 <a id='39' tid='40' class='m'>&quot;(foo bar (baz |quux) zot)&quot;</a>))
+
+   <span class='d'>&quot;Miscellaneous Commands&quot;</span>
+   (<a id='17' tid='18' class='m'>&quot;M-S&quot;</a>       <a id='19' tid='20' class='m'>paredit-split-sexp</a>
+                (<a id='21' tid='22' class='m'>&quot;(hello| world)&quot;</a>
+                 <a id='23' tid='24' class='m'>&quot;(hello)| (world)&quot;</a>)
+                (<
