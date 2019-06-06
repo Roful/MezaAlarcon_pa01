@@ -463,4 +463,15 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
    (<a id='17' tid='18' class='m'>&quot;M-S&quot;</a>       <a id='19' tid='20' class='m'>paredit-split-sexp</a>
                 (<a id='21' tid='22' class='m'>&quot;(hello| world)&quot;</a>
                  <a id='23' tid='24' class='m'>&quot;(hello)| (world)&quot;</a>)
-                (<
+                (<a id='25' tid='26' class='m'>&quot;\&quot;Hello, |world!\&quot;&quot;</a>
+                 <a id='27' tid='28' class='m'>&quot;\&quot;Hello, \&quot;| \&quot;world!\&quot;&quot;</a>))
+   (<a id='1' tid='2' class='m'>&quot;M-J&quot;</a>       <a id='3' tid='4' class='m'>paredit-join-sexps</a>
+                (<a id='5' tid='6' class='m'>&quot;(hello)| (world)&quot;</a>
+                 <a id='7' tid='8' class='m'>&quot;(hello| world)&quot;</a>)
+                (<a id='9' tid='10' class='m'>&quot;\&quot;Hello, \&quot;| \&quot;world!\&quot;&quot;</a>
+                 <a id='11' tid='12' class='m'>&quot;\&quot;Hello, |world!\&quot;&quot;</a>)
+                (<a id='13' tid='14' class='m'>&quot;hello-\n|  world&quot;</a>
+                 <a id='15' tid='16' class='m'>&quot;hello-|world&quot;</a>))
+   <span class='d'>(&quot;C-c C-M-l&quot; paredit-recentre-on-sexp)</span>
+   <span class='d'>(&quot;M-q&quot;       paredit-reindent-defun)</span>
+   )
