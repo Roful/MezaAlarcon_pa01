@@ -474,4 +474,13 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  <a id='15' tid='16' class='m'>&quot;hello-|world&quot;</a>))
    <span class='d'>(&quot;C-c C-M-l&quot; paredit-recentre-on-sexp)</span>
    <span class='d'>(&quot;M-q&quot;       paredit-reindent-defun)</span>
-   )
+   ))
+       <a id='763' tid='764' class='m'>nil</a>)                             <span class='d'>; end of PROGN
+</span>
+<span class='d'>;;;;; Command Examples
+</span>
+(<a id='7057' tid='7058' class='u'>eval-and-compile</a>
+  (<a id='7059' tid='7060' class='u'>defmacro</a> <a id='7061' tid='7062' class='u'>paredit-do-commands</a> (<a id='7063' tid='7064' class='u'>vars</a> <a id='7065' tid='7066' class='u'>string-case</a> <a id='7067' tid='7068' class='u'>&rest</a> <a id='7069' tid='7070' class='u'>body</a>)
+    (<a id='7071' tid='7072' class='u'>let</a> ((<a id='7073' tid='7074' class='u'>spec</a>     (<a id='7075' tid='7076' class='u'>nth</a> <a id='7077' tid='7078' class='u'>0</a> <a id='7079' tid='7080' class='u'>vars</a>))
+          (<a id='7081' tid='7082' class='u'>keys</a>     (<a id='7083' tid='7084' class='u'>nth</a> <a id='7085' tid='7086' class='u'>1</a> <a id='7087' tid='7088' class='u'>vars</a>))
+          (<a id='7089' tid=
