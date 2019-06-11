@@ -488,4 +488,8 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
       <a id='7105' tid='7106' class='u'>`</a>(<a id='7107' tid='7108' class='u'>dolist</a> (<a id='7109' tid='7110' class='u'>,</a><a id='7111' tid='7112' class='u'>spec</a> <a id='7113' tid='7114' class='u'>paredit-commands</a>)
          (<a id='7115' tid='7116' class='u'>if</a> (<a id='7117' tid='7118' class='u'>stringp</a> <a id='7119' tid='7120' class='u'>,</a><a id='7121' tid='7122' class='u'>spec</a>)
              <a id='7123' tid='7124' class='u'>,</a><a id='7125' tid='7126' class='u'>string-case</a>
-           (<a id='7127' tid='7128' class='u'>let</a> ((<a id='7129' tid='7130' class='u'>,</a><a id='
+           (<a id='7127' tid='7128' class='u'>let</a> ((<a id='7129' tid='7130' class='u'>,</a><a id='7131' tid='7132' class='u'>keys</a> (<a id='7133' tid='7134' class='u'>let</a> ((<a id='7135' tid='7136' class='u'>k</a> (<a id='7137' tid='7138' class='u'>car</a> <a id='7139' tid='7140' class='u'>,</a><a id='7141' tid='7142' class='u'>spec</a>)))
+                          (<a id='7143' tid='7144' class='u'>cond</a> ((<a id='7145' tid='7146' class='u'>stringp</a> <a id='7147' tid='7148' class='u'>k</a>) (<a id='7149' tid='7150' class='u'>list</a> <a id='7151' tid='7152' class='u'>k</a>))
+                                ((<a id='7153' tid='7154' class='u'>listp</a> <a id='7155' tid='7156' class='u'>k</a>) <a id='7157' tid='7158' class='u'>k</a>)
+                                (<a id='7159' tid='7160' class='u'>t</a> (<a id='7161' tid='7162' class='u'>error</a> <a id='7163' tid='7164' class='u'>&quot;Invalid paredit command %s.&quot;</a>
+                                          <a id='7165' tid='7166' class='u'>,</a><a id=
