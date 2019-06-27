@@ -512,4 +512,10 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
         (<a id='3941' tid='3942' class='u'>progn</a> (<a id='3943' tid='3944' class='u'>put</a> <a id='3945' tid='3946' class='u'>fn</a> <a id='3947' tid='3948' class='u'>&#39;</a><a id='3949' tid='3950' class='u'>paredit-original-documentation</a> <a id='3951' tid='3952' class='u'>doc</a>)
                <a id='3953' tid='3954' class='u'>doc</a>))))
 
-(<a id='1895' tid='1896' class='u'>defun</a> <a id='1897' tid='1898' c
+(<a id='1895' tid='1896' class='u'>defun</a> <a id='1897' tid='1898' class='u'>paredit-annotate-mode-with-examples</a> ()
+  (<a id='1899' tid='1900' class='u'>let</a> ((<a id='1901' tid='1902' class='u'>contents</a>
+         (<a id='1903' tid='1904' class='u'>list</a> (<a id='1905' tid='1906' class='u'>paredit-function-documentation</a> <a id='1907' tid='1908' class='u'>&#39;</a><a id='1909' tid='1910' class='u'>paredit-mode</a>))))
+    (<a id='1911' tid='1912' class='u'>paredit-do-commands</a> (<a id='1913' tid='1914' class='u'>spec</a> <a id='1915' tid='1916' class='u'>keys</a> <a id='1917' tid='1918' class='u'>fn</a> <a id='1919' tid='1920' class='u'>examples</a>)
+        (<a id='1921' tid='1922' class='u'>push</a> (<a id='1923' tid='1924' class='u'>concat</a> <a id='1925' tid='1926' class='u'>&quot;\n\n&quot;</a> <a id='1927' tid='1928' class='u'>spec</a> <a id='1929' tid='1930' class='u'>&quot;\n&quot;</a>)
+              <a id='1931' tid='1932' class='u'>contents</a>)
+      (<a id='1933' tid='1934' class='u'>let</a> ((
