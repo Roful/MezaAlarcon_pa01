@@ -506,4 +506,10 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
       (<a id='2981' tid='2982' class='u'>define-key</a> <a id='2983' tid='2984' class='u'>paredit-mode-map</a> (<a id='2985' tid='2986' class='u'>read-kbd-macro</a> <a id='2987' tid='2988' class='u'>key</a>) <a id='2989' tid='2990' class='u'>fn</a>))))
 
 (<a id='3909' tid='3910' class='u'>defun</a> <a id='3911' tid='3912' class='u'>paredit-function-documentation</a> (<a id='3913' tid='3914' class='u'>fn</a>)
-  (<a id='3915' tid='3916' class='u'>let</a> ((<a id='3917' tid='3918' class='u'>original
+  (<a id='3915' tid='3916' class='u'>let</a> ((<a id='3917' tid='3918' class='u'>original-doc</a> (<a id='3919' tid='3920' class='u'>get</a> <a id='3921' tid='3922' class='u'>fn</a> <a id='3923' tid='3924' class='u'>&#39;</a><a id='3925' tid='3926' class='u'>paredit-original-documentation</a>))
+        (<a id='3927' tid='3928' class='u'>doc</a> (<a id='3929' tid='3930' class='u'>documentation</a> <a id='3931' tid='3932' class='u'>fn</a> <a id='3933' tid='3934' class='u'>&#39;</a><a id='3935' tid='3936' class='u'>function-documentation</a>)))
+    (<a id='3937' tid='3938' class='u'>or</a> <a id='3939' tid='3940' class='u'>original-doc</a>
+        (<a id='3941' tid='3942' class='u'>progn</a> (<a id='3943' tid='3944' class='u'>put</a> <a id='3945' tid='3946' class='u'>fn</a> <a id='3947' tid='3948' class='u'>&#39;</a><a id='3949' tid='3950' class='u'>paredit-original-documentation</a> <a id='3951' tid='3952' class='u'>doc</a>)
+               <a id='3953' tid='3954' class='u'>doc</a>))))
+
+(<a id='1895' tid='1896' class='u'>defun</a> <a id='1897' tid='1898' c
