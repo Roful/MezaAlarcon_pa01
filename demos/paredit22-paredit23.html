@@ -518,4 +518,8 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
     (<a id='1911' tid='1912' class='u'>paredit-do-commands</a> (<a id='1913' tid='1914' class='u'>spec</a> <a id='1915' tid='1916' class='u'>keys</a> <a id='1917' tid='1918' class='u'>fn</a> <a id='1919' tid='1920' class='u'>examples</a>)
         (<a id='1921' tid='1922' class='u'>push</a> (<a id='1923' tid='1924' class='u'>concat</a> <a id='1925' tid='1926' class='u'>&quot;\n\n&quot;</a> <a id='1927' tid='1928' class='u'>spec</a> <a id='1929' tid='1930' class='u'>&quot;\n&quot;</a>)
               <a id='1931' tid='1932' class='u'>contents</a>)
-      (<a id='1933' tid='1934' class='u'>let</a> ((
+      (<a id='1933' tid='1934' class='u'>let</a> ((<a id='1935' tid='1936' class='u'>name</a> (<a id='1937' tid='1938' class='u'>symbol-name</a> <a id='1939' tid='1940' class='u'>fn</a>)))
+        (<a id='1941' tid='1942' class='u'>if</a> (<a id='1943' tid='1944' class='u'>string-match</a> (<a id='1945' tid='1946' class='u'>symbol-name</a> <a id='1947' tid='1948' class='u'>&#39;</a><a id='1949' tid='1950' class='u'>paredit-</a>) <a id='1951' tid='1952' class='u'>name</a>)
+            (<a id='1953' tid='1954' class='u'>push</a> (<a id='1955' tid='1956' class='u'>concat</a> <a id='1957' tid='1958' class='u'>&quot;\n\n\\[&quot;</a> <a id='1959' tid='1960' class='u'>name</a> <a id='1961' tid='1962' class='u'>&quot;]\t&quot;</a> <a id='1963' tid='1964' class='u'>name</a>
+                          (<a id='1965' tid='1966' class='u'>if</a> <a id='1967' tid='1968' class='u'>examples</a>
+                              (<a id='1969' tid='1970' class='u'>mapconcat</a> (<a id='1971' tid='1972' class='u'>lambda</a> (<a id='1973' ti
