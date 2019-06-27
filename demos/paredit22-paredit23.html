@@ -499,4 +499,11 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 
   (<a id='7193' tid='7194' class='u'>put</a> <a id='7195' tid='7196' class='u'>&#39;</a><a id='7197' tid='7198' class='u'>paredit-do-commands</a> <a id='7199' tid='7200' class='u'>&#39;</a><a id='7201' tid='7202' class='u'>lisp-indent-function</a> <a id='7203' tid='7204' class='u'>2</a>))
 
-(<a id='2957' tid='2958' class='u'>defun</a> <a id='2959' t
+(<a id='2957' tid='2958' class='u'>defun</a> <a id='2959' tid='2960' class='u'>paredit-define-keys</a> ()
+  (<a id='2961' tid='2962' class='u'>paredit-do-commands</a> (<a id='2963' tid='2964' class='u'>spec</a> <a id='2965' tid='2966' class='u'>keys</a> <a id='2967' tid='2968' class='u'>fn</a> <a id='2969' tid='2970' class='u'>examples</a>)
+      <a id='2971' tid='2972' class='u'>nil</a>       <a id='2973' tid='2974' class='u'>; string case
+</a>    (<a id='2975' tid='2976' class='u'>dolist</a> (<a id='2977' tid='2978' class='u'>key</a> <a id='2979' tid='2980' class='u'>keys</a>)
+      (<a id='2981' tid='2982' class='u'>define-key</a> <a id='2983' tid='2984' class='u'>paredit-mode-map</a> (<a id='2985' tid='2986' class='u'>read-kbd-macro</a> <a id='2987' tid='2988' class='u'>key</a>) <a id='2989' tid='2990' class='u'>fn</a>))))
+
+(<a id='3909' tid='3910' class='u'>defun</a> <a id='3911' tid='3912' class='u'>paredit-function-documentation</a> (<a id='3913' tid='3914' class='u'>fn</a>)
+  (<a id='3915' tid='3916' class='u'>let</a> ((<a id='3917' tid='3918' class='u'>original
