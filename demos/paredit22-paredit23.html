@@ -540,4 +540,9 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 </a>  <a id='2023' tid='2024' class='u'>nil</a>)
 
 (<a id='1829' tid='1830' class='u'>defun</a> <a id='1831' tid='1832' class='u'>paredit-annotate-functions-with-examples</a> ()
-  (<a id='1833' tid='1834' class='u'>paredit-do-commands</a> (<a id='1835' tid='1836' c
+  (<a id='1833' tid='1834' class='u'>paredit-do-commands</a> (<a id='1835' tid='1836' class='u'>spec</a> <a id='1837' tid='1838' class='u'>keys</a> <a id='1839' tid='1840' class='u'>fn</a> <a id='1841' tid='1842' class='u'>examples</a>)
+      <a id='1843' tid='1844' class='u'>nil</a>       <a id='1845' tid='1846' class='u'>; string case
+</a>    (<a id='1847' tid='1848' class='u'>put</a> <a id='1849' tid='1850' class='u'>fn</a> <a id='1851' tid='1852' class='u'>&#39;</a><a id='1853' tid='1854' class='u'>function-documentation</a>
+         (<a id='1855' tid='1856' class='u'>concat</a> (<a id='1857' tid='1858' class='u'>paredit-function-documentation</a> <a id='1859' tid='1860' class='u'>fn</a>)
+                 <a id='1861' tid='1862' class='u'>&quot;\n\n\\&lt;paredit-mode-map&gt;\\[&quot;</a> (<a id='1863' tid='1864' class='u'>symbol-name</a> <a id='1865' tid='1866' class='u'>fn</a>) <a id='1867' tid='1868' class='u'>&quot;]\n&quot;</a>
+                 (<a id='1869' tid='1870' class='u'>mapconcat</a> (<a id='1871' tid='1872' class='u'
