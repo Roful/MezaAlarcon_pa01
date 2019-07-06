@@ -531,4 +531,13 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                                             <a id='1989' tid='1990' class='u'>&quot;\n&quot;</a>))
                                          <a id='1991' tid='1992' class='u'>examples</a>
                                          <a id='1993' tid='1994' class='u'>&quot;&quot;</a>)
-                              <a id='1995' tid='1996' class='u'>&quot;\n  (no 
+                              <a id='1995' tid='1996' class='u'>&quot;\n  (no examples)\n&quot;</a>))
+                  <a id='1997' tid='1998' class='u'>contents</a>))))
+    (<a id='1999' tid='2000' class='u'>put</a> <a id='2001' tid='2002' class='u'>&#39;</a><a id='2003' tid='2004' class='u'>paredit-mode</a> <a id='2005' tid='2006' class='u'>&#39;</a><a id='2007' tid='2008' class='u'>function-documentation</a>
+         (<a id='2009' tid='2010' class='u'>apply</a> <a id='2011' tid='2012' class='u'>&#39;</a><a id='2013' tid='2014' class='u'>concat</a> (<a id='2015' tid='2016' class='u'>reverse</a> <a id='2017' tid='2018' class='u'>contents</a>))))
+  <a id='2019' tid='2020' class='u'>;; PUT returns the huge string we just constructed, which we don&#39;t
+</a>  <a id='2021' tid='2022' class='u'>;; want it to return.
+</a>  <a id='2023' tid='2024' class='u'>nil</a>)
+
+(<a id='1829' tid='1830' class='u'>defun</a> <a id='1831' tid='1832' class='u'>paredit-annotate-functions-with-examples</a> ()
+  (<a id='1833' tid='1834' class='u'>paredit-do-commands</a> (<a id='1835' tid='1836' c
