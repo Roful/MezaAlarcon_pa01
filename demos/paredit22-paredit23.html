@@ -545,4 +545,15 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 </a>    (<a id='1847' tid='1848' class='u'>put</a> <a id='1849' tid='1850' class='u'>fn</a> <a id='1851' tid='1852' class='u'>&#39;</a><a id='1853' tid='1854' class='u'>function-documentation</a>
          (<a id='1855' tid='1856' class='u'>concat</a> (<a id='1857' tid='1858' class='u'>paredit-function-documentation</a> <a id='1859' tid='1860' class='u'>fn</a>)
                  <a id='1861' tid='1862' class='u'>&quot;\n\n\\&lt;paredit-mode-map&gt;\\[&quot;</a> (<a id='1863' tid='1864' class='u'>symbol-name</a> <a id='1865' tid='1866' class='u'>fn</a>) <a id='1867' tid='1868' class='u'>&quot;]\n&quot;</a>
-                 (<a id='1869' tid='1870' class='u'>mapconcat</a> (<a id='1871' tid='1872' class='u'
+                 (<a id='1869' tid='1870' class='u'>mapconcat</a> (<a id='1871' tid='1872' class='u'>lambda</a> (<a id='1873' tid='1874' class='u'>example</a>)
+                              (<a id='1875' tid='1876' class='u'>concat</a> <a id='1877' tid='1878' class='u'>&quot;\n&quot;</a>
+                                      (<a id='1879' tid='1880' class='u'>mapconcat</a> <a id='1881' tid='1882' class='u'>&#39;</a><a id='1883' tid='1884' class='u'>identity</a>
+                                                 <a id='1885' tid='1886' class='u'>example</a>
+                                                 <a id='1887' tid='1888' class='u'>&quot;\n  -&gt;\n&quot;</a>)
+                                      <a id='1889' tid='1890' class='u'>&quot;\n&quot;</a>))
+                            <a id='1891' tid='1892' class='u'>examples</a>
+                            <a id='1893' tid='1894' class='u'>&quot;&quot;</a>)))))
+
+<a id='7205' tid='7206' class='u'>;;;;; HTML Examples
+</a>
+(<a id='4261' tid='4262' class='u'>defun</a> <a id='4263' tid='4264' class='u'>paredit-insert-html-examples<
