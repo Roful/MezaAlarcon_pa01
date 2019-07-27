@@ -556,4 +556,13 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 
 <a id='7205' tid='7206' class='u'>;;;;; HTML Examples
 </a>
-(<a id='4261' tid='4262' class='u'>defun</a> <a id='4263' tid='4264' class='u'>paredit-insert-html-examples<
+(<a id='4261' tid='4262' class='u'>defun</a> <a id='4263' tid='4264' class='u'>paredit-insert-html-examples</a> ()
+  <a id='4265' tid='4266' class='u'>&quot;Insert HTML for a paredit quick reference table.&quot;</a>
+  (<a id='4267' tid='4268' class='u'>interactive</a>)
+  (<a id='4269' tid='4270' class='u'>let</a> ((<a id='4271' tid='4272' class='u'>insert-lines</a>
+         (<a id='4273' tid='4274' class='u'>lambda</a> (<a id='4275' tid='4276' class='u'>&rest</a> <a id='4277' tid='4278' class='u'>lines</a>)
+           (<a id='4279' tid='4280' class='u'>mapc</a> (<a id='4281' tid='4282' class='u'>lambda</a> (<a id='4283' tid='4284' class='u'>line</a>) (<a id='4285' tid='4286' class='u'>insert</a> <a id='4287' tid='4288' class='u'>line</a>) (<a id='4289' tid='4290' class='u'>newline</a>))
+                 <a id='4291' tid='4292' class='u'>lines</a>)))
+        (<a id='4293' tid='4294' class='u'>html-keys</a>
+         (<a id='4295' tid='4296' class='u'>lambda</a> (<a id='4297' tid='4298' class='u'>keys</a>)
+           (<a id='4299' tid='4300' class='u'>mapconcat</a> <a id='4301' tid='4302' class='u'>&#39;</a><a id='4303' tid=
