@@ -608,4 +608,8 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 (<a id='3997' tid='3998' class='u'>defun</a> <a id='3999' tid='4000' class='u'>paredit-html-quote</a> (<a id='4001' tid='4002' class='u'>string</a>)
   (<a id='4003' tid='4004' class='u'>with-temp-buffer</a>
     (<a id='4005' tid='4006' class='u'>dotimes</a> (<a id='4007' tid='4008' class='u'>i</a> (<a id='4009' tid='4010' class='u'>length</a> <a id='4011' tid='4012' class='u'>string</a>))
-      (<a id='4013' tid='4014' class='u'>insert</a> (<a id='40
+      (<a id='4013' tid='4014' class='u'>insert</a> (<a id='4015' tid='4016' class='u'>let</a> ((<a id='4017' tid='4018' class='u'>c</a> (<a id='4019' tid='4020' class='u'>elt</a> <a id='4021' tid='4022' class='u'>string</a> <a id='4023' tid='4024' class='u'>i</a>)))
+                (<a id='4025' tid='4026' class='u'>cond</a> ((<a id='4027' tid='4028' class='u'>eq</a> <a id='4029' tid='4030' class='u'>c</a> <a id='4031' tid='4032' class='u'>?\&lt;</a>) <a id='4033' tid='4034' class='u'>&quot;&lt;&quot;</a>)
+                      ((<a id='4035' tid='4036' class='u'>eq</a> <a id='4037' tid='4038' class='u'>c</a> <a id='4039' tid='4040' class='u'>?\&gt;</a>) <a id='4041' tid='4042' class='u'>&quot;&gt;&quot;</a>)
+                      ((<a id='4043' tid='4044' class='u'>eq</a> <a id='4045' tid='4046' class='u'>c</a> <a id='4047' tid='4048' class='u'>?\&</a>) <a id='4049' tid='4050' class='u'>&quot;&amp;&quot;</a>)
+                      ((<a id='4051' tid='4052' class='u'>eq</a> <a id='4053' tid='4054' class='u'>c
