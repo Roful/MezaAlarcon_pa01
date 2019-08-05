@@ -579,4 +579,11 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
     (<a id='4341' tid='4342' class='u'>paredit-do-commands</a> (<a id='4343' tid='4344' class='u'>spec</a> <a id='4345' tid='4346' class='u'>keys</a> <a id='4347' tid='4348' class='u'>fn</a> <a id='4349' tid='4350' class='u'>examples</a>)
         (<a id='4351' tid='4352' class='u'>progn</a> (<a id='4353' tid='4354' class='u'>if</a> (<a id='4355' tid='4356' class='u'>not</a> <a id='4357' tid='4358' class='u'>firstp</a>)
                    (<a id='4359' tid='4360' class='u'>insert</a> <a id='4361' tid='4362' class='u'>&quot;&lt;/table&gt;\n&quot;</a>)
-           
+                   (<a id='4363' tid='4364' class='u'>setq</a> <a id='4365' tid='4366' class='u'>firstp</a> <a id='4367' tid='4368' class='u'>nil</a>))
+               (<a id='4369' tid='4370' class='u'>funcall</a> <a id='4371' tid='4372' class='u'>insert-lines</a>
+                        (<a id='4373' tid='4374' class='u'>concat</a> <a id='4375' tid='4376' class='u'>&quot;&lt;h3&gt;&quot;</a> <a id='4377' tid='4378' class='u'>spec</a> <a id='4379' tid='4380' class='u'>&quot;&lt;/h3&gt;&quot;</a>)
+                        <a id='4381' tid='4382' class='u'>&quot;&lt;table border=\&quot;1\&quot; cellpadding=\&quot;1\&quot;&gt;&quot;</a>
+                        <a id='4383' tid='4384' class='u'>&quot;  &lt;tr&gt;&quot;</a>
+                        <a id='4385' tid='4386' class='u'>&quot;    &lt;th&gt;Command&lt;/th&gt;&quot;</a>
+                        <a id='4387' tid='4388' class='u'>&quot;    &lt;th&gt;Keys&lt;/th&gt;&quot;</a>
+                        
