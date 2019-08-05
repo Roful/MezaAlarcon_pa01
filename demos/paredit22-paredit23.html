@@ -572,4 +572,11 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                    (<a id='4319' tid='4320' class='u'>mapconcat</a> <a id='4321' tid='4322' class='u'>&#39;</a><a id='4323' tid='4324' class='u'>paredit-html-quote</a>
                               <a id='4325' tid='4326' class='u'>example</a>
                               (<a id='4327' tid='4328' class='u'>concat</a> <a id='4329' tid='4330' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&quot;</a>
-                                      <a id='4331' tid='4332' class='u'>&quot;&nbsp;&nbsp
+                                      <a id='4331' tid='4332' class='u'>&quot;&nbsp;&nbsp;&nbsp;&nbsp;---&gt;&quot;</a>
+                                      <a id='4333' tid='4334' class='u'>&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>))
+                   <a id='4335' tid='4336' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;</a>)))
+        (<a id='4337' tid='4338' class='u'>firstp</a> <a id='4339' tid='4340' class='u'>t</a>))
+    (<a id='4341' tid='4342' class='u'>paredit-do-commands</a> (<a id='4343' tid='4344' class='u'>spec</a> <a id='4345' tid='4346' class='u'>keys</a> <a id='4347' tid='4348' class='u'>fn</a> <a id='4349' tid='4350' class='u'>examples</a>)
+        (<a id='4351' tid='4352' class='u'>progn</a> (<a id='4353' tid='4354' class='u'>if</a> (<a id='4355' tid='4356' class='u'>not</a> <a id='4357' tid='4358' class='u'>firstp</a>)
+                   (<a id='4359' tid='4360' class='u'>insert</a> <a id='4361' tid='4362' class='u'>&quot;&lt;/table&gt;\n&quot;</a>)
+           
