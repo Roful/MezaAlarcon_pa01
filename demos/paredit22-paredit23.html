@@ -565,4 +565,11 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                  <a id='4291' tid='4292' class='u'>lines</a>)))
         (<a id='4293' tid='4294' class='u'>html-keys</a>
          (<a id='4295' tid='4296' class='u'>lambda</a> (<a id='4297' tid='4298' class='u'>keys</a>)
-           (<a id='4299' tid='4300' class='u'>mapconcat</a> <a id='4301' tid='4302' class='u'>&#39;</a><a id='4303' tid=
+           (<a id='4299' tid='4300' class='u'>mapconcat</a> <a id='4301' tid='4302' class='u'>&#39;</a><a id='4303' tid='4304' class='u'>paredit-html-quote</a> <a id='4305' tid='4306' class='u'>keys</a> <a id='4307' tid='4308' class='u'>&quot;, &quot;</a>)))
+        (<a id='4309' tid='4310' class='u'>html-example</a>
+         (<a id='4311' tid='4312' class='u'>lambda</a> (<a id='4313' tid='4314' class='u'>example</a>)
+           (<a id='4315' tid='4316' class='u'>concat</a> <a id='4317' tid='4318' class='u'>&quot;&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>
+                   (<a id='4319' tid='4320' class='u'>mapconcat</a> <a id='4321' tid='4322' class='u'>&#39;</a><a id='4323' tid='4324' class='u'>paredit-html-quote</a>
+                              <a id='4325' tid='4326' class='u'>example</a>
+                              (<a id='4327' tid='4328' class='u'>concat</a> <a id='4329' tid='4330' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&quot;</a>
+                                      <a id='4331' tid='4332' class='u'>&quot;&nbsp;&nbsp
