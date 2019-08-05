@@ -598,4 +598,14 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                              <a id='4437' tid='4438' class='u'>&quot;&lt;/td&gt;&quot;</a>)
                      (<a id='4439' tid='4440' class='u'>concat</a> <a id='4441' tid='4442' class='u'>&quot;    &lt;td&gt;&quot;</a>
                              (<a id='4443' tid='4444' class='u'>if</a> <a id='4445' tid='4446' class='u'>examples</a>
-                                 (<a id='4447' tid='4448' class='u'>mapconcat</a> <a id='4449' tid='4450' class='u'>html-example</a> <a
+                                 (<a id='4447' tid='4448' class='u'>mapconcat</a> <a id='4449' tid='4450' class='u'>html-example</a> <a id='4451' tid='4452' class='u'>examples</a>
+                                            <a id='4453' tid='4454' class='u'>&quot;&lt;hr&gt;&quot;</a>)
+                                 <a id='4455' tid='4456' class='u'>&quot;(no examples)&quot;</a>)
+                             <a id='4457' tid='4458' class='u'>&quot;&lt;/td&gt;&quot;</a>)
+                     <a id='4459' tid='4460' class='u'>&quot;  &lt;/tr&gt;&quot;</a>)))))
+  (<a id='4461' tid='4462' class='u'>insert</a> <a id='4463' tid='4464' class='u'>&quot;&lt;/table&gt;\n&quot;</a>))
+
+(<a id='3997' tid='3998' class='u'>defun</a> <a id='3999' tid='4000' class='u'>paredit-html-quote</a> (<a id='4001' tid='4002' class='u'>string</a>)
+  (<a id='4003' tid='4004' class='u'>with-temp-buffer</a>
+    (<a id='4005' tid='4006' class='u'>dotimes</a> (<a id='4007' tid='4008' class='u'>i</a> (<a id='4009' tid='4010' class='u'>length</a> <a id='4011' tid='4012' class='u'>string</a>))
+      (<a id='4013' tid='4014' class='u'>insert</a> (<a id='40
