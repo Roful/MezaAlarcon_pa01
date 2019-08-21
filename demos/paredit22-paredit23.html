@@ -612,4 +612,13 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 (<a id='4025' tid='4026' class='u'>cond</a> ((<a id='4027' tid='4028' class='u'>eq</a> <a id='4029' tid='4030' class='u'>c</a> <a id='4031' tid='4032' class='u'>?\&lt;</a>) <a id='4033' tid='4034' class='u'>&quot;&lt;&quot;</a>)
                       ((<a id='4035' tid='4036' class='u'>eq</a> <a id='4037' tid='4038' class='u'>c</a> <a id='4039' tid='4040' class='u'>?\&gt;</a>) <a id='4041' tid='4042' class='u'>&quot;&gt;&quot;</a>)
                       ((<a id='4043' tid='4044' class='u'>eq</a> <a id='4045' tid='4046' class='u'>c</a> <a id='4047' tid='4048' class='u'>?\&</a>) <a id='4049' tid='4050' class='u'>&quot;&amp;&quot;</a>)
-                      ((<a id='4051' tid='4052' class='u'>eq</a> <a id='4053' tid='4054' class='u'>c
+                      ((<a id='4051' tid='4052' class='u'>eq</a> <a id='4053' tid='4054' class='u'>c</a> <a id='4055' tid='4056' class='u'>?\&#39;</a>) <a id='4057' tid='4058' class='u'>&quot;&apos;&quot;</a>)
+                      ((<a id='4059' tid='4060' class='u'>eq</a> <a id='4061' tid='4062' class='u'>c</a> <a id='4063' tid='4064' class='u'>?\&quot;</a>) <a id='4065' tid='4066' class='u'>&quot;&quot;&quot;</a>)
+                      (<a id='4067' tid='4068' class='u'>t</a> <a id='4069' tid='4070' class='u'>c</a>)))))
+    (<a id='4071' tid='4072' class='u'>buffer-string</a>)))
+
+<a id='7207' tid='7208' class='u'>;;;; Delimiter Insertion
+</a>
+(<a id='783' tid='784' class='m'>eval-and-compile</a>
+  (<a id='765' tid='766' class='m'>defun</a> <a id='767' tid='768' class='m'>paredit-conc-name</a> (<a id='769' tid='770' class='m'>&rest</a> <a id='771' tid='772' class='m'>strings</a>)
+    (<a id='773' tid='774' class='m'>intern</a> (<a id='775' tid='776' class='m'>apply</a> <a id='777' tid='778' class='m'>&#39;</a><a id='779' tid='780' class='m'>concat</a> <a id='781' 
