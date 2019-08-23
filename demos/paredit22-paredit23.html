@@ -621,4 +621,10 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 </a>
 (<a id='783' tid='784' class='m'>eval-and-compile</a>
   (<a id='765' tid='766' class='m'>defun</a> <a id='767' tid='768' class='m'>paredit-conc-name</a> (<a id='769' tid='770' class='m'>&rest</a> <a id='771' tid='772' class='m'>strings</a>)
-    (<a id='773' tid='774' class='m'>intern</a> (<a id='775' tid='776' class='m'>apply</a> <a id='777' tid='778' class='m'>&#39;</a><a id='779' tid='780' class='m'>concat</a> <a id='781' 
+    (<a id='773' tid='774' class='m'>intern</a> (<a id='775' tid='776' class='m'>apply</a> <a id='777' tid='778' class='m'>&#39;</a><a id='779' tid='780' class='m'>concat</a> <a id='781' tid='782' class='m'>strings</a>)))
+
+  (<a id='785' tid='786' class='m'>defmacro</a> <a id='787' tid='788' class='m'>define-paredit-pair</a> (<a id='789' tid='790' class='m'>open</a> <a id='791' tid='792' class='m'>close</a> <a id='793' tid='794' class='m'>name</a>)
+    <a id='795' tid='796' class='m'>`</a>(<a id='959' tid='960' class='m'>progn</a>
+       (<a id='797' tid='798' class='m'>defun</a> <a id='799' tid='800' class='m'>,</a>(<a id='801' tid='802' class='m'>paredit-conc-name</a> <a id='803' tid='804' class='m'>&quot;paredit-open-&quot;</a> <a id='805' tid='806' class='m'>name</a>) (<a id='807' tid='808' class='m'>&optional</a> <a id='809' tid='810' class='m'>n</a>)
+         <a id='811' tid='812' class='m'>,</a>(<a id='813' tid='814' class='m'>concat</a> <a id='815' tid='816' class='m'>&quot;Insert a balanced &quot;</a> <a id='817' tid='818' class='m'>name</a> <a id='819' tid='820' class='m'>&quot; pair.
+With a prefix argument N, put the closing &quot
