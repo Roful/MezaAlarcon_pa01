@@ -627,4 +627,14 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
     <a id='795' tid='796' class='m'>`</a>(<a id='959' tid='960' class='m'>progn</a>
        (<a id='797' tid='798' class='m'>defun</a> <a id='799' tid='800' class='m'>,</a>(<a id='801' tid='802' class='m'>paredit-conc-name</a> <a id='803' tid='804' class='m'>&quot;paredit-open-&quot;</a> <a id='805' tid='806' class='m'>name</a>) (<a id='807' tid='808' class='m'>&optional</a> <a id='809' tid='810' class='m'>n</a>)
          <a id='811' tid='812' class='m'>,</a>(<a id='813' tid='814' class='m'>concat</a> <a id='815' tid='816' class='m'>&quot;Insert a balanced &quot;</a> <a id='817' tid='818' class='m'>name</a> <a id='819' tid='820' class='m'>&quot; pair.
-With a prefix argument N, put the closing &quot
+With a prefix argument N, put the closing &quot;</a> <a id='821' tid='822' class='m'>name</a> <a id='823' tid='824' class='m'>&quot; after N
+  S-expressions forward.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  &quot;</a> <a id='825' tid='826' class='m'>name</a> <a id='827' tid='828' class='m'>&quot; pair around the region.
+If in a string or a comment, insert a single &quot;</a> <a id='829' tid='830' class='m'>name</a> <a id='831' tid='832' class='m'>&quot;.
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
+         (<a id='833' tid='834' class='m'>interactive</a> <a id='835' tid='836' class='m'>&quot;P&quot;</a>)
+         (<a id='837' tid='838' class='m'>cond</a> ((<a id='839' tid='840' class='m'>or</a> (<a id='841' tid='842' class='m'>paredit-in-string-p</a>)
+                    (<a id='843' tid='844' class=
