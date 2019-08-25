@@ -637,4 +637,9 @@ If in a character literal, do nothing.  This prevents changing what was
   in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
          (<a id='833' tid='834' class='m'>interactive</a> <a id='835' tid='836' class='m'>&quot;P&quot;</a>)
          (<a id='837' tid='838' class='m'>cond</a> ((<a id='839' tid='840' class='m'>or</a> (<a id='841' tid='842' class='m'>paredit-in-string-p</a>)
-                    (<a id='843' tid='844' class=
+                    (<a id='843' tid='844' class='m'>paredit-in-comment-p</a>))
+                (<a id='845' tid='846' class='m'>insert</a> <a id='847' tid='848' class='m'>,</a><a id='849' tid='850' class='m'>open</a>))
+               (<span class='d'>(not (paredit-in-char-p))</span>
+                (<a id='851' tid='852' class='m'>paredit-insert-pair</a> <a id='853' tid='854' class='m'>n</a> <a id='855' tid='856' class='m'>,</a><a id='857' tid='858' class='m'>open</a> <a id='859' tid='860' class='m'>,</a><a id='861' tid='862' class='m'>close</a> <a id='863' tid='864' class='m'>&#39;</a><a id='865' tid='866' class='m'>goto-char</a>))))
+       (<a id='867' tid='868' class='m'>defun</a> <a id='869' tid='870' class='m'>,</a>(<a id='871' tid='872' class='m'>paredit-conc-name</a> <a id='873' tid='874' class='m'>&quot;paredit-close-&quot;</a> <a id='875' tid='876' class='m'>name</a>) ()
+         <a id='877' tid='878' class='m'>,</a>(<a id='879' tid
