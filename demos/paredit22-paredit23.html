@@ -649,4 +649,13 @@ If in a character literal, do nothing.  This prevents changing what was
   in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
          (<a id='887' tid='888' class='m'>interactive</a>)
          (<a id='889' tid='890' class='m'>paredit-move-past-close</a> <a id='891' tid='892' class='m'>,</a><a id='893' tid='894' class='m'>close</a>))
-       (<a id='895' tid='896' class='m'>defun</a> <a id='897' tid='898' class='m'>,</a>(<a id='899' tid='900' class='m'>paredit-conc-name</a> <a id='901' tid='902' class='m'>&quot;paredit-close-&quot;</a> <a id='903' tid='904' class='m'>name</a> <a id='905' tid='906' class='m'>&quot;-and-ne
+       (<a id='895' tid='896' class='m'>defun</a> <a id='897' tid='898' class='m'>,</a>(<a id='899' tid='900' class='m'>paredit-conc-name</a> <a id='901' tid='902' class='m'>&quot;paredit-close-&quot;</a> <a id='903' tid='904' class='m'>name</a> <a id='905' tid='906' class='m'>&quot;-and-newline&quot;</a>) ()
+         <a id='907' tid='908' class='m'>,</a>(<a id='909' tid='910' class='m'>concat</a> <a id='911' tid='912' class='m'>&quot;Move past one closing delimiter, add a newline,&quot;</a>
+                  <a id='913' tid='914' class='m'>&quot; and reindent.
+If there was a margin comment after the closing delimiter, preserve it
+  on the same line.&quot;</a>)
+         (<a id='915' tid='916' class='m'>interactive</a>)
+         (<a id='917' tid='918' class='m'>paredit-move-past-close-and-newline</a> <a id='919' tid='920' class='m'>,</a><a id='921' tid='922' class='m'>close</a>))
+       (<a id='923' tid='924' class='m'>defun</a> <a id='925' tid='926' class='m'>,</a>(<a id='927' tid='928' class='m'>paredit-conc-name</a> <a id='929' tid='930' class='m'>&quot;paredit-wrap-&quot;</a> <a id='931' tid='932' class='m'>name</a>)
+           (<a id='933' tid='934' class='m'>&optional</a> <a id='935' tid='936' class='m'>argument</a>)
+         <a id='937' tid='938' class='m'>,</a>(<a id
