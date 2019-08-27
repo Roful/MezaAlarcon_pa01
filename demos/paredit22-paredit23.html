@@ -658,4 +658,11 @@ If there was a margin comment after the closing delimiter, preserve it
          (<a id='917' tid='918' class='m'>paredit-move-past-close-and-newline</a> <a id='919' tid='920' class='m'>,</a><a id='921' tid='922' class='m'>close</a>))
        (<a id='923' tid='924' class='m'>defun</a> <a id='925' tid='926' class='m'>,</a>(<a id='927' tid='928' class='m'>paredit-conc-name</a> <a id='929' tid='930' class='m'>&quot;paredit-wrap-&quot;</a> <a id='931' tid='932' class='m'>name</a>)
            (<a id='933' tid='934' class='m'>&optional</a> <a id='935' tid='936' class='m'>argument</a>)
-         <a id='937' tid='938' class='m'>,</a>(<a id
+         <a id='937' tid='938' class='m'>,</a>(<a id='939' tid='940' class='m'>concat</a> <a id='941' tid='942' class='m'>&quot;Wrap the following S-expression.
+See `paredit-wrap-sexp&#39; for more details.&quot;</a>)
+         (<a id='943' tid='944' class='m'>interactive</a> <a id='945' tid='946' class='m'>&quot;P&quot;</a>)
+         (<a id='947' tid='948' class='m'>paredit-wrap-sexp</a> <a id='949' tid='950' class='m'>argument</a> <a id='951' tid='952' class='m'>,</a><a id='953' tid='954' class='m'>open</a> <a id='955' tid='956' class='m'>,</a><a id='957' tid='958' class='m'>close</a>))
+       (<a id='961' tid='962' class='m'>add-to-list</a> <a id='963' tid='964' class='m'>&#39;</a><a id='965' tid='966' class='m'>paredit-wrap-commands</a>
+                    <a id='967' tid='968' class='m'>&#39;</a><a id='969' tid='970' class='m'>,</a>(<a id='971' tid='972' class='m'>paredit-conc-name</a> <a id='973' tid='974' class='m'>&quot;paredit-wrap-&quot;</a> <a id='975' tid='976' class='m'>name</a>)))))
+
+(<a id='6537' tid='6538' class='u'>defvar</a> <a id='65
