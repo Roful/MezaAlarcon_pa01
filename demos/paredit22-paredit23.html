@@ -665,4 +665,11 @@ See `paredit-wrap-sexp&#39; for more details.&quot;</a>)
        (<a id='961' tid='962' class='m'>add-to-list</a> <a id='963' tid='964' class='m'>&#39;</a><a id='965' tid='966' class='m'>paredit-wrap-commands</a>
                     <a id='967' tid='968' class='m'>&#39;</a><a id='969' tid='970' class='m'>,</a>(<a id='971' tid='972' class='m'>paredit-conc-name</a> <a id='973' tid='974' class='m'>&quot;paredit-wrap-&quot;</a> <a id='975' tid='976' class='m'>name</a>)))))
 
-(<a id='6537' tid='6538' class='u'>defvar</a> <a id='65
+(<a id='6537' tid='6538' class='u'>defvar</a> <a id='6539' tid='6540' class='u'>paredit-wrap-commands</a> <a id='6541' tid='6542' class='u'>&#39;</a>(<a id='6543' tid='6544' class='u'>paredit-wrap-sexp</a>)
+  <a id='6545' tid='6546' class='u'>&quot;List of paredit commands that wrap S-expressions.
+Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
+
+(<a id='7209' tid='7210' class='u'>define-paredit-pair</a> <a id='7211' tid='7212' class='u'>?\(</a> <a id='7213' tid='7214' class='u'>?\)</a> <a id='7215' tid='7216' class='u'>&quot;round&quot;</a>)
+(<a id='7217' tid='7218' class='u'>define-paredit-pair</a> <a id='7219' tid='7220' class='u'>?\[</a> <a id='7221' tid='7222' class='u'>?\]</a> <a id='7223' tid='7224' class='u'>&quot;square&quot;</a>)
+(<a id='7225' tid='7226' class='u'>define-paredit-pair</a> <a id='7227' tid='7228' class='u'>?\{</a> <a id='7229' tid='7230' class='u'>?\}</a> <a id='7231' tid='7232' class='u'>&quot;curly&quot;</a>)
+(<a id='7233' tid='7234' class='u'>define-paredit-pair</a> <a id='7235' tid='7236' class='u'>?\&lt;</a> 
