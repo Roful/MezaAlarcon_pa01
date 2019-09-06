@@ -672,4 +672,11 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
 (<a id='7209' tid='7210' class='u'>define-paredit-pair</a> <a id='7211' tid='7212' class='u'>?\(</a> <a id='7213' tid='7214' class='u'>?\)</a> <a id='7215' tid='7216' class='u'>&quot;round&quot;</a>)
 (<a id='7217' tid='7218' class='u'>define-paredit-pair</a> <a id='7219' tid='7220' class='u'>?\[</a> <a id='7221' tid='7222' class='u'>?\]</a> <a id='7223' tid='7224' class='u'>&quot;square&quot;</a>)
 (<a id='7225' tid='7226' class='u'>define-paredit-pair</a> <a id='7227' tid='7228' class='u'>?\{</a> <a id='7229' tid='7230' class='u'>?\}</a> <a id='7231' tid='7232' class='u'>&quot;curly&quot;</a>)
-(<a id='7233' tid='7234' class='u'>define-paredit-pair</a> <a id='7235' tid='7236' class='u'>?\&lt;</a> 
+(<a id='7233' tid='7234' class='u'>define-paredit-pair</a> <a id='7235' tid='7236' class='u'>?\&lt;</a> <a id='7237' tid='7238' class='u'>?\&gt;</a> <a id='7239' tid='7240' class='u'>&quot;angled&quot;</a>)
+
+<a id='7241' tid='7242' class='u'>;;; Aliases for the old names.
+</a>
+(<a id='7243' tid='7244' class='u'>defalias</a> <a id='7245' tid='7246' class='u'>&#39;</a><a id='7247' tid='7248' class='u'>paredit-open-parenthesis</a> <a id='7249' tid='7250' class='u'>&#39;</a><a id='7251' tid='7252' class='u'>paredit-open-round</a>)
+(<a id='7253' tid='7254' class='u'>defalias</a> <a id='7255' tid='7256' class='u'>&#39;</a><a id='7257' tid='7258' class='u'>paredit-close-parenthesis</a> <a id='7259' tid='7260' class='u'>&#39;</a><a id='7261' tid='7262' class='u'>paredit-close-round</a>)
+(<a id='7263' tid='7264' class='u'>defalias</a> <a id='7265' tid='7266' class='u'>&#39;</a><a id='7267' tid='7268' class='u'>paredit-close-parenthesis-and-newline</a>
+  <a id='7269' tid='7270' class='u'>&#39;</a><a id='7271' tid='7272' class='u'>paredit-close-round-and-newline</a
