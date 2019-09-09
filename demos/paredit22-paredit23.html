@@ -687,4 +687,19 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
   <a id='7299' tid='7300' class='u'>&#39;</a><a id='7301' tid='7302' class='u'>paredit-close-square-and-newline</a>)
 
 (<a id='5309' tid='5310' class='u'>defun</a> <a id='5311' tid='5312' class='u'>paredit-move-past-close</a> (<a id='5313' tid='5314' class='u'>close</a>)
-  <span 
+  <span class='d'>(cond ((or (paredit-in-string-p)
+             (paredit-in-comment-p))
+         (insert close))
+        ((not (paredit-in-char-p))
+         (paredit-move-past-close-and-reindent close)
+         (paredit-blink-paren-match nil)))</span>)
+
+(<a id='5315' tid='5316' class='u'>defun</a> <a id='5317' tid='5318' class='u'>paredit-move-past-close-and-newline</a> (<a id='5319' tid='5320' class='u'>close</a>)
+  (<span class='d'>if</span> <span class='d'>(or (paredit-in-string-p)
+          (paredit-in-comment-p))</span>
+      <span class='d'>(insert close)</span>
+    <span class='d'>(if (paredit-in-char-p) (forward-char))</span>
+    <span class='d'>(paredit-move-past-close-and-reindent close)</span>
+    (<a id='977' tid='978' class='m'>let</a> ((<a id='979' tid='980' class='m'>comment.point</a> (<a id='981' tid='982' class='m'>paredit-find-comment-on-line</a>)))
+      (<a id='983' tid='984' class='m'>newline</a>)
+      (<a id='985' tid='986' class='m'>if</a> <a id='987
