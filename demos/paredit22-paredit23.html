@@ -702,4 +702,17 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
     <span class='d'>(paredit-move-past-close-and-reindent close)</span>
     (<a id='977' tid='978' class='m'>let</a> ((<a id='979' tid='980' class='m'>comment.point</a> (<a id='981' tid='982' class='m'>paredit-find-comment-on-line</a>)))
       (<a id='983' tid='984' class='m'>newline</a>)
-      (<a id='985' tid='986' class='m'>if</a> <a id='987
+      (<a id='985' tid='986' class='m'>if</a> <a id='987' tid='988' class='m'>comment.point</a>
+          (<a id='989' tid='990' class='m'>save-excursion</a>
+            (<a id='991' tid='992' class='m'>forward-line</a> <a id='993' tid='994' class='m'>-1</a>)
+            (<a id='995' tid='996' class='m'>end-of-line</a>)
+            (<a id='997' tid='998' class='m'>indent-to</a> (<a id='999' tid='1000' class='m'>cdr</a> <a id='1001' tid='1002' class='m'>comment.point</a>))
+            (<a id='1003' tid='1004' class='m'>insert</a> (<a id='1005' tid='1006' class='m'>car</a> <a id='1007' tid='1008' class='m'>comment.point</a>)))))
+    <span class='d'>(lisp-indent-line)</span>
+    <span class='d'>(paredit-ignore-sexp-errors (indent-sexp))</span>
+    <span class='d'>(paredit-blink-paren-match t)</span>))
+
+(<a id='3105' tid='3106' class='u'>defun</a> <a id='3107' tid='3108' class='u'>paredit-find-comment-on-line</a> ()
+  <a id='3109' tid='3110' class='u'>&quot;Find a margin comment on the current line.
+Return nil if there is no such comment or if there is anything but
+  wh
