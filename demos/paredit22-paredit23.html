@@ -744,4 +744,13 @@ If such a comment exists, delete the comment (including all leading
                (<a id='1029' tid='1030' class='m'>prog1</a> (<a id='1031' tid='1032' class='m'>region-end</a>) (<a id='1033' tid='1034' class='m'>goto-char</a> (<a id='1035' tid='1036' class='m'>region-beginning</a>))))))
     (<a id='1037' tid='1038' class='m'>let</a> ((<a id='1039' tid='1040' class='m'>spacep</a> (<a id='1041' tid='1042' class='m'>paredit-space-for-delimiter-p</a> <a id='1043' tid='1044' class='m'>nil</a> <a id='1045' tid='1046' class='m'>open</a>)))
       (<a id='1047' tid='1048' class='m'>if</a> <a id='1049' tid='1050' class='m'>spacep</a> (<a id='1051' tid='1052' class='m'>insert</a> <a id='1053' tid='1054' class='m'>&quot; &quot;</a>))
-      (<a id='1055' ti
+      (<a id='1055' tid='1056' class='m'>insert</a> <a id='1057' tid='1058' class='m'>open</a>)
+      (<span class='d'>save-excursion</span>
+        <span class='d'>;; Move past the desired region.
+</span>        (<span class='d'>cond</span> <span class='d'>(n (funcall forward
+                          (save-excursion
+                            (forward-sexp (prefix-numeric-value n))
+                            (point))))</span>
+              (<a id='1059' tid='1060' class='m'>regionp</a> (<a id='1061' tid='1062' class='m'>funcall</a> <a id='1063' tid='1064' class='m'>forward</a> (<a id='1065' tid='1066' class='m'>+</a> <a id='1067' tid='1068' class='m'>end</a> (<a id='1069' tid='1070' class='m'>if</a> <a id='1071' tid='1072' class='m'>spacep</a> <a id='1073' tid='1074' class='m'>2</a> <a id='1075' tid='1076' class='m'>1</a>)))))
+        <span class='d'>(insert close)</span>
+        (<a id='537' tid='538' class='m'>if</a> (<a id='539' tid='540' class='m'>paredit
