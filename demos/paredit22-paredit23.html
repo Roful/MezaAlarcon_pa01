@@ -730,4 +730,11 @@ If such a comment exists, delete the comment (including all leading
 </a>                 (<a id='3153' tid='3154' class='u'>progn</a> (<a id='3155' tid='3156' class='u'>backward-char</a>) (<a id='3157' tid='3158' class='u'>point</a>)))
                 (<a id='3159' tid='3160' class='u'>comment</a>
                  (<a id='3161' tid='3162' class='u'>buffer-substring</a> <a id='3163' tid='3164' class='u'>start</a> (<a id='3165' tid='3166' class='u'>point-at-eol</a>))))
-           (<a id='3167' tid='3168' class='u'>paredit-skip-whitespace</a> <a id='3169' tid='3170' class='u'>nil</a> (<a id='3171' tid='3172' cl
+           (<a id='3167' tid='3168' class='u'>paredit-skip-whitespace</a> <a id='3169' tid='3170' class='u'>nil</a> (<a id='3171' tid='3172' class='u'>point-at-bol</a>))
+           (<a id='3173' tid='3174' class='u'>delete-region</a> (<a id='3175' tid='3176' class='u'>point</a>) (<a id='3177' tid='3178' class='u'>point-at-eol</a>))
+           (<a id='3179' tid='3180' class='u'>cons</a> <a id='3181' tid='3182' class='u'>comment</a> (<a id='3183' tid='3184' class='u'>-</a> <a id='3185' tid='3186' class='u'>start</a> (<a id='3187' tid='3188' class='u'>point-at-bol</a>)))))))
+
+(<a id='4465' tid='4466' class='u'>defun</a> <a id='4467' tid='4468' class='u'>paredit-insert-pair</a> (<a id='4469' tid='4470' class='u'>n</a> <a id='4471' tid='4472' class='u'>open</a> <a id='4473' tid='4474' class='u'>close</a> <a id='4475' tid='4476' class='u'>forward</a>)
+  (<a id='1009' tid='1010' class='m'>let*</a> ((<a id='1011' tid='1012' class='m'>regionp</a>
+          (<a id='1013' tid='1014' class='m'>and</a> (<a id='1015' tid='1016' class='m'>paredit-region-active-p</a>)
+               (<a id='1017' tid='1018' class='m'>pa
