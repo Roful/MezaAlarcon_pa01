@@ -771,4 +771,17 @@ If such a comment exists, delete the comment (including all leading
 </a>             (<a id='5805' tid='5806' class='u'>eq</a> (<a id='5807' tid='5808' class='u'>nth</a> <a id='5809' tid='5810' class='u'>4</a> <a id='5811' tid='5812' class='u'>beginning-state</a>)   <a id='5813' tid='5814' class='u'>; 4. comment status, yada
 </a>                 (<a id='5815' tid='5816' class='u'>nth</a> <a id='5817' tid='5818' class='u'>4</a> <a id='5819' tid='5820' class='u'>end-state</a>))
              (<a id='5821' tid='5822' class='u'>eq</a> (<a id='5823' tid='5824' class='u'>nth</a> <a id='5825' tid='5826' class='u'>5</a> <a id='5827' tid='5828' class='u'>beginning-state</a>)   <a id='5829' tid='5830' class='u'>; 5. t if following char
-</a>                 (<a id='5831' tid='5832' class='u'>nth</a> 
+</a>                 (<a id='5831' tid='5832' class='u'>nth</a> <a id='5833' tid='5834' class='u'>5</a> <a id='5835' tid='5836' class='u'>end-state</a>)))))))   <span class='d'>;    quote
+</span>
+(<a id='6141' tid='6142' class='u'>defvar</a> <a id='6143' tid='6144' class='u'>paredit-space-for-delimiter-predicates</a> <a id='6145' tid='6146' class='u'>nil</a>
+  <a id='6147' tid='6148' class='u'>&quot;List of predicates for whether to put space by delimiter at point.
+Each predicate is a function that is is applied to two arguments, ENDP
+  and DELIMITER, and that returns a boolean saying whether to put a
+  space next to the delimiter -- before the delimiter if ENDP is false,
+  after the delimiter if ENDP is true.
+If any predicate returns false, no space is inserted: every predicate
+  has veto power.
+Each predicate may assume that the point is not at the beginning of the
+  buffer, if ENDP is false, or at the end of the buffer, if ENDP is
+  true; and that the point is not preceded, if ENDP is false, or
+  followed, if EN
