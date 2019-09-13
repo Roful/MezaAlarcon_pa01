@@ -784,4 +784,14 @@ If any predicate returns false, no space is inserted: every predicate
 Each predicate may assume that the point is not at the beginning of the
   buffer, if ENDP is false, or at the end of the buffer, if ENDP is
   true; and that the point is not preceded, if ENDP is false, or
-  followed, if EN
+  followed, if ENDP is true, by a word or symbol constituent, a quote,
+  or the delimiter matching DELIMITER.
+Each predicate should examine only text before the point, if ENDP is
+  false, or only text after the point, if ENDP is true.&quot;</a>)
+
+(<a id='6027' tid='6028' class='u'>defun</a> <a id='6029' tid='6030' class='u'>paredit-space-for-delimiter-p</a> (<a id='6031' tid='6032' class='u'>endp</a> <a id='6033' tid='6034' class='u'>delimiter</a>)
+  <a id='6035' tid='6036' class='u'>;; If at the buffer limit, don&#39;t insert a space.  If there is a word,
+</a>  <a id='6037' tid='6038' class='u'>;; symbol, other quote, or non-matching parenthesis delimiter (i.e. a
+</a>  <a id='6039' tid='6040' class='u'>;; close when want an open the string or an open when we want to
+</a>  <a id='6041' tid='6042' class='u'>;; close the string), do insert a space.
+</a>  (<a id='6043' tid='6044' class='u'>and</a> (<a id='6045' tid='6046' class='u'>not</a> (<a id='6047' tid='6048' class='u'>if</a> <a id='6049' tid='6050' 
