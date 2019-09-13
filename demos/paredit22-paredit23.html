@@ -753,4 +753,14 @@ If such a comment exists, delete the comment (including all leading
                             (point))))</span>
               (<a id='1059' tid='1060' class='m'>regionp</a> (<a id='1061' tid='1062' class='m'>funcall</a> <a id='1063' tid='1064' class='m'>forward</a> (<a id='1065' tid='1066' class='m'>+</a> <a id='1067' tid='1068' class='m'>end</a> (<a id='1069' tid='1070' class='m'>if</a> <a id='1071' tid='1072' class='m'>spacep</a> <a id='1073' tid='1074' class='m'>2</a> <a id='1075' tid='1076' class='m'>1</a>)))))
         <span class='d'>(insert close)</span>
-        (<a id='537' tid='538' class='m'>if</a> (<a id='539' tid='540' class='m'>paredit
+        (<a id='537' tid='538' class='m'>if</a> (<a id='539' tid='540' class='m'>paredit-space-for-delimiter-p</a> <a id='541' tid='542' class='m'>t</a> <a id='543' tid='544' class='m'>close</a>)
+            (<a id='545' tid='546' class='m'>insert</a> <a id='547' tid='548' class='m'>&quot; &quot;</a>))))))
+
+(<a id='5729' tid='5730' class='u'>defun</a> <a id='5731' tid='5732' class='u'>paredit-region-safe-for-insert-p</a> ()
+  (<a id='5733' tid='5734' class='u'>save-excursion</a>
+    (<a id='5735' tid='5736' class='u'>let</a> ((<a id='5737' tid='5738' class='u'>beginning</a> (<a id='5739' tid='5740' class='u'>region-beginning</a>))
+          (<a id='5741' tid='5742' class='u'>end</a> (<a id='5743' tid='5744' class='u'>region-end</a>)))
+      (<a id='5745' tid='5746' class='u'>goto-char</a> <a id='5747' tid='5748' class='u'>beginning</a>)
+      (<a id='5749' tid='5750' class='u'>let*</a> ((<a id='5751' tid='5752' class='u'>beginning-state</a> (<a id='5753' tid='5754' class='u'>paredit-current-parse-state</a>))
+             (<a id='5755' tid='5756' class='u'>end-state</a>
+            
