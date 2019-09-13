@@ -723,4 +723,11 @@ If such a comment exists, delete the comment (including all leading
   (<a id='3111' tid='3112' class='u'>save-excursion</a>
     (<a id='3113' tid='3114' class='u'>paredit-skip-whitespace</a> <a id='3115' tid='3116' class='u'>t</a> (<a id='3117' tid='3118' class='u'>point-at-eol</a>))
     (<a id='3119' tid='3120' class='u'>and</a> (<a id='3121' tid='3122' class='u'>eq</a> <a id='3123' tid='3124' class='u'>?\;</a> (<a id='3125' tid='3126' class='u'>char-after</a>))
-         (<a id='3127' tid='3128' class='u'>not</a> (<a id='3129' tid='3130' class='u'>eq</a> <a id='3131' tid='3132' class='u'>?\;</a> (<a id='3133' tid='3134' class='u'>char-after</a> (<a id='3135' tid='3136' class='u'>1+</a> (<a id='3137' tid='3138' class='u
+         (<a id='3127' tid='3128' class='u'>not</a> (<a id='3129' tid='3130' class='u'>eq</a> <a id='3131' tid='3132' class='u'>?\;</a> (<a id='3133' tid='3134' class='u'>char-after</a> (<a id='3135' tid='3136' class='u'>1+</a> (<a id='3137' tid='3138' class='u'>point</a>)))))
+         (<a id='3139' tid='3140' class='u'>not</a> (<a id='3141' tid='3142' class='u'>or</a> (<a id='3143' tid='3144' class='u'>paredit-in-string-p</a>)
+                  (<a id='3145' tid='3146' class='u'>paredit-in-char-p</a>)))
+         (<a id='3147' tid='3148' class='u'>let*</a> ((<a id='3149' tid='3150' class='u'>start</a>                  <a id='3151' tid='3152' class='u'>;Move to before the semicolon.
+</a>                 (<a id='3153' tid='3154' class='u'>progn</a> (<a id='3155' tid='3156' class='u'>backward-char</a>) (<a id='3157' tid='3158' class='u'>point</a>)))
+                (<a id='3159' tid='3160' class='u'>comment</a>
+                 (<a id='3161' tid='3162' class='u'>buffer-substring</a> <a id='3163' tid='3164' class='u'>start</a> (<a id='3165' tid='3166' class='u'>point-at-eol</a>))))
+           (<a id='3167' tid='3168' class='u'>paredit-skip-whitespace</a> <a id='3169' tid='3170' class='u'>nil</a> (<a id='3171' tid='3172' cl
