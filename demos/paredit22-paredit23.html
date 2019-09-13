@@ -737,4 +737,11 @@ If such a comment exists, delete the comment (including all leading
 (<a id='4465' tid='4466' class='u'>defun</a> <a id='4467' tid='4468' class='u'>paredit-insert-pair</a> (<a id='4469' tid='4470' class='u'>n</a> <a id='4471' tid='4472' class='u'>open</a> <a id='4473' tid='4474' class='u'>close</a> <a id='4475' tid='4476' class='u'>forward</a>)
   (<a id='1009' tid='1010' class='m'>let*</a> ((<a id='1011' tid='1012' class='m'>regionp</a>
           (<a id='1013' tid='1014' class='m'>and</a> (<a id='1015' tid='1016' class='m'>paredit-region-active-p</a>)
-               (<a id='1017' tid='1018' class='m'>pa
+               (<a id='1017' tid='1018' class='m'>paredit-region-safe-for-insert-p</a>)))
+         (<a id='1019' tid='1020' class='m'>end</a>
+          (<a id='1021' tid='1022' class='m'>and</a> <a id='1023' tid='1024' class='m'>regionp</a>
+               (<a id='1025' tid='1026' class='m'>not</a> <a id='1027' tid='1028' class='m'>n</a>)
+               (<a id='1029' tid='1030' class='m'>prog1</a> (<a id='1031' tid='1032' class='m'>region-end</a>) (<a id='1033' tid='1034' class='m'>goto-char</a> (<a id='1035' tid='1036' class='m'>region-beginning</a>))))))
+    (<a id='1037' tid='1038' class='m'>let</a> ((<a id='1039' tid='1040' class='m'>spacep</a> (<a id='1041' tid='1042' class='m'>paredit-space-for-delimiter-p</a> <a id='1043' tid='1044' class='m'>nil</a> <a id='1045' tid='1046' class='m'>open</a>)))
+      (<a id='1047' tid='1048' class='m'>if</a> <a id='1049' tid='1050' class='m'>spacep</a> (<a id='1051' tid='1052' class='m'>insert</a> <a id='1053' tid='1054' class='m'>&quot; &quot;</a>))
+      (<a id='1055' ti
