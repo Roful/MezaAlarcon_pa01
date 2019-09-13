@@ -763,4 +763,7 @@ If such a comment exists, delete the comment (including all leading
       (<a id='5745' tid='5746' class='u'>goto-char</a> <a id='5747' tid='5748' class='u'>beginning</a>)
       (<a id='5749' tid='5750' class='u'>let*</a> ((<a id='5751' tid='5752' class='u'>beginning-state</a> (<a id='5753' tid='5754' class='u'>paredit-current-parse-state</a>))
              (<a id='5755' tid='5756' class='u'>end-state</a>
-            
+              (<a id='5757' tid='5758' class='u'>parse-partial-sexp</a> <a id='5759' tid='5760' class='u'>beginning</a> <a id='5761' tid='5762' class='u'>end</a> <a id='5763' tid='5764' class='u'>nil</a> <a id='5765' tid='5766' class='u'>nil</a> <a id='5767' tid='5768' class='u'>beginning-state</a>)))
+        (<a id='5769' tid='5770' class='u'>and</a> (<a id='5771' tid='5772' class='u'>=</a>  (<a id='5773' tid='5774' class='u'>nth</a> <a id='5775' tid='5776' class='u'>0</a> <a id='5777' tid='5778' class='u'>beginning-state</a>)   <a id='5779' tid='5780' class='u'>; 0. depth in parens
+</a>                 (<a id='5781' tid='5782' class='u'>nth</a> <a id='5783' tid='5784' class='u'>0</a> <a id='5785' tid='5786' class='u'>end-state</a>))
+             (<a id='5787' tid='5788' class='u'>eq</a> (<a id='5789' tid='5790' class='u'>nth</a> <a id='5791' tid='5792' class='u'>3</a> <a id='5793' tid='5794' class='u'>beginning-state</a>)   <a id='
