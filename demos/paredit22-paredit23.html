@@ -834,4 +834,14 @@ Each predicate should examine only text before the point, if ENDP is
                      <a id='5433' tid='5434' class='u'>;; Moving the closing delimiter any further
 </a>                     <a id='5435' tid='5436' class='u'>;; would put it into a comment, so we just
 </a>                     <a id='5437' tid='5438' class='u'>;; indent the closing delimiter where it is and
-</a>                     <a id='5439' tid='5440' class='u'>;; abort the loop, telling its con
+</a>                     <a id='5439' tid='5440' class='u'>;; abort the loop, telling its continuation that
+</a>                     <a id='5441' tid='5442' class='u'>;; no leading whitespace should be deleted.
+</a>                     (<a id='5443' tid='5444' class='u'>lisp-indent-line</a>)
+                     (<a id='5445' tid='5446' class='u'>throw</a> <a id='5447' tid='5448' class='u'>&#39;</a><a id='5449' tid='5450' class='u'>return</a> <a id='5451' tid='5452' class='u'>nil</a>))
+                    (<a id='5453' tid='5454' class='u'>t</a> (<a id='5455' tid='5456' class='u'>delete-indentation</a>)))))))
+      (<a id='5457' tid='5458' class='u'>paredit-delete-leading-whitespace</a>)))
+
+(<a id='5263' tid='5264' class='u'>defun</a> <a id='5265' tid='5266' class='u'>paredit-missing-close</a> ()
+  (<a id='5267' tid='5268' class='u'>save-excursion</a>
+    (<a id='5269' tid='5270' class='u'>paredit-handle-sexp-errors</a> (<a id='5271' tid='5272' class='u'>backward-up-list</a>)
+      (<a id='5273' tid='5274' class='u'>error</a> <a id='5275' tid='5
