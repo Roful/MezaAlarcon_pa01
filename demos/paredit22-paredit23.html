@@ -799,4 +799,9 @@ Each predicate should examine only text before the point, if ENDP is
              (<a id='6067' tid='6068' class='u'>list</a> <a id='6069' tid='6070' class='u'>?w</a> <a id='6071' tid='6072' class='u'>?_</a> <a id='6073' tid='6074' class='u'>?\&quot;</a>
                    (<a id='6075' tid='6076' class='u'>let</a> ((<a id='6077' tid='6078' class='u'>matching</a> (<a id='6079' tid='6080' class='u'>matching-paren</a> <a id='6081' tid='6082' class='u'>delimiter</a>)))
                      (<a id='6083' tid='6084' class='u'>and</a> <a id='6085' tid='6086' class='u'>matching</a> (<a id='6087' tid='6088' class='u'>char-syntax</a> <a id='6089' tid='6090' class='u'>matching</a>)))
-               
+                   (<a id='6091' tid='6092' class='u'>and</a> (<a id='6093' tid='6094' class='u'>not</a> <a id='6095' tid='6096' class='u'>endp</a>)
+                        (<a id='6097' tid='6098' class='u'>eq</a> <a id='6099' tid='6100' class='u'>?\&quot;</a> (<a id='6101' tid='6102' class='u'>char-syntax</a> <a id='6103' tid='6104' class='u'>delimiter</a>))
+                        <a id='6105' tid='6106' class='u'>?\)</a> )))
+       (<a id='6107' tid='6108' class='u'>catch</a> <a id='6109' tid='6110' class='u'>&#39;</a><a id='6111' tid='6112' class='u'>exit</a>
+         (<a id='6113' tid='6114' class='u'>dolist</a> (<a id='6115' tid='6116' class='u'>predicate</a> <a id='6117' tid='6118' class='u'>paredit-space-for-delimiter-predicates</a>)
+           (<a id='6119' tid='6120' class='u'>if</a> (<a id='6121' tid='6122' class='u'>not</a> (<a id='6123' tid='6124' class='u'>funcall</a> <a id='6125' tid='6126' class='u'>predicate</a> <a id='6127' tid='6128' class='u'>endp</a> <a id='6129' tid='
