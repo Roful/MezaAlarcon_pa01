@@ -804,4 +804,12 @@ Each predicate should examine only text before the point, if ENDP is
                         <a id='6105' tid='6106' class='u'>?\)</a> )))
        (<a id='6107' tid='6108' class='u'>catch</a> <a id='6109' tid='6110' class='u'>&#39;</a><a id='6111' tid='6112' class='u'>exit</a>
          (<a id='6113' tid='6114' class='u'>dolist</a> (<a id='6115' tid='6116' class='u'>predicate</a> <a id='6117' tid='6118' class='u'>paredit-space-for-delimiter-predicates</a>)
-           (<a id='6119' tid='6120' class='u'>if</a> (<a id='6121' tid='6122' class='u'>not</a> (<a id='6123' tid='6124' class='u'>funcall</a> <a id='6125' tid='6126' class='u'>predicate</a> <a id='6127' tid='6128' class='u'>endp</a> <a id='6129' tid='
+           (<a id='6119' tid='6120' class='u'>if</a> (<a id='6121' tid='6122' class='u'>not</a> (<a id='6123' tid='6124' class='u'>funcall</a> <a id='6125' tid='6126' class='u'>predicate</a> <a id='6127' tid='6128' class='u'>endp</a> <a id='6129' tid='6130' class='u'>delimiter</a>))
+               (<a id='6131' tid='6132' class='u'>throw</a> <a id='6133' tid='6134' class='u'>&#39;</a><a id='6135' tid='6136' class='u'>exit</a> <a id='6137' tid='6138' class='u'>nil</a>)))
+         <a id='6139' tid='6140' class='u'>t</a>)))
+
+(<a id='5321' tid='5322' class='u'>defun</a> <a id='5323' tid='5324' class='u'>paredit-move-past-close-and-reindent</a> (<a id='5325' tid='5326' class='u'>close</a>)
+  (<a id='5327' tid='5328' class='u'>let</a> ((<a id='5329' tid='5330' class='u'>open</a> (<a id='5331' tid='5332' class='u'>paredit-missing-close</a>)))
+    (<a id='5333' tid='5334' class='u'>if</a> <a id='5335' tid='5336' class='u'>open</a>
+        (<a id='5337' tid='5338' class='u'>if</a> (<a id='5339' tid='5340' class='u'>eq</a> <a id='5341' tid='5342' class='u'>close</a> (<a id='5343' tid='5344' class='u'>matching-paren</a> <a id='5345' tid='5346' class='u'>open</a>))
+ 
