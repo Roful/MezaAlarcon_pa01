@@ -844,4 +844,13 @@ Each predicate should examine only text before the point, if ENDP is
 (<a id='5263' tid='5264' class='u'>defun</a> <a id='5265' tid='5266' class='u'>paredit-missing-close</a> ()
   (<a id='5267' tid='5268' class='u'>save-excursion</a>
     (<a id='5269' tid='5270' class='u'>paredit-handle-sexp-errors</a> (<a id='5271' tid='5272' class='u'>backward-up-list</a>)
-      (<a id='5273' tid='5274' class='u'>error</a> <a id='5275' tid='5
+      (<a id='5273' tid='5274' class='u'>error</a> <a id='5275' tid='5276' class='u'>&quot;Not inside a list.&quot;</a>))
+    (<a id='5277' tid='5278' class='u'>let</a> ((<a id='5279' tid='5280' class='u'>open</a> (<a id='5281' tid='5282' class='u'>char-after</a>)))
+      (<a id='5283' tid='5284' class='u'>paredit-handle-sexp-errors</a> (<a id='5285' tid='5286' class='u'>progn</a> (<a id='5287' tid='5288' class='u'>forward-sexp</a>) <a id='5289' tid='5290' class='u'>nil</a>)
+        <a id='5291' tid='5292' class='u'>open</a>))))
+
+(<a id='2991' tid='2992' class='u'>defun</a> <a id='2993' tid='2994' class='u'>paredit-delete-leading-whitespace</a> ()
+  <a id='2995' tid='2996' class='u'>;; This assumes that we&#39;re on the closing delimiter already.
+</a>  (<a id='2997' tid='2998' class='u'>save-excursion</a>
+    (<a id='2999' tid='3000' class='u'>backward-char</a>)
+    (<a id='3001' tid='3002' class='u'>while</a> (<a id='3003' tid='3004' class='u'>let</a> ((<a id='3005' tid='3006' class='
