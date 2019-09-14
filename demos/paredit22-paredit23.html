@@ -826,4 +826,12 @@ Each predicate should examine only text before the point, if ENDP is
               (<a id='5399' tid='5400' class='u'>cond</a> ((<a id='5401' tid='5402' class='u'>not</a> (<a id='5403' tid='5404' class='u'>eq</a> (<a id='5405' tid='5406' class='u'>point</a>) <a id='5407' tid='5408' class='u'>before-paren</a>))
                      <a id='5409' tid='5410' class='u'>;; Can&#39;t call PAREDIT-DELETE-LEADING-WHITESPACE
 </a>                     <a id='5411' tid='5412' class='u'>;; here -- we must return from SAVE-EXCURSION
-</a>                    
+</a>                     <a id='5413' tid='5414' class='u'>;; first.
+</a>                     (<a id='5415' tid='5416' class='u'>throw</a> <a id='5417' tid='5418' class='u'>&#39;</a><a id='5419' tid='5420' class='u'>return</a> <a id='5421' tid='5422' class='u'>t</a>))
+                    ((<a id='5423' tid='5424' class='u'>save-excursion</a> (<a id='5425' tid='5426' class='u'>forward-line</a> <a id='5427' tid='5428' class='u'>-1</a>)
+                                     (<a id='5429' tid='5430' class='u'>end-of-line</a>)
+                                     (<a id='5431' tid='5432' class='u'>paredit-in-comment-p</a>))
+                     <a id='5433' tid='5434' class='u'>;; Moving the closing delimiter any further
+</a>                     <a id='5435' tid='5436' class='u'>;; would put it into a comment, so we just
+</a>                     <a id='5437' tid='5438' class='u'>;; indent the closing delimiter where it is and
+</a>                     <a id='5439' tid='5440' class='u'>;; abort the loop, telling its con
