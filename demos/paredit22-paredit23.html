@@ -794,4 +794,9 @@ Each predicate should examine only text before the point, if ENDP is
 </a>  <a id='6037' tid='6038' class='u'>;; symbol, other quote, or non-matching parenthesis delimiter (i.e. a
 </a>  <a id='6039' tid='6040' class='u'>;; close when want an open the string or an open when we want to
 </a>  <a id='6041' tid='6042' class='u'>;; close the string), do insert a space.
-</a>  (<a id='6043' tid='6044' class='u'>and</a> (<a id='6045' tid='6046' class='u'>not</a> (<a id='6047' tid='6048' class='u'>if</a> <a id='6049' tid='6050' 
+</a>  (<a id='6043' tid='6044' class='u'>and</a> (<a id='6045' tid='6046' class='u'>not</a> (<a id='6047' tid='6048' class='u'>if</a> <a id='6049' tid='6050' class='u'>endp</a> (<a id='6051' tid='6052' class='u'>eobp</a>) (<a id='6053' tid='6054' class='u'>bobp</a>)))
+       (<a id='6055' tid='6056' class='u'>memq</a> (<a id='6057' tid='6058' class='u'>char-syntax</a> (<a id='6059' tid='6060' class='u'>if</a> <a id='6061' tid='6062' class='u'>endp</a> (<a id='6063' tid='6064' class='u'>char-after</a>) (<a id='6065' tid='6066' class='u'>char-before</a>)))
+             (<a id='6067' tid='6068' class='u'>list</a> <a id='6069' tid='6070' class='u'>?w</a> <a id='6071' tid='6072' class='u'>?_</a> <a id='6073' tid='6074' class='u'>?\&quot;</a>
+                   (<a id='6075' tid='6076' class='u'>let</a> ((<a id='6077' tid='6078' class='u'>matching</a> (<a id='6079' tid='6080' class='u'>matching-paren</a> <a id='6081' tid='6082' class='u'>delimiter</a>)))
+                     (<a id='6083' tid='6084' class='u'>and</a> <a id='6085' tid='6086' class='u'>matching</a> (<a id='6087' tid='6088' class='u'>char-syntax</a> <a id='6089' tid='6090' class='u'>matching</a>)))
+               
