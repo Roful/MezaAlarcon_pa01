@@ -819,4 +819,11 @@ Each predicate should examine only text before the point, if ENDP is
                    <a id='5363' tid='5364' class='u'>open</a> <a id='5365' tid='5366' class='u'>close</a>))))
   (<a id='5367' tid='5368' class='u'>up-list</a>)
   (<a id='5369' tid='5370' class='u'>if</a> (<a id='5371' tid='5372' class='u'>catch</a> <a id='5373' tid='5374' class='u'>&#39;</a><a id='5375' tid='5376' class='u'>return</a>                    <a id='5377' tid='5378' class='u'>; This CATCH returns T if it
-</a>        (<a id='5379' tid='53
+</a>        (<a id='5379' tid='5380' class='u'>while</a> <a id='5381' tid='5382' class='u'>t</a>                        <a id='5383' tid='5384' class='u'>; should delete leading spaces
+</a>          (<a id='5385' tid='5386' class='u'>save-excursion</a>               <a id='5387' tid='5388' class='u'>; and NIL if not.
+</a>            (<a id='5389' tid='5390' class='u'>let</a> ((<a id='5391' tid='5392' class='u'>before-paren</a> (<a id='5393' tid='5394' class='u'>1-</a> (<a id='5395' tid='5396' class='u'>point</a>))))
+              (<a id='5397' tid='5398' class='u'>back-to-indentation</a>)
+              (<a id='5399' tid='5400' class='u'>cond</a> ((<a id='5401' tid='5402' class='u'>not</a> (<a id='5403' tid='5404' class='u'>eq</a> (<a id='5405' tid='5406' class='u'>point</a>) <a id='5407' tid='5408' class='u'>before-paren</a>))
+                     <a id='5409' tid='5410' class='u'>;; Can&#39;t call PAREDIT-DELETE-LEADING-WHITESPACE
+</a>                     <a id='5411' tid='5412' class='u'>;; here -- we must return from SAVE-EXCURSION
+</a>                    
