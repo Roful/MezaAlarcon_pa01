@@ -812,4 +812,11 @@ Each predicate should examine only text before the point, if ENDP is
   (<a id='5327' tid='5328' class='u'>let</a> ((<a id='5329' tid='5330' class='u'>open</a> (<a id='5331' tid='5332' class='u'>paredit-missing-close</a>)))
     (<a id='5333' tid='5334' class='u'>if</a> <a id='5335' tid='5336' class='u'>open</a>
         (<a id='5337' tid='5338' class='u'>if</a> (<a id='5339' tid='5340' class='u'>eq</a> <a id='5341' tid='5342' class='u'>close</a> (<a id='5343' tid='5344' class='u'>matching-paren</a> <a id='5345' tid='5346' class='u'>open</a>))
- 
+            (<a id='5347' tid='5348' class='u'>save-excursion</a>
+              (<a id='5349' tid='5350' class='u'>message</a> <a id='5351' tid='5352' class='u'>&quot;Missing closing delimiter: %c&quot;</a> <a id='5353' tid='5354' class='u'>close</a>)
+              (<a id='5355' tid='5356' class='u'>insert</a> <a id='5357' tid='5358' class='u'>close</a>))
+            (<a id='5359' tid='5360' class='u'>error</a> <a id='5361' tid='5362' class='u'>&quot;Mismatched missing closing delimiter: %c ... %c&quot;</a>
+                   <a id='5363' tid='5364' class='u'>open</a> <a id='5365' tid='5366' class='u'>close</a>))))
+  (<a id='5367' tid='5368' class='u'>up-list</a>)
+  (<a id='5369' tid='5370' class='u'>if</a> (<a id='5371' tid='5372' class='u'>catch</a> <a id='5373' tid='5374' class='u'>&#39;</a><a id='5375' tid='5376' class='u'>return</a>                    <a id='5377' tid='5378' class='u'>; This CATCH returns T if it
+</a>        (<a id='5379' tid='53
