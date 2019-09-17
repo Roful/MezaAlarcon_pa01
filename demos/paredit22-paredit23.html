@@ -908,4 +908,12 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
       (<a id='5227' tid='5228' class='u'>paredit-doublequote</a> (<a id='5229' tid='5230' class='u'>or</a> <a id='5231' tid='5232' class='u'>n</a>
                                (<a id='5233' tid='5234' class='u'>and</a> (<a id='5235' tid='5236' class='u'>not</a> (<a id='5237' tid='5238' class='u'>paredit-region-active-p</a>))
                                     <a id='5239' tid='5240' class='u'>1</a>)))
-    (<a id='5241' tid='5242' class='u'>let</a> ((<a id='5243' tid='5244' class='
+    (<a id='5241' tid='5242' class='u'>let</a> ((<a id='5243' tid='5244' class='u'>start+end</a> (<a id='5245' tid='5246' class='u'>paredit-string-start+end-points</a>)))
+      (<a id='5247' tid='5248' class='u'>goto-char</a> (<a id='5249' tid='5250' class='u'>1+</a> (<a id='5251' tid='5252' class='u'>cdr</a> <a id='5253' tid='5254' class='u'>start+end</a>)))
+      (<a id='5255' tid='5256' class='u'>newline</a>)
+      (<a id='5257' tid='5258' class='u'>lisp-indent-line</a>)
+      (<a id='5259' tid='5260' class='u'>paredit-ignore-sexp-errors</a> (<a id='5261' tid='5262' class='u'>indent-sexp</a>)))))
+
+(<a id='3373' tid='3374' class='u'>defun</a> <a id='3375' tid='3376' class='u'>paredit-forward-for-quote</a> (<a id='3377' tid='3378' class='u'>end</a>)
+  (<a id='3379' tid='3380' class='u'>let</a> ((<a id='3381' tid='3382' class='u'>state</a> (<a id='3383' tid='3384' class='u'>paredit-current-parse-state</a>)))
+    (<a id='3385' tid='3386' class='u'>while</a> (<a id='3387' tid='3388' class='u'>&lt;</a> (<a id='3389' tid='3390' class='u'>point</a>) <a id='3391' t
