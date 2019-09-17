@@ -899,4 +899,13 @@ If in a character literal, do nothing.  This prevents accidentally
 
 (<a id='5207' tid='5208' class='u'>defun</a> <a id='5209' tid='5210' class='u'>paredit-meta-doublequote</a> (<a id='5211' tid='5212' class='u'>&optional</a> <a id='5213' tid='5214' class='u'>n</a>)
   <a id='5215' tid='5216' class='u'>&quot;Move to the end of the string, insert a newline, and indent.
-If not
+If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
+  is specified and the region is not active or `transient-mark-mode&#39; is
+  disabled, the default is to wrap one S-expression, however, not
+  zero.&quot;</a>
+  (<a id='5217' tid='5218' class='u'>interactive</a> <a id='5219' tid='5220' class='u'>&quot;P&quot;</a>)
+  (<a id='5221' tid='5222' class='u'>if</a> (<a id='5223' tid='5224' class='u'>not</a> (<a id='5225' tid='5226' class='u'>paredit-in-string-p</a>))
+      (<a id='5227' tid='5228' class='u'>paredit-doublequote</a> (<a id='5229' tid='5230' class='u'>or</a> <a id='5231' tid='5232' class='u'>n</a>
+                               (<a id='5233' tid='5234' class='u'>and</a> (<a id='5235' tid='5236' class='u'>not</a> (<a id='5237' tid='5238' class='u'>paredit-region-active-p</a>))
+                                    <a id='5239' tid='5240' class='u'>1</a>)))
+    (<a id='5241' tid='5242' class='u'>let</a> ((<a id='5243' tid='5244' class='
