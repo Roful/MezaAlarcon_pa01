@@ -916,4 +916,10 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
 
 (<a id='3373' tid='3374' class='u'>defun</a> <a id='3375' tid='3376' class='u'>paredit-forward-for-quote</a> (<a id='3377' tid='3378' class='u'>end</a>)
   (<a id='3379' tid='3380' class='u'>let</a> ((<a id='3381' tid='3382' class='u'>state</a> (<a id='3383' tid='3384' class='u'>paredit-current-parse-state</a>)))
-    (<a id='3385' tid='3386' class='u'>while</a> (<a id='3387' tid='3388' class='u'>&lt;</a> (<a id='3389' tid='3390' class='u'>point</a>) <a id='3391' t
+    (<a id='3385' tid='3386' class='u'>while</a> (<a id='3387' tid='3388' class='u'>&lt;</a> (<a id='3389' tid='3390' class='u'>point</a>) <a id='3391' tid='3392' class='u'>end</a>)
+      (<a id='3393' tid='3394' class='u'>let</a> ((<a id='3395' tid='3396' class='u'>new-state</a> (<a id='3397' tid='3398' class='u'>parse-partial-sexp</a> (<a id='3399' tid='3400' class='u'>point</a>) (<a id='3401' tid='3402' class='u'>1+</a> (<a id='3403' tid='3404' class='u'>point</a>))
+                                           <a id='3405' tid='3406' class='u'>nil</a> <a id='3407' tid='3408' class='u'>nil</a> <a id='3409' tid='3410' class='u'>state</a>)))
+        (<a id='3411' tid='3412' class='u'>if</a> (<a id='3413' tid='3414' class='u'>paredit-in-string-p</a> <a id='3415' tid='3416' class='u'>new-state</a>)
+            (<a id='3417' tid='3418' class='u'>if</a> (<a id='3419' tid='3420' class='u'>not</a> (<a id='3421' tid='3422' class='u'>paredit-in-string-escape-p</a>))
+                (<a id='3423' tid='3424' class='u'>setq</a> <a id='3425' tid='3426' class='u'>state</a> <a id='3427' tid='3428' class='u'>new-state</a>)
+     
