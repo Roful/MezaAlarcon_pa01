@@ -891,4 +891,12 @@ If in a character literal, do nothing.  This prevents accidentally
          (<a id='3063' tid='3064' class='u'>if</a> (<a id='3065' tid='3066' class='u'>eq</a> (<a id='3067' tid='3068' class='u'>cdr</a> (<a id='3069' tid='3070' class='u'>paredit-string-start+end-points</a>))
                  (<a id='3071' tid='3072' class='u'>point</a>))
              (<a id='3073' tid='3074' class='u'>forward-char</a>)             <a id='3075' tid='3076' class='u'>; We&#39;re on the closing quote.
-</a>             (<a id='3077' tid='3078' class='u'>insert</a> <a id='3079' tid='3080' class='u'>?\\
+</a>             (<a id='3077' tid='3078' class='u'>insert</a> <a id='3079' tid='3080' class='u'>?\\</a> <a id='3081' tid='3082' class='u'>?\&quot;</a> )))
+        ((<a id='3083' tid='3084' class='u'>paredit-in-comment-p</a>)
+         (<a id='3085' tid='3086' class='u'>insert</a> <a id='3087' tid='3088' class='u'>?\&quot;</a> ))
+        ((<a id='3089' tid='3090' class='u'>not</a> (<a id='3091' tid='3092' class='u'>paredit-in-char-p</a>))
+         (<a id='3093' tid='3094' class='u'>paredit-insert-pair</a> <a id='3095' tid='3096' class='u'>n</a> <a id='3097' tid='3098' class='u'>?\&quot;</a> <a id='3099' tid='3100' class='u'>?\&quot;</a> <a id='3101' tid='3102' class='u'>&#39;</a><a id='3103' tid='3104' class='u'>paredit-forward-for-quote</a>))))
+
+(<a id='5207' tid='5208' class='u'>defun</a> <a id='5209' tid='5210' class='u'>paredit-meta-doublequote</a> (<a id='5211' tid='5212' class='u'>&optional</a> <a id='5213' tid='5214' class='u'>n</a>)
+  <a id='5215' tid='5216' class='u'>&quot;Move to the end of the string, insert a newline, and indent.
+If not
