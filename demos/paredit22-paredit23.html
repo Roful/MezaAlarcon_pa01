@@ -882,4 +882,13 @@ If the region is active, `transient-mark-mode&#39; is enabled, and the
   characters if necessary.
 Inside a comment, insert a literal double-quote.
 At the end of a string, move past the closing double-quote.
-I
+In the middle of a string, insert a backslash-escaped double-quote.
+If in a character literal, do nothing.  This prevents accidentally
+  changing a what was in the character literal to become a meaningful
+  delimiter unintentionally.&quot;</a>
+  (<a id='3055' tid='3056' class='u'>interactive</a> <a id='3057' tid='3058' class='u'>&quot;P&quot;</a>)
+  (<a id='3059' tid='3060' class='u'>cond</a> ((<a id='3061' tid='3062' class='u'>paredit-in-string-p</a>)
+         (<a id='3063' tid='3064' class='u'>if</a> (<a id='3065' tid='3066' class='u'>eq</a> (<a id='3067' tid='3068' class='u'>cdr</a> (<a id='3069' tid='3070' class='u'>paredit-string-start+end-points</a>))
+                 (<a id='3071' tid='3072' class='u'>point</a>))
+             (<a id='3073' tid='3074' class='u'>forward-char</a>)             <a id='3075' tid='3076' class='u'>; We&#39;re on the closing quote.
+</a>             (<a id='3077' tid='3078' class='u'>insert</a> <a id='3079' tid='3080' class='u'>?\\
