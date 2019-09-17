@@ -869,4 +869,17 @@ Each predicate should examine only text before the point, if ENDP is
           (<a id='2595' tid='2596' class='u'>forward-sexp</a>)
           <a id='2597' tid='2598' class='u'>;; SHOW-PAREN-MODE inhibits any blinking, so we disable it
 </a>          <a id='2599' tid='2600' class='u'>;; locally here.
-</a>          (<a i
+</a>          (<a id='2601' tid='2602' class='u'>let</a> ((<a id='2603' tid='2604' class='u'>show-paren-mode</a> <a id='2605' tid='2606' class='u'>nil</a>))
+            (<a id='2607' tid='2608' class='u'>blink-matching-open</a>))))))
+
+(<a id='3045' tid='3046' class='u'>defun</a> <a id='3047' tid='3048' class='u'>paredit-doublequote</a> (<a id='3049' tid='3050' class='u'>&optional</a> <a id='3051' tid='3052' class='u'>n</a>)
+  <a id='3053' tid='3054' class='u'>&quot;Insert a pair of double-quotes.
+With a prefix argument N, wrap the following N S-expressions in
+  double-quotes, escaping intermediate characters if necessary.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  pair of double-quotes around the region, again escaping intermediate
+  characters if necessary.
+Inside a comment, insert a literal double-quote.
+At the end of a string, move past the closing double-quote.
+I
