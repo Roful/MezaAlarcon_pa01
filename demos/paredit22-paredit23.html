@@ -998,4 +998,15 @@ If in a comment and if followed by invalid structure, call
              (progn (newline-and-indent) (indent-sexp))
              (indent-new-comment-line)))</span>
         (<a id='1077' tid='1078' class='m'>t</a>
-         (<a id='1079' tid='1080' class='m'>if</a> (<a id='1081' tid='1082' class='m'>paredit-in-cha
+         (<a id='1079' tid='1080' class='m'>if</a> (<a id='1081' tid='1082' class='m'>paredit-in-char-p</a>)
+             (<a id='1083' tid='1084' class='m'>forward-char</a>))
+         (<a id='1085' tid='1086' class='m'>newline-and-indent</a>)
+         <a id='1087' tid='1088' class='m'>;; Indent the following S-expression, but don&#39;t signal an
+</a>         <a id='1089' tid='1090' class='m'>;; error if there&#39;s only a closing delimiter after the point.
+</a>         (<a id='1091' tid='1092' class='m'>paredit-ignore-sexp-errors</a> (<a id='1093' tid='1094' class='m'>indent-sexp</a>)))))
+
+(<a id='5837' tid='5838' class='u'>defun</a> <a id='5839' tid='5840' class='u'>paredit-reindent-defun</a> (<a id='5841' tid='5842' class='u'>&optional</a> <a id='5843' tid='5844' class='u'>argument</a>)
+  <a id='5845' tid='5846' class='u'>&quot;Reindent the definition that the point is on.
+If the point is in a string or a comment, fill the paragraph instead,
+  and with a prefix argument, justify as well.&quot;</a>
+  (<a id='5847' tid='5848' class='u'>interactive</a> <a id='5849' tid='5850' class='
