@@ -948,4 +948,19 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
 <span class='d'>;;;; Escape Insertion
 </span>
 (<a id='2025' tid='2026' class='u'>defun</a> <a id='2027' tid='2028' class='u'>paredit-backslash</a> ()
-  <a id='202
+  <a id='2029' tid='2030' class='u'>&quot;Insert a backslash followed by a character to escape.&quot;</a>
+  (<a id='2031' tid='2032' class='u'>interactive</a>)
+  <span class='d'>(insert ?\\ )</span>
+  <span class='d'>;; This funny conditional is necessary because PAREDIT-IN-COMMENT-P
+</span>  <span class='d'>;; assumes that PAREDIT-IN-STRING-P already returned false; otherwise
+</span>  <span class='d'>;; it may give erroneous answers.
+</span>  <span class='d'>(if (or (paredit-in-string-p)
+          (not (paredit-in-comment-p)))
+      (let ((delp t))
+        (unwind-protect (setq delp
+                              (call-interactively &#39;paredit-escape))
+          ;; We need this in an UNWIND-PROTECT so that the backlash is
+          ;; left in there *only* if PAREDIT-ESCAPE return NIL normally
+          ;; -- in any other case, such as the user hitting C-g or an
+          ;; error occurring, we must delete the backslash to avoid
+          ;; leaving a dangling escape.  (Thi
