@@ -930,4 +930,13 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
 </a>              <a id='3441' tid='3442' class='u'>;; one.
 </a>              (<a id='3443' tid='3444' class='u'>setq</a> <a id='3445' tid='3446' class='u'>state</a>
                     (<a id='3447' tid='3448' class='u'>parse-partial-sexp</a> (<a id='3449' tid='3450' class='u'>-</a> (<a id='3451' tid='3452' class='u'>point</a>) <a id='3453' tid='3454' class='u'>2</a>) (<a id='3455' tid='3456' class='u'>point</a>)
-                                        <a id='3457' tid='3458' clas
+                                        <a id='3457' tid='3458' class='u'>nil</a> <a id='3459' tid='3460' class='u'>nil</a> <a id='3461' tid='3462' class='u'>state</a>))
+              <a id='3463' tid='3464' class='u'>;; Advance the end point, since we just inserted a new
+</a>              <a id='3465' tid='3466' class='u'>;; character.
+</a>              (<a id='3467' tid='3468' class='u'>setq</a> <a id='3469' tid='3470' class='u'>end</a> (<a id='3471' tid='3472' class='u'>1+</a> <a id='3473' tid='3474' class='u'>end</a>)))
+          <a id='3475' tid='3476' class='u'>;; String: escape by inserting a backslash before the quote.
+</a>          (<a id='3477' tid='3478' class='u'>backward-char</a>)
+          (<a id='3479' tid='3480' class='u'>insert</a> <a id='3481' tid='3482' class='u'>?\\</a> )
+          <a id='3483' tid='3484' class='u'>;; The point is now between the escape and the quote, and we
+</a>          <a id='3485' tid='3486' class='u'>;; want to rescan from before the escape to after the quote.
+</a>          (<a id=
