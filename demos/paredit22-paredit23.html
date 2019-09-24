@@ -922,4 +922,12 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
         (<a id='3411' tid='3412' class='u'>if</a> (<a id='3413' tid='3414' class='u'>paredit-in-string-p</a> <a id='3415' tid='3416' class='u'>new-state</a>)
             (<a id='3417' tid='3418' class='u'>if</a> (<a id='3419' tid='3420' class='u'>not</a> (<a id='3421' tid='3422' class='u'>paredit-in-string-escape-p</a>))
                 (<a id='3423' tid='3424' class='u'>setq</a> <a id='3425' tid='3426' class='u'>state</a> <a id='3427' tid='3428' class='u'>new-state</a>)
-     
+              <a id='3429' tid='3430' class='u'>;; Escape character: turn it into an escaped escape
+</a>              <a id='3431' tid='3432' class='u'>;; character by appending another backslash.
+</a>              (<a id='3433' tid='3434' class='u'>insert</a> <a id='3435' tid='3436' class='u'>?\\</a> )
+              <a id='3437' tid='3438' class='u'>;; Now the point is after both escapes, and we want to
+</a>              <a id='3439' tid='3440' class='u'>;; rescan from before the first one to after the second
+</a>              <a id='3441' tid='3442' class='u'>;; one.
+</a>              (<a id='3443' tid='3444' class='u'>setq</a> <a id='3445' tid='3446' class='u'>state</a>
+                    (<a id='3447' tid='3448' class='u'>parse-partial-sexp</a> (<a id='3449' tid='3450' class='u'>-</a> (<a id='3451' tid='3452' class='u'>point</a>) <a id='3453' tid='3454' class='u'>2</a>) (<a id='3455' tid='3456' class='u'>point</a>)
+                                        <a id='3457' tid='3458' clas
