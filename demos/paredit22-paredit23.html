@@ -963,4 +963,22 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
           ;; left in there *only* if PAREDIT-ESCAPE return NIL normally
           ;; -- in any other case, such as the user hitting C-g or an
           ;; error occurring, we must delete the backslash to avoid
-          ;; leaving a dangling escape.  (Thi
+          ;; leaving a dangling escape.  (This control structure is a
+          ;; crock.)
+          (if delp (backward-delete-char 1)))))</span>)
+
+<span class='d'>;;; This auxiliary interactive function returns true if the backslash
+</span><span class='d'>;;; should be deleted and false if not.
+</span>
+<span class='d'>(defun paredit-escape (char)
+  ;; I&#39;m too lazy to figure out how to do this without a separate
+  ;; interactive function.
+  (interactive &quot;cEscaping character...&quot;)
+  (if (eq char 127)                     ; The backslash was a typo, so
+      t                                 ; the luser wants to delete it.
+    (insert char)                       ; (Is there a better way to
+    nil))</span>                               <span class='d'>; express the rubout char?
+</span>                                        <span class='d'>; ?\^? works, but ugh...)
+</span>
+(<a id='5459' tid='5460' class='u'>defun</a> <a id='5461' tid='5462' class='u'>paredit-newline</a> ()
+  <a id='5463' tid='
