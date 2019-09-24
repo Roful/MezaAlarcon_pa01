@@ -939,4 +939,13 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
           (<a id='3479' tid='3480' class='u'>insert</a> <a id='3481' tid='3482' class='u'>?\\</a> )
           <a id='3483' tid='3484' class='u'>;; The point is now between the escape and the quote, and we
 </a>          <a id='3485' tid='3486' class='u'>;; want to rescan from before the escape to after the quote.
-</a>          (<a id=
+</a>          (<a id='3487' tid='3488' class='u'>setq</a> <a id='3489' tid='3490' class='u'>state</a>
+                (<a id='3491' tid='3492' class='u'>parse-partial-sexp</a> (<a id='3493' tid='3494' class='u'>1-</a> (<a id='3495' tid='3496' class='u'>point</a>)) (<a id='3497' tid='3498' class='u'>1+</a> (<a id='3499' tid='3500' class='u'>point</a>))
+                                    <a id='3501' tid='3502' class='u'>nil</a> <a id='3503' tid='3504' class='u'>nil</a> <a id='3505' tid='3506' class='u'>state</a>))
+          <a id='3507' tid='3508' class='u'>;; Advance the end point for the same reason as above.
+</a>          (<a id='3509' tid='3510' class='u'>setq</a> <a id='3511' tid='3512' class='u'>end</a> (<a id='3513' tid='3514' class='u'>1+</a> <a id='3515' tid='3516' class='u'>end</a>)))))))
+
+<span class='d'>;;;; Escape Insertion
+</span>
+(<a id='2025' tid='2026' class='u'>defun</a> <a id='2027' tid='2028' class='u'>paredit-backslash</a> ()
+  <a id='202
