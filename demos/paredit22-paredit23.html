@@ -1009,4 +1009,24 @@ If in a comment and if followed by invalid structure, call
   <a id='5845' tid='5846' class='u'>&quot;Reindent the definition that the point is on.
 If the point is in a string or a comment, fill the paragraph instead,
   and with a prefix argument, justify as well.&quot;</a>
-  (<a id='5847' tid='5848' class='u'>interactive</a> <a id='5849' tid='5850' class='
+  (<a id='5847' tid='5848' class='u'>interactive</a> <a id='5849' tid='5850' class='u'>&quot;P&quot;</a>)
+  <span class='d'>(if (or (paredit-in-string-p)
+          (paredit-in-comment-p))
+      (fill-paragraph argument)
+    (save-excursion
+      (end-of-defun)
+      (beginning-of-defun)
+      (indent-sexp)))</span>)
+
+<span class='d'>;;;; Comment Insertion
+</span>
+(<a id='5851' tid='5852' class='u'>defun</a> <a id='5853' tid='5854' class='u'>paredit-semicolon</a> (<a id='5855' tid='5856' class='u'>&optional</a> <a id='5857' tid='5858' class='u'>n</a>)
+  <a id='5859' tid='5860' class='u'>&quot;Insert a semicolon.
+With a prefix argument N, insert N semicolons.
+If in a string, do just that and nothing else.
+If in a character literal, move to the beginning of the character
+  literal before inserting the semicolon.
+If the enclosing list ends on the line after the point, break the line
+  after the last S-expression following the point.
+If a list begins on the line after the point but ends on a different
+  line, break the line after the last S-expression fol
