@@ -1060,4 +1060,11 @@ If a list begins on the line after the point but ends on a different
 </a>             (<a id='555' tid='556' class='m'>save-excursion</a>
                (<a id='557' tid='558' class='m'>paredit-skip-whitespace</a> <a id='559' tid='560' class='m'>t</a> (<a id='561' tid='562' class='m'>point-at-eol</a>))
                (<a id='563' tid='564' class='m'>not</a> (<a id='565' tid='566' class='m'>or</a> (<a id='567' tid='568' class='m'>eolp</a>) (<a id='569' tid='570' class='m'>eq</a> (<a id='571' tid='572' class='m'>char-after</a>) <a id='573' tid='574' class='m'>?\;</a> ))))))
-         <span class='d'>
+         <span class='d'>line-break-point</span>)))
+
+(<a id='5929' tid='5930' class='u'>defun</a> <a id='5931' tid='5932' class='u'>paredit-semicolon-with-line-break</a> (<a id='5933' tid='5934' class='u'>line-break-point</a> <a id='5935' tid='5936' class='u'>n</a>)
+  (<a id='5937' tid='5938' class='u'>let</a> ((<a id='5939' tid='5940' class='u'>line-break-marker</a> (<a id='5941' tid='5942' class='u'>make-marker</a>)))
+    (<a id='5943' tid='5944' class='u'>set-marker</a> <a id='5945' tid='5946' class='u'>line-break-marker</a> <a id='5947' tid='5948' class='u'>line-break-point</a>)
+    (<a id='5949' tid='5950' class='u'>set-marker-insertion-type</a> <a id='5951' tid='5952' class='u'>line-break-marker</a> <a id='5953' tid='5954' class='u'>t</a>)
+    (<a id='5955' tid='5956' class='u'>insert</a> (<a id='5957' tid='5958' class='u'>make-string</a> (<a id='5959' tid='5960' class='u'>or</a> <a id='5961' tid='5962' class='u'>n</a> <a id='5963' tid='5964' class='u'>1</a>) <a id='5965' tid='5966' class='u'>?\;</a> ))
+    (<a id='5967' tid='5968' class='u'>save-excursion</a>
