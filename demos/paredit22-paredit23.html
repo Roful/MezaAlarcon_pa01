@@ -1042,4 +1042,14 @@ If a list begins on the line after the point but ends on a different
           (<a id='5913' tid='5914' class='u'>insert</a> (<a id='5915' tid='5916' class='u'>make-string</a> (<a id='5917' tid='5918' class='u'>or</a> <a id='5919' tid='5920' class='u'>n</a> <a id='5921' tid='5922' class='u'>1</a>) <a id='5923' tid='5924' class='u'>?\;</a> ))))))
 
 (<a id='5925' tid='5926' class='u'>defun</a> <a id='5927' tid='5928' class='u'>paredit-semicolon-find-line-break-point</a> ()
-  (<a id='1095' tid='1096' class='m
+  (<a id='1095' tid='1096' class='m'>let</a> ((<a id='1097' tid='1098' class='m'>line-break-point</a> <a id='1099' tid='1100' class='m'>nil</a>)
+        (<a id='1101' tid='1102' class='m'>eol</a> (<a id='1103' tid='1104' class='m'>point-at-eol</a>)))
+    (<span class='d'>and</span> (<span class='d'>save-excursion</span>
+           (<a id='549' tid='550' class='m'>paredit-handle-sexp-errors</a>
+               (<span class='d'>progn</span>
+                 (<a id='1105' tid='1106' class='m'>while</a>
+                     (<a id='1107' tid='1108' class='m'>progn</a>
+                       (<a id='1109' tid='1110' class='m'>setq</a> <a id='1111' tid='1112' class='m'>line-break-point</a> (<a id='1113' tid='1114' class='m'>point</a>))
+                       (<a id='1115' tid='1116' class='m'>forward-sexp</a>)
+                       (<a id='1117' tid='1118' class='m'>and</a> (<a id='1119' tid='1120' class='m'>eq</a> <a id='1121' tid='1122' class='m'>eol</a> (<a id='1123' tid='1124' class='m'>point-at-eol</a>))
+                            (<a id='1125' t
