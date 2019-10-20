@@ -1052,4 +1052,12 @@ If a list begins on the line after the point but ends on a different
                        (<a id='1109' tid='1110' class='m'>setq</a> <a id='1111' tid='1112' class='m'>line-break-point</a> (<a id='1113' tid='1114' class='m'>point</a>))
                        (<a id='1115' tid='1116' class='m'>forward-sexp</a>)
                        (<a id='1117' tid='1118' class='m'>and</a> (<a id='1119' tid='1120' class='m'>eq</a> <a id='1121' tid='1122' class='m'>eol</a> (<a id='1123' tid='1124' class='m'>point-at-eol</a>))
-                            (<a id='1125' t
+                            (<a id='1125' tid='1126' class='m'>not</a> (<a id='1127' tid='1128' class='m'>eobp</a>)))))
+                 <span class='d'>(backward-sexp)</span>
+                 <span class='d'>(eq eol (point-at-eol))</span>)
+             <a id='551' tid='552' class='m'>;; If we hit the end of an expression, but the closing
+</a>             <a id='553' tid='554' class='m'>;; delimiter is on another line, don&#39;t break the line.
+</a>             (<a id='555' tid='556' class='m'>save-excursion</a>
+               (<a id='557' tid='558' class='m'>paredit-skip-whitespace</a> <a id='559' tid='560' class='m'>t</a> (<a id='561' tid='562' class='m'>point-at-eol</a>))
+               (<a id='563' tid='564' class='m'>not</a> (<a id='565' tid='566' class='m'>or</a> (<a id='567' tid='568' class='m'>eolp</a>) (<a id='569' tid='570' class='m'>eq</a> (<a id='571' tid='572' class='m'>char-after</a>) <a id='573' tid='574' class='m'>?\;</a> ))))))
+         <span class='d'>
