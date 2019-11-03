@@ -1140,4 +1140,13 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
       <a id='2693' tid='2694' class='u'>;; Search forward for a comment beginning.  If there is one, set
 </a>      <a id='2695' tid='2696' class='u'>;; COMMENT-P to true; if not, it will be nil.
 </a>      (<a id='2697' tid='2698' class='u'>while</a> (<a id='2699' tid='2700' class='u'>progn</a>
-               (<a id='2701' tid='2702' cla
+               (<a id='2701' tid='2702' class='u'>setq</a> <a id='2703' tid='2704' class='u'>comment-p</a>          <a id='2705' tid='2706' class='u'>;t -&gt; no error
+</a>                     (<a id='2707' tid='2708' class='u'>comment-search-forward</a> (<a id='2709' tid='2710' class='u'>point-at-eol</a>) <a id='2711' tid='2712' class='u'>t</a>))
+               (<a id='2713' tid='2714' class='u'>and</a> <a id='2715' tid='2716' class='u'>comment-p</a>
+                    (<a id='2717' tid='2718' class='u'>or</a> (<a id='2719' tid='2720' class='u'>paredit-in-string-p</a>)
+                        (<a id='2721' tid='2722' class='u'>paredit-in-char-p</a> (<a id='2723' tid='2724' class='u'>1-</a> (<a id='2725' tid='2726' class='u'>point</a>))))))
+        (<a id='2727' tid='2728' class='u'>forward-char</a>))
+      <a id='2729' tid='2730' class='u'>comment-p</a>)))
+
+(<a id='4257' tid='4258' class='u'>defun</a> <a id='4259' tid='4260' class='u'>paredit-insert-comment</a> ()
+  (<a id='1129' tid='1130' class='m'>let</a> ((<a id='113
