@@ -1097,4 +1097,11 @@ If a list begins on the line after the point but ends on a different
                               (<a id='4219' tid='4220' class='u'>comment-forward</a> (<a id='4221' tid='4222' class='u'>point-max</a>))
                               (<a id='4223' tid='4224' class='u'>&lt;=</a> <a id='4225' tid='4226' class='u'>end</a> (<a id='4227' tid='4228' class='u'>point</a>)))
               (<a id='4229' tid='4230' class='u'>uncomment-region</a> <a id='4231' tid='4232' class='u'>beginning</a> <a id='4233' tid='4234' class='u'>end</a> <a id='4235' tid='4236' class='u'>argument</a>)
-              (<a id='4237' tid='4238' cl
+              (<a id='4237' tid='4238' class='u'>comment-region</a> <a id='4239' tid='4240' class='u'>beginning</a> <a id='4241' tid='4242' class='u'>end</a> <a id='4243' tid='4244' class='u'>argument</a>)))))
+  (<a id='4245' tid='4246' class='u'>defalias</a> <a id='4247' tid='4248' class='u'>&#39;</a><a id='4249' tid='4250' class='u'>paredit-initialize-comment-dwim</a> <a id='4251' tid='4252' class='u'>&#39;</a><a id='4253' tid='4254' class='u'>comment-normalize-vars</a>)
+  (<a id='4255' tid='4256' class='u'>comment-normalize-vars</a>))
+
+(<a id='2625' tid='2626' class='u'>defun</a> <a id='2627' tid='2628' class='u'>paredit-comment-dwim</a> (<a id='2629' tid='2630' class='u'>&optional</a> <a id='2631' tid='2632' class='u'>argument</a>)
+  <a id='2633' tid='2634' class='u'>&quot;Call the Lisp comment command you want (Do What I Mean).
+This is like `comment-dwim&#39;, but it is specialized for Lisp editing.
+If transient mark mode is enabled and the mark is active, co
