@@ -1149,4 +1149,11 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
       <a id='2729' tid='2730' class='u'>comment-p</a>)))
 
 (<a id='4257' tid='4258' class='u'>defun</a> <a id='4259' tid='4260' class='u'>paredit-insert-comment</a> ()
-  (<a id='1129' tid='1130' class='m'>let</a> ((<a id='113
+  (<a id='1129' tid='1130' class='m'>let</a> ((<a id='1131' tid='1132' class='m'>code-after-p</a>
+         (<a id='1133' tid='1134' class='m'>save-excursion</a> (<a id='1135' tid='1136' class='m'>paredit-skip-whitespace</a> <a id='1137' tid='1138' class='m'>t</a> (<a id='1139' tid='1140' class='m'>point-at-eol</a>))
+                         (<a id='1141' tid='1142' class='m'>not</a> (<a id='1143' tid='1144' class='m'>eolp</a>))))
+        (<a id='1145' tid='1146' class='m'>code-before-p</a>
+         (<a id='1147' tid='1148' class='m'>save-excursion</a> (<a id='1149' tid='1150' class='m'>paredit-skip-whitespace</a> <a id='1151' tid='1152' class='m'>nil</a> (<a id='1153' tid='1154' class='m'>point-at-bol</a>))
+                         (<a id='1155' tid='1156' class='m'>not</a> (<a id='1157' tid='1158' class='m'>bolp</a>)))))
+    (<a id='1159' tid='1160' class='m'>cond</a> ((<a id='1161' tid='1162' class='m'>and</a> (<a id='1163' tid='1164' class='m'>bolp</a>)
+                (<a id='1165' tid='1166' class='m'>let</a> ((<a id='1167' ti
