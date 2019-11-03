@@ -1161,4 +1161,18 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
                          (<a id='1175' tid='1176' class='m'>if</a> (<a id='1177' tid='1178' class='m'>consp</a> <a id='1179' tid='1180' class='m'>indent</a>) (<a id='1181' tid='1182' class='m'>car</a> <a id='1183' tid='1184' class='m'>indent</a>) <a id='1185' tid='1186' class='m'>indent</a>))))
                   (<a id='1187' tid='1188' class='m'>and</a> <a id='1189' tid='1190' class='m'>indent</a> (<a id='1191' tid='1192' class='m'>zerop</a> <a id='1193' tid='1194' class='m'>indent</a>))))
            <a id='1195' tid='1196' class='m'>;; Top-level comment
-</a>           (<a id='1197' tid='1198' class='m'>if</a> <a id='1199' tid='1200' class='m'>code-after-p</a> (<a id='1201' tid='1202' class='m'>save-
+</a>           (<a id='1197' tid='1198' class='m'>if</a> <a id='1199' tid='1200' class='m'>code-after-p</a> (<a id='1201' tid='1202' class='m'>save-excursion</a> (<a id='1203' tid='1204' class='m'>newline</a>)))
+           (<a id='1205' tid='1206' class='m'>insert</a> <a id='1207' tid='1208' class='m'>&quot;;;; &quot;</a>))
+          (<span class='d'>(or code-after-p (not code-before-p))</span>
+           <span class='d'>;; Code comment
+</span>           <span class='d'>(if code-before-p (newline))</span>
+           <span class='d'>(lisp-indent-line)</span>
+           <span class='d'>(insert &quot;;; &quot;)</span>
+           (<a id='1209' tid='1210' class='m'>if</a> <a id='1211' tid='1212' class='m'>code-after-p</a>
+               (<a id='1213' tid='1214' class='m'>save-excursion</a>
+                 (<a id='1215' tid='1216' class='m'>newline</a>)
+                 (<a id='1217' tid='1218' class='m'>lisp-indent-line</a>)
+                 (<a id='1219' tid='1220' class='m'>paredit-indent-sexps</a>))))
+          (<a id='1221' tid='1222' class='m'>t</a>
+           <a id='1223' tid='1224' class='m'>;; Margin comment
+</a>  
