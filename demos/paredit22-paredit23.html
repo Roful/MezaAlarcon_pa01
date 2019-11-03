@@ -1128,4 +1128,16 @@ At the top level, where indentation is calculated to be at column 0,
          (<a id='2655' tid='2656' class='u'>if</a> <a id='2657' tid='2658' class='u'>argument</a>
              (<a id='2659' tid='2660' class='u'>comment-kill</a> (<a id='2661' tid='2662' class='u'>if</a> (<a id='2663' tid='2664' class='u'>integerp</a> <a id='2665' tid='2666' class='u'>argument</a>) <a id='2667' tid='2668' class='u'>argument</a> <a id='2669' tid='2670' class='u'>nil</a>))
              (<a id='2671' tid='2672' class='u'>comment-indent</a>)))
-        (
+        (<a id='2673' tid='2674' class='u'>t</a> (<a id='2675' tid='2676' class='u'>paredit-insert-comment</a>))))
+
+(<a id='2677' tid='2678' class='u'>defun</a> <a id='2679' tid='2680' class='u'>paredit-comment-on-line-p</a> ()
+  <a id='2681' tid='2682' class='u'>&quot;True if there is a comment on the line following point.
+This is expected to be called only in `paredit-comment-dwim&#39;; do not
+  call it elsewhere.&quot;</a>
+  (<a id='2683' tid='2684' class='u'>save-excursion</a>
+    (<a id='2685' tid='2686' class='u'>beginning-of-line</a>)
+    (<a id='2687' tid='2688' class='u'>let</a> ((<a id='2689' tid='2690' class='u'>comment-p</a> <a id='2691' tid='2692' class='u'>nil</a>))
+      <a id='2693' tid='2694' class='u'>;; Search forward for a comment beginning.  If there is one, set
+</a>      <a id='2695' tid='2696' class='u'>;; COMMENT-P to true; if not, it will be nil.
+</a>      (<a id='2697' tid='2698' class='u'>while</a> (<a id='2699' tid='2700' class='u'>progn</a>
+               (<a id='2701' tid='2702' cla
