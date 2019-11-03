@@ -1119,4 +1119,13 @@ At the top level, where indentation is calculated to be at column 0,
   and if the point is after all code on the line, insert a single-
   semicolon margin comment at `comment-column&#39;.&quot;</a>
   (<a id='2635' tid='2636' class='u'>interactive</a> <a id='2637' tid='2638' class='u'>&quot;*P&quot;</a>)
-  (<a id='2639' tid='2640' class='u'>paredit-initialize-c
+  (<a id='2639' tid='2640' class='u'>paredit-initialize-comment-dwim</a>)
+  (<a id='2641' tid='2642' class='u'>cond</a> ((<a id='2643' tid='2644' class='u'>paredit-region-active-p</a>)
+         (<a id='2645' tid='2646' class='u'>comment-or-uncomment-region</a> (<a id='2647' tid='2648' class='u'>region-beginning</a>)
+                                      (<a id='2649' tid='2650' class='u'>region-end</a>)
+                                      <a id='2651' tid='2652' class='u'>argument</a>))
+        ((<a id='2653' tid='2654' class='u'>paredit-comment-on-line-p</a>)
+         (<a id='2655' tid='2656' class='u'>if</a> <a id='2657' tid='2658' class='u'>argument</a>
+             (<a id='2659' tid='2660' class='u'>comment-kill</a> (<a id='2661' tid='2662' class='u'>if</a> (<a id='2663' tid='2664' class='u'>integerp</a> <a id='2665' tid='2666' class='u'>argument</a>) <a id='2667' tid='2668' class='u'>argument</a> <a id='2669' tid='2670' class='u'>nil</a>))
+             (<a id='2671' tid='2672' class='u'>comment-indent</a>)))
+        (
