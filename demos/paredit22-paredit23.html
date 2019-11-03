@@ -1091,4 +1091,10 @@ If a list begins on the line after the point but ends on a different
   (<a id='4175' tid='4176' class='u'>require</a> <a id='4177' tid='4178' class='u'>&#39;</a><a id='4179' tid='4180' class='u'>newcomment</a>)
   (<a id='4181' tid='4182' class='u'>if</a> (<a id='4183' tid='4184' class='u'>not</a> (<a id='4185' tid='4186' class='u'>fboundp</a> <a id='4187' tid='4188' class='u'>&#39;</a><a id='4189' tid='4190' class='u'>comment-or-uncomment-region</a>))
       (<a id='4191' tid='4192' class='u'>defalias</a> <a id='4193' tid='4194' class='u'>&#39;</a><a id='4195' tid='4196' class='u'>comment-or-uncomment-region</a>
-        (<a id='4197' tid='4198' class='u'>lambda</a> (<a id='4199' tid='4200' class='u'>beginning</a> <a id='4201' tid='4202' class='u
+        (<a id='4197' tid='4198' class='u'>lambda</a> (<a id='4199' tid='4200' class='u'>beginning</a> <a id='4201' tid='4202' class='u'>end</a> <a id='4203' tid='4204' class='u'>&optional</a> <a id='4205' tid='4206' class='u'>argument</a>)
+          (<a id='4207' tid='4208' class='u'>interactive</a> <a id='4209' tid='4210' class='u'>&quot;*r\nP&quot;</a>)
+          (<a id='4211' tid='4212' class='u'>if</a> (<a id='4213' tid='4214' class='u'>save-excursion</a> (<a id='4215' tid='4216' class='u'>goto-char</a> <a id='4217' tid='4218' class='u'>beginning</a>)
+                              (<a id='4219' tid='4220' class='u'>comment-forward</a> (<a id='4221' tid='4222' class='u'>point-max</a>))
+                              (<a id='4223' tid='4224' class='u'>&lt;=</a> <a id='4225' tid='4226' class='u'>end</a> (<a id='4227' tid='4228' class='u'>point</a>)))
+              (<a id='4229' tid='4230' class='u'>uncomment-region</a> <a id='4231' tid='4232' class='u'>beginning</a> <a id='4233' tid='4234' class='u'>end</a> <a id='4235' tid='4236' class='u'>argument</a>)
+              (<a id='4237' tid='4238' cl
