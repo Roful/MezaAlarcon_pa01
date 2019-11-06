@@ -1175,4 +1175,15 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
                  (<a id='1219' tid='1220' class='m'>paredit-indent-sexps</a>))))
           (<a id='1221' tid='1222' class='m'>t</a>
            <a id='1223' tid='1224' class='m'>;; Margin comment
-</a>  
+</a>           (<a id='1225' tid='1226' class='m'>indent-to</a> <a id='1227' tid='1228' class='m'>comment-column</a> <a id='1229' tid='1230' class='m'>1</a>) <a id='1231' tid='1232' class='m'>; 1 -&gt; force one leading space
+</a>           (<a id='1233' tid='1234' class='m'>insert</a> <a id='1235' tid='1236' class='m'>?\;</a> )))))
+
+<a id='7343' tid='7344' class='u'>;;;; Character Deletion
+</a>
+(<a id='3231' tid='3232' class='u'>defun</a> <a id='3233' tid='3234' class='u'>paredit-forward-delete</a> (<a id='3235' tid='3236' class='u'>&optional</a> <a id='3237' tid='3238' class='u'>argument</a>)
+  <a id='3239' tid='3240' class='u'>&quot;Delete a character forward or move forward over a delimiter.
+If on an opening S-expression delimiter, move forward into the
+  S-expression.
+If on a closing S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a numeric prefix argument N, delete N characters forward.
