@@ -1195,4 +1195,14 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
         ((<a id='575' tid='576' class='m'>integerp</a> <a id='577' tid='578' class='m'>argument</a>)
          (<a id='579' tid='580' class='m'>if</a> (<a id='581' tid='582' class='m'>&lt;</a> <a id='583' tid='584' class='m'>argument</a> <a id='585' tid='586' class='m'>0</a>)
              (<a id='587' tid='588' class='m'>paredit-backward-delete</a> <a id='589' tid='590' class='m'>argument</a>)
-             (<a id='591' tid=
+             (<a id='591' tid='592' class='m'>while</a> (<a id='593' tid='594' class='m'>&gt;</a> <a id='595' tid='596' class='m'>argument</a> <a id='597' tid='598' class='m'>0</a>)
+               (<a id='599' tid='600' class='m'>paredit-forward-delete</a>)
+               (<a id='601' tid='602' class='m'>setq</a> <a id='603' tid='604' class='m'>argument</a> (<a id='605' tid='606' class='m'>-</a> <a id='607' tid='608' class='m'>argument</a> <a id='609' tid='610' class='m'>1</a>)))))
+        <span class='d'>((paredit-in-string-p)
+         (paredit-forward-delete-in-string))</span>
+        <span class='d'>((paredit-in-comment-p)
+         ;++ What to do here?  This could move a partial S-expression
+         ;++ into a comment and thereby invalidate the file&#39;s form,
+         ;++ or move random text out of a comment.
+         (delete-char 1))</span>
+        ((<a id='471' tid='472' class='m'>paredit-in-char-p</a>)            <a id='473' tid='474' class='m'>; Escape -- delete both char
