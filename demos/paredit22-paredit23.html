@@ -1187,3 +1187,12 @@ If on an opening S-expression delimiter, move forward into the
 If on a closing S-expression delimiter, refuse to delete unless the
   S-expression is empty, in which case delete the whole S-expression.
 With a numeric prefix argument N, delete N characters forward.
+With a `C-u&#39; prefix argument, simply delete a character forward,
+  without regard for delimiter balancing.&quot;</a>
+  (<a id='3241' tid='3242' class='u'>interactive</a> <a id='3243' tid='3244' class='u'>&quot;P&quot;</a>)
+  (<span class='d'>cond</span> ((<a id='1237' tid='1238' class='m'>or</a> (<a id='1239' tid='1240' class='m'>consp</a> <a id='1241' tid='1242' class='m'>argument</a>) (<a id='1243' tid='1244' class='m'>eobp</a>))
+         (<a id='1245' tid='1246' class='m'>delete-char</a> <a id='1247' tid='1248' class='m'>1</a>))
+        ((<a id='575' tid='576' class='m'>integerp</a> <a id='577' tid='578' class='m'>argument</a>)
+         (<a id='579' tid='580' class='m'>if</a> (<a id='581' tid='582' class='m'>&lt;</a> <a id='583' tid='584' class='m'>argument</a> <a id='585' tid='586' class='m'>0</a>)
+             (<a id='587' tid='588' class='m'>paredit-backward-delete</a> <a id='589' tid='590' class='m'>argument</a>)
+             (<a id='591' tid=
