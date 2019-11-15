@@ -1220,4 +1220,11 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
            (<a id='371' tid='372' class='m'>message</a> <a id='373' tid='374' class='m'>&quot;Deleting spurious opening delimiter.&quot;</a>)
            (<a id='375' tid='376' class='m'>delete-char</a> <a id='377' tid='378' class='m'>1</a>)))
         ((<a id='251' tid='252' class='m'>and</a> (<a id='253' tid='254' class='m'>not</a> (<a id='255' tid='256' class='m'>paredit-in-char-p</a> (<a id='257' tid='258' class='m'>1-</a> (<a id='259' tid='260' class='m'>point</a>))))
-              (<a i
+              (<a id='261' tid='262' class='m'>eq</a> (<a id='263' tid='264' class='m'>char-syntax</a> (<a id='265' tid='266' class='m'>char-after</a>)) <a id='267' tid='268' class='m'>?\)</a> )
+              (<a id='269' tid='270' class='m'>eq</a> (<a id='271' tid='272' class='m'>char-before</a>) (<a id='273' tid='274' class='m'>matching-paren</a> (<a id='275' tid='276' class='m'>char-after</a>))))
+         (<a id='277' tid='278' class='m'>backward-delete-char</a> <a id='279' tid='280' class='m'>1</a>)       <a id='281' tid='282' class='m'>; Empty list -- delete both
+</a>         (<a id='283' tid='284' class='m'>delete-char</a> <a id='285' tid='286' class='m'>1</a>))               <span class='d'>;   delimiters.
+</span>        <span class='d'>;; Just delete a single character, if it&#39;s not a closing
+</span>        <span class='d'>;; delimiter.  (The character literal case is already handled
+</span>        <span class='d'>;; by now.)
+</span>        ((<a id='1
