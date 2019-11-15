@@ -1205,4 +1205,11 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
          ;++ into a comment and thereby invalidate the file&#39;s form,
          ;++ or move random text out of a comment.
          (delete-char 1))</span>
-        ((<a id='471' tid='472' class='m'>paredit-in-char-p</a>)            <a id='473' tid='474' class='m'>; Escape -- delete both char
+        ((<a id='471' tid='472' class='m'>paredit-in-char-p</a>)            <a id='473' tid='474' class='m'>; Escape -- delete both chars.
+</a>         (<a id='475' tid='476' class='m'>backward-delete-char</a> <a id='477' tid='478' class='m'>1</a>)
+         (<a id='479' tid='480' class='m'>delete-char</a> <a id='481' tid='482' class='m'>1</a>))
+        ((<a id='437' tid='438' class='m'>eq</a> (<a id='439' tid='440' class='m'>char-after</a>) <a id='441' tid='442' class='m'>?\\</a> )         <a id='443' tid='444' class='m'>; ditto
+</a>         (<a id='445' tid='446' class='m'>delete-char</a> <a id='447' tid='448' class='m'>2</a>))
+        ((<a id='333' tid='334' class='m'>let</a> ((<a id='335' tid='336' class='m'>syn</a> (<a id='337' tid='338' class='m'>char-syntax</a> (<a id='339' tid='340' class='m'>char-after</a>))))
+           (<a id='341' tid='342' class='m'>or</a> (<a id='343' tid='344' class='m'>eq</a> <a id='345' tid='346' class='m'>syn</a> <a id='347' tid='348' class='m'>?\(</a> )
+               (<a id='349' tid='350' class='m'>eq</a> <a id='351' tid='352' clas
