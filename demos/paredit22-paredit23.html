@@ -1227,4 +1227,10 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
 </span>        <span class='d'>;; Just delete a single character, if it&#39;s not a closing
 </span>        <span class='d'>;; delimiter.  (The character literal case is already handled
 </span>        <span class='d'>;; by now.)
-</span>        ((<a id='1
+</span>        ((<a id='197' tid='198' class='m'>not</a> (<a id='199' tid='200' class='m'>eq</a> (<a id='201' tid='202' class='m'>char-syntax</a> (<a id='203' tid='204' class='m'>char-after</a>)) <a id='205' tid='206' class='m'>?\)</a> ))
+         (<a id='207' tid='208' class='m'>delete-char</a> <a id='209' tid='210' class='m'>1</a>))))
+
+(<a id='3245' tid='3246' class='u'>defun</a> <a id='3247' tid='3248' class='u'>paredit-forward-delete-in-string</a> ()
+  (<a id='3249' tid='3250' class='u'>let</a> ((<a id='3251' tid='3252' class='u'>start+end</a> (<a id='3253' tid='3254' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='3255' tid='3256' class='u'>cond</a> ((<a id='3257' tid='3258' class='u'>not</a> (<a id='3259' tid='3260' class='u'>eq</a> (<a id='3261' tid='3262' class='u'>point</a>) (<a id='3263' tid='3264' class='u'>cdr</a> <a id='3265' tid='3266' class='u'>start+end</a>)))
+           <a id='3267' tid='3268' class='u'>;; If it&#39;s not the close-quote, it&#39;s sa
