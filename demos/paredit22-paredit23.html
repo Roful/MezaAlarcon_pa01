@@ -1249,4 +1249,17 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
           ((<a id='3305' tid='3306' class='u'>eq</a> (<a id='3307' tid='3308' class='u'>1-</a> (<a id='3309' tid='3310' class='u'>point</a>)) (<a id='3311' tid='3312' class='u'>car</a> <a id='3313' tid='3314' class='u'>start+end</a>))
            <a id='3315' tid='3316' class='u'>;; If it is the close-quote, delete only if we&#39;re also right
 </a>           <a id='3317' tid='3318' class='u'>;; past the open-quote (i.e. it&#39;s empty), and then delete
-</a>           <a id='3319' tid='3320' class='u'>;; both quotes.  Otherwise we refuse to del
+</a>           <a id='3319' tid='3320' class='u'>;; both quotes.  Otherwise we refuse to delete it.
+</a>           (<a id='3321' tid='3322' class='u'>backward-delete-char</a> <a id='3323' tid='3324' class='u'>1</a>)
+           (<a id='3325' tid='3326' class='u'>delete-char</a> <a id='3327' tid='3328' class='u'>1</a>)))))
+
+(<a id='2107' tid='2108' class='u'>defun</a> <a id='2109' tid='2110' class='u'>paredit-backward-delete</a> (<a id='2111' tid='2112' class='u'>&optional</a> <a id='2113' tid='2114' class='u'>argument</a>)
+  <a id='2115' tid='2116' class='u'>&quot;Delete a character backward or move backward over a delimiter.
+If on a closing S-expression delimiter, move backward into the
+  S-expression.
+If on an opening S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a numeric prefix argument N, delete N characters backward.
+With a `C-u&#39; prefix argument, simply delete a character backward,
+  without regard for delimiter balancing.&quot;</a>
+  (<a id='2117' tid='2118' class='u'>interac
