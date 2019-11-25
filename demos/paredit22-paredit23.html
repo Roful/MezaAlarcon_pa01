@@ -1242,4 +1242,11 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
                  ((<a id='3283' tid='3284' class='u'>eq</a> (<a id='3285' tid='3286' class='u'>char-after</a>) <a id='3287' tid='3288' class='u'>?\\</a> )
                   <a id='3289' tid='3290' class='u'>;; If we&#39;re not in a string escape, but we are on a
 </a>                  <a id='3291' tid='3292' class='u'>;; backslash, it must start the escape for the next
-</a>
+</a>                  <a id='3293' tid='3294' class='u'>;; character, so delete the backslash before deleting
+</a>                  <a id='3295' tid='3296' class='u'>;; the next character.
+</a>                  (<a id='3297' tid='3298' class='u'>delete-char</a> <a id='3299' tid='3300' class='u'>1</a>)))
+           (<a id='3301' tid='3302' class='u'>delete-char</a> <a id='3303' tid='3304' class='u'>1</a>))
+          ((<a id='3305' tid='3306' class='u'>eq</a> (<a id='3307' tid='3308' class='u'>1-</a> (<a id='3309' tid='3310' class='u'>point</a>)) (<a id='3311' tid='3312' class='u'>car</a> <a id='3313' tid='3314' class='u'>start+end</a>))
+           <a id='3315' tid='3316' class='u'>;; If it is the close-quote, delete only if we&#39;re also right
+</a>           <a id='3317' tid='3318' class='u'>;; past the open-quote (i.e. it&#39;s empty), and then delete
+</a>           <a id='3319' tid='3320' class='u'>;; both quotes.  Otherwise we refuse to del
