@@ -1269,4 +1269,14 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
         ((<a id='611' tid='612' class='m'>integerp</a> <a id='613' tid='614' class='m'>argument</a>)
          (<a id='615' tid='616' class='m'>if</a> (<a id='617' tid='618' class='m'>&lt;</a> <a id='619' tid='620' class='m'>argument</a> <a id='621' tid='622' class='m'>0</a>)
              (<a id='623' tid='624' class='m'>paredit-forward-delete</a> (<a id='625' tid='626' class='m'>-</a> <a id='627' tid='628' class='m'>0</a> <a id='629' tid='630' class='m'>argument</a>))
-             (<a id='631' tid='632' class='m'>while</a> (<a id='63
+             (<a id='631' tid='632' class='m'>while</a> (<a id='633' tid='634' class='m'>&gt;</a> <a id='635' tid='636' class='m'>argument</a> <a id='637' tid='638' class='m'>0</a>)
+               (<a id='639' tid='640' class='m'>paredit-backward-delete</a>)
+               (<a id='641' tid='642' class='m'>setq</a> <a id='643' tid='644' class='m'>argument</a> (<a id='645' tid='646' class='m'>-</a> <a id='647' tid='648' class='m'>argument</a> <a id='649' tid='650' class='m'>1</a>)))))
+        <span class='d'>((paredit-in-string-p)
+         (paredit-backward-delete-in-string))</span>
+        <span class='d'>((paredit-in-comment-p)
+         (backward-delete-char 1))</span>
+        ((<a id='483' tid='484' class='m'>paredit-in-char-p</a>)            <a id='485' tid='486' class='m'>; Escape -- delete both chars.
+</a>         (<a id='487' tid='488' class='m'>backward-delete-char</a> <a id='489' tid='490' class='m'>1</a>)
+         (<a id='491' tid='492' class='m'>delete-char</a> <a id='493' tid='494' class='m'>1</a>))
+        ((<a id='449' tid='
