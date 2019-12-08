@@ -1285,4 +1285,11 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
            (<a id='387' tid='388' class='m'>or</a> (<a id='389' tid='390' class='m'>eq</a> <a id='391' tid='392' class='m'>syn</a> <a id='393' tid='394' class='m'>?\)</a> )
                (<a id='395' tid='396' class='m'>eq</a> <a id='397' tid='398' class='m'>syn</a> <a id='399' tid='400' class='m'>?\&quot;</a> )))
          (<a id='401' tid='402' class='m'>if</a> (<a id='403' tid='404' class='m'>save-excursion</a>
-               (<a id='405' tid='406' class='m'>paredit-handle-sexp-errors</a> (<a id='407' tid='408' class='m'>progn</a> 
+               (<a id='405' tid='406' class='m'>paredit-handle-sexp-errors</a> (<a id='407' tid='408' class='m'>progn</a> (<a id='409' tid='410' class='m'>backward-sexp</a>) <a id='411' tid='412' class='m'>t</a>)
+                 <a id='413' tid='414' class='m'>nil</a>))
+             (<a id='415' tid='416' class='m'>backward-char</a>)
+           (<a id='417' tid='418' class='m'>message</a> <a id='419' tid='420' class='m'>&quot;Deleting spurious closing delimiter.&quot;</a>)
+           (<a id='421' tid='422' class='m'>backward-delete-char</a> <a id='423' tid='424' class='m'>1</a>)))
+        ((<a id='287' tid='288' class='m'>and</a> (<a id='289' tid='290' class='m'>eq</a> (<a id='291' tid='292' class='m'>char-syntax</a> (<a id='293' tid='294' class='m'>char-before</a>)) <a id='295' tid='296' class='m'>?\(</a> )
+              (<a id='297' tid='298' class='m'>eq</a> (<a id='299' tid='300' class='m'>char-after</a>) (<a id='301' tid='302' class='m'>matching-paren</a> (<a id='303' tid='304' class='m'>char-before</a>))))
+         (<a id='305' tid='306' class='m'>
