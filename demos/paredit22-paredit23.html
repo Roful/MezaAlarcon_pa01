@@ -1300,4 +1300,11 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
          (<a id='221' tid='222' class='m'>backward-delete-char-untabify</a> <a id='223' tid='224' class='m'>1</a>))))
 
 (<a id='2121' tid='2122' class='u'>defun</a> <a id='2123' tid='2124' class='u'>paredit-backward-delete-in-string</a> ()
-  (<a id='2125' tid='2126' class='u'>let</a> ((<a id='2127' tid='2128' class='u'>star
+  (<a id='2125' tid='2126' class='u'>let</a> ((<a id='2127' tid='2128' class='u'>start+end</a> (<a id='2129' tid='2130' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='2131' tid='2132' class='u'>cond</a> ((<a id='2133' tid='2134' class='u'>not</a> (<a id='2135' tid='2136' class='u'>eq</a> (<a id='2137' tid='2138' class='u'>1-</a> (<a id='2139' tid='2140' class='u'>point</a>)) (<a id='2141' tid='2142' class='u'>car</a> <a id='2143' tid='2144' class='u'>start+end</a>)))
+           <a id='2145' tid='2146' class='u'>;; If it&#39;s not the open-quote, it&#39;s safe to delete.
+</a>           (<a id='2147' tid='2148' class='u'>if</a> (<a id='2149' tid='2150' class='u'>paredit-in-string-escape-p</a>)
+               <a id='2151' tid='2152' class='u'>;; If we&#39;re on a string escape, since we&#39;re about to
+</a>               <a id='2153' tid='2154' class='u'>;; delete the backslash, we must first delete the
+</a>               <a id='2155' tid='2156' class='u'>;; escaped char.
+</a>               (<a id='2157' tid='2158' class='u'>delete-char</a> <a id='2159' tid='
