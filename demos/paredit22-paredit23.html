@@ -1292,4 +1292,12 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
            (<a id='421' tid='422' class='m'>backward-delete-char</a> <a id='423' tid='424' class='m'>1</a>)))
         ((<a id='287' tid='288' class='m'>and</a> (<a id='289' tid='290' class='m'>eq</a> (<a id='291' tid='292' class='m'>char-syntax</a> (<a id='293' tid='294' class='m'>char-before</a>)) <a id='295' tid='296' class='m'>?\(</a> )
               (<a id='297' tid='298' class='m'>eq</a> (<a id='299' tid='300' class='m'>char-after</a>) (<a id='301' tid='302' class='m'>matching-paren</a> (<a id='303' tid='304' class='m'>char-before</a>))))
-         (<a id='305' tid='306' class='m'>
+         (<a id='305' tid='306' class='m'>backward-delete-char</a> <a id='307' tid='308' class='m'>1</a>)       <a id='309' tid='310' class='m'>; Empty list -- delete both
+</a>         (<a id='311' tid='312' class='m'>delete-char</a> <a id='313' tid='314' class='m'>1</a>))               <span class='d'>;   delimiters.
+</span>        <span class='d'>;; Delete it, unless it&#39;s an opening delimiter.  The case of
+</span>        <span class='d'>;; character literals is already handled by now.
+</span>        ((<a id='211' tid='212' class='m'>not</a> (<a id='213' tid='214' class='m'>eq</a> (<a id='215' tid='216' class='m'>char-syntax</a> (<a id='217' tid='218' class='m'>char-before</a>)) <a id='219' tid='220' class='m'>?\(</a> ))
+         (<a id='221' tid='222' class='m'>backward-delete-char-untabify</a> <a id='223' tid='224' class='m'>1</a>))))
+
+(<a id='2121' tid='2122' class='u'>defun</a> <a id='2123' tid='2124' class='u'>paredit-backward-delete-in-string</a> ()
+  (<a id='2125' tid='2126' class='u'>let</a> ((<a id='2127' tid='2128' class='u'>star
