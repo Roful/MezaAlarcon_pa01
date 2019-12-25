@@ -1328,4 +1328,16 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
   <a id='4559' tid='4560' class='u'>&quot;Kill a line as if with `kill-line&#39;, but respecting delimiters.
 In a string, act exactly as `kill-line&#39; but do not kill past the
   closing string delimiter.
-On a line with no S-expressions on it starting
+On a line with no S-expressions on it starting after the point or
+  within a comment, act exactly as `kill-line&#39;.
+Otherwise, kill all S-expressions that start after the point.
+With a `C-u&#39; prefix argument, just do the standard `kill-line&#39;.
+With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
+  (<a id='4561' tid='4562' class='u'>interactive</a> <a id='4563' tid='4564' class='u'>&quot;P&quot;</a>)
+  (<span class='d'>cond</span> (<a id='1263' tid='1264' class='m'>argument</a>
+         (<a id='1265' tid='1266' class='m'>kill-line</a> (<a id='1267' tid='1268' class='m'>if</a> (<a id='1269' tid='1270' class='m'>integerp</a> <a id='1271' tid='1272' class='m'>argument</a>) <a id='1273' tid='1274' class='m'>argument</a> <a id='1275' tid='1276' class='m'>1</a>)))
+        <span class='d'>((paredit-in-string-p)
+         (paredit-kill-line-in-string))</span>
+        <span class='d'>((paredit-in-comment-p)
+         (kill-line))</span>
+        ((<a id='651' t
