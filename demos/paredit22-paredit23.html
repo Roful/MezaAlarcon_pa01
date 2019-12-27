@@ -1349,4 +1349,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
         <span class='d'>(t (paredit-kill-sexps-on-line))</span>))
 
 (<a id='4565' tid='4566' class='u'>defun</a> <a id='4567' tid='4568' class='u'>paredit-kill-line-in-string</a> ()
-  (<a id='4569' tid='4570' class='u'>if</a> (<a
+  (<a id='4569' tid='4570' class='u'>if</a> (<a id='4571' tid='4572' class='u'>save-excursion</a> (<a id='4573' tid='4574' class='u'>paredit-skip-whitespace</a> <a id='4575' tid='4576' class='u'>t</a> (<a id='4577' tid='4578' class='u'>point-at-eol</a>))
+                      (<a id='4579' tid='4580' class='u'>eolp</a>))
+      (<a id='4581' tid='4582' class='u'>kill-line</a>)
+    (<a id='4583' tid='4584' class='u'>save-excursion</a>
+      <a id='4585' tid='4586' class='u'>;; Be careful not to split an escape sequence.
+</a>      (<a id='4587' tid='4588' class='u'>if</a> (<a id='4589' tid='4590' class='u'>paredit-in-string-escape-p</a>)
+          (<a id='4591' tid='4592' class='u'>backward-char</a>))
+      (<a id='4593' tid='4594' class='u'>kill-region</a> (<a id='4595' tid='4596' class='u'>point</a>)
+                   (<a id='4597' tid='4598' class='u'>min</a> (<a id='4599' tid='4600' class='u'>point-at-eol</a>)
+                        (<a id='4601' tid='4602' class='u'>cdr</a> (<a id='4603' tid='4604' class='u'>paredit-string-start+end-poi
