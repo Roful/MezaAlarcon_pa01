@@ -1340,4 +1340,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
          (paredit-kill-line-in-string))</span>
         <span class='d'>((paredit-in-comment-p)
          (kill-line))</span>
-        ((<a id='651' t
+        ((<a id='651' tid='652' class='m'>save-excursion</a> (<a id='653' tid='654' class='m'>paredit-skip-whitespace</a> <a id='655' tid='656' class='m'>t</a> (<a id='657' tid='658' class='m'>point-at-eol</a>))
+                         (<a id='659' tid='660' class='m'>or</a> (<a id='661' tid='662' class='m'>eolp</a>) (<a id='663' tid='664' class='m'>eq</a> (<a id='665' tid='666' class='m'>char-after</a>) <a id='667' tid='668' class='m'>?\;</a> )))
+         <a id='669' tid='670' class='m'>;** Be careful about trailing backslashes.
+</a>         (<a id='671' tid='672' class='m'>if</a> (<a id='673' tid='674' class='m'>paredit-in-char-p</a>)
+             (<a id='675' tid='676' class='m'>backward-char</a>))
+         (<a id='677' tid='678' class='m'>kill-line</a>))
+        <span class='d'>(t (paredit-kill-sexps-on-line))</span>))
+
+(<a id='4565' tid='4566' class='u'>defun</a> <a id='4567' tid='4568' class='u'>paredit-kill-line-in-string</a> ()
+  (<a id='4569' tid='4570' class='u'>if</a> (<a
