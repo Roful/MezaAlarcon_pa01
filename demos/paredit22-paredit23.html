@@ -1358,4 +1358,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
           (<a id='4591' tid='4592' class='u'>backward-char</a>))
       (<a id='4593' tid='4594' class='u'>kill-region</a> (<a id='4595' tid='4596' class='u'>point</a>)
                    (<a id='4597' tid='4598' class='u'>min</a> (<a id='4599' tid='4600' class='u'>point-at-eol</a>)
-                        (<a id='4601' tid='4602' class='u'>cdr</a> (<a id='4603' tid='4604' class='u'>paredit-string-start+end-poi
+                        (<a id='4601' tid='4602' class='u'>cdr</a> (<a id='4603' tid='4604' class='u'>paredit-string-start+end-points</a>)))))))
+
+(<a id='4621' tid='4622' class='u'>defun</a> <a id='4623' tid='4624' class='u'>paredit-kill-sexps-on-line</a> ()
+  (<a id='4625' tid='4626' class='u'>if</a> (<a id='4627' tid='4628' class='u'>paredit-in-char-p</a>)               <a id='4629' tid='4630' class='u'>; Move past the \ and prefix.
+</a>      (<a id='4631' tid='4632' class='u'>backward-char</a> <a id='4633' tid='4634' class='u'>2</a>))                <a id='4635' tid='4636' class='u'>; (# in Scheme/CL, ? in elisp)
+</a>  (<a id='4637' tid='4638' class='u'>let</a> ((<a id='4639' tid='4640' class='u'>beginning</a> (<a id='4641' tid='4642' class='u'>point</a>))
+        (<a id='4643' tid='4644' class='u'>eol</a> (<a id='4645' tid='4646' class='u'>point-at-eol</a>)))
+    (<a id='4647' tid='4648' class='u'>let</a> ((<a id='4649' tid='4650' class='u'>end-of-list-p</a> (<a id='4651' tid='4652' class='u'>paredit-forward-sexps-to-kill</a> <a id='4653' tid='4654' class='u'>beginning</a> <a id='4655' tid='4656' class='u'>eol</a>)))
+      <
