@@ -1381,4 +1381,15 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>                     <a id='4695' tid='4696' class='u'>;; though, not to kill any closing parentheses.
 </a>                     (<a id='4697' tid='4698' class='u'>if</a> (<a id='4699' tid='4700' class='u'>and</a> (<a id='4701' tid='4702' class='u'>not</a> <a id='4703' tid='4704' class='u'>end-of-list-p</a>)
                               (<a id='4705' tid='4706' class='u'>eq</a> (<a id='4707' tid='4708' class='u'>point-at-eol</a>) <a id='4709' tid='4710' class='u'>eol</a>))
-             
+                         <a id='4711' tid='4712' class='u'>eol</a>
+                         (<a id='4713' tid='4714' class='u'>point</a>)))))))
+
+<a id='7347' tid='7348' class='u'>;;; Please do not try to understand this code unless you have a VERY
+</a><a id='7349' tid='7350' class='u'>;;; good reason to do so.  I gave up trying to figure it out well
+</a><a id='7351' tid='7352' class='u'>;;; enough to explain it, long ago.
+</a>
+(<a id='3647' tid='3648' class='u'>defun</a> <a id='3649' tid='3650' class='u'>paredit-forward-sexps-to-kill</a> (<a id='3651' tid='3652' class='u'>beginning</a> <a id='3653' tid='3654' class='u'>eol</a>)
+  (<a id='3655' tid='3656' class='u'>let</a> ((<a id='3657' tid='3658' class='u'>end-of-list-p</a> <a id='3659' tid='3660' class='u'>nil</a>)
+        (<a id='3661' tid='3662' class='u'>firstp</a> <a id='3663' tid='3664' class='u'>t</a>))
+    <a id='3665' tid='3666' class='u'>;; Move to the end of the last S-expression that started on this
+</a>    <a id='3667' tid='36
