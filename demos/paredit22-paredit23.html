@@ -1373,4 +1373,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
       (<a id='4673' tid='4674' class='u'>if</a> <a id='4675' tid='4676' class='u'>kill-whole-line</a>
           (<a id='4677' tid='4678' class='u'>paredit-kill-sexps-on-whole-line</a> <a id='4679' tid='4680' class='u'>beginning</a>)
         (<a id='4681' tid='4682' class='u'>kill-region</a> <a id='4683' tid='4684' class='u'>beginning</a>
-                     <a id='4685' tid='4686' class='u'>;; 
+                     <a id='4685' tid='4686' class='u'>;; If all of the S-expressions were on one line,
+</a>                     <a id='4687' tid='4688' class='u'>;; i.e. we&#39;re still on that line after moving past
+</a>                     <a id='4689' tid='4690' class='u'>;; the last one, kill the whole line, including
+</a>                     <a id='4691' tid='4692' class='u'>;; any comments; otherwise just kill to the end of
+</a>                     <a id='4693' tid='4694' class='u'>;; the last S-expression we found.  Be sure,
+</a>                     <a id='4695' tid='4696' class='u'>;; though, not to kill any closing parentheses.
+</a>                     (<a id='4697' tid='4698' class='u'>if</a> (<a id='4699' tid='4700' class='u'>and</a> (<a id='4701' tid='4702' class='u'>not</a> <a id='4703' tid='4704' class='u'>end-of-list-p</a>)
+                              (<a id='4705' tid='4706' class='u'>eq</a> (<a id='4707' tid='4708' class='u'>point-at-eol</a>) <a id='4709' tid='4710' class='u'>eol</a>))
+             
