@@ -1366,4 +1366,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>  (<a id='4637' tid='4638' class='u'>let</a> ((<a id='4639' tid='4640' class='u'>beginning</a> (<a id='4641' tid='4642' class='u'>point</a>))
         (<a id='4643' tid='4644' class='u'>eol</a> (<a id='4645' tid='4646' class='u'>point-at-eol</a>)))
     (<a id='4647' tid='4648' class='u'>let</a> ((<a id='4649' tid='4650' class='u'>end-of-list-p</a> (<a id='4651' tid='4652' class='u'>paredit-forward-sexps-to-kill</a> <a id='4653' tid='4654' class='u'>beginning</a> <a id='4655' tid='4656' class='u'>eol</a>)))
-      <
+      <a id='4657' tid='4658' class='u'>;; If we got to the end of the list and it&#39;s on the same line,
+</a>      <a id='4659' tid='4660' class='u'>;; move backward past the closing delimiter before killing.  (This
+</a>      <a id='4661' tid='4662' class='u'>;; allows something like killing the whitespace in (    ).)
+</a>      (<a id='4663' tid='4664' class='u'>if</a> <a id='4665' tid='4666' class='u'>end-of-list-p</a> (<a id='4667' tid='4668' class='u'>progn</a> (<a id='4669' tid='4670' class='u'>up-list</a>) (<a id='4671' tid='4672' class='u'>backward-char</a>)))
+      (<a id='4673' tid='4674' class='u'>if</a> <a id='4675' tid='4676' class='u'>kill-whole-line</a>
+          (<a id='4677' tid='4678' class='u'>paredit-kill-sexps-on-whole-line</a> <a id='4679' tid='4680' class='u'>beginning</a>)
+        (<a id='4681' tid='4682' class='u'>kill-region</a> <a id='4683' tid='4684' class='u'>beginning</a>
+                     <a id='4685' tid='4686' class='u'>;; 
