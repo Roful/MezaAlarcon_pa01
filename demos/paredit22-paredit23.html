@@ -1401,4 +1401,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>        <a id='3685' tid='3686' class='u'>;; (with no trailing newline) from being deleted.  It&#39;s a
 </a>        <a id='3687' tid='3688' class='u'>;; bizarre fix that I ought to document at some point, but I am
 </a>        <a id='3689' tid='3690' class='u'>;; too busy at the moment to do so.
-</a>        (<a id='3691' tid='3692' cl
+</a>        (<a id='3691' tid='3692' class='u'>if</a> (<a id='3693' tid='3694' class='u'>and</a> <a id='3695' tid='3696' class='u'>kill-whole-line</a> (<a id='3697' tid='3698' class='u'>eobp</a>)) (<a id='3699' tid='3700' class='u'>throw</a> <a id='3701' tid='3702' class='u'>&#39;</a><a id='3703' tid='3704' class='u'>return</a> <a id='3705' tid='3706' class='u'>nil</a>))
+        (<a id='3707' tid='3708' class='u'>save-excursion</a>
+          (<a id='3709' tid='3710' class='u'>paredit-handle-sexp-errors</a> (<a id='3711' tid='3712' class='u'>forward-sexp</a>)
+            (<a id='3713' tid='3714' class='u'>up-list</a>)
+            (<a id='3715' tid='3716' class='u'>setq</a> <a id='3717' tid='3718' class='u'>end-of-list-p</a> (<a id='3719' tid='3720' class='u'>eq</a> (<a id='3721' tid='3722' class='u'>point-at-eol</a>) <a id='3723' tid='3724' class='u'>eol</a>))
+            (<a id='3725' tid='3726' class='u'>throw</a> <a id='3727' tid='3728' class='u'>&#39;</a><a id='3729' tid='3730' class='u'>return</a> <a id='3731' tid='3732' class='u'>nil</a>))
+          (<a id='3733' tid='
