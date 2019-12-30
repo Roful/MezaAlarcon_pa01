@@ -1392,4 +1392,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='3655' tid='3656' class='u'>let</a> ((<a id='3657' tid='3658' class='u'>end-of-list-p</a> <a id='3659' tid='3660' class='u'>nil</a>)
         (<a id='3661' tid='3662' class='u'>firstp</a> <a id='3663' tid='3664' class='u'>t</a>))
     <a id='3665' tid='3666' class='u'>;; Move to the end of the last S-expression that started on this
-</a>    <a id='3667' tid='36
+</a>    <a id='3667' tid='3668' class='u'>;; line, or to the closing delimiter if the last S-expression in
+</a>    <a id='3669' tid='3670' class='u'>;; this list is on the line.
+</a>    (<a id='3671' tid='3672' class='u'>catch</a> <a id='3673' tid='3674' class='u'>&#39;</a><a id='3675' tid='3676' class='u'>return</a>
+      (<a id='3677' tid='3678' class='u'>while</a> <a id='3679' tid='3680' class='u'>t</a>
+        <a id='3681' tid='3682' class='u'>;; This and the `kill-whole-line&#39; business below fix a bug that
+</a>        <a id='3683' tid='3684' class='u'>;; inhibited any S-expression at the very end of the buffer
+</a>        <a id='3685' tid='3686' class='u'>;; (with no trailing newline) from being deleted.  It&#39;s a
+</a>        <a id='3687' tid='3688' class='u'>;; bizarre fix that I ought to document at some point, but I am
+</a>        <a id='3689' tid='3690' class='u'>;; too busy at the moment to do so.
+</a>        (<a id='3691' tid='3692' cl
