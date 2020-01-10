@@ -1407,4 +1407,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
             (<a id='3713' tid='3714' class='u'>up-list</a>)
             (<a id='3715' tid='3716' class='u'>setq</a> <a id='3717' tid='3718' class='u'>end-of-list-p</a> (<a id='3719' tid='3720' class='u'>eq</a> (<a id='3721' tid='3722' class='u'>point-at-eol</a>) <a id='3723' tid='3724' class='u'>eol</a>))
             (<a id='3725' tid='3726' class='u'>throw</a> <a id='3727' tid='3728' class='u'>&#39;</a><a id='3729' tid='3730' class='u'>return</a> <a id='3731' tid='3732' class='u'>nil</a>))
-          (<a id='3733' tid='
+          (<a id='3733' tid='3734' class='u'>if</a> (<a id='3735' tid='3736' class='u'>or</a> (<a id='3737' tid='3738' class='u'>and</a> (<a id='3739' tid='3740' class='u'>not</a> <a id='3741' tid='3742' class='u'>firstp</a>)
+                       (<a id='3743' tid='3744' class='u'>not</a> <a id='3745' tid='3746' class='u'>kill-whole-line</a>)
+                       (<a id='3747' tid='3748' class='u'>eobp</a>))
+                  (<a id='3749' tid='3750' class='u'>paredit-handle-sexp-errors</a>
+                      (<a id='3751' tid='3752' class='u'>progn</a> (<a id='3753' tid='3754' class='u'>backward-sexp</a>) <a id='3755' tid='3756' class='u'>nil</a>)
+                    <a id='3757' tid='3758' class='u'>t</a>)
+                  (<a id='3759' tid='3760' class='u'>not</a> (<a id='3761' tid='3762' class='u'>eq</a> (<a id='3763' tid='3764' class='u'>point-at-eol</a>) <a id='3765' tid='3766' class='u'>eol</a>)))
+              (<a id='3767' tid='3768' class='u'>throw</a> <a id='3769' tid='3770' class='u'>&#39;</a><a id='3771'
