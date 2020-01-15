@@ -1431,4 +1431,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                           (<a id='4745' tid='4746' class='u'>point</a>)))
                    <a id='4747' tid='4748' class='u'>;; ...or just use the point past the newline, if
 </a>                   <a id='4749' tid='4750' class='u'>;; we encounter a comment.
-</a>                   (<a id='475
+</a>                   (<a id='4751' tid='4752' class='u'>point-at-eol</a>)))
+  (<a id='4753' tid='4754' class='u'>cond</a> ((<a id='4755' tid='4756' class='u'>save-excursion</a> (<a id='4757' tid='4758' class='u'>paredit-skip-whitespace</a> <a id='4759' tid='4760' class='u'>nil</a> (<a id='4761' tid='4762' class='u'>point-at-bol</a>))
+                         (<a id='4763' tid='4764' class='u'>bolp</a>))
+         <a id='4765' tid='4766' class='u'>;; Nothing but indentation before the point, so indent it.
+</a>         (<a id='4767' tid='4768' class='u'>lisp-indent-line</a>))
+        ((<a id='4769' tid='4770' class='u'>eobp</a>) <a id='4771' tid='4772' class='u'>nil</a>)       <a id='4773' tid='4774' class='u'>; Protect the CHAR-SYNTAX below against NIL.
+</a>        <a id='4775' tid='4776' class='u'>;; Insert a space to avoid invalid joining if necessary.
+</a>        ((<a id='4777' tid='4778' class='u'>let</a> ((<a id='4779' tid='4780' class='u'>syn-before</a> (<a id='4781' tid='4782' cl
