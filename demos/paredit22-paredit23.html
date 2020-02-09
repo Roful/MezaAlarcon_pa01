@@ -1438,4 +1438,8 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>         (<a id='4767' tid='4768' class='u'>lisp-indent-line</a>))
         ((<a id='4769' tid='4770' class='u'>eobp</a>) <a id='4771' tid='4772' class='u'>nil</a>)       <a id='4773' tid='4774' class='u'>; Protect the CHAR-SYNTAX below against NIL.
 </a>        <a id='4775' tid='4776' class='u'>;; Insert a space to avoid invalid joining if necessary.
-</a>        ((<a id='4777' tid='4778' class='u'>let</a> ((<a id='4779' tid='4780' class='u'>syn-before</a> (<a id='4781' tid='4782' cl
+</a>        ((<a id='4777' tid='4778' class='u'>let</a> ((<a id='4779' tid='4780' class='u'>syn-before</a> (<a id='4781' tid='4782' class='u'>char-syntax</a> (<a id='4783' tid='4784' class='u'>char-before</a>)))
+               (<a id='4785' tid='4786' class='u'>syn-after</a>  (<a id='4787' tid='4788' class='u'>char-syntax</a> (<a id='4789' tid='4790' class='u'>char-after</a>))))
+           (<a id='4791' tid='4792' class='u'>or</a> (<a id='4793' tid='4794' class='u'>and</a> (<a id='4795' tid='4796' class='u'>eq</a> <a id='4797' tid='4798' class='u'>syn-before</a> <a id='4799' tid='4800' class='u'>?\)</a> )            <a id='4801' tid='4802' class='u'>; Separate opposing
+</a>                    (<a id='4803' tid='4804' class='u'>eq</a> <a id='4805' tid='4806' class='u'>syn-after</a>  <a id='4807' tid='4808' class='u'>?\(</a> ))           <a id='4809' tid='4810' class='u'>;   parentheses,
+</a>               (<a id='4811' tid='4812' class='u'>and</a> (<a id='4813' tid='4814' class='u'>eq</a> <a id='4815' tid='4816' class='u'>syn-before</a> <a id='4817' tid='481
