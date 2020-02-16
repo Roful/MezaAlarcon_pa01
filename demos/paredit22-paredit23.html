@@ -1446,4 +1446,16 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>                    (<a id='4821' tid='4822' class='u'>eq</a> <a id='4823' tid='4824' class='u'>syn-after</a>  <a id='4825' tid='4826' class='u'>?\&quot;</a> ))           <a id='4827' tid='4828' class='u'>;   pairs,
 </a>               (<a id='4829' tid='4830' class='u'>and</a> (<a id='4831' tid='4832' class='u'>memq</a> <a id='4833' tid='4834' class='u'>syn-before</a> <a id='4835' tid='4836' class='u'>&#39;</a>(<a id='4837' tid='4838' class='u'>?_</a> <a id='4839' tid='4840' class='u'>?w</a>))      <a id='4841' tid='4842' class='u'>; or word or symbol
 </a>                    (<a id='4843' tid='4844' class='u'>memq</a> <a id='4845' tid='4846' class='u'>syn-after</a>  <a id='4847' tid='4848' class='u'>&#39;</a>(<a id='4849' tid='4850' class='u'>?_</a> <a id='4851' tid='4852' class='u'>?w</a>)))))   <a id='4853' tid='4854' class='u'>;   constituents.
-</a>         (<a id='4855' tid='4856' cla
+</a>         (<a id='4855' tid='4856' class='u'>insert</a> <a id='4857' tid='4858' class='u'>&quot; &quot;</a>))))
+
+<a id='7353' tid='7354' class='u'>;;;;; Killing Words
+</a>
+<a id='7355' tid='7356' class='u'>;;; This is tricky and asymmetrical because backward parsing is
+</a><a id='7357' tid='7358' class='u'>;;; extraordinarily difficult or impossible, so we have to implement
+</a><a id='7359' tid='7360' class='u'>;;; killing in both directions by parsing forward.
+</a>
+(<a id='3517' tid='3518' class='u'>defun</a> <a id='3519' tid='3520' class='u'>paredit-forward-kill-word</a> ()
+  <a id='3521' tid='3522' class='u'>&quot;Kill a word forward, skipping over intervening delimiters.&quot;</a>
+  (<a id='3523' tid='3524' class='u'>interactive</a>)
+  (<a id='3525' tid='3526' class='u'>let</a> ((<a id='3527' tid='3528' class='u'>beginning</a> (<a id='3529' tid='3530' class='u'>point</a>)))
+    (<a id='3531' tid='3532' class='u'>skip-syntax-forward</a> <a id='3533' tid='3534' class='u'>&quot; -&quot;</a>)
