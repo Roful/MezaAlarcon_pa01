@@ -1471,4 +1471,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
         (<a id='3583' tid='3584' class='u'>let*</a> ((<a id='3585' tid='3586' class='u'>old-state</a> <a id='3587' tid='3588' class='u'>state</a>)
                (<a id='3589' tid='3590' class='u'>new-state</a>
                 (<a id='3591' tid='3592' class='u'>paredit-kill-word-state</a> <a id='3593' tid='3594' class='u'>parse-state</a> <a id='3595' tid='3596' class='u'>&#39;</a><a id='3597' tid='3598' class='u'>char-after</a>)))
-          (<a id='3599' tid='3600' class='u'>cond</a> ((<a id='3601' tid='3602' class='u'>not</a> (<a id='3603' tid='3604' class='u'>eq</a> <a id='3605' tid='3606' class='u'>old-state</a> <a id='3607' tid='3608' class='
+          (<a id='3599' tid='3600' class='u'>cond</a> ((<a id='3601' tid='3602' class='u'>not</a> (<a id='3603' tid='3604' class='u'>eq</a> <a id='3605' tid='3606' class='u'>old-state</a> <a id='3607' tid='3608' class='u'>new-state</a>))
+                 (<a id='3609' tid='3610' class='u'>setq</a> <a id='3611' tid='3612' class='u'>parse-state</a>
+                       (<a id='3613' tid='3614' class='u'>paredit-kill-word-hack</a> <a id='3615' tid='3616' class='u'>old-state</a>
+                                               <a id='3617' tid='3618' class='u'>new-state</a>
+                                               <a id='3619' tid='3620' class='u'>parse-state</a>))
+                 (<a id='3621' tid='3622' class='u'>setq</a> <a id='3623' tid='3624' class='u'>state</a>
+                       (<a id='3625' tid='3626' class='u'>paredit-kill-word-state</a> <a id='3627' tid='3628' class='u'>parse-state</a>
+                                                <a id='3629' tid='3630' class='u'>&#39;</a><a id='3631' tid='3632' class='u'>char-after</a>))
+                 (<a id='3633' tid='3634' class='u'>setq</a> <a id='3635' tid='3636' class='u'>beginning</a> (<a i
