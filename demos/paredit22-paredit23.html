@@ -1488,4 +1488,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='2251' tid='2252' class='u'>interactive</a>)
   (<a id='2253' tid='2254' class='u'>if</a> (<a id='2255' tid='2256' class='u'>not</a> (<a id='2257' tid='2258' class='u'>or</a> (<a id='2259' tid='2260' class='u'>bobp</a>)
                (<a id='2261' tid='2262' class='u'>eq</a> (<a id='2263' tid='2264' class='u'>char-syntax</a> (<a id='2265' tid='2266' class='u'>char-before</a>)) <a id='2267' tid='2268' class='u'>?w</a>)))
-      (<a id='2269' tid='2270' class='u'>let</a> ((<a id='2271' tid='2272' cl
+      (<a id='2269' tid='2270' class='u'>let</a> ((<a id='2271' tid='2272' class='u'>end</a> (<a id='2273' tid='2274' class='u'>point</a>)))
+        (<a id='2275' tid='2276' class='u'>backward-word</a> <a id='2277' tid='2278' class='u'>1</a>)
+        (<a id='2279' tid='2280' class='u'>forward-word</a> <a id='2281' tid='2282' class='u'>1</a>)
+        (<a id='2283' tid='2284' class='u'>goto-char</a> (<a id='2285' tid='2286' class='u'>min</a> <a id='2287' tid='2288' class='u'>end</a> (<a id='2289' tid='2290' class='u'>point</a>)))
+        (<a id='2291' tid='2292' class='u'>let*</a> ((<a id='2293' tid='2294' class='u'>parse-state</a> (<a id='2295' tid='2296' class='u'>paredit-current-parse-state</a>))
+               (<a id='2297' tid='2298' class='u'>state</a>
+                (<a id='2299' tid='2300' class='u'>paredit-kill-word-state</a> <a id='2301' tid='2302' class='u'>parse-state</a> <a id='2303' tid='2304' class='u'>&#39;</a><a id='2305' tid='2306' class='u'>char-before</a>)))
+          (<a id='2307' ti
