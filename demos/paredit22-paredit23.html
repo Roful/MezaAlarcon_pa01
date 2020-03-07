@@ -1495,4 +1495,9 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
         (<a id='2291' tid='2292' class='u'>let*</a> ((<a id='2293' tid='2294' class='u'>parse-state</a> (<a id='2295' tid='2296' class='u'>paredit-current-parse-state</a>))
                (<a id='2297' tid='2298' class='u'>state</a>
                 (<a id='2299' tid='2300' class='u'>paredit-kill-word-state</a> <a id='2301' tid='2302' class='u'>parse-state</a> <a id='2303' tid='2304' class='u'>&#39;</a><a id='2305' tid='2306' class='u'>char-before</a>)))
-          (<a id='2307' ti
+          (<a id='2307' tid='2308' class='u'>while</a> (<a id='2309' tid='2310' class='u'>and</a> (<a id='2311' tid='2312' class='u'>&lt;</a> (<a id='2313' tid='2314' class='u'>point</a>) <a id='2315' tid='2316' class='u'>end</a>)
+                      (<a id='2317' tid='2318' class='u'>progn</a>
+                        (<a id='2319' tid='2320' class='u'>setq</a> <a id='2321' tid='2322' class='u'>parse-state</a>
+                              (<a id='2323' tid='2324' class='u'>parse-partial-sexp</a> (<a id='2325' tid='2326' class='u'>point</a>) (<a id='2327' tid='2328' class='u'>1+</a> (<a id='2329' tid='2330' class='u'>point</a>))
+                                                  <a id='2331' tid='2332' class='u'>nil</a> <a id='2333' tid='2334' class='u'>nil</a> <a id='2335' tid='2336' class='u'>parse-state</a>))
+                        (<a id='2337' tid='2338' class='u'>or</a> (<a id='2339' tid='2340' class='u'>eq</a> <a id='2341' tid='2342' class='u'>state</a>
