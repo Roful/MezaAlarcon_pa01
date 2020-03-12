@@ -1514,4 +1514,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>
 (<a id='5135' tid='5136' class='u'>defun</a> <a id='5137' tid='5138' class='u'>paredit-kill-word-state</a> (<a id='5139' tid='5140' class='u'>parse-state</a> <a id='5141' tid='5142' class='u'>adjacent-char-fn</a>)
   (<a id='5143' tid='5144' class='u'>cond</a> ((<a id='5145' tid='5146' class='u'>paredit-in-comment-p</a> <a id='5147' tid='5148' class='u'>parse-state</a>) <a id='5149' tid='5150' class='u'>&#39;</a><a id='5151' tid='5152' class='u'>comment</a>)
-        ((<a id='5153' t
+        ((<a id='5153' tid='5154' class='u'>paredit-in-string-p</a>  <a id='5155' tid='5156' class='u'>parse-state</a>) <a id='5157' tid='5158' class='u'>&#39;</a><a id='5159' tid='5160' class='u'>string</a>)
+        ((<a id='5161' tid='5162' class='u'>memq</a> (<a id='5163' tid='5164' class='u'>char-syntax</a> (<a id='5165' tid='5166' class='u'>funcall</a> <a id='5167' tid='5168' class='u'>adjacent-char-fn</a>))
+               <a id='5169' tid='5170' class='u'>&#39;</a>(<a id='5171' tid='5172' class='u'>?\(</a> <a id='5173' tid='5174' class='u'>?\)</a> ))
+         <a id='5175' tid='5176' class='u'>&#39;</a><a id='5177' tid='5178' class='u'>delimiter</a>)
+        (<a id='5179' tid='5180' class='u'>t</a> <a id='5181' tid='5182' class='u'>&#39;</a><a id='5183' tid='5184' class='u'>other</a>)))
+
+<a id='7363' tid='7364' class='u'>;;; This optionally advances the point past any comment delimiters that
+</a><a id='7365' tid='7366' class='u'>;;; should prob
