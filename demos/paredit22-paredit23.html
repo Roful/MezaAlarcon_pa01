@@ -1536,4 +1536,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 <a id='5089' tid='5090' class='u'>;;          (parse-partial-sexp (point) (1+ (point))
 </a><a id='5091' tid='5092' class='u'>;;                              nil nil parse-state)
 </a>         )
-        ((<a id='5093' tid='5094
+        ((<a id='5093' tid='5094' class='u'>and</a> (<a id='5095' tid='5096' class='u'>not</a> (<a id='5097' tid='5098' class='u'>eq</a> <a id='5099' tid='5100' class='u'>old-state</a> <a id='5101' tid='5102' class='u'>&#39;</a><a id='5103' tid='5104' class='u'>comment</a>))
+              (<a id='5105' tid='5106' class='u'>eq</a> <a id='5107' tid='5108' class='u'>new-state</a> <a id='5109' tid='5110' class='u'>&#39;</a><a id='5111' tid='5112' class='u'>comment</a>)
+              (<a id='5113' tid='5114' class='u'>eq</a> <a id='5115' tid='5116' class='u'>?\;</a> (<a id='5117' tid='5118' class='u'>char-before</a>)))
+         (<a id='5119' tid='5120' class='u'>skip-chars-forward</a> <a id='5121' tid='5122' class='u'>&quot;;&quot;</a>)
+         (<a id='5123' tid='5124' class='u'>paredit-current-parse-state</a>)
+<a id='5125' tid='5126' class='u'>;;          (parse-partial-sexp (point) (save-excursion
+</a><a id='5127' tid='5128' class='u'>;;                        
