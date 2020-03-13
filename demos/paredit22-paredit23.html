@@ -1521,4 +1521,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
         (<a id='5179' tid='5180' class='u'>t</a> <a id='5181' tid='5182' class='u'>&#39;</a><a id='5183' tid='5184' class='u'>other</a>)))
 
 <a id='7363' tid='7364' class='u'>;;; This optionally advances the point past any comment delimiters that
-</a><a id='7365' tid='7366' class='u'>;;; should prob
+</a><a id='7365' tid='7366' class='u'>;;; should probably not be touched, based on the last state change and
+</a><a id='7367' tid='7368' class='u'>;;; the characters around the point.  It returns a new parse state,
+</a><a id='7369' tid='7370' class='u'>;;; starting from the PARSE-STATE parameter.
+</a>
+(<a id='5033' tid='5034' class='u'>defun</a> <a id='5035' tid='5036' class='u'>paredit-kill-word-hack</a> (<a id='5037' tid='5038' class='u'>old-state</a> <a id='5039' tid='5040' class='u'>new-state</a> <a id='5041' tid='5042' class='u'>parse-state</a>)
+  (<a id='5043' tid='5044' class='u'>cond</a> ((<a id='5045' tid='5046' class='u'>and</a> (<a id='5047' tid='5048' class='u'>not</a> (<a id='5049' tid='5050' class='u'>eq</a> <a id='5051' tid='5052' class='u'>old-state</a> <a id='5053' tid='5054' class='u'>&#39;</a><a id='5055' tid='5056' class='u'>comment</a>))
+              (<a id='5057' tid='5058' class='u'>not</a> (<a id='5059' tid='5060' class='u'>eq</a> <a id='5061'
