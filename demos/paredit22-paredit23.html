@@ -1527,4 +1527,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>
 (<a id='5033' tid='5034' class='u'>defun</a> <a id='5035' tid='5036' class='u'>paredit-kill-word-hack</a> (<a id='5037' tid='5038' class='u'>old-state</a> <a id='5039' tid='5040' class='u'>new-state</a> <a id='5041' tid='5042' class='u'>parse-state</a>)
   (<a id='5043' tid='5044' class='u'>cond</a> ((<a id='5045' tid='5046' class='u'>and</a> (<a id='5047' tid='5048' class='u'>not</a> (<a id='5049' tid='5050' class='u'>eq</a> <a id='5051' tid='5052' class='u'>old-state</a> <a id='5053' tid='5054' class='u'>&#39;</a><a id='5055' tid='5056' class='u'>comment</a>))
-              (<a id='5057' tid='5058' class='u'>not</a> (<a id='5059' tid='5060' class='u'>eq</a> <a id='5061'
+              (<a id='5057' tid='5058' class='u'>not</a> (<a id='5059' tid='5060' class='u'>eq</a> <a id='5061' tid='5062' class='u'>new-state</a> <a id='5063' tid='5064' class='u'>&#39;</a><a id='5065' tid='5066' class='u'>comment</a>))
+              (<a id='5067' tid='5068' class='u'>not</a> (<a id='5069' tid='5070' class='u'>paredit-in-string-escape-p</a>))
+              (<a id='5071' tid='5072' class='u'>eq</a> <a id='5073' tid='5074' class='u'>?\#</a> (<a id='5075' tid='5076' class='u'>char-before</a>))
+              (<a id='5077' tid='5078' class='u'>eq</a> <a id='5079' tid='5080' class='u'>?\|</a> (<a id='5081' tid='5082' class='u'>char-after</a>)))
+         (<a id='5083' tid='5084' class='u'>forward-char</a> <a id='5085' tid='5086' class='u'>1</a>)
+         (<a id='5087' tid='5088' class='u'>paredit-current-parse-state</a>)
+<a id='5089' tid='5090' class='u'>;;          (parse-partial-sexp (point) (1+ (point))
+</a><a id='5091' tid='5092' class='u'>;;                              nil nil parse-state)
+</a>         )
+        ((<a id='5093' tid='5094
