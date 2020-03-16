@@ -1571,4 +1571,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                          (<a id='2827' tid='2828' class='u'>min</a> (<a id='2829' tid='2830' class='u'>point-at-eol</a>)
                               (<a id='2831' tid='2832' class='u'>cdr</a> (<a id='2833' tid='2834' class='u'>paredit-string-start+end-points</a>))))))
 
-(<a id='2835' tid='2836' class='u'>defun</a> <a id='2837' tid='2838' class='u'>paredit
+(<a id='2835' tid='2836' class='u'>defun</a> <a id='2837' tid='2838' class='u'>paredit-copy-sexps-as-kill</a> ()
+  (<a id='2839' tid='2840' class='u'>save-excursion</a>
+    (<a id='2841' tid='2842' class='u'>if</a> (<a id='2843' tid='2844' class='u'>paredit-in-char-p</a>)
+        (<a id='2845' tid='2846' class='u'>backward-char</a> <a id='2847' tid='2848' class='u'>2</a>))
+    (<a id='2849' tid='2850' class='u'>let</a> ((<a id='2851' tid='2852' class='u'>beginning</a> (<a id='2853' tid='2854' class='u'>point</a>))
+          (<a id='2855' tid='2856' class='u'>eol</a> (<a id='2857' tid='2858' class='u'>point-at-eol</a>)))
+      (<a id='2859' tid='2860' class='u'>let</a> ((<a id='2861' tid='2862' class='u'>end-of-list-p</a> (<a id='2863' tid='2864' class='u'>paredit-forward-sexps-to-kill</a> <a id='2865' tid='2866' class='u'>beginning</a> <a id='2867' tid='2868' class='u'>eol</a>)))
+        (<a id='2869' tid='2870' class='u'>if</a> <a id='2871' tid='2872' class='u'>end-of-list-p</a> (<a id='2873' tid='2874' clas
