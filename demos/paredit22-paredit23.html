@@ -1553,4 +1553,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='2759' tid='2760' class='u'>cond</a> ((<a id='2761' tid='2762' class='u'>paredit-in-string-p</a>)
          (<a id='2763' tid='2764' class='u'>paredit-copy-as-kill-in-string</a>))
         ((<a id='2765' tid='2766' class='u'>paredit-in-comment-p</a>)
-         (<a id='2767' tid='2768' class='u'>copy-region-as-kill</a> (<a id='2769' tid='2770' class='u'>point</a>) (<a id='2771' tid='2772' class='u'>point-at-eol</a>))
+         (<a id='2767' tid='2768' class='u'>copy-region-as-kill</a> (<a id='2769' tid='2770' class='u'>point</a>) (<a id='2771' tid='2772' class='u'>point-at-eol</a>)))
+        ((<a id='2773' tid='2774' class='u'>save-excursion</a> (<a id='2775' tid='2776' class='u'>paredit-skip-whitespace</a> <a id='2777' tid='2778' class='u'>t</a> (<a id='2779' tid='2780' class='u'>point-at-eol</a>))
+                         (<a id='2781' tid='2782' class='u'>or</a> (<a id='2783' tid='2784' class='u'>eolp</a>) (<a id='2785' tid='2786' class='u'>eq</a> (<a id='2787' tid='2788' class='u'>char-after</a>) <a id='2789' tid='2790' class='u'>?\;</a> )))
+         <a id='2791' tid='2792' class='u'>;** Be careful about trailing backslashes.
+</a>         (<a id='2793' tid='2794' class='u'>save-excursion</a>
+           (<a id='2795' tid='2796' class='u'>if</a> (<a id='2797' tid='2798' class='u'>paredit-in-char-p</a>)
+               (<a id='2799' tid='2800' class='u'>backward-char</a>))
+           (<a id='2801' tid='2802' class='u'>copy-region-as-kill</a> (<a id='2803' tid='2804' class='u'>point</a>) (<a id='2805' tid='2806' class='
