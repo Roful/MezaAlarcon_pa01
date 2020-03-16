@@ -1560,4 +1560,15 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>         (<a id='2793' tid='2794' class='u'>save-excursion</a>
            (<a id='2795' tid='2796' class='u'>if</a> (<a id='2797' tid='2798' class='u'>paredit-in-char-p</a>)
                (<a id='2799' tid='2800' class='u'>backward-char</a>))
-           (<a id='2801' tid='2802' class='u'>copy-region-as-kill</a> (<a id='2803' tid='2804' class='u'>point</a>) (<a id='2805' tid='2806' class='
+           (<a id='2801' tid='2802' class='u'>copy-region-as-kill</a> (<a id='2803' tid='2804' class='u'>point</a>) (<a id='2805' tid='2806' class='u'>point-at-eol</a>))))
+        (<a id='2807' tid='2808' class='u'>t</a> (<a id='2809' tid='2810' class='u'>paredit-copy-sexps-as-kill</a>))))
+
+(<a id='2811' tid='2812' class='u'>defun</a> <a id='2813' tid='2814' class='u'>paredit-copy-as-kill-in-string</a> ()
+  (<a id='2815' tid='2816' class='u'>save-excursion</a>
+    (<a id='2817' tid='2818' class='u'>if</a> (<a id='2819' tid='2820' class='u'>paredit-in-string-escape-p</a>)
+        (<a id='2821' tid='2822' class='u'>backward-char</a>))
+    (<a id='2823' tid='2824' class='u'>copy-region-as-kill</a> (<a id='2825' tid='2826' class='u'>point</a>)
+                         (<a id='2827' tid='2828' class='u'>min</a> (<a id='2829' tid='2830' class='u'>point-at-eol</a>)
+                              (<a id='2831' tid='2832' class='u'>cdr</a> (<a id='2833' tid='2834' class='u'>paredit-string-start+end-points</a>))))))
+
+(<a id='2835' tid='2836' class='u'>defun</a> <a id='2837' tid='2838' class='u'>paredit
