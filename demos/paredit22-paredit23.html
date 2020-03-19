@@ -1595,4 +1595,16 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 <span class='d'>;;;; Safe Region Killing/Copying
 </span>
 <span class='d'>;;; This is an experiment.  It&#39;s not enough: `paredit-kill-ring-save&#39;
-</span><span class='d'>;;; is always safe; it&#39;s `yank&#39; that&#39;s not safe, but even tr
+</span><span class='d'>;;; is always safe; it&#39;s `yank&#39; that&#39;s not safe, but even trickier to
+</span><span class='d'>;;; implement than `paredit-kill-region&#39;.  Also, the heuristics for
+</span><span class='d'>;;; `paredit-kill-region&#39; are slightly too conservative -- they will
+</span><span class='d'>;;; sometimes reject killing regions that would be safe to kill.
+</span><span class='d'>;;; (Consider, e,g., a region that starts in a comment and ends in the
+</span><span class='d'>;;; middle of a symbol at the end of a line: that&#39;s safe to kill, but
+</span><span class='d'>;;; `paredit-kill-region&#39; won&#39;t allow it.)  I don&#39;t know whether they
+</span><span class='d'>;;; are too liberal: I haven&#39;t constructed a region that is unsafe to
+</span><span class='d'>;;; kill but which `paredit-kill-region&#39; will kill, but I haven&#39;t ruled
+</span><span class='d'>;;; out the possibility either.
+</span>
+<span class='d'>(defun paredit-kill-ring-save (beginning end)
+  &quot;Save the balanced region, but don&#39;t kill it, lik
