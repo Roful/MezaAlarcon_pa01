@@ -1584,4 +1584,15 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                                     (<a id='2887' tid='2888' class='u'>or</a> (<a id='2889' tid='2890' class='u'>save-excursion</a>
                                           (<a id='2891' tid='2892' class='u'>paredit-skip-whitespace</a> <a id='2893' tid='2894' class='u'>t</a>)
                                           (<a id='2895' tid='2896' class='u'>and</a> (<a id='2897' tid='2898' class='u'>not</a> (<a id='2899' tid='2900' class='u'>eq</a> (<a id='2901' tid='2902' class='u'>char-after</a>) <a id='2903' tid='2904' class='u'>?\;</a> ))
-                                               (<a id='2905' tid='2906' class='
+                                               (<a id='2905' tid='2906' class='u'>point</a>)))
+                                        (<a id='2907' tid='2908' class='u'>point-at-eol</a>)))
+                                   ((<a id='2909' tid='2910' class='u'>and</a> (<a id='2911' tid='2912' class='u'>not</a> <a id='2913' tid='2914' class='u'>end-of-list-p</a>)
+                                         (<a id='2915' tid='2916' class='u'>eq</a> (<a id='2917' tid='2918' class='u'>point-at-eol</a>) <a id='2919' tid='2920' class='u'>eol</a>))
+                                    <a id='2921' tid='2922' class='u'>eol</a>)
+                                   (<a id='2923' tid='2924' class='u'>t</a>
+                                    (<a id='2925' tid='2926' class='u'>point</a>))))))))
+
+<span class='d'>;;;; Safe Region Killing/Copying
+</span>
+<span class='d'>;;; This is an experiment.  It&#39;s not enough: `paredit-kill-ring-save&#39;
+</span><span class='d'>;;; is always safe; it&#39;s `yank&#39; that&#39;s not safe, but even tr
