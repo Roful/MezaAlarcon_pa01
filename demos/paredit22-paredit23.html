@@ -1607,4 +1607,22 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </span><span class='d'>;;; out the possibility either.
 </span>
 <span class='d'>(defun paredit-kill-ring-save (beginning end)
-  &quot;Save the balanced region, but don&#39;t kill it, lik
+  &quot;Save the balanced region, but don&#39;t kill it, like `kill-ring-save&#39;.
+If the text of the region is imbalanced, signal an error instead.
+With a prefix argument, disregard any imbalance.&quot;
+  (interactive &quot;r&quot;)
+  (if (not current-prefix-arg)
+      (paredit-check-region beginning end))
+  (setq this-command &#39;kill-ring-save)
+  (kill-ring-save beginning end))</span>
+
+(<a id='4605' tid='4606' class='u'>defun</a> <a id='4607' tid='4608' class='u'>paredit-kill-region</a> <span class='d'>(beginning end &optional yank-handler)</span>
+  <span class='d'>&quot;Kill balanced text between point and mark, like `kill-region&#39;.
+If that text is imbalanced, signal an error instead.&quot;</span>
+  (<a id='4609' tid='4610' class='u'>interactive</a> <a id='4611' tid='4612' class='u'>&quot;r&quot;</a>)
+  <span class='d'>(if (and beginning end)
+      ;; Check that region begins and ends in a sufficiently similar
+      ;; state, so that deleting it will leave the buffer balanced.
+      (save-excursion
+        (goto-char beginning)
+        (let* ((st
