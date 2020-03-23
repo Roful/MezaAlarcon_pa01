@@ -1625,4 +1625,19 @@ If that text is imbalanced, signal an error instead.&quot;</span>
       ;; state, so that deleting it will leave the buffer balanced.
       (save-excursion
         (goto-char beginning)
-        (let* ((st
+        (let* ((state (paredit-current-parse-state))
+               (state* (parse-partial-sexp beginning end nil nil state)))
+          (paredit-check-region-state state state*))))</span>
+  (<a id='4613' tid='4614' class='u'>setq</a> <a id='4615' tid='4616' class='u'>this-command</a> <a id='4617' tid='4618' class='u'>&#39;</a><a id='4619' tid='4620' class='u'>kill-region</a>)
+  <span class='d'>(kill-region beginning end yank-handler)</span>)
+
+<span class='d'>(defun paredit-check-region-state (beginning-state end-state)
+  (paredit-check-region-state-depth beginning-state end-state)
+  (paredit-check-region-state-string beginning-state end-state)
+  (paredit-check-region-state-comment beginning-state end-state)
+  (paredit-check-region-state-char-quote beginning-state end-state))</span>
+
+<span class='d'>(defun paredit-check-region-state-depth (beginning-state end-state)
+  (let ((beginning-depth (nth 0 beginning-state))
+        (end-depth (nth 0 end-state)))
+ 
