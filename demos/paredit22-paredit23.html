@@ -1658,4 +1658,22 @@ If that text is imbalanced, signal an error instead.&quot;</span>
         (end-comment-state (nth 4 end-state)))
     (if (not (or (eq beginning-comment-state end-comment-state)
                  (and (eq beginning-comment-state nil)
-                      (eq end-co
+                      (eq end-comment-state t)
+                      (eolp))))
+        (error &quot;Mismatched comment state: %s&quot;
+               (cond ((and (integerp beginning-comment-state)
+                           (integerp end-comment-state))
+                      (format &quot;depth %S at start, depth %S at end.&quot;
+                              beginning-comment-state
+                              end-comment-state))
+                     ((integerp beginning-comment-state)
+                      &quot;start in nested comment, end otherwise.&quot;)
+                     ((integerp end-comment-state)
+                      &quot;end in nested comment, start otherwise.&quot;)
+                     (beginning-comment-state
+                      &quot;start in comment, end not in comment.&quot;)
+                     (end-comment-state
+                      &quot;end in comment, start not in comment.&quot;)
+                     (t
+                      (format &quot;start %S, end %S.&quot;
+                              beginni
