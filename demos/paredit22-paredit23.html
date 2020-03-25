@@ -1694,4 +1694,10 @@ If that text is imbalanced, signal an error instead.&quot;</span>
 <span class='d'>;;;; Cursor and Screen Movement
 </span>
 (<a id='7371' tid='7372' class='u'>eval-and-compile</a>
-  (<a id='7409' tid='7410' class='u'>defmacro</a> <a id='7411' tid='7412' class='u'>defun-saving-mark</a> (<a id='7413' tid='7414' class='u'>name<
+  (<a id='7409' tid='7410' class='u'>defmacro</a> <a id='7411' tid='7412' class='u'>defun-saving-mark</a> (<a id='7413' tid='7414' class='u'>name</a> <a id='7415' tid='7416' class='u'>bvl</a> <a id='7417' tid='7418' class='u'>doc</a> <a id='7419' tid='7420' class='u'>&rest</a> <a id='7421' tid='7422' class='u'>body</a>)
+    <a id='7423' tid='7424' class='u'>`</a>(<a id='7373' tid='7374' class='u'>defun</a> <a id='7375' tid='7376' class='u'>,</a><a id='7377' tid='7378' class='u'>name</a> <a id='7379' tid='7380' class='u'>,</a><a id='7381' tid='7382' class='u'>bvl</a>
+       <a id='7383' tid='7384' class='u'>,</a><a id='7385' tid='7386' class='u'>doc</a>
+       <a id='7387' tid='7388' class='u'>,</a>(<a id='7389' tid='7390' class='u'>xcond</a> ((<a id='7391' tid='7392' class='u'>paredit-xemacs-p</a>)
+                <a id='7393' tid='7394' class='u'>&#39;</a>(<a id='7395' tid='7396' class='u'>interactive</a> <a id='7397' tid='7398' class='u'>&quot;_&quot;</a>))
+               ((<a id='7399' tid='7400' class='u'>paredit-gnu-emacs-p</a>)
+                <a id='7401' ti
