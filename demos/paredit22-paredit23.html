@@ -1676,4 +1676,22 @@ If that text is imbalanced, signal an error instead.&quot;</span>
                       &quot;end in comment, start not in comment.&quot;)
                      (t
                       (format &quot;start %S, end %S.&quot;
-                              beginni
+                              beginning-comment-state
+                              end-comment-state)))))))</span>
+
+<span class='d'>(defun paredit-check-region-state-char-quote (beginning-state end-state)
+  (let ((beginning-char-quote (nth 5 beginning-state))
+        (end-char-quote (nth 5 end-state)))
+    (if (not (eq beginning-char-quote end-char-quote))
+        (let ((phrase &quot;character quotation&quot;))
+          (error &quot;Mismatched %s: start %sin %s, end %sin %s.&quot;
+                 phrase
+                 (if beginning-char-quote &quot;&quot; &quot;not &quot;)
+                 phrase
+                 (if end-char-quote &quot;&quot; &quot;not &quot;)
+                 phrase)))))</span>
+
+<span class='d'>;;;; Cursor and Screen Movement
+</span>
+(<a id='7371' tid='7372' class='u'>eval-and-compile</a>
+  (<a id='7409' tid='7410' class='u'>defmacro</a> <a id='7411' tid='7412' class='u'>defun-saving-mark</a> (<a id='7413' tid='7414' class='u'>name<
