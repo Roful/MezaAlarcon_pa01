@@ -1711,4 +1711,17 @@ If there are no more S-expressions in this one before the closing
   (<a id='7431' tid='7432' class='u'>paredit-handle-sexp-errors</a>
       (<a id='7433' tid='7434' class='u'>forward-sexp</a>)
     <span class='d'>;++ Is it necessary to use UP-LIST and not just FORWARD-CHAR?
-</span>    (<a id='7435' tid='7436' class='u'>if</a> (<a id='7437' tid='7438' class='u'>paredit-in-string-p</a>) (<a id='7439' tid='7440' class='u'>forward-char</a
+</span>    (<a id='7435' tid='7436' class='u'>if</a> (<a id='7437' tid='7438' class='u'>paredit-in-string-p</a>) (<a id='7439' tid='7440' class='u'>forward-char</a>) (<a id='7441' tid='7442' class='u'>up-list</a>))))
+
+(<a id='7443' tid='7444' class='u'>defun-saving-mark</a> <a id='7445' tid='7446' class='u'>paredit-backward</a> ()
+  <a id='7447' tid='7448' class='u'>&quot;Move backward an S-expression, or up an S-expression backward.
+If there are no more S-expressions in this one before the opening
+  delimiter, move past that opening delimiter backward; otherwise, move
+  move backward past the S-expression preceding the point.&quot;</a>
+  (<a id='7449' tid='7450' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='7451' tid='7452' class='u'>backward-sexp</a>)
+    (<a id='7453' tid='7454' class='u'>if</a> (<a id='7455' tid='7456' class='u'>paredit-in-string-p</a>) (<a id='7457' tid='7458' class='u'>backward-char</a>) (<a id='7459' tid='7460' class='u'>backward-up-list</a>))))
+
+<a id='7461' tid='7462' class='u'>;;; Why is this not in lisp.el?
+</a>
+(<a id='1741' tid='1742' class='u'>defun</a> <a id='1743' tid='1744' class='u'>backward-down-list</a> (<
