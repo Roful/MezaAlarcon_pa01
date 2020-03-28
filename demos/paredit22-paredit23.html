@@ -1724,4 +1724,19 @@ If there are no more S-expressions in this one before the opening
 
 <a id='7461' tid='7462' class='u'>;;; Why is this not in lisp.el?
 </a>
-(<a id='1741' tid='1742' class='u'>defun</a> <a id='1743' tid='1744' class='u'>backward-down-list</a> (<
+(<a id='1741' tid='1742' class='u'>defun</a> <a id='1743' tid='1744' class='u'>backward-down-list</a> (<a id='1745' tid='1746' class='u'>&optional</a> <a id='1747' tid='1748' class='u'>arg</a>)
+  <a id='1749' tid='1750' class='u'>&quot;Move backward and descend into one level of parentheses.
+With ARG, do this that many times.
+A negative argument means move forward but still descend a level.&quot;</a>
+  (<a id='1751' tid='1752' class='u'>interactive</a> <a id='1753' tid='1754' class='u'>&quot;p&quot;</a>)
+  (<a id='1755' tid='1756' class='u'>down-list</a> (<a id='1757' tid='1758' class='u'>-</a> (<a id='1759' tid='1760' class='u'>or</a> <a id='1761' tid='1762' class='u'>arg</a> <a id='1763' tid='1764' class='u'>1</a>))))
+
+<span class='d'>;;; Thanks to Marco Baringer for suggesting & writing this function.
+</span>
+<span class='d'>(defun paredit-recentre-on-sexp (&optional n)
+  &quot;Recentre the screen on the S-expression following the point.
+With a prefix argument N, encompass all N S-expressions forward.&quot;
+  (interactive &quot;P&quot;)
+  (save-excursion
+    (forward-sexp n)
+    (let ((end-point (point)))
