@@ -1740,3 +1740,20 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
   (save-excursion
     (forward-sexp n)
     (let ((end-point (point)))
+      (backward-sexp n)
+      (let* ((start-point (point))
+             (start-line (count-lines (point-min) (point)))
+             (lines-on-sexps (count-lines start-point end-point)))
+        (goto-line (+ start-line (/ lines-on-sexps 2)))
+        (recenter)))))</span>
+
+(<a id='3197' tid='3198' class='u'>defun</a> <a id='3199' tid='3200' class='u'>paredit-focus-on-defun</a> ()
+  <a id='3201' tid='3202' class='u'>&quot;Moves display to the top of the definition at point.&quot;</a>
+  (<a id='3203' tid='3204' class='u'>interactive</a>)
+  (<a id='3205' tid='3206' class='u'>beginning-of-defun</a>)
+  (<a id='3207' tid='3208' class='u'>recenter</a> <a id='3209' tid='3210' class='u'>0</a>))
+
+<span class='d'>;;;; Generalized Upward/Downward Motion
+</span>
+(<a id='6487' tid='6488' class='u'>defun</a> <a id='6489' tid='6490' class='u'>paredit-up/down</a> (<a id='6491' tid='6492' class='u'>n</a> <a id='6493' tid='6494' class='u'>vertical-direction</a>)
+  (<a id='6495' tid='6496' clas
