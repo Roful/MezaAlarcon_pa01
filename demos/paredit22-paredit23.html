@@ -1756,4 +1756,10 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
 <span class='d'>;;;; Generalized Upward/Downward Motion
 </span>
 (<a id='6487' tid='6488' class='u'>defun</a> <a id='6489' tid='6490' class='u'>paredit-up/down</a> (<a id='6491' tid='6492' class='u'>n</a> <a id='6493' tid='6494' class='u'>vertical-direction</a>)
-  (<a id='6495' tid='6496' clas
+  (<a id='6495' tid='6496' class='u'>let</a> ((<a id='6497' tid='6498' class='u'>horizontal-direction</a> (<a id='6499' tid='6500' class='u'>if</a> (<a id='6501' tid='6502' class='u'>&lt;</a> <a id='6503' tid='6504' class='u'>0</a> <a id='6505' tid='6506' class='u'>n</a>) <a id='6507' tid='6508' class='u'>+1</a> <a id='6509' tid='6510' class='u'>-1</a>)))
+    (<a id='6511' tid='6512' class='u'>while</a> (<a id='6513' tid='6514' class='u'>/=</a> <a id='6515' tid='6516' class='u'>n</a> <a id='6517' tid='6518' class='u'>0</a>)
+      (<a id='6519' tid='6520' class='u'>goto-char</a>
+       (<a id='6521' tid='6522' class='u'>paredit-next-up/down-point</a> <a id='6523' tid='6524' class='u'>horizontal-direction</a> <a id='6525' tid='6526' class='u'>vertical-direction</a>))
+      (<a id='6527' tid='6528' class='u'>setq</a> <a id='6529' tid='6530' class='u'>n</a> (<a id='6531' tid='6532' class='u'>-</a> <a id='6533' tid='6534' class='u'>n</a> <a id='6535' tid='6536' class='u'>horizontal-direction</a>)))))
+
+(<a id='5467' tid='5468' class='u'>defun</a> <a
