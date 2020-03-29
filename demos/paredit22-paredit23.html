@@ -1768,4 +1768,11 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
          (<a id='5483' tid='5484' class='u'>lambda</a> ()
            (<a id='5485' tid='5486' class='u'>scan-lists</a> (<a id='5487' tid='5488' class='u'>point</a>) <a id='5489' tid='5490' class='u'>horizontal-direction</a> <a id='5491' tid='5492' class='u'>vertical-direction</a>))))
     (<a id='5493' tid='5494' class='u'>cond</a> ((<a id='5495' tid='5496' class='u'>paredit-in-string-p</a> <a id='5497' tid='5498' class='u'>state</a>)
-           (<a id='5499' tid='5500' class='u'>let</a> ((<a id='5501' tid='5502' class='u'>start+end</a> (<a id='5503' tid='5504' class='u'>paredit-str
+           (<a id='5499' tid='5500' class='u'>let</a> ((<a id='5501' tid='5502' class='u'>start+end</a> (<a id='5503' tid='5504' class='u'>paredit-string-start+end-points</a> <a id='5505' tid='5506' class='u'>state</a>)))
+             (<a id='5507' tid='5508' class='u'>if</a> (<a id='5509' tid='5510' class='u'>&lt;</a> <a id='5511' tid='5512' class='u'>0</a> <a id='5513' tid='5514' class='u'>vertical-direction</a>)
+                 (<a id='5515' tid='5516' class='u'>if</a> (<a id='5517' tid='5518' class='u'>&lt;</a> <a id='5519' tid='5520' class='u'>0</a> <a id='5521' tid='5522' class='u'>horizontal-direction</a>)
+                     (<a id='5523' tid='5524' class='u'>+</a> <a id='5525' tid='5526' class='u'>1</a> (<a id='5527' tid='5528' class='u'>cdr</a> <a id='5529' tid='5530' class='u'>start+end</a>))
+                     (<a id='5531' tid='5532' class='u'>car</a> <a id='5533' tid='5534' class='u'>start+end</a>))
+                 <a id='5535' tid='5536' class='u'>;; We could let the user try to descend into lists
+</a>                 <a id='5537' tid='5538' class='u'>;; within the string, but that would be asymmetric
+</a>                 <a id='5539' ti
