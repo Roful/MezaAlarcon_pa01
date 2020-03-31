@@ -1782,4 +1782,12 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
           ((<a id='5549' tid='5550' class='u'>&lt;</a> <a id='5551' tid='5552' class='u'>0</a> <a id='5553' tid='5554' class='u'>vertical-direction</a>)
            <a id='5555' tid='5556' class='u'>;; When moving up, just try to rise up out of the list.
 </a>           (<a id='5557' tid='5558' class='u'>or</a> (<a id='5559' tid='5560' class='u'>funcall</a> <a id='5561' tid='5562' class='u'>scan-lists</a>)
-               (<a id='5563' tid='5564' class='u'>buffer-end</a> <a id='5565' tid='5566' class='u'>
+               (<a id='5563' tid='5564' class='u'>buffer-end</a> <a id='5565' tid='5566' class='u'>horizontal-direction</a>)))
+          ((<a id='5567' tid='5568' class='u'>&lt;</a> <a id='5569' tid='5570' class='u'>vertical-direction</a> <a id='5571' tid='5572' class='u'>0</a>)
+           <a id='5573' tid='5574' class='u'>;; When moving down, look for a string closer than a list,
+</a>           <a id='5575' tid='5576' class='u'>;; and use that if we find it.
+</a>           (<a id='5577' tid='5578' class='u'>let*</a> ((<a id='5579' tid='5580' class='u'>list-start</a>
+                   (<a id='5581' tid='5582' class='u'>paredit-handle-sexp-errors</a> (<a id='5583' tid='5584' class='u'>funcall</a> <a id='5585' tid='5586' class='u'>scan-lists</a>) <a id='5587' tid='5588' class='u'>nil</a>))
+                  (<a id='5589' tid='5590' class='u'>string-start</a>
+                   (<a id='5591' tid='5592' class='u'>paredit-find-next-string-start</a> <a id='5593' tid='5594' class='u'>horizontal-direction</a>
+                                           
