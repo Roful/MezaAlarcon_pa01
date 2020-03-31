@@ -1790,4 +1790,10 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
                    (<a id='5581' tid='5582' class='u'>paredit-handle-sexp-errors</a> (<a id='5583' tid='5584' class='u'>funcall</a> <a id='5585' tid='5586' class='u'>scan-lists</a>) <a id='5587' tid='5588' class='u'>nil</a>))
                   (<a id='5589' tid='5590' class='u'>string-start</a>
                    (<a id='5591' tid='5592' class='u'>paredit-find-next-string-start</a> <a id='5593' tid='5594' class='u'>horizontal-direction</a>
-                                           
+                                                   <a id='5595' tid='5596' class='u'>list-start</a>)))
+             (<a id='5597' tid='5598' class='u'>if</a> (<a id='5599' tid='5600' class='u'>and</a> <a id='5601' tid='5602' class='u'>string-start</a> <a id='5603' tid='5604' class='u'>list-start</a>)
+                 (<a id='5605' tid='5606' class='u'>if</a> (<a id='5607' tid='5608' class='u'>&lt;</a> <a id='5609' tid='5610' class='u'>0</a> <a id='5611' tid='5612' class='u'>horizontal-direction</a>)
+                     (<a id='5613' tid='5614' class='u'>min</a> <a id='5615' tid='5616' class='u'>string-start</a> <a id='5617' tid='5618' class='u'>list-start</a>)
+                     (<a id='5619' tid='5620' class='u'>max</a> <a id='5621' tid='5622' class='u'>string-start</a> <a id='5623' tid='5624' class='u'>list-start</a>))
+                 (<a id='5625' tid='5626' class='u'>or</a> <a id='5627' tid='5628' class='u'>string-start</a>
+                     <a id='5629' tid='5630' class='u'>;; Scan again: this is a kludgey way 
