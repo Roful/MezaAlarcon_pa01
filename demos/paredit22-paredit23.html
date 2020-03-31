@@ -1775,4 +1775,11 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
                      (<a id='5531' tid='5532' class='u'>car</a> <a id='5533' tid='5534' class='u'>start+end</a>))
                  <a id='5535' tid='5536' class='u'>;; We could let the user try to descend into lists
 </a>                 <a id='5537' tid='5538' class='u'>;; within the string, but that would be asymmetric
-</a>                 <a id='5539' ti
+</a>                 <a id='5539' tid='5540' class='u'>;; with the up case, which rises out of the whole
+</a>                 <a id='5541' tid='5542' class='u'>;; string and not just out of a list within the
+</a>                 <a id='5543' tid='5544' class='u'>;; string, so this case will just be an error.
+</a>                 (<a id='5545' tid='5546' class='u'>error</a> <a id='5547' tid='5548' class='u'>&quot;Can&#39;t descend further into string.&quot;</a>))))
+          ((<a id='5549' tid='5550' class='u'>&lt;</a> <a id='5551' tid='5552' class='u'>0</a> <a id='5553' tid='5554' class='u'>vertical-direction</a>)
+           <a id='5555' tid='5556' class='u'>;; When moving up, just try to rise up out of the list.
+</a>           (<a id='5557' tid='5558' class='u'>or</a> (<a id='5559' tid='5560' class='u'>funcall</a> <a id='5561' tid='5562' class='u'>scan-lists</a>)
+               (<a id='5563' tid='5564' class='u'>buffer-end</a> <a id='5565' tid='5566' class='u'>
