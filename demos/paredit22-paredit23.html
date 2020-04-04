@@ -1796,4 +1796,13 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
                      (<a id='5613' tid='5614' class='u'>min</a> <a id='5615' tid='5616' class='u'>string-start</a> <a id='5617' tid='5618' class='u'>list-start</a>)
                      (<a id='5619' tid='5620' class='u'>max</a> <a id='5621' tid='5622' class='u'>string-start</a> <a id='5623' tid='5624' class='u'>list-start</a>))
                  (<a id='5625' tid='5626' class='u'>or</a> <a id='5627' tid='5628' class='u'>string-start</a>
-                     <a id='5629' tid='5630' class='u'>;; Scan again: this is a kludgey way 
+                     <a id='5629' tid='5630' class='u'>;; Scan again: this is a kludgey way to report the
+</a>                     <a id='5631' tid='5632' class='u'>;; error if there really was one.
+</a>                     (<a id='5633' tid='5634' class='u'>funcall</a> <a id='5635' tid='5636' class='u'>scan-lists</a>)
+                     (<a id='5637' tid='5638' class='u'>buffer-end</a> <a id='5639' tid='5640' class='u'>horizontal-direction</a>)))))
+          (<a id='5641' tid='5642' class='u'>t</a>
+           (<a id='5643' tid='5644' class='u'>error</a> <a id='5645' tid='5646' class='u'>&quot;Vertical direction must be nonzero in `%s&#39;.&quot;</a>
+                  <a id='5647' tid='5648' class='u'>&#39;</a><a id='5649' tid='5650' class='u'>paredit-up/down</a>)))))
+
+(<a id='3189' tid='3190' class='u'>defun</a> <a id='3191' tid='3192' class='u'>paredit-find-next-string-start</a> (<a id='3193' tid='3194' class='u'>horizontal-direction</a> <a id='3195' tid='3196' class='u'>limit</a>)
+  (<a id='1277' tid='1278' class='m'>let</a> ((<a id='1279' tid='1280' 
