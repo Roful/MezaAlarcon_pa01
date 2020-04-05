@@ -1805,4 +1805,10 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
                   <a id='5647' tid='5648' class='u'>&#39;</a><a id='5649' tid='5650' class='u'>paredit-up/down</a>)))))
 
 (<a id='3189' tid='3190' class='u'>defun</a> <a id='3191' tid='3192' class='u'>paredit-find-next-string-start</a> (<a id='3193' tid='3194' class='u'>horizontal-direction</a> <a id='3195' tid='3196' class='u'>limit</a>)
-  (<a id='1277' tid='1278' class='m'>let</a> ((<a id='1279' tid='1280' 
+  (<a id='1277' tid='1278' class='m'>let</a> ((<a id='1279' tid='1280' class='m'>next-char</a> (<a id='1281' tid='1282' class='m'>if</a> (<a id='1283' tid='1284' class='m'>&lt;</a> <a id='1285' tid='1286' class='m'>0</a> <a id='1287' tid='1288' class='m'>horizontal-direction</a>) <a id='1289' tid='1290' class='m'>&#39;</a><a id='1291' tid='1292' class='m'>char-after</a> <a id='1293' tid='1294' class='m'>&#39;</a><a id='1295' tid='1296' class='m'>char-before</a>))
+        <span class='d'>(pastp (if (&lt; 0 horizontal-direction) &#39;&lt; &#39;&gt;))</span>)
+    (<a id='1297' tid='1298' class='m'>paredit-handle-sexp-errors</a>
+        (<a id='1299' tid='1300' class='m'>save-excursion</a>
+          (<a id='1301' tid='1302' class='m'>catch</a> <a id='1303' tid='1304' class='m'>&#39;</a><a id='1305' tid='1306' class='m'>exit</a>
+            (<a id='1307' tid='1308' class='m'>while</a> <a id='1309' tid='1310' class='m'>t</a>
+              (<a id='1311' tid='1312' class='m'>if</a> (<a id='1313' tid='1314' class='m'>and</a> <a id='1315' tid='1316' 
