@@ -1811,4 +1811,9 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
         (<a id='1299' tid='1300' class='m'>save-excursion</a>
           (<a id='1301' tid='1302' class='m'>catch</a> <a id='1303' tid='1304' class='m'>&#39;</a><a id='1305' tid='1306' class='m'>exit</a>
             (<a id='1307' tid='1308' class='m'>while</a> <a id='1309' tid='1310' class='m'>t</a>
-              (<a id='1311' tid='1312' class='m'>if</a> (<a id='1313' tid='1314' class='m'>and</a> <a id='1315' tid='1316' 
+              (<a id='1311' tid='1312' class='m'>if</a> (<a id='1313' tid='1314' class='m'>and</a> <a id='1315' tid='1316' class='m'>limit</a> (<a id='1317' tid='1318' class='m'>funcall</a> <a id='1319' tid='1320' class='m'>pastp</a> (<a id='1321' tid='1322' class='m'>point</a>) <a id='1323' tid='1324' class='m'>limit</a>))
+                  (<a id='1325' tid='1326' class='m'>throw</a> <a id='1327' tid='1328' class='m'>&#39;</a><a id='1329' tid='1330' class='m'>exit</a> <a id='1331' tid='1332' class='m'>nil</a>))
+              (<a id='1333' tid='1334' class='m'>forward-sexp</a> <a id='1335' tid='1336' class='m'>horizontal-direction</a>)
+              (<a id='1337' tid='1338' class='m'>save-excursion</a>
+                (<a id='1339' tid='1340' class='m'>backward-sexp</a> <a id='1341' tid='1342' class='m'>horizontal-direction</a>)
+                (<a id='1343' tid='1344' class='m'>if</a> (<a id='1345' tid='1346' class='m'>eq</a> <a id='1347' tid='1348' class='m'>?\&quot;</a> (<a id='1349' tid='1350' class='m'>char-syntax</a> (<a id='1351' tid='1352' class='m'>funcall<
