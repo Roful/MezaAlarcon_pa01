@@ -1833,4 +1833,14 @@ With a positive argument, move backward up that many levels.
 With a negative argument, move forward up that many levels.
 If in a string initially, that counts as one level.&quot;</a>
   (<a id='2551' tid='2552' class='u'>interactive</a> <a id='2553' tid='2554' class='u'>&quot;p&quot;</a>)
-  (<a id='2555' tid='2556' class='u'>paredit-up/down</a> (<a id='2557' tid='2558' class='u'>-</a> <a id='2559' tid='2560' class='u'>0</a> (<a id='2561' tid='2562' class='u'>or</a> <a id='2563' 
+  (<a id='2555' tid='2556' class='u'>paredit-up/down</a> (<a id='2557' tid='2558' class='u'>-</a> <a id='2559' tid='2560' class='u'>0</a> (<a id='2561' tid='2562' class='u'>or</a> <a id='2563' tid='2564' class='u'>argument</a> <a id='2565' tid='2566' class='u'>+1</a>)) <a id='2567' tid='2568' class='u'>+1</a>))
+
+(<a id='3885' tid='3886' class='u'>defun</a> <a id='3887' tid='3888' class='u'>paredit-forward-up</a> (<a id='3889' tid='3890' class='u'>&optional</a> <a id='3891' tid='3892' class='u'>argument</a>)
+  <a id='3893' tid='3894' class='u'>&quot;Move forward up out of the enclosing list.
+With a positive argument, move forward up that many levels.
+With a negative argument, move backward up that many levels.
+If in a string initially, that counts as one level.&quot;</a>
+  (<a id='3895' tid='3896' class='u'>interactive</a> <a id='3897' tid='3898' class='u'>&quot;p&quot;</a>)
+  (<a id='3899' tid='3900' class='u'>paredit-up/down</a> (<a id='3901' tid='3902' class='u'>or</a> <a id='3903' tid='3904' class='u'>argument</a> <a id='3905' tid='3906' class='u'>+1</a>) <a id='3907' tid='3908' class='u'>+1</a>))
+
+(<a id='2
