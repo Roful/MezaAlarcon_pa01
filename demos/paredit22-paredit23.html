@@ -1825,4 +1825,12 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
 With a positive argument, move forward down that many levels.
 With a negative argument, move backward down that many levels.&quot;</a>
   (<a id='3359' tid='3360' class='u'>interactive</a> <a id='3361' tid='3362' class='u'>&quot;p&quot;</a>)
-  (<a id='3363' tid='3364' class='u'>paredit-up/down</a> (<a 
+  (<a id='3363' tid='3364' class='u'>paredit-up/down</a> (<a id='3365' tid='3366' class='u'>or</a> <a id='3367' tid='3368' class='u'>argument</a> <a id='3369' tid='3370' class='u'>+1</a>) <a id='3371' tid='3372' class='u'>-1</a>))
+
+(<a id='2541' tid='2542' class='u'>defun</a> <a id='2543' tid='2544' class='u'>paredit-backward-up</a> (<a id='2545' tid='2546' class='u'>&optional</a> <a id='2547' tid='2548' class='u'>argument</a>)
+  <a id='2549' tid='2550' class='u'>&quot;Move backward up out of the enclosing list.
+With a positive argument, move backward up that many levels.
+With a negative argument, move forward up that many levels.
+If in a string initially, that counts as one level.&quot;</a>
+  (<a id='2551' tid='2552' class='u'>interactive</a> <a id='2553' tid='2554' class='u'>&quot;p&quot;</a>)
+  (<a id='2555' tid='2556' class='u'>paredit-up/down</a> (<a id='2557' tid='2558' class='u'>-</a> <a id='2559' tid='2560' class='u'>0</a> (<a id='2561' tid='2562' class='u'>or</a> <a id='2563' 
