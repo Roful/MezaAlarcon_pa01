@@ -1843,4 +1843,13 @@ If in a string initially, that counts as one level.&quot;</a>
   (<a id='3895' tid='3896' class='u'>interactive</a> <a id='3897' tid='3898' class='u'>&quot;p&quot;</a>)
   (<a id='3899' tid='3900' class='u'>paredit-up/down</a> (<a id='3901' tid='3902' class='u'>or</a> <a id='3903' tid='3904' class='u'>argument</a> <a id='3905' tid='3906' class='u'>+1</a>) <a id='3907' tid='3908' class='u'>+1</a>))
 
-(<a id='2
+(<a id='2217' tid='2218' class='u'>defun</a> <a id='2219' tid='2220' class='u'>paredit-backward-down</a> (<a id='2221' tid='2222' class='u'>&optional</a> <a id='2223' tid='2224' class='u'>argument</a>)
+  <a id='2225' tid='2226' class='u'>&quot;Move backward down into a list.
+With a positive argument, move backward down that many levels.
+With a negative argument, move forward down that many levels.&quot;</a>
+  (<a id='2227' tid='2228' class='u'>interactive</a> <a id='2229' tid='2230' class='u'>&quot;p&quot;</a>)
+  (<a id='2231' tid='2232' class='u'>paredit-up/down</a> (<a id='2233' tid='2234' class='u'>-</a> <a id='2235' tid='2236' class='u'>0</a> (<a id='2237' tid='2238' class='u'>or</a> <a id='2239' tid='2240' class='u'>argument</a> <a id='2241' tid='2242' class='u'>+1</a>)) <a id='2243' tid='2244' class='u'>-1</a>))
+
+<span class='d'>;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
+</span>
+(<a id='6547' tid='6548' class='u'>defun</a> <a id='6549' tid='6550' class='u'>paredit-wrap-se
