@@ -1852,4 +1852,16 @@ With a negative argument, move forward down that many levels.&quot;</a>
 
 <span class='d'>;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
 </span>
-(<a id='6547' tid='6548' class='u'>defun</a> <a id='6549' tid='6550' class='u'>paredit-wrap-se
+(<a id='6547' tid='6548' class='u'>defun</a> <a id='6549' tid='6550' class='u'>paredit-wrap-sexp</a> (<a id='6551' tid='6552' class='u'>&optional</a> <a id='6553' tid='6554' class='u'>argument</a> <a id='6555' tid='6556' class='u'>open</a> <a id='6557' tid='6558' class='u'>close</a>)
+  <a id='6559' tid='6560' class='u'>&quot;Wrap the following S-expression.
+If a `C-u&#39; prefix argument is given, wrap all S-expressions following
+  the point until the end of the buffer or of the enclosing list.
+If a numeric prefix argument N is given, wrap N S-expressions.
+Automatically indent the newly wrapped S-expression.
+As a special case, if the point is at the end of a list, simply insert
+  a parenthesis pair, rather than inserting a lone opening delimiter
+  and then signalling an error, in the interest of preserving
+  structure.
+By default OPEN and CLOSE are round delimiters.&quot;</a>
+  (<a id='6561' tid='6562' class='u'>interactive</a> <a id='6563' tid='6564' class='u'>&quot;P&quot;</a>)
+  (<a id='6565' tid='6566' class='u'>paredit-lose-if-not-i
