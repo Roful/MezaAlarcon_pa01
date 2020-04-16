@@ -1864,4 +1864,9 @@ As a special case, if the point is at the end of a list, simply insert
   structure.
 By default OPEN and CLOSE are round delimiters.&quot;</a>
   (<a id='6561' tid='6562' class='u'>interactive</a> <a id='6563' tid='6564' class='u'>&quot;P&quot;</a>)
-  (<a id='6565' tid='6566' class='u'>paredit-lose-if-not-i
+  (<a id='6565' tid='6566' class='u'>paredit-lose-if-not-in-sexp</a> <a id='6567' tid='6568' class='u'>&#39;</a><a id='6569' tid='6570' class='u'>paredit-wrap-sexp</a>)
+  (<a id='6571' tid='6572' class='u'>let</a> ((<a id='6573' tid='6574' class='u'>open</a> (<a id='6575' tid='6576' class='u'>or</a> <a id='6577' tid='6578' class='u'>open</a> <a id='6579' tid='6580' class='u'>?\(</a> ))
+        (<a id='6581' tid='6582' class='u'>close</a> (<a id='6583' tid='6584' class='u'>or</a> <a id='6585' tid='6586' class='u'>close</a> <a id='6587' tid='6588' class='u'>?\)</a> )))
+    (<a id='6589' tid='6590' class='u'>paredit-handle-sexp-errors</a>
+        ((<a id='6591' tid='6592' class='u'>lambda</a> (<a id='6593' tid='6594' class='u'>n</a>) (<a id='6595' tid='6596' class='u'>paredit-insert-pair</a> <a id='6597' tid='6598' class='u'>n</a> <a id='6599' tid='6600' class='u'>open</a> <a id='6601' tid='6602' class='u'>close</a> <a id='6603' tid='6604' class='u'>&#39;</a><a id='6605' tid='6606' class='u'>goto-char</a>))
+         (<a id='6607
