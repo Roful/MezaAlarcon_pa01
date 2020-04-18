@@ -1869,4 +1869,12 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
         (<a id='6581' tid='6582' class='u'>close</a> (<a id='6583' tid='6584' class='u'>or</a> <a id='6585' tid='6586' class='u'>close</a> <a id='6587' tid='6588' class='u'>?\)</a> )))
     (<a id='6589' tid='6590' class='u'>paredit-handle-sexp-errors</a>
         ((<a id='6591' tid='6592' class='u'>lambda</a> (<a id='6593' tid='6594' class='u'>n</a>) (<a id='6595' tid='6596' class='u'>paredit-insert-pair</a> <a id='6597' tid='6598' class='u'>n</a> <a id='6599' tid='6600' class='u'>open</a> <a id='6601' tid='6602' class='u'>close</a> <a id='6603' tid='6604' class='u'>&#39;</a><a id='6605' tid='6606' class='u'>goto-char</a>))
-         (<a id='6607
+         (<a id='6607' tid='6608' class='u'>cond</a> ((<a id='6609' tid='6610' class='u'>integerp</a> <a id='6611' tid='6612' class='u'>argument</a>) <a id='6613' tid='6614' class='u'>argument</a>)
+               ((<a id='6615' tid='6616' class='u'>consp</a> <a id='6617' tid='6618' class='u'>argument</a>) (<a id='6619' tid='6620' class='u'>paredit-count-sexps-forward</a>))
+               ((<a id='6621' tid='6622' class='u'>paredit-region-active-p</a>) <a id='6623' tid='6624' class='u'>nil</a>)
+               (<a id='6625' tid='6626' class='u'>t</a> <a id='6627' tid='6628' class='u'>1</a>)))
+      (<a id='6629' tid='6630' class='u'>insert</a> <a id='6631' tid='6632' class='u'>close</a>)
+      (<a id='6633' tid='6634' class='u'>backward-char</a>)))
+  (<a id='6635' tid='6636' class='u'>save-excursion</a> (<a id='6637' tid='6638' class='u'>backward-up-list</a>) (<a id='6639' tid='6640' class='u'>indent-sexp</a>)))
+
+(<a id='2927' tid='2928' class='u'>defun</a> <a id='2929' tid='2930' class='
