@@ -1877,4 +1877,16 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
       (<a id='6633' tid='6634' class='u'>backward-char</a>)))
   (<a id='6635' tid='6636' class='u'>save-excursion</a> (<a id='6637' tid='6638' class='u'>backward-up-list</a>) (<a id='6639' tid='6640' class='u'>indent-sexp</a>)))
 
-(<a id='2927' tid='2928' class='u'>defun</a> <a id='2929' tid='2930' class='
+(<a id='2927' tid='2928' class='u'>defun</a> <a id='2929' tid='2930' class='u'>paredit-count-sexps-forward</a> ()
+  (<a id='1369' tid='1370' class='m'>save-excursion</a>
+    (<span class='d'>let</span> <span class='d'>((n 0))</span>
+      (<span class='d'>paredit-ignore-sexp-errors</span>
+        (<span class='d'>while</span> <span class='d'>(not (eobp))</span>
+          <span class='d'>(forward-sexp)</span>
+          (<a id='1371' tid='1372' class='m'>setq</a> <a id='1373' tid='1374' class='m'>n</a> (<a id='1375' tid='1376' class='m'>+</a> <a id='1377' tid='1378' class='m'>n</a> <a id='1379' tid='1380' class='m'>1</a>))))
+      <span class='d'>n</span>)))
+
+(<a id='6641' tid='6642' class='u'>defun</a> <a id='6643' tid='6644' class='u'>paredit-yank-pop</a> (<a id='6645' tid='6646' class='u'>&optional</a> <a id='6647' tid='6648' class='u'>argument</a>)
+  <a id='6649' tid='6650' class='u'>&quot;Replace just-yanked text with the next item in the kill ring.
+If this command follows a `yank&#39;, just run `yank-pop&#39;.
+If this command follows a `paredit-wrap-se
