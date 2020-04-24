@@ -1889,4 +1889,16 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
 (<a id='6641' tid='6642' class='u'>defun</a> <a id='6643' tid='6644' class='u'>paredit-yank-pop</a> (<a id='6645' tid='6646' class='u'>&optional</a> <a id='6647' tid='6648' class='u'>argument</a>)
   <a id='6649' tid='6650' class='u'>&quot;Replace just-yanked text with the next item in the kill ring.
 If this command follows a `yank&#39;, just run `yank-pop&#39;.
-If this command follows a `paredit-wrap-se
+If this command follows a `paredit-wrap-sexp&#39;, or any other paredit
+  wrapping command (see `paredit-wrap-commands&#39;), run `yank&#39; and
+  reindent the enclosing S-expression.
+If this command is repeated, run `yank-pop&#39; and reindent the enclosing
+  S-expression.
+
+The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
+  documentation for details.&quot;</a>
+  (<a id='6651' tid='6652' class='u'>interactive</a> <a id='6653' tid='6654' class='u'>&quot;*p&quot;</a>)
+  (<a id='6655' tid='6656' class='u'>cond</a> ((<a id='6657' tid='6658' class='u'>eq</a> <a id='6659' tid='6660' class='u'>last-command</a> <a id='6661' tid='6662' class='u'>&#39;</a><a id='6663' tid='6664' class='u'>yank</a>)
+         (<a id='6665' tid='6666' class='u'>yank-pop</a> <a id='6667' tid='6668' class='u'>argument</a>))
+        ((<a id='6669' tid='6670' class='u'>memq</a> <a id='6671' tid='6672' class='u'>last-command</a> <a id='6673' tid='6674' class='u'>paredit-wrap-commands</a>)
+   
