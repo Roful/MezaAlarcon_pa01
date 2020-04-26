@@ -1914,4 +1914,14 @@ The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
 </a>         (<a id='6721' tid='6722' class='u'>setq</a> <a id='6723' tid='6724' class='u'>last-command</a> <a id='6725' tid='6726' class='u'>&#39;</a><a id='6727' tid='6728' class='u'>paredit-yank-pop</a>)
          (<a id='6729' tid='6730' class='u'>setq</a> <a id='6731' tid='6732' class='u'>this-command</a> <a id='6733' tid='6734' class='u'>&#39;</a><a id='6735' tid='6736' class='u'>paredit-yank-pop</a>)
          (<a id='6737' tid='6738' class='u'>save-excursion</a> (<a id='6739' tid='6740' class='u'>backward-up-list</a>) (<a id='6741' tid='6742' class='u'>indent-sexp</a>)))
-        (<a id='6743' tid='6744' class='u'>t
+        (<a id='6743' tid='6744' class='u'>t</a> (<a id='6745' tid='6746' class='u'>error</a> <a id='6747' tid='6748' class='u'>&quot;Last command was not a yank or a wrap: %s&quot;</a> <a id='6749' tid='6750' class='u'>last-command</a>))))
+
+<span class='d'>;;; Thanks to Marco Baringer for the suggestion of a prefix argument
+</span><span class='d'>;;; for PAREDIT-SPLICE-SEXP.  (I, Taylor R. Campbell, however, still
+</span><span class='d'>;;; implemented it, in case any of you lawyer-folk get confused by the
+</span><span class='d'>;;; remark in the top of the file about explicitly noting code written
+</span><span class='d'>;;; by other people.)
+</span>
+(<a id='6149' tid='6150' class='u'>defun</a> <a id='6151' tid='6152' class='u'>paredit-splice-sexp</a> (<a id='6153' tid='6154' class='u'>&optional</a> <a id='6155' tid='6156' class='u'>argument</a>)
+  <a id='6157' tid='6158' class='u'>&quot;Splice the list that the point is on by removing its delimiters.
+With a prefix argument as in `C-u&#39;, kill all S-e
