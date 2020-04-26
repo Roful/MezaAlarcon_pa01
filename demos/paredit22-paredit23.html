@@ -1924,4 +1924,18 @@ The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
 </span>
 (<a id='6149' tid='6150' class='u'>defun</a> <a id='6151' tid='6152' class='u'>paredit-splice-sexp</a> (<a id='6153' tid='6154' class='u'>&optional</a> <a id='6155' tid='6156' class='u'>argument</a>)
   <a id='6157' tid='6158' class='u'>&quot;Splice the list that the point is on by removing its delimiters.
-With a prefix argument as in `C-u&#39;, kill all S-e
+With a prefix argument as in `C-u&#39;, kill all S-expressions backward in
+  the current list before splicing all S-expressions forward into the
+  enclosing list.
+With two prefix arguments as in `C-u C-u&#39;, kill all S-expressions
+  forward in the current list before splicing all S-expressions
+  backward into the enclosing list.
+With a numerical prefix argument N, kill N S-expressions backward in
+  the current list before splicing the remaining S-expressions into the
+  enclosing list.  If N is negative, kill forward.
+Inside a string, unescape all backslashes, or signal an error if doing
+  so would invalidate the buffer&#39;s structure.&quot;</a>
+  (<a id='6159' tid='6160' class='u'>interactive</a> <a id='6161' tid='6162' class='u'>&quot;P&quot;</a>)
+  (<a id='1381' tid='1382' class='m'>if</a> (<a id='1383' tid='1384' class='m'>paredit-in-string-p</a>)
+      (<a id='1385' tid='1386' class='m'>paredit-splice-string</a> <a id='1387' tid='1388' class='m'>argument</a>)
+   
