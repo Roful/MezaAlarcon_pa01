@@ -1945,4 +1945,11 @@ Inside a string, unescape all backslashes, or signal an error if doing
 </a>          (<a id='1405' tid='1406' class='m'>save-excursion</a>
             (<a id='1407' tid='1408' class='m'>forward-char</a> <a id='1409' tid='1410' class='m'>1</a>)            <a id='1411' tid='1412' class='m'>; (Skip over leading whitespace
 </a>            (<a id='1413' tid='1414' class='m'>paredit-skip-whitespace</a> <a id='1415' tid='1416' class='m'>t</a> <a id='1417' tid='1418' class='m'>end</a>)
-            (<a id='1419' tid='1420' class='m'>setq</a> <a id='1421' tid='1422' class='m'>end</a> (<a id='142
+            (<a id='1419' tid='1420' class='m'>setq</a> <a id='1421' tid='1422' class='m'>end</a> (<a id='1423' tid='1424' class='m'>point</a>)))         <a id='1425' tid='1426' class='m'>;   for the `delete-region&#39;.)
+</a>          (<span class='d'>let</span> <span class='d'>((indent-start nil) (indent-end nil))</span>
+            (<a id='1427' tid='1428' class='m'>save-excursion</a>
+              (<a id='1429' tid='1430' class='m'>setq</a> <a id='1431' tid='1432' class='m'>indent-start</a> (<a id='1433' tid='1434' class='m'>point</a>))
+              (<a id='1435' tid='1436' class='m'>forward-sexp</a>)            <a id='1437' tid='1438' class='m'>; Go forward an expression, to
+</a>              (<a id='1439' tid='1440' class='m'>backward-delete-char</a> <a id='1441' tid='1442' class='m'>1</a>)  <a id='1443' tid='1444' class='m'>;   delete the end delimiter.
+</a>              (<a id='1445' tid='1446' class='m'>setq</a> <a id='1447' tid='1448' class='m'>indent-end</a> (<a id='1449' tid='1450' class='m'>point</a>)))
+            <span class='d'>(delete-region (point) end)</spa
