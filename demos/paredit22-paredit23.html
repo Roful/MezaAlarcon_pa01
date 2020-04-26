@@ -1938,4 +1938,11 @@ Inside a string, unescape all backslashes, or signal an error if doing
   (<a id='6159' tid='6160' class='u'>interactive</a> <a id='6161' tid='6162' class='u'>&quot;P&quot;</a>)
   (<a id='1381' tid='1382' class='m'>if</a> (<a id='1383' tid='1384' class='m'>paredit-in-string-p</a>)
       (<a id='1385' tid='1386' class='m'>paredit-splice-string</a> <a id='1387' tid='1388' class='m'>argument</a>)
-   
+      (<a id='1389' tid='1390' class='m'>save-excursion</a>
+        (<a id='1391' tid='1392' class='m'>paredit-kill-surrounding-sexps-for-splice</a> <a id='1393' tid='1394' class='m'>argument</a>)
+        (<a id='1395' tid='1396' class='m'>let</a> ((<a id='1397' tid='1398' class='m'>end</a> (<a id='1399' tid='1400' class='m'>point</a>)))
+          (<a id='1401' tid='1402' class='m'>backward-up-list</a>)            <a id='1403' tid='1404' class='m'>; Go up to the beginning...
+</a>          (<a id='1405' tid='1406' class='m'>save-excursion</a>
+            (<a id='1407' tid='1408' class='m'>forward-char</a> <a id='1409' tid='1410' class='m'>1</a>)            <a id='1411' tid='1412' class='m'>; (Skip over leading whitespace
+</a>            (<a id='1413' tid='1414' class='m'>paredit-skip-whitespace</a> <a id='1415' tid='1416' class='m'>t</a> <a id='1417' tid='1418' class='m'>end</a>)
+            (<a id='1419' tid='1420' class='m'>setq</a> <a id='1421' tid='1422' class='m'>end</a> (<a id='142
