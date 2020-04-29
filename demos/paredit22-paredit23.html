@@ -1952,4 +1952,12 @@ Inside a string, unescape all backslashes, or signal an error if doing
               (<a id='1435' tid='1436' class='m'>forward-sexp</a>)            <a id='1437' tid='1438' class='m'>; Go forward an expression, to
 </a>              (<a id='1439' tid='1440' class='m'>backward-delete-char</a> <a id='1441' tid='1442' class='m'>1</a>)  <a id='1443' tid='1444' class='m'>;   delete the end delimiter.
 </a>              (<a id='1445' tid='1446' class='m'>setq</a> <a id='1447' tid='1448' class='m'>indent-end</a> (<a id='1449' tid='1450' class='m'>point</a>)))
-            <span class='d'>(delete-region (point) end)</spa
+            <span class='d'>(delete-region (point) end)</span> <span class='d'>; ...to delete the open char.
+</span>            <span class='d'>;; Reindent only the region we preserved.
+</span>            <span class='d'>(indent-region indent-start indent-end)</span>)))))
+
+(<a id='4859' tid='4860' class='u'>defun</a> <a id='4861' tid='4862' class='u'>paredit-kill-surrounding-sexps-for-splice</a> (<a id='4863' tid='4864' class='u'>argument</a>)
+  (<a id='4865' tid='4866' class='u'>cond</a> ((<a id='4867' tid='4868' class='u'>or</a> (<a id='4869' tid='4870' class='u'>paredit-in-string-p</a>)
+             (<a id='4871' tid='4872' class='u'>paredit-in-comment-p</a>))
+         (<a id='4873' tid='4874' class='u'>error</a> <a id='4875' tid='4876' class='u'>&quot;Invalid context for splicing S-expressions.&quot;</a>))
+        ((<a id='4877' tid='4878' class='u'>or</a> (<a id='4879' tid='4880' class='u'>not</a> <a id='4881' tid='4882' class='u'>argument</a>) (<a id='4883' tid='4884' class='u'>eq</a> <a id='4885' tid='4886' class='u'>argumen
