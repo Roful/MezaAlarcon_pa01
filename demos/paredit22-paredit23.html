@@ -1960,4 +1960,8 @@ Inside a string, unescape all backslashes, or signal an error if doing
   (<a id='4865' tid='4866' class='u'>cond</a> ((<a id='4867' tid='4868' class='u'>or</a> (<a id='4869' tid='4870' class='u'>paredit-in-string-p</a>)
              (<a id='4871' tid='4872' class='u'>paredit-in-comment-p</a>))
          (<a id='4873' tid='4874' class='u'>error</a> <a id='4875' tid='4876' class='u'>&quot;Invalid context for splicing S-expressions.&quot;</a>))
-        ((<a id='4877' tid='4878' class='u'>or</a> (<a id='4879' tid='4880' class='u'>not</a> <a id='4881' tid='4882' class='u'>argument</a>) (<a id='4883' tid='4884' class='u'>eq</a> <a id='4885' tid='4886' class='u'>argumen
+        ((<a id='4877' tid='4878' class='u'>or</a> (<a id='4879' tid='4880' class='u'>not</a> <a id='4881' tid='4882' class='u'>argument</a>) (<a id='4883' tid='4884' class='u'>eq</a> <a id='4885' tid='4886' class='u'>argument</a> <a id='4887' tid='4888' class='u'>0</a>)) <a id='4889' tid='4890' class='u'>nil</a>)
+        ((<a id='4891' tid='4892' class='u'>or</a> (<a id='4893' tid='4894' class='u'>numberp</a> <a id='4895' tid='4896' class='u'>argument</a>) (<a id='4897' tid='4898' class='u'>eq</a> <a id='4899' tid='4900' class='u'>argument</a> <a id='4901' tid='4902' class='u'>&#39;</a><a id='4903' tid='4904' class='u'>-</a>))
+         <a id='4905' tid='4906' class='u'>;; Kill S-expressions before/after the point by saving the
+</a>         <a id='4907' tid='4908' class='u'>;; point, moving across them, and killing the region.
+</a>         (<a id='4909' tid='4910' class='u'>let*</a> ((<a id='4911' tid='4912' class='u'>argument</a> (<a id='4913' tid='4914' class='u'>if</a> (<a id='4915' tid='4916' class='u'>eq</a> <a id='4917' tid='4918' class='u'>argument</a> <a id='4919' tid='4920' class='u'>&#39;</a><a id='4921' tid='4922' class='u'>-</a>) <a id='4923' tid='4924' class='u'>-1</a> <a id='4925' tid='4926' class='u'>argument</a>))
