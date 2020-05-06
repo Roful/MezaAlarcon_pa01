@@ -1970,4 +1970,12 @@ Inside a string, unescape all backslashes, or signal an error if doing
            (<a id='4939' tid='4940' class='u'>paredit-ignore-sexp-errors</a> (<a id='4941' tid='4942' class='u'>backward-sexp</a> <a id='4943' tid='4944' class='u'>argument</a>))
            (<a id='4945' tid='4946' class='u'>paredit-hack-kill-region</a> <a id='4947' tid='4948' class='u'>saved</a> (<a id='4949' tid='4950' class='u'>point</a>))))
         ((<a id='4951' tid='4952' class='u'>consp</a> <a id='4953' tid='4954' class='u'>argument</a>)
-         (<a id='4955' tid='4956' class='u'>let</a> ((<a id='4957' tid='4958' class='u'>v</a> (<a id='4959' tid='4960' class='u'>car</a> <a id='4961
+         (<a id='4955' tid='4956' class='u'>let</a> ((<a id='4957' tid='4958' class='u'>v</a> (<a id='4959' tid='4960' class='u'>car</a> <a id='4961' tid='4962' class='u'>argument</a>)))
+           (<a id='4963' tid='4964' class='u'>if</a> (<a id='4965' tid='4966' class='u'>=</a> <a id='4967' tid='4968' class='u'>v</a> <a id='4969' tid='4970' class='u'>4</a>)                  <a id='4971' tid='4972' class='u'>;One `C-u&#39;.
+</a>               <a id='4973' tid='4974' class='u'>;; Move backward until we hit the open paren; then
+</a>               <a id='4975' tid='4976' class='u'>;; kill that selected region.
+</a>               (<a id='4977' tid='4978' class='u'>let</a> ((<a id='4979' tid='4980' class='u'>end</a> (<a id='4981' tid='4982' class='u'>point</a>)))
+                 (<a id='4983' tid='4984' class='u'>paredit-ignore-sexp-errors</a>
+                   (<a id='4985' tid='4986' class='u'>while</a> (<a id='4987' tid='4988' class='u'>not</a> (<a id='4989' tid='4990' class='u'>bobp</a>))
+                     (<a id='4991' tid='4992' class='u'>backward-sexp</a>)))
+                 (<a id='4993' tid='4994' class='u'>paredit-hack-kill-region</a> (<a id='4995' ti
