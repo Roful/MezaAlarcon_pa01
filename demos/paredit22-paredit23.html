@@ -1978,4 +1978,12 @@ Inside a string, unescape all backslashes, or signal an error if doing
                  (<a id='4983' tid='4984' class='u'>paredit-ignore-sexp-errors</a>
                    (<a id='4985' tid='4986' class='u'>while</a> (<a id='4987' tid='4988' class='u'>not</a> (<a id='4989' tid='4990' class='u'>bobp</a>))
                      (<a id='4991' tid='4992' class='u'>backward-sexp</a>)))
-                 (<a id='4993' tid='4994' class='u'>paredit-hack-kill-region</a> (<a id='4995' ti
+                 (<a id='4993' tid='4994' class='u'>paredit-hack-kill-region</a> (<a id='4995' tid='4996' class='u'>point</a>) <a id='4997' tid='4998' class='u'>end</a>))
+               <a id='4999' tid='5000' class='u'>;; Move forward until we hit the close paren; then
+</a>               <a id='5001' tid='5002' class='u'>;; kill that selected region.
+</a>               (<a id='5003' tid='5004' class='u'>let</a> ((<a id='5005' tid='5006' class='u'>beginning</a> (<a id='5007' tid='5008' class='u'>point</a>)))
+                 (<a id='5009' tid='5010' class='u'>paredit-ignore-sexp-errors</a>
+                   (<a id='5011' tid='5012' class='u'>while</a> (<a id='5013' tid='5014' class='u'>not</a> (<a id='5015' tid='5016' class='u'>eobp</a>))
+                     (<a id='5017' tid='5018' class='u'>forward-sexp</a>)))
+                 (<a id='5019' tid='5020' class='u'>paredit-hack-kill-region</a> <a id='5021' tid='5022' class='u'>beginning</a> (<a id='5023' tid='5024' class='u'>point</a>))))))
+        (<a id='5025' tid='5026' class='u'>t</a> (<a id='
