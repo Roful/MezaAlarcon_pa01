@@ -1994,4 +1994,13 @@ Inside a string, unescape all backslashes, or signal an error if doing
 With a prefix argument N, kill only the preceding N S-expressions.&quot;</a>
   (<a id='6173' tid='6174' class='u'>interactive</a> <a id='6175' tid='6176' class='u'>&quot;P&quot;</a>)
   (<a id='6177' tid='6178' class='u'>paredit-splice-sexp</a> (<a id='6179' tid='6180' class='u'>if</a> <a id='6181' tid='6182' class='u'>n</a>
-                           (<a id='6183' tid='6184' class='u'>prefix-numeric-value</a> <a id='6
+                           (<a id='6183' tid='6184' class='u'>prefix-numeric-value</a> <a id='6185' tid='6186' class='u'>n</a>)
+                           <a id='6187' tid='6188' class='u'>&#39;</a>(<a id='6189' tid='6190' class='u'>4</a>))))
+
+(<a id='6191' tid='6192' class='u'>defun</a> <a id='6193' tid='6194' class='u'>paredit-splice-sexp-killing-forward</a> (<a id='6195' tid='6196' class='u'>&optional</a> <a id='6197' tid='6198' class='u'>n</a>)
+  <a id='6199' tid='6200' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions after the point in the current list.
+With a prefix argument N, kill only the following N S-expressions.&quot;</a>
+  (<a id='6201' tid='6202' class='u'>interactive</a> <a id='6203' tid='6204' class='u'>&quot;P&quot;</a>)
+  (<a id='6205' tid='6206' class='u'>paredit-splice-sexp</a> (<a id='6207' tid='6208' class='u'>if</a> <a id='6209' tid='6210' class='u'>n</a>
+                           (<a id='6211' tid='6212' class='u'>-</a> (<a id='6213' tid='6214' class='u'>prefix-numeric-value</a
