@@ -2003,4 +2003,15 @@ With a prefix argument N, kill only the preceding N S-expressions.&quot;</a>
 With a prefix argument N, kill only the following N S-expressions.&quot;</a>
   (<a id='6201' tid='6202' class='u'>interactive</a> <a id='6203' tid='6204' class='u'>&quot;P&quot;</a>)
   (<a id='6205' tid='6206' class='u'>paredit-splice-sexp</a> (<a id='6207' tid='6208' class='u'>if</a> <a id='6209' tid='6210' class='u'>n</a>
-                           (<a id='6211' tid='6212' class='u'>-</a> (<a id='6213' tid='6214' class='u'>prefix-numeric-value</a
+                           (<a id='6211' tid='6212' class='u'>-</a> (<a id='6213' tid='6214' class='u'>prefix-numeric-value</a> <a id='6215' tid='6216' class='u'>n</a>))
+                           <a id='6217' tid='6218' class='u'>&#39;</a>(<a id='6219' tid='6220' class='u'>16</a>))))
+
+(<a id='5707' tid='5708' class='u'>defun</a> <a id='5709' tid='5710' class='u'>paredit-raise-sexp</a> (<a id='5711' tid='5712' class='u'>&optional</a> <a id='5713' tid='5714' class='u'>argument</a>)
+  <a id='5715' tid='5716' class='u'>&quot;Raise the following S-expression in a tree, deleting its siblings.
+With a prefix argument N, raise the following N S-expressions.  If N
+  is negative, raise the preceding N S-expressions.
+If the point is on an S-expression, such as a string or a symbol, not
+  between them, that S-expression is considered to follow the point.&quot;</a>
+  (<a id='5717' tid='5718' class='u'>interactive</a> <a id='5719' tid='5720' class='u'>&quot;P&quot;</a>)
+  (<a id='1451' tid='1452' class='m'>save-excursion</a>
+    (<a id='1453' tid='1454' class='m'>cond</a> ((<a id='1455' tid='1456' cl
