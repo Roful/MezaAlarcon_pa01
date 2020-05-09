@@ -1986,4 +1986,12 @@ Inside a string, unescape all backslashes, or signal an error if doing
                    (<a id='5011' tid='5012' class='u'>while</a> (<a id='5013' tid='5014' class='u'>not</a> (<a id='5015' tid='5016' class='u'>eobp</a>))
                      (<a id='5017' tid='5018' class='u'>forward-sexp</a>)))
                  (<a id='5019' tid='5020' class='u'>paredit-hack-kill-region</a> <a id='5021' tid='5022' class='u'>beginning</a> (<a id='5023' tid='5024' class='u'>point</a>))))))
-        (<a id='5025' tid='5026' class='u'>t</a> (<a id='
+        (<a id='5025' tid='5026' class='u'>t</a> (<a id='5027' tid='5028' class='u'>error</a> <a id='5029' tid='5030' class='u'>&quot;Bizarre prefix argument `%s&#39;.&quot;</a> <a id='5031' tid='5032' class='u'>argument</a>))))
+
+(<a id='6163' tid='6164' class='u'>defun</a> <a id='6165' tid='6166' class='u'>paredit-splice-sexp-killing-backward</a> (<a id='6167' tid='6168' class='u'>&optional</a> <a id='6169' tid='6170' class='u'>n</a>)
+  <a id='6171' tid='6172' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions before the point in the current list.
+With a prefix argument N, kill only the preceding N S-expressions.&quot;</a>
+  (<a id='6173' tid='6174' class='u'>interactive</a> <a id='6175' tid='6176' class='u'>&quot;P&quot;</a>)
+  (<a id='6177' tid='6178' class='u'>paredit-splice-sexp</a> (<a id='6179' tid='6180' class='u'>if</a> <a id='6181' tid='6182' class='u'>n</a>
+                           (<a id='6183' tid='6184' class='u'>prefix-numeric-value</a> <a id='6
