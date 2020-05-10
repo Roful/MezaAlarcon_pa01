@@ -2014,4 +2014,12 @@ If the point is on an S-expression, such as a string or a symbol, not
   between them, that S-expression is considered to follow the point.&quot;</a>
   (<a id='5717' tid='5718' class='u'>interactive</a> <a id='5719' tid='5720' class='u'>&quot;P&quot;</a>)
   (<a id='1451' tid='1452' class='m'>save-excursion</a>
-    (<a id='1453' tid='1454' class='m'>cond</a> ((<a id='1455' tid='1456' cl
+    (<a id='1453' tid='1454' class='m'>cond</a> ((<a id='1455' tid='1456' class='m'>paredit-in-string-p</a>)
+           (<a id='1457' tid='1458' class='m'>goto-char</a> (<a id='1459' tid='1460' class='m'>car</a> (<a id='1461' tid='1462' class='m'>paredit-string-start+end-points</a>))))
+          ((<a id='1463' tid='1464' class='m'>paredit-in-char-p</a>)
+           (<a id='1465' tid='1466' class='m'>backward-sexp</a>))
+          ((<a id='1467' tid='1468' class='m'>paredit-in-comment-p</a>)
+           (<a id='1469' tid='1470' class='m'>error</a> <a id='1471' tid='1472' class='m'>&quot;No S-expression to raise in comment.&quot;</a>)))
+    <a id='1473' tid='1474' class='m'>;; Select the S-expressions we want to raise in a buffer substring.
+</a>    (<a id='1475' tid='1476' class='m'>let*</a> ((<a id='1477' tid='1478' class='m'>n</a> (<a id='1479' tid='1480' class='m'>prefix-numeric-value</a> <a id='1481' tid='1482' class='m'>argument</a>))
+           (<a id='1483' tid='1484' class='m'>bound</a> (<a id='1485' tid='1486' class='m'>sc
