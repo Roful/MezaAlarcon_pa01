@@ -2030,4 +2030,11 @@ If the point is on an S-expression, such as a string or a symbol, not
       <a id='1513' tid='1514' class='m'>;; Move up to the list we&#39;re raising those S-expressions out of and
 </a>      <a id='1515' tid='1516' class='m'>;; delete it.
 </a>      (<a id='1517' tid='1518' class='m'>backward-up-list</a>)
-      (<a 
+      (<a id='1519' tid='1520' class='m'>delete-region</a> (<a id='1521' tid='1522' class='m'>point</a>) (<a id='1523' tid='1524' class='m'>scan-sexps</a> (<a id='1525' tid='1526' class='m'>point</a>) <a id='1527' tid='1528' class='m'>1</a>))
+      (<span class='d'>let*</span> ((<a id='1529' tid='1530' class='m'>indent-start</a> (<a id='1531' tid='1532' class='m'>point</a>))
+             (<a id='1533' tid='1534' class='m'>indent-end</a> (<a id='1535' tid='1536' class='m'>save-excursion</a> (<a id='1537' tid='1538' class='m'>insert</a> <a id='1539' tid='1540' class='m'>sexps</a>) (<a id='1541' tid='1542' class='m'>point</a>))))
+        <span class='d'>(indent-region indent-start indent-end)</span>))))
+
+(<a id='2731' tid='2732' class='u'>defun</a> <a id='2733' tid='2734' class='u'>paredit-convolute-sexp</a> (<a id='2735' tid='2736' class='u'>&optional</a> <a id='2737' tid='2738' class='u'>n</a>)
+  <a id='2739' tid='2740' class='u'>&quot;Convolute S-expressions.
+Save the S-expressions preceding poin
