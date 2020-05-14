@@ -2037,4 +2037,12 @@ If the point is on an S-expression, such as a string or a symbol, not
 
 (<a id='2731' tid='2732' class='u'>defun</a> <a id='2733' tid='2734' class='u'>paredit-convolute-sexp</a> (<a id='2735' tid='2736' class='u'>&optional</a> <a id='2737' tid='2738' class='u'>n</a>)
   <a id='2739' tid='2740' class='u'>&quot;Convolute S-expressions.
-Save the S-expressions preceding poin
+Save the S-expressions preceding point and delete them.
+Splice the S-expressions following point.
+Wrap the enclosing list in a new list prefixed by the saved text.
+With a prefix argument N, move up N lists before wrapping.&quot;</a>
+  (<a id='2741' tid='2742' class='u'>interactive</a> <a id='2743' tid='2744' class='u'>&quot;p&quot;</a>)
+  (<a id='2745' tid='2746' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2747' tid='2748' class='u'>&#39;</a><a id='2749' tid='2750' class='u'>paredit-convolute-sexp</a>)
+  (<a id='1543' tid='1544' class='m'>let</a> (<a id='1545' tid='1546' class='m'>open</a> <a id='1547' tid='1548' class='m'>close</a>)                     <a id='1549' tid='1550' class='m'>;++ Is this a good idea?
+</a>    (<span class='d'>let</span> ((<a id='1551' tid='1552' class='m'>prefix</a>
+           (<a id='1553' tid='1554' class='m'>let</a> ((<a id='1555' tid='1556' class='m'>end</a> (<a id='1557' tid='1558' class='m'
