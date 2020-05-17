@@ -2045,4 +2045,12 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
   (<a id='2745' tid='2746' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2747' tid='2748' class='u'>&#39;</a><a id='2749' tid='2750' class='u'>paredit-convolute-sexp</a>)
   (<a id='1543' tid='1544' class='m'>let</a> (<a id='1545' tid='1546' class='m'>open</a> <a id='1547' tid='1548' class='m'>close</a>)                     <a id='1549' tid='1550' class='m'>;++ Is this a good idea?
 </a>    (<span class='d'>let</span> ((<a id='1551' tid='1552' class='m'>prefix</a>
-           (<a id='1553' tid='1554' class='m'>let</a> ((<a id='1555' tid='1556' class='m'>end</a> (<a id='1557' tid='1558' class='m'
+           (<a id='1553' tid='1554' class='m'>let</a> ((<a id='1555' tid='1556' class='m'>end</a> (<a id='1557' tid='1558' class='m'>point</a>)))
+             (<a id='1559' tid='1560' class='m'>paredit-ignore-sexp-errors</a>
+               (<a id='1561' tid='1562' class='m'>while</a> (<a id='1563' tid='1564' class='m'>not</a> (<a id='1565' tid='1566' class='m'>bobp</a>)) (<a id='1567' tid='1568' class='m'>backward-sexp</a>)))
+             (<span class='d'>prog1</span> <span class='d'>(buffer-substring (point) end)</span>
+               <span class='d'>(backward-up-list)</span>
+               (<a id='1569' tid='1570' class='m'>save-excursion</a> (<a id='1571' tid='1572' class='m'>forward-sexp</a>)
+                               (<a id='1573' tid='1574' class='m'>setq</a> <a id='1575' tid='1576' class='m'>close</a> (<a id='1577' tid='1578' class='m'>char-before</a>))
+                               (<a id='1579' tid='1580' class='m'>backward-delete-char</a> <a id='1581' tid='1582' class='m'>1</a>))
+               <span class='d'>(setq open (char-aft
