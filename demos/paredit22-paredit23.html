@@ -2053,4 +2053,14 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
                (<a id='1569' tid='1570' class='m'>save-excursion</a> (<a id='1571' tid='1572' class='m'>forward-sexp</a>)
                                (<a id='1573' tid='1574' class='m'>setq</a> <a id='1575' tid='1576' class='m'>close</a> (<a id='1577' tid='1578' class='m'>char-before</a>))
                                (<a id='1579' tid='1580' class='m'>backward-delete-char</a> <a id='1581' tid='1582' class='m'>1</a>))
-               <span class='d'>(setq open (char-aft
+               <span class='d'>(setq open (char-after))</span>
+               <span class='d'>(delete-region (point) end)</span>))))
+      <span class='d'>(backward-up-list n)</span>
+      (<a id='679' tid='680' class='m'>paredit-insert-pair</a> <a id='681' tid='682' class='m'>1</a> <a id='683' tid='684' class='m'>open</a> <a id='685' tid='686' class='m'>close</a> <a id='687' tid='688' class='m'>&#39;</a><a id='689' tid='690' class='m'>goto-char</a>)
+      <span class='d'>(insert prefix)</span>
+      <span class='d'>(backward-up-list)</span>
+      <span class='d'>(paredit-ignore-sexp-errors (indent-sexp))</span>)))
+
+(<a id='6221' tid='6222' class='u'>defun</a> <a id='6223' tid='6224' class='u'>paredit-splice-string</a> (<a id='6225' tid='6226' class='u'>argument</a>)
+  (<a id='6227' tid='6228' class='u'>let</a> ((<a id='6229' tid='6230' class='u'>original-point</a> (<a id='6231' tid='6232' class='u'>point</a>))
+        (<a id='6233' tid='6234' class='u'>start+end</a> (<a id='6235' tid='6236' class='u'>paredit-string-start+end-po
