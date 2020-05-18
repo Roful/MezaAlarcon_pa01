@@ -2063,4 +2063,12 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
 
 (<a id='6221' tid='6222' class='u'>defun</a> <a id='6223' tid='6224' class='u'>paredit-splice-string</a> (<a id='6225' tid='6226' class='u'>argument</a>)
   (<a id='6227' tid='6228' class='u'>let</a> ((<a id='6229' tid='6230' class='u'>original-point</a> (<a id='6231' tid='6232' class='u'>point</a>))
-        (<a id='6233' tid='6234' class='u'>start+end</a> (<a id='6235' tid='6236' class='u'>paredit-string-start+end-po
+        (<a id='6233' tid='6234' class='u'>start+end</a> (<a id='6235' tid='6236' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='6237' tid='6238' class='u'>let</a> ((<a id='6239' tid='6240' class='u'>start</a> (<a id='6241' tid='6242' class='u'>car</a> <a id='6243' tid='6244' class='u'>start+end</a>))
+          (<a id='6245' tid='6246' class='u'>end</a> (<a id='6247' tid='6248' class='u'>cdr</a> <a id='6249' tid='6250' class='u'>start+end</a>)))
+      <a id='6251' tid='6252' class='u'>;; START and END both lie before the respective quote
+</a>      <a id='6253' tid='6254' class='u'>;; characters, which we want to delete; thus we increment START
+</a>      <a id='6255' tid='6256' class='u'>;; by one to extract the string, and we increment END by one to
+</a>      <a id='6257' tid='6258' class='u'>;; delete the string.
+</a>      (<a id='6259' tid='6260' class='u'>let*</a> ((<a id='6261' tid='6262' class='u'>escaped-string</a>
+              (<a id='6263' tid='6264' class='u'>cond</a> ((<a id='6265' tid='6266' class='u'>not</a> 
