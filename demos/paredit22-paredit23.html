@@ -2071,4 +2071,9 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
 </a>      <a id='6255' tid='6256' class='u'>;; by one to extract the string, and we increment END by one to
 </a>      <a id='6257' tid='6258' class='u'>;; delete the string.
 </a>      (<a id='6259' tid='6260' class='u'>let*</a> ((<a id='6261' tid='6262' class='u'>escaped-string</a>
-              (<a id='6263' tid='6264' class='u'>cond</a> ((<a id='6265' tid='6266' class='u'>not</a> 
+              (<a id='6263' tid='6264' class='u'>cond</a> ((<a id='6265' tid='6266' class='u'>not</a> (<a id='6267' tid='6268' class='u'>consp</a> <a id='6269' tid='6270' class='u'>argument</a>))
+                     (<a id='6271' tid='6272' class='u'>buffer-substring</a> (<a id='6273' tid='6274' class='u'>1+</a> <a id='6275' tid='6276' class='u'>start</a>) <a id='6277' tid='6278' class='u'>end</a>))
+                    ((<a id='6279' tid='6280' class='u'>=</a> <a id='6281' tid='6282' class='u'>4</a> (<a id='6283' tid='6284' class='u'>car</a> <a id='6285' tid='6286' class='u'>argument</a>))
+                     (<a id='6287' tid='6288' class='u'>buffer-substring</a> <a id='6289' tid='6290' class='u'>original-point</a> <a id='6291' tid='6292' class='u'>end</a>))
+                    (<a id='6293' tid='6294' class='u'>t</a>
+                     (<a id='6295' tid='6296' class='u'>buffer-substring</a> (<a id='6297' tid='6298' class='u'>1+</a> <a id='6299' tid='6300' class='u'>start</a>) <a id='6301' tid='6302' class='u'>original-point</
