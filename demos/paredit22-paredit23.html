@@ -2093,4 +2093,16 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
   (<span class='d'>with-temp-buffer</span>
     <span class='d'>(insert string)</span>
     <span class='d'>(goto-char (point-min))</span>
-    (<a id='1583' tid='1584' class='m'>while</a> (<
+    (<a id='1583' tid='1584' class='m'>while</a> (<a id='1585' tid='1586' class='m'>and</a> (<a id='1587' tid='1588' class='m'>not</a> (<a id='1589' tid='1590' class='m'>eobp</a>))
+                <a id='1591' tid='1592' class='m'>;; nil -&gt; no bound; t -&gt; no errors.
+</a>                (<a id='1593' tid='1594' class='m'>search-forward</a> <a id='1595' tid='1596' class='m'>&quot;\\&quot;</a> <a id='1597' tid='1598' class='m'>nil</a> <a id='1599' tid='1600' class='m'>t</a>))
+      (<a id='1601' tid='1602' class='m'>delete-char</a> <a id='1603' tid='1604' class='m'>-1</a>)
+      (<a id='1605' tid='1606' class='m'>forward-char</a>))
+    <span class='d'>(condition-case condition
+        (progn (check-parens) (buffer-string))
+      (error nil))</span>))
+
+<span class='d'>;;;; Slurpage & Barfage
+</span>
+(<a id='3855' tid='3856' class='u'>defun</a> <a id='3857' tid='3858' class='u'>paredit-forward-slurp-sexp</a> ()
+  <a id='3859' tid='3860' class='u'>&quot;Add the S-expression following the current
