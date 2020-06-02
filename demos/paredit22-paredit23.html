@@ -2127,4 +2127,12 @@ If in a string, move the opening double-quote forward by one
 </a>  (<span class='d'>let</span> <span class='d'>((close (char-before)))</span>          <span class='d'>;   save and delete the closing
 </span>    <span class='d'>(backward-delete-char 1)</span>            <span class='d'>;   delimiter.
 </span>    (<a id='1607' tid='1608' class='m'>catch</a> <a id='1609' tid='1610' class='m'>&#39;</a><a id='1611' tid='1612' class='m'>return</a>                      <a id='1613' tid='1614' class='m'>; Go to the end of the desired
-</a>      (<a id='1615' tid='1616' class='m'>while</a> <a id='1617' tid='1
+</a>      (<a id='1615' tid='1616' class='m'>while</a> <a id='1617' tid='1618' class='m'>t</a>                          <a id='1619' tid='1620' class='m'>;   S-expression, going up a
+</a>        (<span class='d'>paredit-handle-sexp-errors</span>     <span class='d'>;   list if it&#39;s not in this,
+</span>            <span class='d'>(progn (paredit-forward-and-indent)
+                   (throw &#39;return nil))</span>
+          <span class='d'>(up-list)</span>
+          (<a id='1621' tid='1622' class='m'>setq</a> <a id='1623' tid='1624' class='m'>close</a>                   <a id='1625' tid='1626' class='m'>; adjusting for mixed
+</a>                (<a id='1627' tid='1628' class='m'>prog1</a> (<a id='1629' tid='1630' class='m'>char-before</a>)    <a id='1631' tid='1632' class='m'>;   delimiters as necessary,
+</a>                  (<a id='1633' tid='1634' class='m'>backward-delete-char</a> <a id='1635' tid='1636' class='m'>1</a>)
+                  (<a id='1637' tid='1638' clas
