@@ -2118,4 +2118,13 @@ If in a string, move the opening double-quote forward by one
                (<a id='3871' tid='3872' class='u'>paredit-in-char-p</a>))
            (<a id='3873' tid='3874' class='u'>error</a> <a id='3875' tid='3876' class='u'>&quot;Invalid context for slurping S-expressions.&quot;</a>))
           ((<a id='3877' tid='3878' class='u'>paredit-in-string-p</a>)
-           (<a id='3879' tid='3880' class='u'>p
+           (<a id='3879' tid='3880' class='u'>paredit-forward-slurp-into-string</a>))
+          (<a id='3881' tid='3882' class='u'>t</a>
+           (<a id='3883' tid='3884' class='u'>paredit-forward-slurp-into-list</a>)))))
+
+(<a id='3805' tid='3806' class='u'>defun</a> <a id='3807' tid='3808' class='u'>paredit-forward-slurp-into-list</a> ()
+  (<a id='3809' tid='3810' class='u'>up-list</a>)                             <a id='3811' tid='3812' class='u'>; Up to the end of the list to
+</a>  (<span class='d'>let</span> <span class='d'>((close (char-before)))</span>          <span class='d'>;   save and delete the closing
+</span>    <span class='d'>(backward-delete-char 1)</span>            <span class='d'>;   delimiter.
+</span>    (<a id='1607' tid='1608' class='m'>catch</a> <a id='1609' tid='1610' class='m'>&#39;</a><a id='1611' tid='1612' class='m'>return</a>                      <a id='1613' tid='1614' class='m'>; Go to the end of the desired
+</a>      (<a id='1615' tid='1616' class='m'>while</a> <a id='1617' tid='1
