@@ -2154,4 +2154,21 @@ If in a string, move the opening double-quote forward by one
 Automatically reindent the newly barfed S-expression with respect to
   its new enclosing form.&quot;</a>
   (<a id='3223' tid='3224' class='u'>interactive</a>)
-  (<a id='3225' tid='3226' class='u'>paredit-lose-if-not-in-sexp</a> <a id='3227' tid='3228' class='u'>&#39;</a><a id='3229' tid='3230' class='u'>paredit-forward-barf-sexp</
+  (<a id='3225' tid='3226' class='u'>paredit-lose-if-not-in-sexp</a> <a id='3227' tid='3228' class='u'>&#39;</a><a id='3229' tid='3230' class='u'>paredit-forward-barf-sexp</a>)
+  <span class='d'>(save-excursion
+    (up-list)                           ; Up to the end of the list to
+    (let ((close (char-before)))        ;   save and delete the closing
+      (backward-delete-char 1)          ;   delimiter.
+      (paredit-ignore-sexp-errors       ; Go back to where we want to
+        (backward-sexp))                ;   insert the delimiter.
+      (paredit-skip-whitespace nil)     ; Skip leading whitespace.
+      (cond ((bobp)
+             (error &quot;Barfing all subexpressions with no open-paren?&quot;))
+            ((paredit-in-comment-p)     ; Don&#39;t put the close-paren in
+             (newline-and-indent)))     ;   a comment.
+      (insert close))
+    ;; Reindent all of the newly barfed S-expressions.
+    (paredit-forward-and-indent))</span>)
+
+(<a id='2511' tid='2512' class='u'>defun</a> <a id='2513' tid='2514' class='u'>paredit-backward-slurp-sexp</a> ()
+  <a id='2515' tid='2516' class='u'>&quot;Add the S-expression preceding th
