@@ -2135,4 +2135,13 @@ If in a string, move the opening double-quote forward by one
           (<a id='1621' tid='1622' class='m'>setq</a> <a id='1623' tid='1624' class='m'>close</a>                   <a id='1625' tid='1626' class='m'>; adjusting for mixed
 </a>                (<a id='1627' tid='1628' class='m'>prog1</a> (<a id='1629' tid='1630' class='m'>char-before</a>)    <a id='1631' tid='1632' class='m'>;   delimiters as necessary,
 </a>                  (<a id='1633' tid='1634' class='m'>backward-delete-char</a> <a id='1635' tid='1636' class='m'>1</a>)
-                  (<a id='1637' tid='1638' clas
+                  (<a id='1637' tid='1638' class='m'>insert</a> <a id='1639' tid='1640' class='m'>close</a>))))))
+    <span class='d'>(insert close)</span>))                    <span class='d'>; to insert that delimiter.
+</span>
+(<a id='3813' tid='3814' class='u'>defun</a> <a id='3815' tid='3816' class='u'>paredit-forward-slurp-into-string</a> ()
+  (<a id='3817' tid='3818' class='u'>goto-char</a> (<a id='3819' tid='3820' class='u'>1+</a> (<a id='3821' tid='3822' class='u'>cdr</a> (<a id='3823' tid='3824' class='u'>paredit-string-start+end-points</a>))))
+  <a id='3825' tid='3826' class='u'>;; Signal any errors that we might get first, before mucking with the
+</a>  <a id='3827' tid='3828' class='u'>;; buffer&#39;s contents.
+</a>  (<a id='3829' tid='3830' class='u'>save-excursion</a> (<a id='3831' tid='3832' class='u'>forward-sexp</a>))
+  (<a id='3833' tid='3834' class='u'>let</a> ((<a id='3835' tid='3836' class='u'>close</a> (<a id='3837' tid='3838' class='u'>char-before</a>)))
+    (<a id='3839' tid='3840' class='u'>backward-delete-char
