@@ -2185,4 +2185,14 @@ If in a string, move the opening double-quote backward by one
            (<a id='2529' tid='2530' class='u'>error</a> <a id='2531' tid='2532' class='u'>&quot;Invalid context for slurping S-expressions.&quot;</a>))
           ((<a id='2533' tid='2534' class='u'>paredit-in-string-p</a>)
            (<a id='2535' tid='2536' class='u'>paredit-backward-slurp-into-string</a>))
-          (<a id='2537' tid='2538' class='u'>
+          (<a id='2537' tid='2538' class='u'>t</a>
+           (<a id='2539' tid='2540' class='u'>paredit-backward-slurp-into-list</a>)))))
+
+(<a id='2395' tid='2396' class='u'>defun</a> <a id='2397' tid='2398' class='u'>paredit-backward-slurp-into-list</a> ()
+  (<a id='2399' tid='2400' class='u'>backward-up-list</a>)
+  (<a id='2401' tid='2402' class='u'>let</a> ((<a id='2403' tid='2404' class='u'>open</a> (<a id='2405' tid='2406' class='u'>char-after</a>)))
+    (<a id='2407' tid='2408' class='u'>delete-char</a> <a id='2409' tid='2410' class='u'>1</a>)
+    (<a id='2411' tid='2412' class='u'>catch</a> <a id='2413' tid='2414' class='u'>&#39;</a><a id='2415' tid='2416' class='u'>return</a>
+      (<a id='2417' tid='2418' class='u'>while</a> <a id='2419' tid='2420' class='u'>t</a>
+        (<a id='2421' tid='2422' class='u'>paredit-handle-sexp-errors</a>
+            (<a id='2423' tid='2424' class='u'>progn</a> (<a id='2425' tid='2426' class='u'>backward-sexp</a>) (<a id='2427' tid='2428' class='u'>throw</a> <a 
