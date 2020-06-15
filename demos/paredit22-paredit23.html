@@ -2203,4 +2203,15 @@ If in a string, move the opening double-quote backward by one
     (<a id='2455' tid='2456' class='u'>insert</a> <a id='2457' tid='2458' class='u'>open</a>))
   <a id='2459' tid='2460' class='u'>;; Reindent the line at the beginning of wherever we inserted the
 </a>  <a id='2461' tid='2462' class='u'>;; opening delimiter, and then indent the whole S-expression.
-</a>  (<a id='2463' tid='2464' class='u'
+</a>  (<a id='2463' tid='2464' class='u'>backward-up-list</a>)
+  (<a id='2465' tid='2466' class='u'>lisp-indent-line</a>)
+  (<a id='2467' tid='2468' class='u'>indent-sexp</a>))
+
+(<a id='2469' tid='2470' class='u'>defun</a> <a id='2471' tid='2472' class='u'>paredit-backward-slurp-into-string</a> ()
+  (<a id='2473' tid='2474' class='u'>goto-char</a> (<a id='2475' tid='2476' class='u'>car</a> (<a id='2477' tid='2478' class='u'>paredit-string-start+end-points</a>)))
+  <a id='2479' tid='2480' class='u'>;; Signal any errors that we might get first, before mucking with the
+</a>  <a id='2481' tid='2482' class='u'>;; buffer&#39;s contents.
+</a>  (<a id='2483' tid='2484' class='u'>save-excursion</a> (<a id='2485' tid='2486' class='u'>backward-sexp</a>))
+  (<a id='2487' tid='2488' class='u'>let</a> ((<a id='2489' tid='2490' class='u'>open</a> (<a id='2491' tid='2492' class='u'>char-after</a>))
+        (<a id='2493' tid='2494' class='u'>target</a> (<a id='2495' tid='2496' class='u'>point</a>)))
+    (
