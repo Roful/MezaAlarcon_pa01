@@ -2226,4 +2226,13 @@ Automatically reindent the barfed S-expression and the form from which
   it was barfed.&quot;</a>
   (<a id='2039' tid='2040' class='u'>interactive</a>)
   (<a id='2041' tid='2042' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2043' tid='2044' class='u'>&#39;</a><a id='2045' tid='2046' class='u'>paredit-backward-barf-sexp</a>)
-  (<a id='2047' tid='2048' class='u'>save-excursion</a
+  (<a id='2047' tid='2048' class='u'>save-excursion</a>
+    (<a id='2049' tid='2050' class='u'>backward-up-list</a>)
+    (<a id='2051' tid='2052' class='u'>let</a> ((<a id='2053' tid='2054' class='u'>open</a> (<a id='2055' tid='2056' class='u'>char-after</a>)))
+      (<a id='2057' tid='2058' class='u'>delete-char</a> <a id='2059' tid='2060' class='u'>1</a>)
+      (<a id='2061' tid='2062' class='u'>paredit-ignore-sexp-errors</a>
+        (<a id='2063' tid='2064' class='u'>paredit-forward-and-indent</a>))
+      (<a id='2065' tid='2066' class='u'>while</a> (<a id='2067' tid='2068' class='u'>progn</a> (<a id='2069' tid='2070' class='u'>paredit-skip-whitespace</a> <a id='2071' tid='2072' class='u'>t</a>)
+                    (<a id='2073' tid='2074' class='u'>eq</a> (<a id='2075' tid='2076' class='u'>char-after</a>) <a id='2077' tid='2078' class='u'>?\;</a> ))
+        (<a id='2079' tid='2080' class='u'>forward-line</a> <a id='2081' tid='2082' class='u'>1</a>))
+      (<a id='2083' tid='2084' class='u'>
