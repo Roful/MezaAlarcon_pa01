@@ -2248,4 +2248,12 @@ Automatically reindent the barfed S-expression and the form from which
 <span class='d'>;;;; Splitting & Joining
 </span>
 (<a id='6363' tid='6364' class='u'>defun</a> <a id='6365' tid='6366' class='u'>paredit-split-sexp</a> ()
-  <a id='6367' tid='6368' class='u'>&quot;Split th
+  <a id='6367' tid='6368' class='u'>&quot;Split the list or string the point is on into two.&quot;</a>
+  (<a id='6369' tid='6370' class='u'>interactive</a>)
+  (<a id='6371' tid='6372' class='u'>cond</a> ((<a id='6373' tid='6374' class='u'>paredit-in-string-p</a>)
+         (<a id='6375' tid='6376' class='u'>insert</a> <a id='6377' tid='6378' class='u'>&quot;\&quot;&quot;</a>)
+         (<a id='6379' tid='6380' class='u'>save-excursion</a> (<a id='6381' tid='6382' class='u'>insert</a> <a id='6383' tid='6384' class='u'>&quot; \&quot;&quot;</a>)))
+        ((<a id='6385' tid='6386' class='u'>or</a> (<a id='6387' tid='6388' class='u'>paredit-in-comment-p</a>)
+             (<a id='6389' tid='6390' class='u'>paredit-in-char-p</a>))
+         (<a id='6391' tid='6392' class='u'>error</a> <a id='6393' tid='6394' class='u'>&quot;Invalid context for splitting S-expression.&quot;</a>))
+        (<a id='6395' tid='6396' class='u'>t</a> (<a id='6397' tid='6398' class='u'>let</a> ((<a id='6399' tid='6400
