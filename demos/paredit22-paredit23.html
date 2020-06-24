@@ -2264,4 +2264,16 @@ Automatically reindent the barfed S-expression and the form from which
              (<a id='6417' tid='6418' class='u'>insert</a> <a id='6419' tid='6420' class='u'>close</a>)
              (<a id='6421' tid='6422' class='u'>save-excursion</a> (<a id='6423' tid='6424' class='u'>insert</a> <a id='6425' tid='6426' class='u'>?\ </a>)
                              (<a id='6427' tid='6428' class='u'>insert</a> <a id='6429' tid='6430' class='u'>open</a>)
-                          
+                             (<a id='6431' tid='6432' class='u'>backward-char</a>)
+                             (<a id='6433' tid='6434' class='u'>indent-sexp</a>))))))
+
+(<a id='4477' tid='4478' class='u'>defun</a> <a id='4479' tid='4480' class='u'>paredit-join-sexps</a> ()
+  <a id='4481' tid='4482' class='u'>&quot;Join the S-expressions adjacent on either side of the point.
+Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
+  (<a id='4483' tid='4484' class='u'>interactive</a>)
+  <a id='4485' tid='4486' class='u'>;++ How ought this to handle comments intervening symbols or strings?
+</a>  (<a id='1641' tid='1642' class='m'>save-excursion</a>
+    (<a id='1643' tid='1644' class='m'>if</a> (<a id='1645' tid='1646' class='m'>or</a> (<a id='1647' tid='1648' class='m'>paredit-in-comment-p</a>)
+            (<a id='1649' tid='1650' class='m'>paredit-in-string-p</a>)
+            (<a id='1651' tid='1652' class='m'>paredit-in-char-p</a>))
+        (<a id='
