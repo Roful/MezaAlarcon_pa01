@@ -2297,4 +2297,9 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
                    <span class='d'>(backward-up-list)</span>
                    <span class='d'>(indent-sexp)</span>)
                   ((<a id='691' tid='692' class='m'>and</a> (<a id='693' tid='694' class='m'>eq</a> <a id='695' tid='696' class='m'>left-syntax</a>  <a id='697' tid='698' class='m'>?\&quot;</a> )
-                        (<a id='699' tid='700' class='m'>eq</a> <a id='70
+                        (<a id='699' tid='700' class='m'>eq</a> <a id='701' tid='702' class='m'>right-syntax</a> <a id='703' tid='704' class='m'>?\&quot;</a> ))
+                   <a id='705' tid='706' class='m'>;; Delete any intermediate formatting.
+</a>                   (<a id='707' tid='708' class='m'>delete-region</a> (<a id='709' tid='710' class='m'>1-</a> <a id='711' tid='712' class='m'>left-point</a>)
+                                  (<a id='713' tid='714' class='m'>1+</a> <a id='715' tid='716' class='m'>right-point</a>)))
+                  ((<a id='495' tid='496' class='m'>and</a> (<a id='497' tid='498' class='m'>memq</a> <a id='499' tid='500' class='m'>left-syntax</a>  <a id='501' tid='502' class='m'>&#39;</a>(<a id='503' tid='504' class='m'>?w</a> <a id='505' tid='506' class='m'>?_</a>)) <a id='507' tid='508' class='m'>; Word or symbol
+</a>                        (<a id='509' tid='510' class='m'>memq</a> <a id='511' tid='512' class='m'>right-syntax</a> <a id='513' tid='514' class='m'>&#39;</a>(<a id='515' tid='516' class='m'>?w</a> <a id='517' tid='518' class
