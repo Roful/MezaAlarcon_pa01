@@ -2276,4 +2276,9 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
     (<a id='1643' tid='1644' class='m'>if</a> (<a id='1645' tid='1646' class='m'>or</a> (<a id='1647' tid='1648' class='m'>paredit-in-comment-p</a>)
             (<a id='1649' tid='1650' class='m'>paredit-in-string-p</a>)
             (<a id='1651' tid='1652' class='m'>paredit-in-char-p</a>))
-        (<a id='
+        (<a id='1653' tid='1654' class='m'>error</a> <a id='1655' tid='1656' class='m'>&quot;Invalid context for joining S-expressions.&quot;</a>)
+      (<a id='1657' tid='1658' class='m'>let</a> ((<a id='1659' tid='1660' class='m'>left-point</a>  (<a id='1661' tid='1662' class='m'>paredit-point-at-sexp-end</a>))
+            (<a id='1663' tid='1664' class='m'>right-point</a> (<a id='1665' tid='1666' class='m'>paredit-point-at-sexp-start</a>)))
+        (<a id='1667' tid='1668' class='m'>let</a> ((<a id='1669' tid='1670' class='m'>left-char</a> (<a id='1671' tid='1672' class='m'>char-before</a> <a id='1673' tid='1674' class='m'>left-point</a>))
+              (<a id='1675' tid='1676' class='m'>right-char</a> (<a id='1677' tid='1678' class='m'>char-after</a> <a id='1679' tid='1680' class='m'>right-point</a>)))
+          (<a id='1681' tid='1682' class='m'>let</a> ((<a id='1683' tid='1684' class='m'>left-syntax</a> (<a id='1685' tid='1686' class='m'>ch
