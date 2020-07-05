@@ -2302,4 +2302,16 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
 </a>                   (<a id='707' tid='708' class='m'>delete-region</a> (<a id='709' tid='710' class='m'>1-</a> <a id='711' tid='712' class='m'>left-point</a>)
                                   (<a id='713' tid='714' class='m'>1+</a> <a id='715' tid='716' class='m'>right-point</a>)))
                   ((<a id='495' tid='496' class='m'>and</a> (<a id='497' tid='498' class='m'>memq</a> <a id='499' tid='500' class='m'>left-syntax</a>  <a id='501' tid='502' class='m'>&#39;</a>(<a id='503' tid='504' class='m'>?w</a> <a id='505' tid='506' class='m'>?_</a>)) <a id='507' tid='508' class='m'>; Word or symbol
-</a>                        (<a id='509' tid='510' class='m'>memq</a> <a id='511' tid='512' class='m'>right-syntax</a> <a id='513' tid='514' class='m'>&#39;</a>(<a id='515' tid='516' class='m'>?w</a> <a id='517' tid='518' class
+</a>                        (<a id='509' tid='510' class='m'>memq</a> <a id='511' tid='512' class='m'>right-syntax</a> <a id='513' tid='514' class='m'>&#39;</a>(<a id='515' tid='516' class='m'>?w</a> <a id='517' tid='518' class='m'>?_</a>)))
+                   (<a id='519' tid='520' class='m'>delete-region</a> <a id='521' tid='522' class='m'>left-point</a> <a id='523' tid='524' class='m'>right-point</a>))
+                  <span class='d'>(t
+                   (error &quot;Mismatched S-expressions to join.&quot;))</span>)))))))
+
+<span class='d'>;;;; Variations on the Lurid Theme
+</span>
+<span class='d'>;;; I haven&#39;t the imagination to concoct clever names for these.
+</span>
+(<a id='1809' tid='1810' class='u'>defun</a> <a id='1811' tid='1812' class='u'>paredit-add-to-previous-list</a> ()
+  <a id='1813' tid='1814' class='u'>&quot;Add the S-expression following point to the list preceding point.&quot;</a>
+  (<a id='1815' tid='1816' class='u'>interactive</a>)
+  (<a id='1817' tid='1818' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1819' tid='1820' class='u'>&#39;</a><a id='1821' tid='1822' class='u'>paredit-add-to-pr
