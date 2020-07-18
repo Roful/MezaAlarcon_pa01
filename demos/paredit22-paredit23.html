@@ -2328,4 +2328,14 @@ If no S-expression precedes point, move up the tree until one does.&quot;</a>
     (<a id='1805' tid='1806' class='u'>down-list</a>)
     (<a id='1807' tid='1808' class='u'>paredit-backward-slurp-sexp</a>)))
 
-(<a id='4519' tid='4520' class='u'>defun</a> <a id='4521' tid='4522' class='u'>paredit-join-with-previous-
+(<a id='4519' tid='4520' class='u'>defun</a> <a id='4521' tid='4522' class='u'>paredit-join-with-previous-list</a> ()
+  <a id='4523' tid='4524' class='u'>&quot;Join the list the point is on with the previous list in the buffer.&quot;</a>
+  (<a id='4525' tid='4526' class='u'>interactive</a>)
+  (<a id='4527' tid='4528' class='u'>paredit-lose-if-not-in-sexp</a> <a id='4529' tid='4530' class='u'>&#39;</a><a id='4531' tid='4532' class='u'>paredit-join-with-previous-list</a>)
+  (<a id='4533' tid='4534' class='u'>save-excursion</a>
+    (<a id='4535' tid='4536' class='u'>while</a> (<a id='4537' tid='4538' class='u'>paredit-handle-sexp-errors</a> (<a id='4539' tid='4540' class='u'>save-excursion</a> (<a id='4541' tid='4542' class='u'>backward-sexp</a>) <a id='4543' tid='4544' class='u'>nil</a>)
+             (<a id='4545' tid='4546' class='u'>backward-up-list</a>)
+             <a id='4547' tid='4548' class='u'>t</a>))
+    (<a id='4549' tid='4550' class='u'>paredit-join-sexps</a>)))
+
+(<a id='4487' tid='4488' class='u'>defun</a> <a id='4489' tid='4490' class='u'>paredit-join-with
