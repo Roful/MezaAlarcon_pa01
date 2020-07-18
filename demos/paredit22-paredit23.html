@@ -2314,4 +2314,18 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
 (<a id='1809' tid='1810' class='u'>defun</a> <a id='1811' tid='1812' class='u'>paredit-add-to-previous-list</a> ()
   <a id='1813' tid='1814' class='u'>&quot;Add the S-expression following point to the list preceding point.&quot;</a>
   (<a id='1815' tid='1816' class='u'>interactive</a>)
-  (<a id='1817' tid='1818' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1819' tid='1820' class='u'>&#39;</a><a id='1821' tid='1822' class='u'>paredit-add-to-pr
+  (<a id='1817' tid='1818' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1819' tid='1820' class='u'>&#39;</a><a id='1821' tid='1822' class='u'>paredit-add-to-previous-list</a>)
+  (<a id='1823' tid='1824' class='u'>save-excursion</a>
+    (<a id='1825' tid='1826' class='u'>backward-down-list</a>)
+    (<a id='1827' tid='1828' class='u'>paredit-forward-slurp-sexp</a>)))
+
+(<a id='1789' tid='1790' class='u'>defun</a> <a id='1791' tid='1792' class='u'>paredit-add-to-next-list</a> ()
+  <a id='1793' tid='1794' class='u'>&quot;Add the S-expression preceding point to the list following point.
+If no S-expression precedes point, move up the tree until one does.&quot;</a>
+  (<a id='1795' tid='1796' class='u'>interactive</a>)
+  (<a id='1797' tid='1798' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1799' tid='1800' class='u'>&#39;</a><a id='1801' tid='1802' class='u'>paredit-add-to-next-list</a>)
+  (<a id='1803' tid='1804' class='u'>save-excursion</a>
+    (<a id='1805' tid='1806' class='u'>down-list</a>)
+    (<a id='1807' tid='1808' class='u'>paredit-backward-slurp-sexp</a>)))
+
+(<a id='4519' tid='4520' class='u'>defun</a> <a id='4521' tid='4522' class='u'>paredit-join-with-previous-
