@@ -2350,4 +2350,14 @@ If no S-expression precedes point, move up the tree until one does.&quot;</a>
 
 <span class='d'>;;;; Utilities
 </span>
-(<a id='4105' tid='4106' class='u'>defun</a> <a id='4107' tid='4108' class='u'>paredit-in-string-esc
+(<a id='4105' tid='4106' class='u'>defun</a> <a id='4107' tid='4108' class='u'>paredit-in-string-escape-p</a> ()
+  <a id='4109' tid='4110' class='u'>&quot;True if the point is on a character escape of a string.
+This is true only if the character is preceded by an odd number of
+  backslashes.
+This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
+  (<a id='4111' tid='4112' class='u'>let</a> ((<a id='4113' tid='4114' class='u'>oddp</a> <a id='4115' tid='4116' class='u'>nil</a>))
+    (<a id='4117' tid='4118' class='u'>save-excursion</a>
+      (<a id='4119' tid='4120' class='u'>while</a> (<a id='4121' tid='4122' class='u'>eq</a> (<a id='4123' tid='4124' class='u'>char-before</a>) <a id='4125' tid='4126' class='u'>?\\</a> )
+        (<a id='4127' tid='4128' class='u'>setq</a> <a id='4129' tid='4130' class='u'>oddp</a> (<a id='4131' tid='4132' class='u'>not</a> <a id='4133' tid='4134' class='u'>oddp</a>))
+        (<a id='4135' tid='4136' class='u'>backward-char</a>)))
+    <a id='4
