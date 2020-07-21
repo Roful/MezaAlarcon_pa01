@@ -2360,4 +2360,20 @@ This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
       (<a id='4119' tid='4120' class='u'>while</a> (<a id='4121' tid='4122' class='u'>eq</a> (<a id='4123' tid='4124' class='u'>char-before</a>) <a id='4125' tid='4126' class='u'>?\\</a> )
         (<a id='4127' tid='4128' class='u'>setq</a> <a id='4129' tid='4130' class='u'>oddp</a> (<a id='4131' tid='4132' class='u'>not</a> <a id='4133' tid='4134' class='u'>oddp</a>))
         (<a id='4135' tid='4136' class='u'>backward-char</a>)))
-    <a id='4
+    <a id='4137' tid='4138' class='u'>oddp</a>))
+
+(<a id='4073' tid='4074' class='u'>defun</a> <a id='4075' tid='4076' class='u'>paredit-in-char-p</a> <span class='d'>(&optional argument)</span>
+  <span class='d'>&quot;True if the point is immediately after a character literal.
+A preceding escape character, not preceded by another escape character,
+  is considered a character literal prefix.  (This works for elisp,
+  Common Lisp, and Scheme.)
+Assumes that `paredit-in-string-p&#39; is false, so that it need not handle
+  long sequences of preceding backslashes in string escapes.  (This
+  assumes some other leading character token -- ? in elisp, # in Scheme
+  and Common Lisp.)&quot;</span>
+  <span class='d'>(let ((argument (or argument (point))))
+    (and (eq (char-before argument) ?\\ )
+         (not (eq (char-before (1- argument)) ?\\ ))))</span>)
+
+(<a id='4165' tid='4166' class='u'>defun</a> <a id='4167' tid='4168' class='u'>paredit-indent-sexps</a> ()
+  <a id='4169' t
