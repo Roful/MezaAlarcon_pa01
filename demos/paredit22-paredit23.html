@@ -2388,4 +2388,10 @@ Assumes that `paredit-in-string-p&#39; is false, so that it need not handle
     (forward-sexp)
     (indent-region start (point)))</span>)
 
-(<a id='5995' 
+(<a id='5995' tid='5996' class='u'>defun</a> <a id='5997' tid='5998' class='u'>paredit-skip-whitespace</a> (<a id='5999' tid='6000' class='u'>trailing-p</a> <a id='6001' tid='6002' class='u'>&optional</a> <a id='6003' tid='6004' class='u'>limit</a>)
+  <a id='6005' tid='6006' class='u'>&quot;Skip past any whitespace, or until the point LIMIT is reached.
+If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
+  whitespace.&quot;</a>
+  (<a id='6007' tid='6008' class='u'>funcall</a> (<a id='6009' tid='6010' class='u'>if</a> <a id='6011' tid='6012' class='u'>trailing-p</a> <a id='6013' tid='6014' class='u'>&#39;</a><a id='6015' tid='6016' class='u'>skip-chars-forward</a> <a id='6017' tid='6018' class='u'>&#39;</a><a id='6019' tid='6020' class='u'>skip-chars-backward</a>)
+           <a id='6021' tid='6022' class='u'>&quot; \t\n&quot;</a>  <a id='6023' tid='6024' class='u'>; This should skip using the syntax table, but LF
+</a>           <a id='6025' tid='6026' class='u'>limit</a>))    <span 
