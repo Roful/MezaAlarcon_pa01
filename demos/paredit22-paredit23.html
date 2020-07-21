@@ -2376,4 +2376,16 @@ Assumes that `paredit-in-string-p&#39; is false, so that it need not handle
          (not (eq (char-before (1- argument)) ?\\ ))))</span>)
 
 (<a id='4165' tid='4166' class='u'>defun</a> <a id='4167' tid='4168' class='u'>paredit-indent-sexps</a> ()
-  <a id='4169' t
+  <a id='4169' tid='4170' class='u'>&quot;If in a list, indent all following S-expressions in the list.&quot;</a>
+  (<span class='d'>let</span> ((<a id='1725' tid='1726' class='m'>start</a> (<a id='1727' tid='1728' class='m'>point</a>))
+        (<a id='1729' tid='1730' class='m'>end</a> (<a id='1731' tid='1732' class='m'>paredit-handle-sexp-errors</a> (<a id='1733' tid='1734' class='m'>progn</a> (<a id='1735' tid='1736' class='m'>up-list</a>) (<a id='1737' tid='1738' class='m'>point</a>)) <a id='1739' tid='1740' class='m'>nil</a>)))
+    <span class='d'>(if end
+        (indent-region start end))</span>))
+
+(<a id='3211' tid='3212' class='u'>defun</a> <a id='3213' tid='3214' class='u'>paredit-forward-and-indent</a> ()
+  <a id='3215' tid='3216' class='u'>&quot;Move forward an S-expression, indenting it with `indent-region&#39;.&quot;</a>
+  <span class='d'>(let ((start (point)))
+    (forward-sexp)
+    (indent-region start (point)))</span>)
+
+(<a id='5995' 
