@@ -2412,4 +2412,17 @@ Do not append to any current kill, and
 </a>  <a id='3975' tid='3976' class='u'>;; should append.  If we bind these locally, any modifications to
 </a>  <a id='3977' tid='3978' class='u'>;; THIS-COMMAND will be masked, and it will not see LAST-COMMAND to
 </a>  <a id='3979' tid='3980' class='u'>;; indicate that it should append.
-</a>  (<a id='3981' tid='3982' class='u'>let</a> ((<a id='3983' tid='3984' class='u'>this-command</a> <a id='3985' tid='3986' class='u'>n
+</a>  (<a id='3981' tid='3982' class='u'>let</a> ((<a id='3983' tid='3984' class='u'>this-command</a> <a id='3985' tid='3986' class='u'>nil</a>)
+        (<a id='3987' tid='3988' class='u'>last-command</a> <a id='3989' tid='3990' class='u'>nil</a>))
+    (<a id='3991' tid='3992' class='u'>kill-region</a> <a id='3993' tid='3994' class='u'>start</a> <a id='3995' tid='3996' class='u'>end</a>)))
+
+<a id='7487' tid='7488' class='u'>;;;;; S-expression Parsing Utilities
+</a>
+<a id='7489' tid='7490' class='u'>;++ These routines redundantly traverse S-expressions a great deal.
+</a><a id='7491' tid='7492' class='u'>;++ If performance issues arise, this whole section will probably have
+</a><a id='7493' tid='7494' class='u'>;++ to be refactored to preserve the state longer, like paredit.scm
+</a><a id='7495' tid='7496' class='u'>;++ does, rather than to traverse the definition N times for every key
+</a><a id='7497' tid='7498' class='u'>;++ stroke as it presently does.
+</a>
+(<a id='2931' tid='2932' class='u'>defun</a> <a id='2933' tid='2934' class='u'>paredit-current-parse-state</a> ()
+  <
