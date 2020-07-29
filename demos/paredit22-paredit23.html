@@ -2425,4 +2425,12 @@ Do not append to any current kill, and
 </a><a id='7497' tid='7498' class='u'>;++ stroke as it presently does.
 </a>
 (<a id='2931' tid='2932' class='u'>defun</a> <a id='2933' tid='2934' class='u'>paredit-current-parse-state</a> ()
-  <
+  <a id='2935' tid='2936' class='u'>&quot;Return parse state of point from beginning of defun.&quot;</a>
+  (<a id='2937' tid='2938' class='u'>let</a> ((<a id='2939' tid='2940' class='u'>point</a> (<a id='2941' tid='2942' class='u'>point</a>)))
+    (<a id='2943' tid='2944' class='u'>beginning-of-defun</a>)
+    <a id='2945' tid='2946' class='u'>;; Calling PARSE-PARTIAL-SEXP will advance the point to its second
+</a>    <a id='2947' tid='2948' class='u'>;; argument (unless parsing stops due to an error, but we assume it
+</a>    <a id='2949' tid='2950' class='u'>;; won&#39;t in paredit-mode).
+</a>    (<a id='2951' tid='2952' class='u'>parse-partial-sexp</a> (<a id='2953' tid='2954' class='u'>point</a>) <a id='2955' tid='2956' class='u'>point</a>)))
+
+(<a id='4139' tid='4140' class='u'>defun</a> <a id='4141' tid='4142' class='u'>paredit-in-string-p</a> (<a id='4143' tid='4144' class='u'>&optional</a> <a id
