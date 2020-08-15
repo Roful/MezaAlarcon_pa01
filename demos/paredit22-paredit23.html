@@ -2452,4 +2452,13 @@ This assumes that `paredit-in-string-p&#39; has already returned true, i.e.
 </a>    <a id='6449' tid='6450' class='u'>;;    in one
 </a>    (<a id='6451' tid='6452' class='u'>let</a> ((<a id='6453' tid='6454' class='u'>start</a> (<a id='6455' tid='6456' class='u'>nth</a> <a id='6457' tid='6458' class='u'>8</a> (<a id='6459' tid='6460' class='u'>or</a> <a id='6461' tid='6462' class='u'>state</a> (<a id='6463' tid='6464' class='u'>paredit-current-parse-state</a>)))))
       (<a id='6465' tid='6466' class='u'>goto-char</a> <a id='6467' tid='6468' class='u'>start</a>)
-      (<a id='6469' tid='6470' class='u'>forward-sexp</a> <a id='647
+      (<a id='6469' tid='6470' class='u'>forward-sexp</a> <a id='6471' tid='6472' class='u'>1</a>)
+      (<a id='6473' tid='6474' class='u'>cons</a> <a id='6475' tid='6476' class='u'>start</a> (<a id='6477' tid='6478' class='u'>1-</a> (<a id='6479' tid='6480' class='u'>point</a>))))))
+
+(<a id='4077' tid='4078' class='u'>defun</a> <a id='4079' tid='4080' class='u'>paredit-in-comment-p</a> (<a id='4081' tid='4082' class='u'>&optional</a> <a id='4083' tid='4084' class='u'>state</a>)
+  <a id='4085' tid='4086' class='u'>&quot;True if parse state STATE is within a comment.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point.&quot;</a>
+  <a id='4087' tid='4088' class='u'>;; 4. nil if outside a comment, t if inside a non-nestable comment,
+</a>  <a id='4089' tid='4090' class='u'>;;    else an integer (the current comment nesting)
+</a>  (<a id='4091' tid='4092' class='u'>and</a> (<a id='4093' tid='4094' class='u'>nth</a> <a id='4095' tid='4096' class='u'>4</a> (<a id='4097' tid='4098' class='u'>or</a> <a id='4099' tid
