@@ -2469,4 +2469,17 @@ If no parse state is supplied, compute one from the beginning of the
         ((<a id='5667' tid='5668' class='u'>=</a> <a id='5669' tid='5670' class='u'>n</a> <a id='5671' tid='5672' class='u'>0</a>) (<a id='5673' tid='5674' class='u'>point</a>))
         ((<a id='5675' tid='5676' class='u'>&gt;</a> <a id='5677' tid='5678' class='u'>n</a> <a id='5679' tid='5680' class='u'>0</a>) (<a id='5681' tid='5682' class='u'>paredit-point-at-sexp-end</a>))))
 
-(<a id='5695' tid='569
+(<a id='5695' tid='5696' class='u'>defun</a> <a id='5697' tid='5698' class='u'>paredit-point-at-sexp-start</a> ()
+  (<a id='5699' tid='5700' class='u'>save-excursion</a>
+    (<a id='5701' tid='5702' class='u'>forward-sexp</a>)
+    (<a id='5703' tid='5704' class='u'>backward-sexp</a>)
+    (<a id='5705' tid='5706' class='u'>point</a>)))
+
+(<a id='5683' tid='5684' class='u'>defun</a> <a id='5685' tid='5686' class='u'>paredit-point-at-sexp-end</a> ()
+  (<a id='5687' tid='5688' class='u'>save-excursion</a>
+    (<a id='5689' tid='5690' class='u'>backward-sexp</a>)
+    (<a id='5691' tid='5692' class='u'>forward-sexp</a>)
+    (<a id='5693' tid='5694' class='u'>point</a>)))
+
+(<a id='5185' tid='5186' class='u'>defun</a> <a id='5187' tid='5188' class='u'>paredit-lose-if-not-in-sexp</a> (<a id='5189' tid='5190' class='u'>command</a>)
+  (<a id='5191' tid='5192' class='u'>if</a> (<a id='5193' tid='5194' class='u'>or</a> (<a id='519
