@@ -2461,4 +2461,12 @@ If no parse state is supplied, compute one from the beginning of the
   defun to the point.&quot;</a>
   <a id='4087' tid='4088' class='u'>;; 4. nil if outside a comment, t if inside a non-nestable comment,
 </a>  <a id='4089' tid='4090' class='u'>;;    else an integer (the current comment nesting)
-</a>  (<a id='4091' tid='4092' class='u'>and</a> (<a id='4093' tid='4094' class='u'>nth</a> <a id='4095' tid='4096' class='u'>4</a> (<a id='4097' tid='4098' class='u'>or</a> <a id='4099' tid
+</a>  (<a id='4091' tid='4092' class='u'>and</a> (<a id='4093' tid='4094' class='u'>nth</a> <a id='4095' tid='4096' class='u'>4</a> (<a id='4097' tid='4098' class='u'>or</a> <a id='4099' tid='4100' class='u'>state</a> (<a id='4101' tid='4102' class='u'>paredit-current-parse-state</a>)))
+       <a id='4103' tid='4104' class='u'>t</a>))
+
+(<a id='5651' tid='5652' class='u'>defun</a> <a id='5653' tid='5654' class='u'>paredit-point-at-sexp-boundary</a> (<a id='5655' tid='5656' class='u'>n</a>)
+  (<a id='5657' tid='5658' class='u'>cond</a> ((<a id='5659' tid='5660' class='u'>&lt;</a> <a id='5661' tid='5662' class='u'>n</a> <a id='5663' tid='5664' class='u'>0</a>) (<a id='5665' tid='5666' class='u'>paredit-point-at-sexp-start</a>))
+        ((<a id='5667' tid='5668' class='u'>=</a> <a id='5669' tid='5670' class='u'>n</a> <a id='5671' tid='5672' class='u'>0</a>) (<a id='5673' tid='5674' class='u'>point</a>))
+        ((<a id='5675' tid='5676' class='u'>&gt;</a> <a id='5677' tid='5678' class='u'>n</a> <a id='5679' tid='5680' class='u'>0</a>) (<a id='5681' tid='5682' class='u'>paredit-point-at-sexp-end</a>))))
+
+(<a id='5695' tid='569
