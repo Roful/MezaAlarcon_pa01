@@ -2442,4 +2442,14 @@ If no parse state is supplied, compute one from the beginning of the
        <a id='4163' tid='4164' class='u'>t</a>))
 
 (<a id='6435' tid='6436' class='u'>defun</a> <a id='6437' tid='6438' class='u'>paredit-string-start+end-points</a> (<a id='6439' tid='6440' class='u'>&optional</a> <a id='6441' tid='6442' class='u'>state</a>)
-  <a id='6443' tid='6444' class='u'>&quot;Retur
+  <a id='6443' tid='6444' class='u'>&quot;Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from the beginning of the defun to the point.
+This assumes that `paredit-in-string-p&#39; has already returned true, i.e.
+  that the point is already within a string.&quot;</a>
+  (<a id='6445' tid='6446' class='u'>save-excursion</a>
+    <a id='6447' tid='6448' class='u'>;; 8. character address of start of comment or string; nil if not
+</a>    <a id='6449' tid='6450' class='u'>;;    in one
+</a>    (<a id='6451' tid='6452' class='u'>let</a> ((<a id='6453' tid='6454' class='u'>start</a> (<a id='6455' tid='6456' class='u'>nth</a> <a id='6457' tid='6458' class='u'>8</a> (<a id='6459' tid='6460' class='u'>or</a> <a id='6461' tid='6462' class='u'>state</a> (<a id='6463' tid='6464' class='u'>paredit-current-parse-state</a>)))))
+      (<a id='6465' tid='6466' class='u'>goto-char</a> <a id='6467' tid='6468' class='u'>start</a>)
+      (<a id='6469' tid='6470' class='u'>forward-sexp</a> <a id='647
