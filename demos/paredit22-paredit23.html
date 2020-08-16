@@ -2497,4 +2497,28 @@ If no parse state is supplied, compute one from the beginning of the
           (while (not (eobp))
             (forward-sexp)))))</span>)
 
-(<a id='5721' tid='5722' class='u'>defun</a> <a id='5723' tid='5724' class='u'>paredit-region-ok-p</a> (<a id='5725' tid='5726' class='u'>start</a>
+(<a id='5721' tid='5722' class='u'>defun</a> <a id='5723' tid='5724' class='u'>paredit-region-ok-p</a> (<a id='5725' tid='5726' class='u'>start</a> <a id='5727' tid='5728' class='u'>end</a>)
+  <span class='d'>(paredit-handle-sexp-errors
+      (progn
+        (save-restriction
+          (narrow-to-region start end)
+          ;; Can&#39;t use `check-parens&#39; here -- it signals the wrong kind
+          ;; of errors.
+          (save-excursion
+            (goto-char (point-min))
+            (while (not (eobp))
+              (forward-sexp))))
+        t)
+    nil)</span>)
+
+<a id='7499' tid='7500' class='u'>;;;; Initialization
+</a>
+(<a id='7501' tid='7502' class='u'>paredit-define-keys</a>)
+(<a id='7503' tid='7504' class='u'>paredit-annotate-mode-with-examples</a>)
+(<a id='7505' tid='7506' class='u'>paredit-annotate-functions-with-examples</a>)
+
+(<a id='7507' tid='7508' class='u'>provide</a> <a id='7509' tid='7510' class='u'>&#39;</a><a id='7511' tid='7512' class='u'>paredit</a>)
+
+<a id='7513' tid='7514' class='u'>;;; Local Variables:
+</a><a id='7515' tid='7516' class='u'>;;; outline-regexp: &quot;\n;;;;+&quot;
+</a><a id='7517' tid='7518' class='u'>;;;
