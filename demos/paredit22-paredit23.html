@@ -2482,4 +2482,19 @@ If no parse state is supplied, compute one from the beginning of the
     (<a id='5693' tid='5694' class='u'>point</a>)))
 
 (<a id='5185' tid='5186' class='u'>defun</a> <a id='5187' tid='5188' class='u'>paredit-lose-if-not-in-sexp</a> (<a id='5189' tid='5190' class='u'>command</a>)
-  (<a id='5191' tid='5192' class='u'>if</a> (<a id='5193' tid='5194' class='u'>or</a> (<a id='519
+  (<a id='5191' tid='5192' class='u'>if</a> (<a id='5193' tid='5194' class='u'>or</a> (<a id='5195' tid='5196' class='u'>paredit-in-string-p</a>)
+          (<a id='5197' tid='5198' class='u'>paredit-in-comment-p</a>)
+          (<a id='5199' tid='5200' class='u'>paredit-in-char-p</a>))
+      (<a id='5201' tid='5202' class='u'>error</a> <a id='5203' tid='5204' class='u'>&quot;Invalid context for command `%s&#39;.&quot;</a> <a id='5205' tid='5206' class='u'>command</a>)))
+
+(<a id='2609' tid='2610' class='u'>defun</a> <a id='2611' tid='2612' class='u'>paredit-check-region</a> (<a id='2613' tid='2614' class='u'>start</a> <a id='2615' tid='2616' class='u'>end</a>)
+  <span class='d'>(save-restriction
+    (narrow-to-region start end)
+    (if (fboundp &#39;check-parens)
+        (check-parens)
+        (save-excursion
+          (goto-char (point-min))
+          (while (not (eobp))
+            (forward-sexp)))))</span>)
+
+(<a id='5721' tid='5722' class='u'>defun</a> <a id='5723' tid='5724' class='u'>paredit-region-ok-p</a> (<a id='5725' tid='5726' class='u'>start</a>
