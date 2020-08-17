@@ -2567,4 +2567,18 @@ If no parse state is supplied, compute one from the beginning of the
 <a id='6804' tid='6803' class='u'>;;; Install paredit by placing `paredit.el&#39; in `/path/to/elisp&#39;, a
 </a><a id='6806' tid='6805' class='u'>;;; directory of your choice, and adding to your .emacs file:
 </a><a id='6808' tid='6807' class='u'>;;;
-</a><a id='6810' tid='6809' class='u'>;;;   (add-to
+</a><a id='6810' tid='6809' class='u'>;;;   (add-to-list &#39;load-path &quot;/path/to/elisp&quot;)
+</a><a id='6812' tid='6811' class='u'>;;;   (autoload &#39;enable-paredit-mode &quot;paredit&quot;
+</a><a id='6814' tid='6813' class='u'>;;;     &quot;Turn on pseudo-structural editing of Lisp code.&quot;
+</a><a id='6816' tid='6815' class='u'>;;;     t)
+</a><a id='6818' tid='6817' class='u'>;;;
+</a><span class='i'>;;; Start Paredit Mode on the fly with `M-x paredit-mode RET&#39;, or
+</span><span class='i'>;;; always enable it in a major mode `M&#39; (e.g., `lisp&#39;) with:
+</span><a id='6820' tid='6819' class='u'>;;;
+</a><a id='6822' tid='6821' class='u'>;;;   (add-hook M-mode-hook &#39;enable-paredit-mode)
+</a><a id='6824' tid='6823' class='u'>;;;
+</a><a id='6826' tid='6825' class='u'>;;; Customize paredit using `eval-after-load&#39;:
+</a><a id='6828' tid='6827' class='u'>;;;
+</a><a id='6830' tid='6829' class='u'>;;;   (eval-after-load &#39;paredit
+</a><span class='i'>;;;     &#39;(progn
+</span><span class='i'>;;;        (define-key paredit-mode-map (kbd &quot
