@@ -2596,4 +2596,18 @@ If no parse state is supplied, compute one from the beginning of the
 </span><span class='i'>;;; Paredit Mode, or some sequence of paredit commands, doesn&#39;t do what
 </span><span class='i'>;;; you wanted, then it is helpful to isolate an example in a very
 </span><span class='i'>;;; small buffer, and it is **ABSOLUTELY**ESSENTIAL** that you supply,
-</span><span class='i'>;;
+</span><span class='i'>;;; along with the sequence of keys or commands,
+</span><span class='i'>;;;
+</span><span class='i'>;;;   (1) the version of Emacs,
+</span><span class='i'>;;;   (2) the version of paredit.el[*], and
+</span><span class='i'>;;;   (3) the **COMPLETE** state of the buffer used to reproduce the
+</span><span class='i'>;;;       problem, including major mode, minor modes, local key
+</span><span class='i'>;;;       bindings, entire contents of the buffer, leading line breaks
+</span><span class='i'>;;;       or spaces, &c.
+</span><span class='i'>;;;
+</span><span class='i'>;;; It is often extremely difficult to reproduce problems, especially
+</span><span class='i'>;;; with commands such as `paredit-kill&#39;.  If you do not supply **ALL**
+</span><span class='i'>;;; of this information, then it is highly probable that I cannot
+</span><span class='i'>;;; reproduce your problem no matter how hard I try.  So, please,
+</span><span class='i'>;;; include all of the above information.
+</span><span c
