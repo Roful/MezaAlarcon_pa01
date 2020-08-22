@@ -2622,3 +2622,15 @@ If no parse state is supplied, compute one from the beginning of the
 <span class='i'>;;; The paredit minor mode, Paredit Mode, binds common character keys,
 </span><span class='i'>;;; such as `(&#39;, `)&#39;, `&quot;&#39;, and `\&#39;, to commands that carefully insert
 </span><span class='i'>;;; S-expression structures in the buffer:
+</span><a id='6832' tid='6831' class='u'>;;;
+</a><span class='i'>;;;   ( inserts `()&#39;, leaving the point in the middle;
+</span><span class='i'>;;;   ) moves the point over the next closing delimiter;
+</span><span class='i'>;;;   &quot; inserts `&quot;&quot;&#39; if outside a string, or inserts an escaped
+</span><span class='i'>;;;      double-quote if in the middle of a string, or moves over the
+</span><span class='i'>;;;      closing double-quote if at the end of a string; and
+</span><span class='i'>;;;   \ prompts for the character to escape, to avoid inserting lone
+</span><span class='i'>;;;      backslashes that may break structure.
+</span><span class='i'>;;;
+</span><span class='i'>;;; In comments, these keys insert themselves.  If necessary, you can
+</span><span class='i'>;;; insert these characters literally outside comments by pressing
+</span><span class='i'>;;; `C-q&#39; before these keys, in case
