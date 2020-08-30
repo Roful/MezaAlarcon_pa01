@@ -2661,4 +2661,18 @@ If no parse state is supplied, compute one from the beginning of the
 </span><span class='i'>;;;
 </span><span class='i'>;;; Finally, Paredit Mode binds some keys to complex S-expression
 </span><span class='i'>;;; editing operations.  For example, `C-&lt;right&gt;&#39; makes the enclosing
-</span><span class='i'>;;; list slurp up an S-expression to its
+</span><span class='i'>;;; list slurp up an S-expression to its right (here `|&#39; denotes the
+</span><span class='i'>;;; point):
+</span><span class='i'>;;;
+</span><span class='i'>;;;   (foo (bar | baz) quux)  C-&lt;right&gt;  (foo (bar | baz quux))
+</span><span class='i'>;;;
+</span><span class='i'>;;; Some paredit commands automatically reindent code.  When they do,
+</span><span class='i'>;;; they try to indent as locally as possible, to avoid interfering
+</span><span class='i'>;;; with any indentation you might have manually written.  Only the
+</span><span class='i'>;;; advanced S-expression manipulation commands automatically reindent,
+</span><span class='i'>;;; and only the forms that they immediately operated upon (and their
+</span><span class='i'>;;; subforms).
+</span><span class='i'>;;;
+</span><span class='i'>;;; This code is written for clarity, not efficiency.  It frequently
+</span><span class='i'>;;; walks over S-expressions redundantly.  If you have problems with
+</span><span c
