@@ -2690,3 +2690,15 @@ If no parse state is supplied, compute one from the beginning of the
 </a>    <a id='6906' tid='6905' class='u'>;;   (and (boundp &#39;running-xemacs)
 </a>    <a id='6908' tid='6907' class='u'>;;        running-xemacs)
 </a>    (<a id='6910' tid='6909' class='u'>featurep</a> <a id='6912' tid='6911' class='u'>&#39;</a><a id='6914' tid='6913' class='u'>xemacs</a>))
+
+  (<a id='6840' tid='6839' class='u'>defun</a> <a id='6842' tid='6841' class='u'>paredit-gnu-emacs-p</a> ()
+    <a id='6844' tid='6843' class='u'>;++ This could probably be improved.
+</a>    (<a id='6846' tid='6845' class='u'>not</a> (<a id='6848' tid='6847' class='u'>paredit-xemacs-p</a>)))
+
+  (<a id='6918' tid='6917' class='u'>defmacro</a> <a id='6920' tid='6919' class='u'>xcond</a> (<a id='6922' tid='6921' class='u'>&rest</a> <a id='6924' tid='6923' class='u'>clauses</a>)
+    <a id='6926' tid='6925' class='u'>&quot;Exhaustive COND.
+Signal an error if no clause matches.&quot;</a>
+    <a id='6928' tid='6927' class='u'>`</a>(<a id='6930' tid='6929' class='u'>cond</a> <a id='6932' tid='6931' class='u'>,</a><a id='6934' tid='6933' class='u'>@clauses</a>
+           (<a id='6936' tid='6935' class='u'>t</a> (<a id='6938' tid='6937' class='u'>error</a> <a id='6940' tid='6939' class='u'>&quot;XCOND lost.&quot;</a>))))
+
+  (<a id='6942' tid='694
