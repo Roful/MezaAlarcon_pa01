@@ -2675,4 +2675,18 @@ If no parse state is supplied, compute one from the beginning of the
 </span><span class='i'>;;;
 </span><span class='i'>;;; This code is written for clarity, not efficiency.  It frequently
 </span><span class='i'>;;; walks over S-expressions redundantly.  If you have problems with
-</span><span c
+</span><span class='i'>;;; the time it takes to execute some of the commands, let me know.
+</span>
+<span class='i'>;;; This assumes Unix-style LF line endings.
+</span>
+<span class='i'>(defconst paredit-version 23)</span>
+(<a id='6834' tid='6833' class='u'>defconst</a> <a id='6836' tid='6835' class='u'>paredit-beta-p</a> <a id='6838' tid='6837' class='u'>nil</a>)
+
+(<a id='6916' tid='6915' class='u'>eval-and-compile</a>
+
+  (<a id='6898' tid='6897' class='u'>defun</a> <a id='6900' tid='6899' class='u'>paredit-xemacs-p</a> ()
+    <a id='6902' tid='6901' class='u'>;; No idea where I got this definition from.  Edward O&#39;Connor
+</a>    <a id='6904' tid='6903' class='u'>;; (hober in #emacs) suggested the current definition.
+</a>    <a id='6906' tid='6905' class='u'>;;   (and (boundp &#39;running-xemacs)
+</a>    <a id='6908' tid='6907' class='u'>;;        running-xemacs)
+</a>    (<a id='6910' tid='6909' class='u'>featurep</a> <a id='6912' tid='6911' class='u'>&#39;</a><a id='6914' tid='6913' class='u'>xemacs</a>))
