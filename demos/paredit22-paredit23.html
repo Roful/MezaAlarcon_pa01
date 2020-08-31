@@ -2708,4 +2708,11 @@ Signal an error if no clause matches.&quot;</a>
       (<a id='6856' tid='6855' class='u'>insert</a> <a id='6858' tid='6857' class='u'>&quot;(&quot;</a>)
       (<a id='6860' tid='6859' class='u'>condition-case</a> <a id='6862' tid='6861' class='u'>condition</a>
           (<a id='6864' tid='6863' class='u'>backward-sexp</a>)
-        (
+        (<a id='6866' tid='6865' class='u'>error</a> (<a id='6868' tid='6867' class='u'>if</a> (<a id='6870' tid='6869' class='u'>eq</a> (<a id='6872' tid='6871' class='u'>car</a> <a id='6874' tid='6873' class='u'>condition</a>) <a id='6876' tid='6875' class='u'>&#39;</a><a id='6878' tid='6877' class='u'>error</a>)
+                   (<a id='6880' tid='6879' class='u'>paredit-warn</a> <a id='6882' tid='6881' class='u'>&quot;%s%s%s%s%s&quot;</a>
+                                 <a id='6884' tid='6883' class='u'>&quot;Paredit is unable to discriminate&quot;</a>
+                                 <a id='6886' tid='6885' class='u'>&quot; S-expression parse errors from&quot;</a>
+                                 <a id='6888' tid='6887' class='u'>&quot; other errors. &quot;</a>
+                                 <a id='6890' tid='6889' class='u'>&quot; This may cause obscure problems. &quot;</a>
+                                 <a id='6892' tid='6891' class='u'>&quot; Please upgrade Emacs.&quot;</a>))
+               (<a id='6894' tid='6893' clas
