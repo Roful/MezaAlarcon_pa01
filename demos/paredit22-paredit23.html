@@ -2701,4 +2701,11 @@ Signal an error if no clause matches.&quot;</a>
     <a id='6928' tid='6927' class='u'>`</a>(<a id='6930' tid='6929' class='u'>cond</a> <a id='6932' tid='6931' class='u'>,</a><a id='6934' tid='6933' class='u'>@clauses</a>
            (<a id='6936' tid='6935' class='u'>t</a> (<a id='6938' tid='6937' class='u'>error</a> <a id='6940' tid='6939' class='u'>&quot;XCOND lost.&quot;</a>))))
 
-  (<a id='6942' tid='694
+  (<a id='6942' tid='6941' class='u'>defalias</a> <a id='6944' tid='6943' class='u'>&#39;</a><a id='6946' tid='6945' class='u'>paredit-warn</a> (<a id='6948' tid='6947' class='u'>if</a> (<a id='6950' tid='6949' class='u'>fboundp</a> <a id='6952' tid='6951' class='u'>&#39;</a><a id='6954' tid='6953' class='u'>warn</a>) <a id='6956' tid='6955' class='u'>&#39;</a><a id='6958' tid='6957' class='u'>warn</a> <a id='6960' tid='6959' class='u'>&#39;</a><a id='6962' tid='6961' class='u'>message</a>))
+
+  (<a id='6850' tid='6849' class='u'>defvar</a> <a id='6852' tid='6851' class='u'>paredit-sexp-error-type</a>
+    (<a id='6854' tid='6853' class='u'>with-temp-buffer</a>
+      (<a id='6856' tid='6855' class='u'>insert</a> <a id='6858' tid='6857' class='u'>&quot;(&quot;</a>)
+      (<a id='6860' tid='6859' class='u'>condition-case</a> <a id='6862' tid='6861' class='u'>condition</a>
+          (<a id='6864' tid='6863' class='u'>backward-sexp</a>)
+        (
