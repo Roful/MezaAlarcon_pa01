@@ -2722,4 +2722,14 @@ Signal an error if no clause matches.&quot;</a>
          <a id='6978' tid='6977' class='u'>,</a><a id='6980' tid='6979' class='u'>body</a>
        (<a id='6982' tid='6981' class='u'>,</a><a id='6984' tid='6983' class='u'>paredit-sexp-error-type</a> <a id='6986' tid='6985' class='u'>,</a><a id='6988' tid='6987' class='u'>@handler</a>)))
 
-  (<a id='6990' tid='6989' class='u'>put</a> <a id='6992' tid='6991' class='u'>&#39;</a><a id='6994' tid='6993' class='u'>paredit-handle-sexp-errors</a> <a id='6996' tid='6995' class='u'>&#39;</a><a id='6998' tid='6997' class='u'>
+  (<a id='6990' tid='6989' class='u'>put</a> <a id='6992' tid='6991' class='u'>&#39;</a><a id='6994' tid='6993' class='u'>paredit-handle-sexp-errors</a> <a id='6996' tid='6995' class='u'>&#39;</a><a id='6998' tid='6997' class='u'>lisp-indent-function</a> <a id='7000' tid='6999' class='u'>1</a>)
+
+  (<a id='7002' tid='7001' class='u'>defmacro</a> <a id='7004' tid='7003' class='u'>paredit-ignore-sexp-errors</a> (<a id='7006' tid='7005' class='u'>&rest</a> <a id='7008' tid='7007' class='u'>body</a>)
+    <a id='7010' tid='7009' class='u'>`</a>(<a id='7012' tid='7011' class='u'>paredit-handle-sexp-errors</a> (<a id='7014' tid='7013' class='u'>progn</a> <a id='7016' tid='7015' class='u'>,</a><a id='7018' tid='7017' class='u'>@body</a>)
+       <a id='7020' tid='7019' class='u'>nil</a>))
+
+  (<a id='7022' tid='7021' class='u'>put</a> <a id='7024' tid='7023' class='u'>&#39;</a><a id='7026' tid='7025' class='u'>paredit-ignore-sexp-errors</a> <a id='7028' tid='7027' class='u'>&#39;</a><a id='7030' tid='7029' class='u'>lisp-indent-function</a> <a id='7032' tid='7031' class='u'>0</a>)
+
+  <a id='7034' tid='7033' class='u'>nil</a>)
+
+<a id='7036' tid='7035' class='u'>;;;; Minor Mode Definition
