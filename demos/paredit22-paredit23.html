@@ -2733,3 +2733,21 @@ Signal an error if no clause matches.&quot;</a>
   <a id='7034' tid='7033' class='u'>nil</a>)
 
 <a id='7036' tid='7035' class='u'>;;;; Minor Mode Definition
+</a>
+(<a id='5302' tid='5301' class='u'>defvar</a> <a id='5304' tid='5303' class='u'>paredit-mode-map</a> (<a id='5306' tid='5305' class='u'>make-sparse-keymap</a>)
+  <a id='5308' tid='5307' class='u'>&quot;Keymap for the paredit minor mode.&quot;</a>)
+
+<span class='i'>(defvar paredit-override-check-parens-function
+  (lambda (condition) condition nil)
+  &quot;Function to tell whether unbalanced text should inhibit Paredit Mode.&quot;)</span>
+
+<a id='7038' tid='7037' class='u'>;;;###autoload
+</a>(<a id='5294' tid='5293' class='u'>define-minor-mode</a> <a id='5296' tid='5295' class='u'>paredit-mode</a>
+  <span class='i'>&quot;Minor mode for pseudo-structurally editing Lisp code.
+With a prefix argument, enable Paredit Mode even if there are
+  unbalanced parentheses in the buffer.
+Paredit behaves badly if parentheses are unbalanced, so exercise
+  caution when forcing Paredit Mode to be enabled, and consider
+  fixing unbalanced parentheses instead.
+\\&lt;paredit-mode-map&gt;&quot;</span>
+  <a id='52
