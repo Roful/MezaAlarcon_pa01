@@ -2750,4 +2750,13 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
   caution when forcing Paredit Mode to be enabled, and consider
   fixing unbalanced parentheses instead.
 \\&lt;paredit-mode-map&gt;&quot;</span>
-  <a id='52
+  <a id='5298' tid='5297' class='u'>:lighter</a> <a id='5300' tid='5299' class='u'>&quot; Paredit&quot;</a>
+  <span class='i'>;; Setting `paredit-mode&#39; to false here aborts enabling Paredit Mode.
+</span>  (<a id='718' tid='717' class='m'>if</a> (<a id='720' tid='719' class='m'>and</a> <a id='722' tid='721' class='m'>paredit-mode</a>
+           (<a id='724' tid='723' class='m'>not</a> <a id='726' tid='725' class='m'>current-prefix-arg</a>))
+      (<a id='728' tid='727' class='m'>condition-case</a> <a id='730' tid='729' class='m'>condition</a>
+          (<a id='732' tid='731' class='m'>check-parens</a>)
+        (<span class='i'>error</span>
+         (<span class='i'>if</span> <span class='i'>(not (funcall paredit-override-check-parens-function condition))</span>
+             (<span class='i'>progn</span> <span class='i'>(setq paredit-mode nil)</span>
+                    (<a id='734' tid='733' class='m'>signal</a> (<a id='736' tid='735' class='m'>car</a> <a
