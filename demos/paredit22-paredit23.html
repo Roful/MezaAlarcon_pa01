@@ -2759,4 +2759,17 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
         (<span class='i'>error</span>
          (<span class='i'>if</span> <span class='i'>(not (funcall paredit-override-check-parens-function condition))</span>
              (<span class='i'>progn</span> <span class='i'>(setq paredit-mode nil)</span>
-                    (<a id='734' tid='733' class='m'>signal</a> (<a id='736' tid='735' class='m'>car</a> <a
+                    (<a id='734' tid='733' class='m'>signal</a> (<a id='736' tid='735' class='m'>car</a> <a id='738' tid='737' class='m'>condition</a>) (<a id='740' tid='739' class='m'>cdr</a> <a id='742' tid='741' class='m'>condition</a>))))))))
+
+<span class='i'>(defun paredit-override-check-parens-interactively (condition)
+  (y-or-n-p (format &quot;Enable Paredit Mode despite condition %S? &quot; condition)))</span>
+
+(<a id='1778' tid='1777' class='u'>defun</a> <a id='1780' tid='1779' class='u'>enable-paredit-mode</a> ()
+  <a id='1782' tid='1781' class='u'>&quot;Turn on pseudo-structural editing of Lisp code.&quot;</a>
+  (<a id='1784' tid='1783' class='u'>interactive</a>)
+  (<a id='1786' tid='1785' class='u'>paredit-mode</a> <a id='1788' tid='1787' class='u'>+1</a>))
+
+(<a id='1766' tid='1765' class='u'>defun</a> <a id='1768' tid='1767' class='u'>disable-paredit-mode</a> ()
+  <a id='1770' tid='1769' class='u'>&quot;Turn off pseudo-structural editing of Lisp code.&quot;</a>
+  (<a id='1772' tid='1771' class='u'>interactive</a>)
+  (<a id='1774' tid='1773' class='u'>paredi
