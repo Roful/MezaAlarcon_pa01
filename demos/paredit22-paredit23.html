@@ -2772,4 +2772,12 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 (<a id='1766' tid='1765' class='u'>defun</a> <a id='1768' tid='1767' class='u'>disable-paredit-mode</a> ()
   <a id='1770' tid='1769' class='u'>&quot;Turn off pseudo-structural editing of Lisp code.&quot;</a>
   (<a id='1772' tid='1771' class='u'>interactive</a>)
-  (<a id='1774' tid='1773' class='u'>paredi
+  (<a id='1774' tid='1773' class='u'>paredit-mode</a> <a id='1776' tid='1775' class='u'>-1</a>))
+
+(<a id='2204' tid='2203' class='u'>defvar</a> <a id='2206' tid='2205' class='u'>paredit-backward-delete-key</a>
+  (<a id='2208' tid='2207' class='u'>xcond</a> ((<a id='2210' tid='2209' class='u'>paredit-xemacs-p</a>)    <a id='2212' tid='2211' class='u'>&quot;BS&quot;</a>)
+         ((<a id='2214' tid='2213' class='u'>paredit-gnu-emacs-p</a>) <a id='2216' tid='2215' class='u'>&quot;DEL&quot;</a>)))
+
+(<a id='3330' tid='3329' class='u'>defvar</a> <a id='3332' tid='3331' class='u'>paredit-forward-delete-keys</a>
+  (<a id='3334' tid='3333' class='u'>xcond</a> ((<a id='3336' tid='3335' class='u'>paredit-xemacs-p</a>)    <a id='3338' tid='3337' class='u'>&#39;</a>(<a id='3340' tid='3339' class='u'>&quot;DEL&quot;</a>))
+         ((<a id='3342' tid='3341' class='u'>paredit-gnu-emacs-p</a>) <a id='3344' tid='3343' class='u'>&#39;</a>(<a id='3346' tid='3345' class='u'>&quot;&lt;delete&gt;&quot;</a> <a id='3348
