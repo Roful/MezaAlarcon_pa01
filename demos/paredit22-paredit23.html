@@ -2805,4 +2805,16 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  <a id='758' tid='757' class='m'>&quot;(a b (|) c d)&quot;</a>)
                 (<a id='760' tid='759' class='m'>&quot;(foo \&quot;bar |baz\&quot; quux)&quot;</a>
                  <a id='762' tid='761' class='m'>&quot;(foo \&quot;bar (|baz\&quot; quux)&quot;</a>))
-   (<a id='526' tid='525' class='m'>&quot;)&q
+   (<a id='526' tid='525' class='m'>&quot;)&quot;</a>         <a id='528' tid='527' class='m'>paredit-close-round</a>
+                (<a id='530' tid='529' class='m'>&quot;(a b |c   )&quot;</a> <a id='532' tid='531' class='m'>&quot;(a b c)|&quot;</a>)
+                (<a id='534' tid='533' class='m'>&quot;; Hello,| world!&quot;</a>
+                 <a id='536' tid='535' class='m'>&quot;; Hello,)| world!&quot;</a>))
+   (<a id='460' tid='459' class='m'>&quot;M-)&quot;</a>       <a id='462' tid='461' class='m'>paredit-close-round-and-newline</a>
+                (<a id='464' tid='463' class='m'>&quot;(defun f (x|  ))&quot;</a>
+                 <a id='466' tid='465' class='m'>&quot;(defun f (x)\n  |)&quot;</a>)
+                (<a id='468' tid='467' class='m'>&quot;; (Foo.|&quot;</a>
+                 <a id='470' tid='469' class='m'>&quot;; (Foo.)|&quot;</a>))
+   <span class='i'>(&quot;[&quot;         paredit-open-square
+                (&quot;(a b |c d)&quot;
+                 &quot;(a b [|] c d)&quot;)
+       
