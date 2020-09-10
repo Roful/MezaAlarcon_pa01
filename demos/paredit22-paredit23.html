@@ -2793,4 +2793,16 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 
 <a id='7048' tid='7047' class='u'>;;; Each specifier is of the form:
 </a><a id='7050' tid='7049' class='u'>;;;   (key[s] function (example-input example-output) ...)
-</a><a id='7052' tid='7051' class='u'>;;; where key[s] is either a single string suitable for passing to 
+</a><a id='7052' tid='7051' class='u'>;;; where key[s] is either a single string suitable for passing to KBD
+</a><a id='7054' tid='7053' class='u'>;;; or a list of such strings.  Entries in this list may also just be
+</a><a id='7056' tid='7055' class='u'>;;; strings, in which case they are headings for the next entries.
+</a>
+(<a id='744' tid='743' class='m'>progn</a> (<a id='746' tid='745' class='m'>setq</a> <a id='748' tid='747' class='m'>paredit-commands</a>
+ <a id='750' tid='749' class='m'>`</a>(
+   <span class='i'>&quot;Basic Insertion Commands&quot;</span>
+   (<a id='752' tid='751' class='m'>&quot;(&quot;</a>         <a id='754' tid='753' class='m'>paredit-open-round</a>
+                (<a id='756' tid='755' class='m'>&quot;(a b |c d)&quot;</a>
+                 <a id='758' tid='757' class='m'>&quot;(a b (|) c d)&quot;</a>)
+                (<a id='760' tid='759' class='m'>&quot;(foo \&quot;bar |baz\&quot; quux)&quot;</a>
+                 <a id='762' tid='761' class='m'>&quot;(foo \&quot;bar (|baz\&quot; quux)&quot;</a>))
+   (<a id='526' tid='525' class='m'>&quot;)&q
