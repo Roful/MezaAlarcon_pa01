@@ -2780,4 +2780,17 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 
 (<a id='3330' tid='3329' class='u'>defvar</a> <a id='3332' tid='3331' class='u'>paredit-forward-delete-keys</a>
   (<a id='3334' tid='3333' class='u'>xcond</a> ((<a id='3336' tid='3335' class='u'>paredit-xemacs-p</a>)    <a id='3338' tid='3337' class='u'>&#39;</a>(<a id='3340' tid='3339' class='u'>&quot;DEL&quot;</a>))
-         ((<a id='3342' tid='3341' class='u'>paredit-gnu-emacs-p</a>) <a id='3344' tid='3343' class='u'>&#39;</a>(<a id='3346' tid='3345' class='u'>&quot;&lt;delete&gt;&quot;</a> <a id='3348
+         ((<a id='3342' tid='3341' class='u'>paredit-gnu-emacs-p</a>) <a id='3344' tid='3343' class='u'>&#39;</a>(<a id='3346' tid='3345' class='u'>&quot;&lt;delete&gt;&quot;</a> <a id='3348' tid='3347' class='u'>&quot;&lt;deletechar&gt;&quot;</a>))))
+
+<a id='7040' tid='7039' class='u'>;;;; Paredit Keys
+</a>
+<a id='7042' tid='7041' class='u'>;;; Separating the definition and initialization of this variable
+</a><a id='7044' tid='7043' class='u'>;;; simplifies the development of paredit, since re-evaluating DEFVAR
+</a><a id='7046' tid='7045' class='u'>;;; forms doesn&#39;t actually do anything.
+</a>
+(<a id='2618' tid='2617' class='u'>defvar</a> <a id='2620' tid='2619' class='u'>paredit-commands</a> <a id='2622' tid='2621' class='u'>nil</a>
+  <a id='2624' tid='2623' class='u'>&quot;List of paredit commands with their keys and examples.&quot;</a>)
+
+<a id='7048' tid='7047' class='u'>;;; Each specifier is of the form:
+</a><a id='7050' tid='7049' class='u'>;;;   (key[s] function (example-input example-output) ...)
+</a><a id='7052' tid='7051' class='u'>;;; where key[s] is either a single string suitable for passing to 
