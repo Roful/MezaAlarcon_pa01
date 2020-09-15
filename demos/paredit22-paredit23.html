@@ -2817,4 +2817,18 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
    <span class='i'>(&quot;[&quot;         paredit-open-square
                 (&quot;(a b |c d)&quot;
                  &quot;(a b [|] c d)&quot;)
-       
+                (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
+                 &quot;(foo \&quot;bar [|baz\&quot; quux)&quot;))</span>
+   (<a id='426' tid='425' class='m'>&quot;]&quot;</a>         <a id='428' tid='427' class='m'>paredit-close-square</a>
+                (<a id='430' tid='429' class='m'>&quot;(define-key keymap [frob|  ] &#39;frobnicate)&quot;</a>
+                 <a id='432' tid='431' class='m'>&quot;(define-key keymap [frob]| &#39;frobnicate)&quot;</a>)
+                (<a id='434' tid='433' class='m'>&quot;; [Bar.|&quot;</a>
+                 <a id='436' tid='435' class='m'>&quot;; [Bar.]|&quot;</a>))
+
+   <span class='i'>(&quot;\&quot;&quot;        paredit-doublequote
+                (&quot;(frob grovel |full lexical)&quot;
+                 &quot;(frob grovel \&quot;|\&quot; full lexical)&quot;
+                 &quot;(frob grovel \&quot;\&quot;| full lexical)&quot;)
+                (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
+                 &quot;(foo \&quot;bar \\\&quot;|baz\&quot; quux)&quot;)
+           
