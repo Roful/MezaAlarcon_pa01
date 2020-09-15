@@ -2831,4 +2831,13 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  &quot;(frob grovel \&quot;\&quot;| full lexical)&quot;)
                 (&quot;(foo \&quot;bar |baz\&quot; quux)&quot;
                  &quot;(foo \&quot;bar \\\&quot;|baz\&quot; quux)&quot;)
-           
+                (&quot;(frob grovel)   ; full |lexical&quot;
+                 &quot;(frob grovel)   ; full \&quot;|lexical&quot;))</span>
+   (<a id='316' tid='315' class='m'>&quot;M-\&quot;&quot;</a>      <a id='318' tid='317' class='m'>paredit-meta-doublequote</a>
+                (<a id='320' tid='319' class='m'>&quot;(foo \&quot;bar |baz\&quot; quux)&quot;</a>
+                 <a id='322' tid='321' class='m'>&quot;(foo \&quot;bar baz\&quot;\n     |quux)&quot;</a>)
+                (<a id='324' tid='323' class='m'>&quot;(foo |(bar #\\x \&quot;baz \\\\ quux\&quot;) zot)&quot;</a>
+                 <a id='326' tid='325' class='m'>,</a>(<a id='328' tid='327' class='m'>concat</a> <a id='330' tid='329' class='m'>&quot;(foo \&quot;|(bar #\\\\x \\\&quot;baz \\\\&quot;</a>
+                          <a id='332' tid='331' class='m'>&quot;\\\\ quux\\\&quot;)\&quot; zot)&quot;</a>)))
+   <span class='i'>(&quot;\\&quot;        paredit-backslash
+                (&quot;(string #|)\n  ;
