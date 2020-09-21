@@ -2857,4 +2857,19 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                 (&quot;(foo |bar)   ; baz&quot;
                  &quot;(foo bar)                               ; |baz&quot;)
                 (&quot;(frob grovel)|&quot;
-                 &quot;(fro
+                 &quot;(frob grovel)                           ;|&quot;)
+                (&quot;(zot (foo bar)\n|\n     (baz quux))&quot;
+                 &quot;(zot (foo bar)\n     ;; |\n     (baz quux))&quot;)
+                (&quot;(zot (foo bar) |(baz quux))&quot;
+                 &quot;(zot (foo bar)\n     ;; |\n     (baz quux))&quot;)
+                (&quot;|(defun hello-world ...)&quot;
+                 &quot;;;; |\n(defun hello-world ...)&quot;))</span>
+
+   <span class='i'>(&quot;C-j&quot;       paredit-newline
+                (&quot;(let ((n (frobbotz))) |(display (+ n 1)\nport))&quot;
+                 ,(concat &quot;(let ((n (frobbotz)))&quot;
+                          &quot;\n  |(display (+ n 1)&quot;
+                          &quot;\n           port))&quot;)))</span>
+
+   <span class='i'>&quot;Deleting & Killing&quot;</span>
+   ((<a id='226' tid='225' class='m'>&quot;C-d&quot;</a> <a id='228' tid='227' class='m'>,</a><a id='230'
