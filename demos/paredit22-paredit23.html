@@ -2840,4 +2840,21 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  <a id='326' tid='325' class='m'>,</a>(<a id='328' tid='327' class='m'>concat</a> <a id='330' tid='329' class='m'>&quot;(foo \&quot;|(bar #\\\\x \\\&quot;baz \\\\&quot;</a>
                           <a id='332' tid='331' class='m'>&quot;\\\\ quux\\\&quot;)\&quot; zot)&quot;</a>)))
    <span class='i'>(&quot;\\&quot;        paredit-backslash
-                (&quot;(string #|)\n  ;
+                (&quot;(string #|)\n  ; Character to escape: x&quot;
+                 &quot;(string #\\x|)&quot;)
+                (&quot;\&quot;foo|bar\&quot;\n  ; Character to escape: \&quot;&quot;
+                 &quot;\&quot;foo\\\&quot;|bar\&quot;&quot;))</span>
+   <span class='i'>(&quot;;&quot;         paredit-semicolon
+                (&quot;|(frob grovel)&quot;
+                 &quot;;|(frob grovel)&quot;)
+                (&quot;(frob |grovel)&quot;
+                 &quot;(frob ;|grovel\n )&quot;)
+                (&quot;(frob |grovel (bloit\n               zargh))&quot;
+                 &quot;(frob ;|grovel\n (bloit\n  zargh))&quot;)
+                (&quot;(frob grovel)          |&quot;
+                 &quot;(frob grovel)          ;|&quot;))</span>
+   <span class='i'>(&quot;M-;&quot;       paredit-comment-dwim
+                (&quot;(foo |bar)   ; baz&quot;
+                 &quot;(foo bar)                               ; |baz&quot;)
+                (&quot;(frob grovel)|&quot;
+                 &quot;(fro
