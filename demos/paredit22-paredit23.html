@@ -2872,4 +2872,13 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                           &quot;\n           port))&quot;)))</span>
 
    <span class='i'>&quot;Deleting & Killing&quot;</span>
-   ((<a id='226' tid='225' class='m'>&quot;C-d&quot;</a> <a id='228' tid='227' class='m'>,</a><a id='230'
+   ((<a id='226' tid='225' class='m'>&quot;C-d&quot;</a> <a id='228' tid='227' class='m'>,</a><a id='230' tid='229' class='m'>@paredit-forward-delete-keys</a>)
+                <a id='232' tid='231' class='m'>paredit-forward-delete</a>
+                (<a id='234' tid='233' class='m'>&quot;(quu|x \&quot;zot\&quot;)&quot;</a> <a id='236' tid='235' class='m'>&quot;(quu| \&quot;zot\&quot;)&quot;</a>)
+                (<a id='238' tid='237' class='m'>&quot;(quux |\&quot;zot\&quot;)&quot;</a>
+                 <a id='240' tid='239' class='m'>&quot;(quux \&quot;|zot\&quot;)&quot;</a>
+                 <a id='242' tid='241' class='m'>&quot;(quux \&quot;|ot\&quot;)&quot;</a>)
+                (<a id='244' tid='243' class='m'>&quot;(foo (|) bar)&quot;</a> <a id='246' tid='245' class='m'>&quot;(foo | bar)&quot;</a>)
+                (<a id='248' tid='247' class='m'>&quot;|(foo bar)&quot;</a> <a id='250' tid='249' class='m'>&quot;(|foo bar)&quot;</a>))
+   (<a id='174' tid='173' class='m'>,</a><a id='176' tid='175' class='m'>paredit-backward-delete-key</a>
+                <a id='
