@@ -2890,4 +2890,14 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                 (<a id='194' tid='193' class='m'>&quot;(foo bar)|&quot;</a> <a id='196' tid='195' class='m'>&quot;(foo bar|)&quot;</a>))
    (<a id='154' tid='153' class='m'>&quot;C-k&quot;</a>       <a id='156' tid='155' class='m'>paredit-kill</a>
                 (<a id='158' tid='157' class='m'>&quot;(foo bar)|     ; Useless comment!&quot;</a>
-                 <a id='160' tid='159' class
+                 <a id='160' tid='159' class='m'>&quot;(foo bar)|&quot;</a>)
+                (<a id='162' tid='161' class='m'>&quot;(|foo bar)     ; Useful comment!&quot;</a>
+                 <a id='164' tid='163' class='m'>&quot;(|)     ; Useful comment!&quot;</a>)
+                (<a id='166' tid='165' class='m'>&quot;|(foo bar)     ; Useless line!&quot;</a>
+                 <a id='168' tid='167' class='m'>&quot;|&quot;</a>)
+                (<a id='170' tid='169' class='m'>&quot;(foo \&quot;|bar baz\&quot;\n     quux)&quot;</a>
+                 <a id='172' tid='171' class='m'>&quot;(foo \&quot;|\&quot;\n     quux)&quot;</a>))
+   (<a id='136' tid='135' class='m'>&quot;M-d&quot;</a>       <a id='138' tid='137' class='m'>paredit-forward-kill-word</a>
+                (<a id='140' tid='139' class='m'>&quot;|(foo bar)    ; baz&quot;</a>
+                 <a id='142' tid='141' class='m'>&quot;(| bar)    ; baz&quot;</a>
+                 <a id='144' tid='143' class='m'>&quot;(|)
