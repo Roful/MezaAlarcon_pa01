@@ -2900,4 +2900,14 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
    (<a id='136' tid='135' class='m'>&quot;M-d&quot;</a>       <a id='138' tid='137' class='m'>paredit-forward-kill-word</a>
                 (<a id='140' tid='139' class='m'>&quot;|(foo bar)    ; baz&quot;</a>
                  <a id='142' tid='141' class='m'>&quot;(| bar)    ; baz&quot;</a>
-                 <a id='144' tid='143' class='m'>&quot;(|)
+                 <a id='144' tid='143' class='m'>&quot;(|)    ; baz&quot;</a>
+                 <a id='146' tid='145' class='m'>&quot;()    ;|&quot;</a>)
+                (<a id='148' tid='147' class='m'>&quot;;;;| Frobnicate\n(defun frobnicate ...)&quot;</a>
+                 <a id='150' tid='149' class='m'>&quot;;;;|\n(defun frobnicate ...)&quot;</a>
+                 <a id='152' tid='151' class='m'>&quot;;;;\n(| frobnicate ...)&quot;</a>))
+   (<a id='116' tid='115' class='m'>,</a>(<a id='118' tid='117' class='m'>concat</a> <a id='120' tid='119' class='m'>&quot;M-&quot;</a> <a id='122' tid='121' class='m'>paredit-backward-delete-key</a>)
+                <a id='124' tid='123' class='m'>paredit-backward-kill-word</a>
+                (<a id='126' tid='125' class='m'>&quot;(foo bar)    ; baz\n(quux)|&quot;</a>
+                 <a id='128' tid='127' class='m'>&quot;(foo bar)    ; baz\n(|)&quot;</a>
+                 <a id='130' tid='129' class='m'>&quot;(foo bar)    ; |\n()&quot;</a>
+                 <a id='132' tid='131' class=
