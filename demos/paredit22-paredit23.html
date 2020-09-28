@@ -2910,4 +2910,17 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                 (<a id='126' tid='125' class='m'>&quot;(foo bar)    ; baz\n(quux)|&quot;</a>
                  <a id='128' tid='127' class='m'>&quot;(foo bar)    ; baz\n(|)&quot;</a>
                  <a id='130' tid='129' class='m'>&quot;(foo bar)    ; |\n()&quot;</a>
-                 <a id='132' tid='131' class=
+                 <a id='132' tid='131' class='m'>&quot;(foo |)    ; \n()&quot;</a>
+                 <a id='134' tid='133' class='m'>&quot;(|)    ; \n()&quot;</a>))
+
+   <span class='i'>&quot;Movement & Navigation&quot;</span>
+   (<a id='104' tid='103' class='m'>&quot;C-M-f&quot;</a>     <a id='106' tid='105' class='m'>paredit-forward</a>
+                (<a id='108' tid='107' class='m'>&quot;(foo |(bar baz) quux)&quot;</a>
+                 <a id='110' tid='109' class='m'>&quot;(foo (bar baz)| quux)&quot;</a>)
+                (<a id='112' tid='111' class='m'>&quot;(foo (bar)|)&quot;</a>
+                 <a id='114' tid='113' class='m'>&quot;(foo (bar))|&quot;</a>))
+   (<a id='92' tid='91' class='m'>&quot;C-M-b&quot;</a>     <a id='94' tid='93' class='m'>paredit-backward</a>
+                (<a id='96' tid='95' class='m'>&quot;(foo (bar baz)| quux)&quot;</a>
+                 <a id='98' tid='97' class='m'>&quot;(foo |(bar baz) quux)&quot;</a>)
+                (<a id='100' tid='99' class='m'>&quot;(|(foo) bar)&quot;</a>
+  
