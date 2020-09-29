@@ -2923,4 +2923,17 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                 (<a id='96' tid='95' class='m'>&quot;(foo (bar baz)| quux)&quot;</a>
                  <a id='98' tid='97' class='m'>&quot;(foo |(bar baz) quux)&quot;</a>)
                 (<a id='100' tid='99' class='m'>&quot;(|(foo) bar)&quot;</a>
-  
+                 <a id='102' tid='101' class='m'>&quot;|((foo) bar)&quot;</a>))
+   <span class='i'>(&quot;C-M-u&quot;     paredit-backward-up)</span>
+   <span class='i'>(&quot;C-M-d&quot;     paredit-forward-down)</span>
+   <span class='i'>(&quot;C-M-p&quot;     paredit-backward-down)</span>  <span class='i'>; Built-in, these are FORWARD-
+</span>   <span class='i'>(&quot;C-M-n&quot;     paredit-forward-up)</span>     <span class='i'>; & BACKWARD-LIST, which have
+</span>                                        <span class='i'>; no need given C-M-f & C-M-b.
+</span>
+   <span class='i'>&quot;Depth-Changing Commands&quot;</span>
+   <span class='i'>(&quot;M-(&quot;       paredit-wrap-round
+                (&quot;(foo |bar baz)&quot;
+                 &quot;(foo (|bar) baz)&quot;))</span>
+   <span class='i'>(&quot;M-s&quot;       paredit-splice-sexp
+                (&quot;(foo (bar| baz) quux)&quot;
+                 &quot;(foo bar| baz quux)
