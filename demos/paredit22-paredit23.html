@@ -2936,4 +2936,18 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  &quot;(foo (|bar) baz)&quot;))</span>
    <span class='i'>(&quot;M-s&quot;       paredit-splice-sexp
                 (&quot;(foo (bar| baz) quux)&quot;
-                 &quot;(foo bar| baz quux)
+                 &quot;(foo bar| baz quux)&quot;))</span>
+   <span class='i'>((&quot;M-&lt;up&gt;&quot; &quot;ESC &lt;up&gt;&quot;)
+                paredit-splice-sexp-killing-backward
+                (&quot;(foo (let ((x 5)) |(sqrt n)) bar)&quot;
+                 &quot;(foo |(sqrt n) bar)&quot;))</span>
+   <span class='i'>((&quot;M-&lt;down&gt;&quot; &quot;ESC &lt;down&gt;&quot;)
+                paredit-splice-sexp-killing-forward
+                (&quot;(a (b c| d e) f)&quot;
+                 &quot;(a b c| f)&quot;))</span>
+   (<a id='82' tid='81' class='m'>&quot;M-r&quot;</a>       <a id='84' tid='83' class='m'>paredit-raise-sexp</a>
+                (<a id='86' tid='85' class='m'>&quot;(dynamic-wind in (lambda () |body) out)&quot;</a>
+                 <a id='88' tid='87' class='m'>&quot;(dynamic-wind in |body out)&quot;</a>
+                 <a id='90' tid='89' class='m'>&quot;|body&quot;</a>))
+   <span class='i'>(&quot;M-?&quot;       paredit-convolute-sexp
+                (&quot;(let ((x
