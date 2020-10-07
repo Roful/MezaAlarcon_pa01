@@ -2950,4 +2950,16 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  <a id='88' tid='87' class='m'>&quot;(dynamic-wind in |body out)&quot;</a>
                  <a id='90' tid='89' class='m'>&quot;|body&quot;</a>))
    <span class='i'>(&quot;M-?&quot;       paredit-convolute-sexp
-                (&quot;(let ((x
+                (&quot;(let ((x 5) (y 3)) (frob |(zwonk)) (wibblethwop))&quot;
+                 &quot;(frob |(let ((x 5) (y 3)) (zwonk) (wibblethwop)))&quot;))</span>
+
+   <span class='i'>&quot;Barfage & Slurpage&quot;</span>
+   ((<a id='68' tid='67' class='m'>&quot;C-)&quot;</a> <a id='70' tid='69' class='m'>&quot;C-&lt;right&gt;&quot;</a>)
+                <a id='72' tid='71' class='m'>paredit-forward-slurp-sexp</a>
+                (<a id='74' tid='73' class='m'>&quot;(foo (bar |baz) quux zot)&quot;</a>
+                 <a id='76' tid='75' class='m'>&quot;(foo (bar |baz quux) zot)&quot;</a>)
+                (<a id='78' tid='77' class='m'>&quot;(a b ((c| d)) e f)&quot;</a>
+                 <a id='80' tid='79' class='m'>&quot;(a b ((c| d) e) f)&quot;</a>))
+   ((<a id='58' tid='57' class='m'>&quot;C-}&quot;</a> <a id='60' tid='59' class='m'>&quot;C-&lt;left&gt;&quot;</a>)
+                <a id='62' tid='61' class='m'>paredit-forward-barf-sexp</a>
+                (<a id='64' tid='63' class='m
