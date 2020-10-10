@@ -2962,4 +2962,13 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  <a id='80' tid='79' class='m'>&quot;(a b ((c| d) e) f)&quot;</a>))
    ((<a id='58' tid='57' class='m'>&quot;C-}&quot;</a> <a id='60' tid='59' class='m'>&quot;C-&lt;left&gt;&quot;</a>)
                 <a id='62' tid='61' class='m'>paredit-forward-barf-sexp</a>
-                (<a id='64' tid='63' class='m
+                (<a id='64' tid='63' class='m'>&quot;(foo (bar |baz quux) zot)&quot;</a>
+                 <a id='66' tid='65' class='m'>&quot;(foo (bar |baz) quux zot)&quot;</a>))
+   ((<a id='42' tid='41' class='m'>&quot;C-(&quot;</a> <a id='44' tid='43' class='m'>&quot;C-M-&lt;left&gt;&quot;</a> <a id='46' tid='45' class='m'>&quot;ESC C-&lt;left&gt;&quot;</a>)
+                <a id='48' tid='47' class='m'>paredit-backward-slurp-sexp</a>
+                (<a id='50' tid='49' class='m'>&quot;(foo bar (baz| quux) zot)&quot;</a>
+                 <a id='52' tid='51' class='m'>&quot;(foo (bar baz| quux) zot)&quot;</a>)
+                (<a id='54' tid='53' class='m'>&quot;(a b ((c| d)) e f)&quot;</a>
+                 <a id='56' tid='55' class='m'>&quot;(a (b (c| d)) e f)&quot;</a>))
+   ((<a id='30' tid='29' class='m'>&quot;C-{&quot;</a> <a id='32' tid='31' class='m'>&quot;C-M-&lt;right&gt;&quot;</a> <a id='34' tid='33' class='m'>&quot;ESC C-&lt;right&gt;&quot;</a>)
+                <a id='36' tid='35' class='m'>paredit-bac
