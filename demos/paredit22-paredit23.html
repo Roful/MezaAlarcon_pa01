@@ -3001,4 +3001,8 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
           (<a id='7082' tid='7081' class='u'>keys</a>     (<a id='7084' tid='7083' class='u'>nth</a> <a id='7086' tid='7085' class='u'>1</a> <a id='7088' tid='7087' class='u'>vars</a>))
           (<a id='7090' tid='7089' class='u'>fn</a>       (<a id='7092' tid='7091' class='u'>nth</a> <a id='7094' tid='7093' class='u'>2</a> <a id='7096' tid='7095' class='u'>vars</a>))
           (<a id='7098' tid='7097' class='u'>examples</a> (<a id='7100' tid='7099' class='u'>nth</a> <a id='7102' tid='7101' class='u'>3</a> <a id='7104' tid='7103' class='u'>vars</a>)))
-      <a id='7106' tid='7105' class='u'>`</a>(<a id='7108' tid='71
+      <a id='7106' tid='7105' class='u'>`</a>(<a id='7108' tid='7107' class='u'>dolist</a> (<a id='7110' tid='7109' class='u'>,</a><a id='7112' tid='7111' class='u'>spec</a> <a id='7114' tid='7113' class='u'>paredit-commands</a>)
+         (<a id='7116' tid='7115' class='u'>if</a> (<a id='7118' tid='7117' class='u'>stringp</a> <a id='7120' tid='7119' class='u'>,</a><a id='7122' tid='7121' class='u'>spec</a>)
+             <a id='7124' tid='7123' class='u'>,</a><a id='7126' tid='7125' class='u'>string-case</a>
+           (<a id='7128' tid='7127' class='u'>let</a> ((<a id='7130' tid='7129' class='u'>,</a><a id='7132' tid='7131' class='u'>keys</a> (<a id='7134' tid='7133' class='u'>let</a> ((<a id='7136' tid='7135' class='u'>k</a> (<a id='7138' tid='7137' class='u'>car</a> <a id='7140' tid='7139' class='u'>,</a><a id='7142' tid='7141' class='u'>spec</a>)))
+                          (<a id='7144' tid='7143' class='u'>cond</a> ((<a id='7146' tid='7145' class='u'>stringp</a> <a id='7148' tid='7147' class='u'>k</a>) (<a id='
