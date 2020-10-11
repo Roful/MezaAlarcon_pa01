@@ -3010,4 +3010,12 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                                 (<a id='7160' tid='7159' class='u'>t</a> (<a id='7162' tid='7161' class='u'>error</a> <a id='7164' tid='7163' class='u'>&quot;Invalid paredit command %s.&quot;</a>
                                           <a id='7166' tid='7165' class='u'>,</a><a id='7168' tid='7167' class='u'>spec</a>)))))
                  (<a id='7170' tid='7169' class='u'>,</a><a id='7172' tid='7171' class='u'>fn</a> (<a id='7174' tid='7173' class='u'>cadr</a> <a id='7176' tid='7175' class='u'>,</a><a id='7178' tid='7177' class='u'>spec</a>))
-                 (<a id='7180' tid='7179' class='u'>,</a><a id='7182' tid='7181' class='u'>examples</a> (<a id='7184' tid='7183' class='u'>cddr</a> <a id='7186' tid='7185' class='u'>,</a><a id='7188' tid='7187' c
+                 (<a id='7180' tid='7179' class='u'>,</a><a id='7182' tid='7181' class='u'>examples</a> (<a id='7184' tid='7183' class='u'>cddr</a> <a id='7186' tid='7185' class='u'>,</a><a id='7188' tid='7187' class='u'>spec</a>)))
+             <a id='7190' tid='7189' class='u'>,</a><a id='7192' tid='7191' class='u'>@body</a>)))))
+
+  (<a id='7194' tid='7193' class='u'>put</a> <a id='7196' tid='7195' class='u'>&#39;</a><a id='7198' tid='7197' class='u'>paredit-do-commands</a> <a id='7200' tid='7199' class='u'>&#39;</a><a id='7202' tid='7201' class='u'>lisp-indent-function</a> <a id='7204' tid='7203' class='u'>2</a>))
+
+(<a id='2958' tid='2957' class='u'>defun</a> <a id='2960' tid='2959' class='u'>paredit-define-keys</a> ()
+  (<a id='2962' tid='2961' class='u'>paredit-do-commands</a> (<a id='2964' tid='2963' class='u'>spec</a> <a id='2966' tid='2965' class='u'>keys</a> <a id='2968' tid='2967' class='u'>fn</a> <a id='2970' tid='2969' class='u'>examples</a>)
+      <a id='2972' tid='2971' class='u'>nil</a>       <a id='2974' tid='2973' class='u'>; string case
+</a>    (<a id='2976' tid='2975' class='u'>dolist</a> (<a id='2978' tid='2977' class='u'>key</a> <a id='2980' tid='2979' class='
