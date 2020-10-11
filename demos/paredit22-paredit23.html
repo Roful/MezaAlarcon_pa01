@@ -2996,4 +2996,9 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 <span class='i'>;;;;; Command Examples
 </span>
 (<a id='7058' tid='7057' class='u'>eval-and-compile</a>
-  (<a id='7060' tid='7059' class='u'>defmacro</a> <a id='7062' tid='7061' class='u'>paredit-do-commands</a> (<a id='7064' tid='7063' class='u'>vars</a> <a id='7066' tid='7065' class='u'>string-case</a> <a id='7
+  (<a id='7060' tid='7059' class='u'>defmacro</a> <a id='7062' tid='7061' class='u'>paredit-do-commands</a> (<a id='7064' tid='7063' class='u'>vars</a> <a id='7066' tid='7065' class='u'>string-case</a> <a id='7068' tid='7067' class='u'>&rest</a> <a id='7070' tid='7069' class='u'>body</a>)
+    (<a id='7072' tid='7071' class='u'>let</a> ((<a id='7074' tid='7073' class='u'>spec</a>     (<a id='7076' tid='7075' class='u'>nth</a> <a id='7078' tid='7077' class='u'>0</a> <a id='7080' tid='7079' class='u'>vars</a>))
+          (<a id='7082' tid='7081' class='u'>keys</a>     (<a id='7084' tid='7083' class='u'>nth</a> <a id='7086' tid='7085' class='u'>1</a> <a id='7088' tid='7087' class='u'>vars</a>))
+          (<a id='7090' tid='7089' class='u'>fn</a>       (<a id='7092' tid='7091' class='u'>nth</a> <a id='7094' tid='7093' class='u'>2</a> <a id='7096' tid='7095' class='u'>vars</a>))
+          (<a id='7098' tid='7097' class='u'>examples</a> (<a id='7100' tid='7099' class='u'>nth</a> <a id='7102' tid='7101' class='u'>3</a> <a id='7104' tid='7103' class='u'>vars</a>)))
+      <a id='7106' tid='7105' class='u'>`</a>(<a id='7108' tid='71
