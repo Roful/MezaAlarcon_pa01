@@ -2983,4 +2983,17 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                  <a id='28' tid='27' class='m'>&quot;\&quot;Hello, \&quot;| \&quot;world!\&quot;&quot;</a>))
    (<a id='2' tid='1' class='m'>&quot;M-J&quot;</a>       <a id='4' tid='3' class='m'>paredit-join-sexps</a>
                 (<a id='6' tid='5' class='m'>&quot;(hello)| (world)&quot;</a>
-                 <a id='8' tid='7' class
+                 <a id='8' tid='7' class='m'>&quot;(hello| world)&quot;</a>)
+                (<a id='10' tid='9' class='m'>&quot;\&quot;Hello, \&quot;| \&quot;world!\&quot;&quot;</a>
+                 <a id='12' tid='11' class='m'>&quot;\&quot;Hello, |world!\&quot;&quot;</a>)
+                (<a id='14' tid='13' class='m'>&quot;hello-\n|  world&quot;</a>
+                 <a id='16' tid='15' class='m'>&quot;hello-|world&quot;</a>))
+   <span class='i'>(&quot;C-c C-M-l&quot; paredit-recenter-on-sexp)</span>
+   <span class='i'>(&quot;M-q&quot;       paredit-reindent-defun)</span>
+   ))
+       <a id='764' tid='763' class='m'>nil</a>)                             <span class='i'>; end of PROGN
+</span>
+<span class='i'>;;;;; Command Examples
+</span>
+(<a id='7058' tid='7057' class='u'>eval-and-compile</a>
+  (<a id='7060' tid='7059' class='u'>defmacro</a> <a id='7062' tid='7061' class='u'>paredit-do-commands</a> (<a id='7064' tid='7063' class='u'>vars</a> <a id='7066' tid='7065' class='u'>string-case</a> <a id='7
