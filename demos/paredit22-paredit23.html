@@ -3005,4 +3005,9 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
          (<a id='7116' tid='7115' class='u'>if</a> (<a id='7118' tid='7117' class='u'>stringp</a> <a id='7120' tid='7119' class='u'>,</a><a id='7122' tid='7121' class='u'>spec</a>)
              <a id='7124' tid='7123' class='u'>,</a><a id='7126' tid='7125' class='u'>string-case</a>
            (<a id='7128' tid='7127' class='u'>let</a> ((<a id='7130' tid='7129' class='u'>,</a><a id='7132' tid='7131' class='u'>keys</a> (<a id='7134' tid='7133' class='u'>let</a> ((<a id='7136' tid='7135' class='u'>k</a> (<a id='7138' tid='7137' class='u'>car</a> <a id='7140' tid='7139' class='u'>,</a><a id='7142' tid='7141' class='u'>spec</a>)))
-                          (<a id='7144' tid='7143' class='u'>cond</a> ((<a id='7146' tid='7145' class='u'>stringp</a> <a id='7148' tid='7147' class='u'>k</a>) (<a id='
+                          (<a id='7144' tid='7143' class='u'>cond</a> ((<a id='7146' tid='7145' class='u'>stringp</a> <a id='7148' tid='7147' class='u'>k</a>) (<a id='7150' tid='7149' class='u'>list</a> <a id='7152' tid='7151' class='u'>k</a>))
+                                ((<a id='7154' tid='7153' class='u'>listp</a> <a id='7156' tid='7155' class='u'>k</a>) <a id='7158' tid='7157' class='u'>k</a>)
+                                (<a id='7160' tid='7159' class='u'>t</a> (<a id='7162' tid='7161' class='u'>error</a> <a id='7164' tid='7163' class='u'>&quot;Invalid paredit command %s.&quot;</a>
+                                          <a id='7166' tid='7165' class='u'>,</a><a id='7168' tid='7167' class='u'>spec</a>)))))
+                 (<a id='7170' tid='7169' class='u'>,</a><a id='7172' tid='7171' class='u'>fn</a> (<a id='7174' tid='7173' class='u'>cadr</a> <a id='7176' tid='7175' class='u'>,</a><a id='7178' tid='7177' class='u'>spec</a>))
+                 (<a id='7180' tid='7179' class='u'>,</a><a id='7182' tid='7181' class='u'>examples</a> (<a id='7184' tid='7183' class='u'>cddr</a> <a id='7186' tid='7185' class='u'>,</a><a id='7188' tid='7187' c
