@@ -3024,4 +3024,11 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 (<a id='3910' tid='3909' class='u'>defun</a> <a id='3912' tid='3911' class='u'>paredit-function-documentation</a> (<a id='3914' tid='3913' class='u'>fn</a>)
   (<a id='3916' tid='3915' class='u'>let</a> ((<a id='3918' tid='3917' class='u'>original-doc</a> (<a id='3920' tid='3919' class='u'>get</a> <a id='3922' tid='3921' class='u'>fn</a> <a id='3924' tid='3923' class='u'>&#39;</a><a id='3926' tid='3925' class='u'>paredit-original-documentation</a>))
         (<a id='3928' tid='3927' class='u'>doc</a> (<a id='3930' tid='3929' class='u'>documentation</a> <a id='3932' tid='3931' class='u'>fn</a> <a id='3934' tid='3933' class='u'>&#39;</a><a id='3936' tid='3935' class='u'>function-documentation</a>)))
-    (<a id='3938' tid='3937' clas
+    (<a id='3938' tid='3937' class='u'>or</a> <a id='3940' tid='3939' class='u'>original-doc</a>
+        (<a id='3942' tid='3941' class='u'>progn</a> (<a id='3944' tid='3943' class='u'>put</a> <a id='3946' tid='3945' class='u'>fn</a> <a id='3948' tid='3947' class='u'>&#39;</a><a id='3950' tid='3949' class='u'>paredit-original-documentation</a> <a id='3952' tid='3951' class='u'>doc</a>)
+               <a id='3954' tid='3953' class='u'>doc</a>))))
+
+(<a id='1896' tid='1895' class='u'>defun</a> <a id='1898' tid='1897' class='u'>paredit-annotate-mode-with-examples</a> ()
+  (<a id='1900' tid='1899' class='u'>let</a> ((<a id='1902' tid='1901' class='u'>contents</a>
+         (<a id='1904' tid='1903' class='u'>list</a> (<a id='1906' tid='1905' class='u'>paredit-function-documentation</a> <a id='1908' tid='1907' class='u'>&#39;</a><a id='1910' tid='1909' class='u'>paredit-mode</a>))))
+    (<a id='1912' tid='1911' class='u'>paredit-do-commands</a> (<a id='1914' tid='1913' clas
