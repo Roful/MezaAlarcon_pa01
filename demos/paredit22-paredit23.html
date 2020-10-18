@@ -3077,4 +3077,11 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
   (<a id='4268' tid='4267' class='u'>interactive</a>)
   (<a id='4270' tid='4269' class='u'>let</a> ((<a id='4272' tid='4271' class='u'>insert-lines</a>
          (<a id='4274' tid='4273' class='u'>lambda</a> (<a id='4276' tid='4275' class='u'>&rest</a> <a id='4278' tid='4277' class='u'>lines</a>)
-           (<a id='4280' tid='4279' cl
+           (<a id='4280' tid='4279' class='u'>mapc</a> (<a id='4282' tid='4281' class='u'>lambda</a> (<a id='4284' tid='4283' class='u'>line</a>) (<a id='4286' tid='4285' class='u'>insert</a> <a id='4288' tid='4287' class='u'>line</a>) (<a id='4290' tid='4289' class='u'>newline</a>))
+                 <a id='4292' tid='4291' class='u'>lines</a>)))
+        (<a id='4294' tid='4293' class='u'>html-keys</a>
+         (<a id='4296' tid='4295' class='u'>lambda</a> (<a id='4298' tid='4297' class='u'>keys</a>)
+           (<a id='4300' tid='4299' class='u'>mapconcat</a> <a id='4302' tid='4301' class='u'>&#39;</a><a id='4304' tid='4303' class='u'>paredit-html-quote</a> <a id='4306' tid='4305' class='u'>keys</a> <a id='4308' tid='4307' class='u'>&quot;, &quot;</a>)))
+        (<a id='4310' tid='4309' class='u'>html-example</a>
+         (<a id='4312' tid='4311' class='u'>lambda</a> (<a id='4314' tid='4313' class='u'>example</a>)
+           (<a id='4316' tid='4315' class='u'>concat</a> <a id='4318'
