@@ -3084,4 +3084,12 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
            (<a id='4300' tid='4299' class='u'>mapconcat</a> <a id='4302' tid='4301' class='u'>&#39;</a><a id='4304' tid='4303' class='u'>paredit-html-quote</a> <a id='4306' tid='4305' class='u'>keys</a> <a id='4308' tid='4307' class='u'>&quot;, &quot;</a>)))
         (<a id='4310' tid='4309' class='u'>html-example</a>
          (<a id='4312' tid='4311' class='u'>lambda</a> (<a id='4314' tid='4313' class='u'>example</a>)
-           (<a id='4316' tid='4315' class='u'>concat</a> <a id='4318'
+           (<a id='4316' tid='4315' class='u'>concat</a> <a id='4318' tid='4317' class='u'>&quot;&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>
+                   (<a id='4320' tid='4319' class='u'>mapconcat</a> <a id='4322' tid='4321' class='u'>&#39;</a><a id='4324' tid='4323' class='u'>paredit-html-quote</a>
+                              <a id='4326' tid='4325' class='u'>example</a>
+                              (<a id='4328' tid='4327' class='u'>concat</a> <a id='4330' tid='4329' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&quot;</a>
+                                      <a id='4332' tid='4331' class='u'>&quot;&nbsp;&nbsp;&nbsp;&nbsp;---&gt;&quot;</a>
+                                      <a id='4334' tid='4333' class='u'>&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;pre&gt;&quot;</a>))
+                   <a id='4336' tid='4335' class='u'>&quot;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;</a>)))
+        (<a id='4338' tid='4337' class='u'>firstp</a> <a id='4340' tid='4339' class='u'>t</a>))
+    (<a id='4342' tid='4341
