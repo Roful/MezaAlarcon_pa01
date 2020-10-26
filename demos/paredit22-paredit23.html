@@ -3105,4 +3105,9 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                         <a id='4390' tid='4389' class='u'>&quot;    &lt;th&gt;Examples&lt;/th&gt;&quot;</a>
                         <a id='4392' tid='4391' class='u'>&quot;  &lt;/tr&gt;&quot;</a>))
       (<a id='4394' tid='4393' class='u'>let</a> ((<a id='4396' tid='4395' class='u'>name</a> (<a id='4398' tid='4397' class='u'>symbol-name</a> <a id='4400' tid='4399' class='u'>fn</a>)))
-        (<a id='4402' tid='4401' class='u'>if</a> (<a i
+        (<a id='4402' tid='4401' class='u'>if</a> (<a id='4404' tid='4403' class='u'>string-match</a> (<a id='4406' tid='4405' class='u'>symbol-name</a> <a id='4408' tid='4407' class='u'>&#39;</a><a id='4410' tid='4409' class='u'>paredit-</a>) <a id='4412' tid='4411' class='u'>name</a>)
+            (<a id='4414' tid='4413' class='u'>funcall</a> <a id='4416' tid='4415' class='u'>insert-lines</a>
+                     <a id='4418' tid='4417' class='u'>&quot;  &lt;tr&gt;&quot;</a>
+                     (<a id='4420' tid='4419' class='u'>concat</a> <a id='4422' tid='4421' class='u'>&quot;    &lt;td&gt;&lt;tt&gt;&quot;</a> <a id='4424' tid='4423' class='u'>name</a> <a id='4426' tid='4425' class='u'>&quot;&lt;/tt&gt;&lt;/td&gt;&quot;</a>)
+                     (<a id='4428' tid='4427' class='u'>concat</a> <a id='4430' tid='4429' class='u'>&quot;    &lt;td align=\&quot;center\&quot;&gt;&quot;</a>
+                             (<a id='4432' tid='4431' class='u'>funcall</a> <a id='4434' tid='4433' class='u'>html-keys</a> <a id=
