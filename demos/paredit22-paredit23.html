@@ -3126,4 +3126,9 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
     (<a id='4006' tid='4005' class='u'>dotimes</a> (<a id='4008' tid='4007' class='u'>i</a> (<a id='4010' tid='4009' class='u'>length</a> <a id='4012' tid='4011' class='u'>string</a>))
       (<a id='4014' tid='4013' class='u'>insert</a> (<a id='4016' tid='4015' class='u'>let</a> ((<a id='4018' tid='4017' class='u'>c</a> (<a id='4020' tid='4019' class='u'>elt</a> <a id='4022' tid='4021' class='u'>string</a> <a id='4024' tid='4023' class='u'>i</a>)))
                 (<a id='4026' tid='4025' class='u'>cond</a> ((<a id='4028' tid='4027' class='u'>eq</a> <a id='4030' tid='4029' class='u'>c</a> <a id='4032' tid='4031' class='u'>?\&lt;</a>) <a id='4034' tid='4033' class='u'>&quot;&lt;&quot;</a>)
-       
+                      ((<a id='4036' tid='4035' class='u'>eq</a> <a id='4038' tid='4037' class='u'>c</a> <a id='4040' tid='4039' class='u'>?\&gt;</a>) <a id='4042' tid='4041' class='u'>&quot;&gt;&quot;</a>)
+                      ((<a id='4044' tid='4043' class='u'>eq</a> <a id='4046' tid='4045' class='u'>c</a> <a id='4048' tid='4047' class='u'>?\&</a>) <a id='4050' tid='4049' class='u'>&quot;&amp;&quot;</a>)
+                      ((<a id='4052' tid='4051' class='u'>eq</a> <a id='4054' tid='4053' class='u'>c</a> <a id='4056' tid='4055' class='u'>?\&#39;</a>) <a id='4058' tid='4057' class='u'>&quot;&apos;&quot;</a>)
+                      ((<a id='4060' tid='4059' class='u'>eq</a> <a id='4062' tid='4061' class='u'>c</a> <a id='4064' tid='4063' class='u'>?\&quot;</a>) <a id='4066' tid='4065' class='u'>&quot;&quot;&quot;</a>)
+                      (<a id='4068' tid='4067' class='u'>t</a> <a id='4070' tid='4069' class='u'>c</a>)))))
+    (<a id='4
