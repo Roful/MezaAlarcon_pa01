@@ -3131,4 +3131,14 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
                       ((<a id='4052' tid='4051' class='u'>eq</a> <a id='4054' tid='4053' class='u'>c</a> <a id='4056' tid='4055' class='u'>?\&#39;</a>) <a id='4058' tid='4057' class='u'>&quot;&apos;&quot;</a>)
                       ((<a id='4060' tid='4059' class='u'>eq</a> <a id='4062' tid='4061' class='u'>c</a> <a id='4064' tid='4063' class='u'>?\&quot;</a>) <a id='4066' tid='4065' class='u'>&quot;&quot;&quot;</a>)
                       (<a id='4068' tid='4067' class='u'>t</a> <a id='4070' tid='4069' class='u'>c</a>)))))
-    (<a id='4
+    (<a id='4072' tid='4071' class='u'>buffer-string</a>)))
+
+<a id='7208' tid='7207' class='u'>;;;; Delimiter Insertion
+</a>
+(<a id='784' tid='783' class='m'>eval-and-compile</a>
+  (<a id='766' tid='765' class='m'>defun</a> <a id='768' tid='767' class='m'>paredit-conc-name</a> (<a id='770' tid='769' class='m'>&rest</a> <a id='772' tid='771' class='m'>strings</a>)
+    (<a id='774' tid='773' class='m'>intern</a> (<a id='776' tid='775' class='m'>apply</a> <a id='778' tid='777' class='m'>&#39;</a><a id='780' tid='779' class='m'>concat</a> <a id='782' tid='781' class='m'>strings</a>)))
+
+  (<a id='786' tid='785' class='m'>defmacro</a> <a id='788' tid='787' class='m'>define-paredit-pair</a> (<a id='790' tid='789' class='m'>open</a> <a id='792' tid='791' class='m'>close</a> <a id='794' tid='793' class='m'>name</a>)
+    <a id='796' tid='795' class='m'>`</a>(<a id='960' tid='959' class='m'>progn</a>
+       (<a id='798' tid='797' class='m'>defun</a> <a id='800' tid='799' class=
