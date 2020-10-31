@@ -3141,4 +3141,11 @@ Paredit behaves badly if parentheses are unbalanced, so exercise
 
   (<a id='786' tid='785' class='m'>defmacro</a> <a id='788' tid='787' class='m'>define-paredit-pair</a> (<a id='790' tid='789' class='m'>open</a> <a id='792' tid='791' class='m'>close</a> <a id='794' tid='793' class='m'>name</a>)
     <a id='796' tid='795' class='m'>`</a>(<a id='960' tid='959' class='m'>progn</a>
-       (<a id='798' tid='797' class='m'>defun</a> <a id='800' tid='799' class=
+       (<a id='798' tid='797' class='m'>defun</a> <a id='800' tid='799' class='m'>,</a>(<a id='802' tid='801' class='m'>paredit-conc-name</a> <a id='804' tid='803' class='m'>&quot;paredit-open-&quot;</a> <a id='806' tid='805' class='m'>name</a>) (<a id='808' tid='807' class='m'>&optional</a> <a id='810' tid='809' class='m'>n</a>)
+         <a id='812' tid='811' class='m'>,</a>(<a id='814' tid='813' class='m'>concat</a> <a id='816' tid='815' class='m'>&quot;Insert a balanced &quot;</a> <a id='818' tid='817' class='m'>name</a> <a id='820' tid='819' class='m'>&quot; pair.
+With a prefix argument N, put the closing &quot;</a> <a id='822' tid='821' class='m'>name</a> <a id='824' tid='823' class='m'>&quot; after N
+  S-expressions forward.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  &quot;</a> <a id='826' tid='825' class='m'>name</a> <a id='828' tid='827' class='m'>&quot; pair around the region.
+If in a string or a comment, insert a single &quot;</a
