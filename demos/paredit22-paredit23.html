@@ -3199,4 +3199,13 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
   <a id='7270' tid='7269' class='u'>&#39;</a><a id='7272' tid='7271' class='u'>paredit-close-round-and-newline</a>)
 
 (<a id='7274' tid='7273' class='u'>defalias</a> <a id='7276' tid='7275' class='u'>&#39;</a><a id='7278' tid='7277' class='u'>paredit-open-bracket</a> <a id='7280' tid='7279' class='u'>&#39;</a><a id='7282' tid='7281' class='u'>paredit-open-square</a>)
-(<a id='7284' tid='7283' class='u
+(<a id='7284' tid='7283' class='u'>defalias</a> <a id='7286' tid='7285' class='u'>&#39;</a><a id='7288' tid='7287' class='u'>paredit-close-bracket</a> <a id='7290' tid='7289' class='u'>&#39;</a><a id='7292' tid='7291' class='u'>paredit-close-square</a>)
+(<a id='7294' tid='7293' class='u'>defalias</a> <a id='7296' tid='7295' class='u'>&#39;</a><a id='7298' tid='7297' class='u'>paredit-close-bracket-and-newline</a>
+  <a id='7300' tid='7299' class='u'>&#39;</a><a id='7302' tid='7301' class='u'>paredit-close-square-and-newline</a>)
+
+(<a id='5310' tid='5309' class='u'>defun</a> <a id='5312' tid='5311' class='u'>paredit-move-past-close</a> (<a id='5314' tid='5313' class='u'>close</a>)
+  <span class='i'>(paredit-move-past-close-and close
+    (lambda ()
+      (paredit-blink-paren-match nil)))</span>)
+
+(<a id='5316' tid='5315' class='u'>defun</a> <a id='5318' tid='5317' class='u'>paredit-move-past-close-and-newline</a> (<a id='5320' tid='5319' clas
