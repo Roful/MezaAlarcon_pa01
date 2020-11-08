@@ -3186,4 +3186,11 @@ See `paredit-wrap-sexp&#39; for more details.&quot;</a>)
   <a id='6546' tid='6545' class='u'>&quot;List of paredit commands that wrap S-expressions.
 Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
 
-(<a id='7210' 
+(<a id='7210' tid='7209' class='u'>define-paredit-pair</a> <a id='7212' tid='7211' class='u'>?\(</a> <a id='7214' tid='7213' class='u'>?\)</a> <a id='7216' tid='7215' class='u'>&quot;round&quot;</a>)
+(<a id='7218' tid='7217' class='u'>define-paredit-pair</a> <a id='7220' tid='7219' class='u'>?\[</a> <a id='7222' tid='7221' class='u'>?\]</a> <a id='7224' tid='7223' class='u'>&quot;square&quot;</a>)
+(<a id='7226' tid='7225' class='u'>define-paredit-pair</a> <a id='7228' tid='7227' class='u'>?\{</a> <a id='7230' tid='7229' class='u'>?\}</a> <a id='7232' tid='7231' class='u'>&quot;curly&quot;</a>)
+(<a id='7234' tid='7233' class='u'>define-paredit-pair</a> <a id='7236' tid='7235' class='u'>?\&lt;</a> <a id='7238' tid='7237' class='u'>?\&gt;</a> <a id='7240' tid='7239' class='u'>&quot;angled&quot;</a>)
+
+<a id='7242' tid='7241' class='u'>;;; Aliases for the old names.
+</a>
+(<a id='7244' tid='7243' class='u'>defalias</a> <a id='7246' tid='7245' class='u'>&#39;</a><a id='7248' tid='7247' class='u'>paredit-open-parenth
