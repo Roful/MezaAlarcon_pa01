@@ -3148,4 +3148,12 @@ With a prefix argument N, put the closing &quot;</a> <a id='822' tid='821' class
 If the region is active, `transient-mark-mode&#39; is enabled, and the
   region&#39;s start and end fall in the same parenthesis depth, insert a
   &quot;</a> <a id='826' tid='825' class='m'>name</a> <a id='828' tid='827' class='m'>&quot; pair around the region.
-If in a string or a comment, insert a single &quot;</a
+If in a string or a comment, insert a single &quot;</a> <a id='830' tid='829' class='m'>name</a> <a id='832' tid='831' class='m'>&quot;.
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
+         (<a id='834' tid='833' class='m'>interactive</a> <a id='836' tid='835' class='m'>&quot;P&quot;</a>)
+         (<a id='838' tid='837' class='m'>cond</a> ((<a id='840' tid='839' class='m'>or</a> (<a id='842' tid='841' class='m'>paredit-in-string-p</a>)
+                    (<a id='844' tid='843' class='m'>paredit-in-comment-p</a>))
+                (<a id='846' tid='845' class='m'>insert</a> <a id='848' tid='847' class='m'>,</a><a id='850' tid='849' class='m'>open</a>))
+               (<span class='i'>(not (paredit-in-char-p))</span>
+                (<a id='852' tid='851' class='m'>paredit-insert-pair</a> <a id='854' tid='853' class='m'>n</a> <a id='856' tid='855' class='m'>,</a><a id='858' tid='857' class='m'>
