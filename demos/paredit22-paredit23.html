@@ -3208,4 +3208,14 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
     (lambda ()
       (paredit-blink-paren-match nil)))</span>)
 
-(<a id='5316' tid='5315' class='u'>defun</a> <a id='5318' tid='5317' class='u'>paredit-move-past-close-and-newline</a> (<a id='5320' tid='5319' clas
+(<a id='5316' tid='5315' class='u'>defun</a> <a id='5318' tid='5317' class='u'>paredit-move-past-close-and-newline</a> (<a id='5320' tid='5319' class='u'>close</a>)
+  (<span class='i'>paredit-move-past-close-and</span> <span class='i'>close</span>
+    (<span class='i'>lambda</span> <span class='i'>()</span>
+      (<a id='978' tid='977' class='m'>let</a> ((<a id='980' tid='979' class='m'>comment.point</a> (<a id='982' tid='981' class='m'>paredit-find-comment-on-line</a>)))
+        (<a id='984' tid='983' class='m'>newline</a>)
+        (<a id='986' tid='985' class='m'>if</a> <a id='988' tid='987' class='m'>comment.point</a>
+            (<a id='990' tid='989' class='m'>save-excursion</a>
+              (<a id='992' tid='991' class='m'>forward-line</a> <a id='994' tid='993' class='m'>-1</a>)
+              (<a id='996' tid='995' class='m'>end-of-line</a>)
+              (<a id='998' tid='997' class='m'>indent-to</a> (<a id='1000' tid='999' class='m'>cdr</a> <a id='1002' tid='1001' class='m'>comment.point</a>))
+              (<a id='1004' tid='1003' class='m'>insert</a> (<a id='10
