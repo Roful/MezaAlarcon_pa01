@@ -3156,4 +3156,11 @@ If in a character literal, do nothing.  This prevents changing what was
                     (<a id='844' tid='843' class='m'>paredit-in-comment-p</a>))
                 (<a id='846' tid='845' class='m'>insert</a> <a id='848' tid='847' class='m'>,</a><a id='850' tid='849' class='m'>open</a>))
                (<span class='i'>(not (paredit-in-char-p))</span>
-                (<a id='852' tid='851' class='m'>paredit-insert-pair</a> <a id='854' tid='853' class='m'>n</a> <a id='856' tid='855' class='m'>,</a><a id='858' tid='857' class='m'>
+                (<a id='852' tid='851' class='m'>paredit-insert-pair</a> <a id='854' tid='853' class='m'>n</a> <a id='856' tid='855' class='m'>,</a><a id='858' tid='857' class='m'>open</a> <a id='860' tid='859' class='m'>,</a><a id='862' tid='861' class='m'>close</a> <a id='864' tid='863' class='m'>&#39;</a><a id='866' tid='865' class='m'>goto-char</a>)
+                <span class='i'>(save-excursion (backward-up-list) (indent-sexp))</span>)))
+       (<a id='868' tid='867' class='m'>defun</a> <a id='870' tid='869' class='m'>,</a>(<a id='872' tid='871' class='m'>paredit-conc-name</a> <a id='874' tid='873' class='m'>&quot;paredit-close-&quot;</a> <a id='876' tid='875' class='m'>name</a>) ()
+         <a id='878' tid='877' class='m'>,</a>(<a id='880' tid='879' class='m'>concat</a> <a id='882' tid='881' class='m'>&quot;Move past one closing delimiter and reindent.
+\(Agnostic to the specific closing delimiter.)
+If in a string or comment, insert a single closing &quot;</a> <a id='884' tid='883' class='m'>name</a> <a id='886' tid='885' class='m'>&quot;.
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter uninte
