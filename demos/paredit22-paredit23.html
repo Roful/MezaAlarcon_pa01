@@ -3163,4 +3163,13 @@ If in a character literal, do nothing.  This prevents changing what was
 \(Agnostic to the specific closing delimiter.)
 If in a string or comment, insert a single closing &quot;</a> <a id='884' tid='883' class='m'>name</a> <a id='886' tid='885' class='m'>&quot;.
 If in a character literal, do nothing.  This prevents changing what was
-  in the character literal to a meaningful delimiter uninte
+  in the character literal to a meaningful delimiter unintentionally.&quot;</a>)
+         (<a id='888' tid='887' class='m'>interactive</a>)
+         (<a id='890' tid='889' class='m'>paredit-move-past-close</a> <a id='892' tid='891' class='m'>,</a><a id='894' tid='893' class='m'>close</a>))
+       (<a id='896' tid='895' class='m'>defun</a> <a id='898' tid='897' class='m'>,</a>(<a id='900' tid='899' class='m'>paredit-conc-name</a> <a id='902' tid='901' class='m'>&quot;paredit-close-&quot;</a> <a id='904' tid='903' class='m'>name</a> <a id='906' tid='905' class='m'>&quot;-and-newline&quot;</a>) ()
+         <a id='908' tid='907' class='m'>,</a>(<a id='910' tid='909' class='m'>concat</a> <a id='912' tid='911' class='m'>&quot;Move past one closing delimiter, add a newline,&quot;</a>
+                  <a id='914' tid='913' class='m'>&quot; and reindent.
+If there was a margin comment after the closing delimiter, preserve it
+  on the same line.&quot;</a>)
+         (<a id='916' tid='915' class='m'>interactive</a>)
+         (<a id
