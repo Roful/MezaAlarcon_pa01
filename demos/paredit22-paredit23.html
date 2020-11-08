@@ -3178,4 +3178,12 @@ If there was a margin comment after the closing delimiter, preserve it
          <a id='938' tid='937' class='m'>,</a>(<a id='940' tid='939' class='m'>concat</a> <a id='942' tid='941' class='m'>&quot;Wrap the following S-expression.
 See `paredit-wrap-sexp&#39; for more details.&quot;</a>)
          (<a id='944' tid='943' class='m'>interactive</a> <a id='946' tid='945' class='m'>&quot;P&quot;</a>)
-         (<a id='948' tid='947' class='m'>paredit-wrap-sexp</a> <a id='950' tid='949' class='m'>argument</a> <a id='952' tid='951' class
+         (<a id='948' tid='947' class='m'>paredit-wrap-sexp</a> <a id='950' tid='949' class='m'>argument</a> <a id='952' tid='951' class='m'>,</a><a id='954' tid='953' class='m'>open</a> <a id='956' tid='955' class='m'>,</a><a id='958' tid='957' class='m'>close</a>))
+       (<a id='962' tid='961' class='m'>add-to-list</a> <a id='964' tid='963' class='m'>&#39;</a><a id='966' tid='965' class='m'>paredit-wrap-commands</a>
+                    <a id='968' tid='967' class='m'>&#39;</a><a id='970' tid='969' class='m'>,</a>(<a id='972' tid='971' class='m'>paredit-conc-name</a> <a id='974' tid='973' class='m'>&quot;paredit-wrap-&quot;</a> <a id='976' tid='975' class='m'>name</a>)))))
+
+(<a id='6538' tid='6537' class='u'>defvar</a> <a id='6540' tid='6539' class='u'>paredit-wrap-commands</a> <a id='6542' tid='6541' class='u'>&#39;</a>(<a id='6544' tid='6543' class='u'>paredit-wrap-sexp</a>)
+  <a id='6546' tid='6545' class='u'>&quot;List of paredit commands that wrap S-expressions.
+Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
+
+(<a id='7210' 
