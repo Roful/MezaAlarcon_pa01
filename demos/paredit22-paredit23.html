@@ -3218,4 +3218,22 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
               (<a id='992' tid='991' class='m'>forward-line</a> <a id='994' tid='993' class='m'>-1</a>)
               (<a id='996' tid='995' class='m'>end-of-line</a>)
               (<a id='998' tid='997' class='m'>indent-to</a> (<a id='1000' tid='999' class='m'>cdr</a> <a id='1002' tid='1001' class='m'>comment.point</a>))
-              (<a id='1004' tid='1003' class='m'>insert</a> (<a id='10
+              (<a id='1004' tid='1003' class='m'>insert</a> (<a id='1006' tid='1005' class='m'>car</a> <a id='1008' tid='1007' class='m'>comment.point</a>)))))
+      <span class='i'>(lisp-indent-line)</span>
+      <span class='i'>(paredit-ignore-sexp-errors (indent-sexp))</span>
+      <span class='i'>(paredit-blink-paren-match t)</span>)))
+
+<span class='i'>(defun paredit-move-past-close-and (close if-moved)
+  (if (or (paredit-in-string-p)
+          (paredit-in-comment-p))
+      (insert close)
+    (if (paredit-in-char-p) (forward-char))
+    (paredit-move-past-close-and-reindent close)
+    (funcall if-moved)))</span>
+
+(<a id='3106' tid='3105' class='u'>defun</a> <a id='3108' tid='3107' class='u'>paredit-find-comment-on-line</a> ()
+  <a id='3110' tid='3109' class='u'>&quot;Find a margin comment on the current line.
+Return nil if there is no such comment or if there is anything but
+  whitespace until such a comment.
+If such a comment exists, delete the comment (including all leading
+  whitespace) and ret
