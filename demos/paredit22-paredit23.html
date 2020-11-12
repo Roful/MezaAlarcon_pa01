@@ -3236,4 +3236,11 @@ Used by `paredit-yank-pop&#39;; for internal paredit use only.&quot;</a>)
 Return nil if there is no such comment or if there is anything but
   whitespace until such a comment.
 If such a comment exists, delete the comment (including all leading
-  whitespace) and ret
+  whitespace) and return a cons whose car is the comment as a string
+  and whose cdr is the point of the comment&#39;s initial semicolon,
+  relative to the start of the line.&quot;</a>
+  (<a id='3112' tid='3111' class='u'>save-excursion</a>
+    (<a id='3114' tid='3113' class='u'>paredit-skip-whitespace</a> <a id='3116' tid='3115' class='u'>t</a> (<a id='3118' tid='3117' class='u'>point-at-eol</a>))
+    (<a id='3120' tid='3119' class='u'>and</a> (<a id='3122' tid='3121' class='u'>eq</a> <a id='3124' tid='3123' class='u'>?\;</a> (<a id='3126' tid='3125' class='u'>char-after</a>))
+         (<a id='3128' tid='3127' class='u'>not</a> (<a id='3130' tid='3129' class='u'>eq</a> <a id='3132' tid='3131' class='u'>?\;</a> (<a id='3134' tid='3133' class='u'>char-after</a> (<a id='3136' tid='3135' class='u'>1+</a> (<a id='3138' tid='3137' class='u'>point</a>)))))
+         (<a id='3140' tid='3139' class='u'>not</a> (<a id='3142' tid='3141' class='u'>or</a> (<a id='3144' tid='3143
