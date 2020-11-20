@@ -3243,4 +3243,11 @@ If such a comment exists, delete the comment (including all leading
     (<a id='3114' tid='3113' class='u'>paredit-skip-whitespace</a> <a id='3116' tid='3115' class='u'>t</a> (<a id='3118' tid='3117' class='u'>point-at-eol</a>))
     (<a id='3120' tid='3119' class='u'>and</a> (<a id='3122' tid='3121' class='u'>eq</a> <a id='3124' tid='3123' class='u'>?\;</a> (<a id='3126' tid='3125' class='u'>char-after</a>))
          (<a id='3128' tid='3127' class='u'>not</a> (<a id='3130' tid='3129' class='u'>eq</a> <a id='3132' tid='3131' class='u'>?\;</a> (<a id='3134' tid='3133' class='u'>char-after</a> (<a id='3136' tid='3135' class='u'>1+</a> (<a id='3138' tid='3137' class='u'>point</a>)))))
-         (<a id='3140' tid='3139' class='u'>not</a> (<a id='3142' tid='3141' class='u'>or</a> (<a id='3144' tid='3143
+         (<a id='3140' tid='3139' class='u'>not</a> (<a id='3142' tid='3141' class='u'>or</a> (<a id='3144' tid='3143' class='u'>paredit-in-string-p</a>)
+                  (<a id='3146' tid='3145' class='u'>paredit-in-char-p</a>)))
+         (<a id='3148' tid='3147' class='u'>let*</a> ((<a id='3150' tid='3149' class='u'>start</a>                  <a id='3152' tid='3151' class='u'>;Move to before the semicolon.
+</a>                 (<a id='3154' tid='3153' class='u'>progn</a> (<a id='3156' tid='3155' class='u'>backward-char</a>) (<a id='3158' tid='3157' class='u'>point</a>)))
+                (<a id='3160' tid='3159' class='u'>comment</a>
+                 (<a id='3162' tid='3161' class='u'>buffer-substring</a> <a id='3164' tid='3163' class='u'>start</a> (<a id='3166' tid='3165' class='u'>point-at-eol</a>))))
+           (<a id='3168' tid='3167' class='u'>paredit-skip-whitespace</a> <a id='3170' tid='3169' class='u'>nil</a> (<a id='3172' tid='3171' class='u'>point-at-bol</a>))
+           (<a id='3174' tid='3173' class='u'>delete-region</a> (<a id='3176' tid='3175' class='u'>point</a>) (<a id='3178' tid='3177' class='u'>point-a
