@@ -3250,4 +3250,12 @@ If such a comment exists, delete the comment (including all leading
                 (<a id='3160' tid='3159' class='u'>comment</a>
                  (<a id='3162' tid='3161' class='u'>buffer-substring</a> <a id='3164' tid='3163' class='u'>start</a> (<a id='3166' tid='3165' class='u'>point-at-eol</a>))))
            (<a id='3168' tid='3167' class='u'>paredit-skip-whitespace</a> <a id='3170' tid='3169' class='u'>nil</a> (<a id='3172' tid='3171' class='u'>point-at-bol</a>))
-           (<a id='3174' tid='3173' class='u'>delete-region</a> (<a id='3176' tid='3175' class='u'>point</a>) (<a id='3178' tid='3177' class='u'>point-a
+           (<a id='3174' tid='3173' class='u'>delete-region</a> (<a id='3176' tid='3175' class='u'>point</a>) (<a id='3178' tid='3177' class='u'>point-at-eol</a>))
+           (<a id='3180' tid='3179' class='u'>cons</a> <a id='3182' tid='3181' class='u'>comment</a> (<a id='3184' tid='3183' class='u'>-</a> <a id='3186' tid='3185' class='u'>start</a> (<a id='3188' tid='3187' class='u'>point-at-bol</a>)))))))
+
+(<a id='4466' tid='4465' class='u'>defun</a> <a id='4468' tid='4467' class='u'>paredit-insert-pair</a> (<a id='4470' tid='4469' class='u'>n</a> <a id='4472' tid='4471' class='u'>open</a> <a id='4474' tid='4473' class='u'>close</a> <a id='4476' tid='4475' class='u'>forward</a>)
+  (<a id='1010' tid='1009' class='m'>let*</a> ((<a id='1012' tid='1011' class='m'>regionp</a>
+          (<a id='1014' tid='1013' class='m'>and</a> (<a id='1016' tid='1015' class='m'>paredit-region-active-p</a>)
+               (<a id='1018' tid='1017' class='m'>paredit-region-safe-for-insert-p</a>)))
+         (<a id='1020' tid='1019' class='m'>end</a>
+          (<a id='1022' tid='1021' class='m'>and</a> <a id='1024' tid='1023' class=
