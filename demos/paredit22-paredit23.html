@@ -3258,4 +3258,12 @@ If such a comment exists, delete the comment (including all leading
           (<a id='1014' tid='1013' class='m'>and</a> (<a id='1016' tid='1015' class='m'>paredit-region-active-p</a>)
                (<a id='1018' tid='1017' class='m'>paredit-region-safe-for-insert-p</a>)))
          (<a id='1020' tid='1019' class='m'>end</a>
-          (<a id='1022' tid='1021' class='m'>and</a> <a id='1024' tid='1023' class=
+          (<a id='1022' tid='1021' class='m'>and</a> <a id='1024' tid='1023' class='m'>regionp</a>
+               (<a id='1026' tid='1025' class='m'>not</a> <a id='1028' tid='1027' class='m'>n</a>)
+               (<a id='1030' tid='1029' class='m'>prog1</a> (<a id='1032' tid='1031' class='m'>region-end</a>) (<a id='1034' tid='1033' class='m'>goto-char</a> (<a id='1036' tid='1035' class='m'>region-beginning</a>))))))
+    (<a id='1038' tid='1037' class='m'>let</a> ((<a id='1040' tid='1039' class='m'>spacep</a> (<a id='1042' tid='1041' class='m'>paredit-space-for-delimiter-p</a> <a id='1044' tid='1043' class='m'>nil</a> <a id='1046' tid='1045' class='m'>open</a>)))
+      (<a id='1048' tid='1047' class='m'>if</a> <a id='1050' tid='1049' class='m'>spacep</a> (<a id='1052' tid='1051' class='m'>insert</a> <a id='1054' tid='1053' class='m'>&quot; &quot;</a>))
+      (<a id='1056' tid='1055' class='m'>insert</a> <a id='1058' tid='1057' class='m'>open</a>)
+      (<span class='i'>save-excursion</span>
+        <span class='i'>;; Move past the desired region.
+</span>        (<span class='i'>cond
