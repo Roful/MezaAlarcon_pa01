@@ -3276,4 +3276,24 @@ If such a comment exists, delete the comment (including all leading
 </span>        <span class='i'>;; delimiters.  The comment case may happen by moving to the
 </span>        <span class='i'>;; end of a buffer that has a comment with no trailing newline.
 </span>        <span class='i'>(if (and (not (paredit-in-string-p))
-                 (
+                 (paredit-in-comment-p))
+            (newline))</span>
+        <span class='i'>(insert close)</span>
+        (<a id='538' tid='537' class='m'>if</a> (<a id='540' tid='539' class='m'>paredit-space-for-delimiter-p</a> <a id='542' tid='541' class='m'>t</a> <a id='544' tid='543' class='m'>close</a>)
+            (<a id='546' tid='545' class='m'>insert</a> <a id='548' tid='547' class='m'>&quot; &quot;</a>))))))
+
+<span class='i'>;++ This needs a better name...
+</span>
+<span class='i'>(defun paredit-scan-sexps-hack (point n)
+  (save-excursion
+    (goto-char point)
+    (let ((direction (if (&lt; 0 n) +1 -1))
+          (magnitude (abs n))
+          (count 0))
+      (catch &#39;exit
+        (while (&lt; count magnitude)
+          (let ((p
+                 (paredit-handle-sexp-errors (scan-sexps (point) direction)
+                   nil)))
+            (if (not p) (throw &#39;exit nil))
+            (goto-cha
