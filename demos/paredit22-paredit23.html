@@ -3266,4 +3266,14 @@ If such a comment exists, delete the comment (including all leading
       (<a id='1056' tid='1055' class='m'>insert</a> <a id='1058' tid='1057' class='m'>open</a>)
       (<span class='i'>save-excursion</span>
         <span class='i'>;; Move past the desired region.
-</span>        (<span class='i'>cond
+</span>        (<span class='i'>cond</span> <span class='i'>(n
+               (funcall forward
+                        (paredit-scan-sexps-hack (point)
+                                                 (prefix-numeric-value n))))</span>
+              (<a id='1060' tid='1059' class='m'>regionp</a>
+               (<a id='1062' tid='1061' class='m'>funcall</a> <a id='1064' tid='1063' class='m'>forward</a> (<a id='1066' tid='1065' class='m'>+</a> <a id='1068' tid='1067' class='m'>end</a> (<a id='1070' tid='1069' class='m'>if</a> <a id='1072' tid='1071' class='m'>spacep</a> <a id='1074' tid='1073' class='m'>2</a> <a id='1076' tid='1075' class='m'>1</a>)))))
+        <span class='i'>;; The string case can happen if we are inserting string
+</span>        <span class='i'>;; delimiters.  The comment case may happen by moving to the
+</span>        <span class='i'>;; end of a buffer that has a comment with no trailing newline.
+</span>        <span class='i'>(if (and (not (paredit-in-string-p))
+                 (
