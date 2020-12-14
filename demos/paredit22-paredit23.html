@@ -3296,4 +3296,15 @@ If such a comment exists, delete the comment (including all leading
                  (paredit-handle-sexp-errors (scan-sexps (point) direction)
                    nil)))
             (if (not p) (throw &#39;exit nil))
-            (goto-cha
+            (goto-char p))
+          (setq count (+ count 1)))))
+    (point)))</span>
+
+(<a id='5730' tid='5729' class='u'>defun</a> <a id='5732' tid='5731' class='u'>paredit-region-safe-for-insert-p</a> ()
+  (<a id='5734' tid='5733' class='u'>save-excursion</a>
+    (<a id='5736' tid='5735' class='u'>let</a> ((<a id='5738' tid='5737' class='u'>beginning</a> (<a id='5740' tid='5739' class='u'>region-beginning</a>))
+          (<a id='5742' tid='5741' class='u'>end</a> (<a id='5744' tid='5743' class='u'>region-end</a>)))
+      (<a id='5746' tid='5745' class='u'>goto-char</a> <a id='5748' tid='5747' class='u'>beginning</a>)
+      (<a id='5750' tid='5749' class='u'>let*</a> ((<a id='5752' tid='5751' class='u'>beginning-state</a> (<a id='5754' tid='5753' class='u'>paredit-current-parse-state</a>))
+             (<a id='5756' tid='5755' class='u'>end-state</a>
+              (<a id='5758' tid='5757' class='u'>parse-partial-sexp</a> <a id='5760' tid='5759' class='u'>beginning</a> <a id='5762' tid='5761' class='u'>end</a> <a id='5764' tid='5763
