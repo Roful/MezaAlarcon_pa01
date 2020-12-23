@@ -3311,4 +3311,10 @@ If such a comment exists, delete the comment (including all leading
         (<a id='5770' tid='5769' class='u'>and</a> (<a id='5772' tid='5771' class='u'>=</a>  (<a id='5774' tid='5773' class='u'>nth</a> <a id='5776' tid='5775' class='u'>0</a> <a id='5778' tid='5777' class='u'>beginning-state</a>)   <a id='5780' tid='5779' class='u'>; 0. depth in parens
 </a>                 (<a id='5782' tid='5781' class='u'>nth</a> <a id='5784' tid='5783' class='u'>0</a> <a id='5786' tid='5785' class='u'>end-state</a>))
              (<a id='5788' tid='5787' class='u'>eq</a> (<a id='5790' tid='5789' class='u'>nth</a> <a id='5792' tid='5791' class='u'>3</a> <a id='5794' tid='5793' class='u'>beginning-state</a>)   <a id='5796' tid='5795' class='u'>; 3. non-nil if inside a
-</a>                 (<a id='5798' tid='5797' class='u'>nth</a> <a id='5800' tid='5799' class='u'>3</a> <a id='5802' tid='5801' cla
+</a>                 (<a id='5798' tid='5797' class='u'>nth</a> <a id='5800' tid='5799' class='u'>3</a> <a id='5802' tid='5801' class='u'>end-state</a>))        <a id='5804' tid='5803' class='u'>;    string
+</a>             (<a id='5806' tid='5805' class='u'>eq</a> (<a id='5808' tid='5807' class='u'>nth</a> <a id='5810' tid='5809' class='u'>4</a> <a id='5812' tid='5811' class='u'>beginning-state</a>)   <a id='5814' tid='5813' class='u'>; 4. comment status, yada
+</a>                 (<a id='5816' tid='5815' class='u'>nth</a> <a id='5818' tid='5817' class='u'>4</a> <a id='5820' tid='5819' class='u'>end-state</a>))
+             (<a id='5822' tid='5821' class='u'>eq</a> (<a id='5824' tid='5823' class='u'>nth</a> <a id='5826' tid='5825' class='u'>5</a> <a id='5828' tid='5827' class='u'>beginning-state</a>)   <a id='5830' tid='5829' class='u'>; 5. t if following char
+</a>                 (<a id='5832' tid='5831' class='u'>nth</a> <a id='5834' tid='5833' class='u'>5</a> <a id='5836' tid='5835' class='u'>end-state</a>)))))))   <span class='i'>;    quote
+</span>
+(<a id='6142' tid='6141' class='u'>defvar</a> <a id='6144' tid='6143' class='u'>paredit-space-for-delimiter-p
