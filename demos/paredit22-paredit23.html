@@ -3317,4 +3317,20 @@ If such a comment exists, delete the comment (including all leading
              (<a id='5822' tid='5821' class='u'>eq</a> (<a id='5824' tid='5823' class='u'>nth</a> <a id='5826' tid='5825' class='u'>5</a> <a id='5828' tid='5827' class='u'>beginning-state</a>)   <a id='5830' tid='5829' class='u'>; 5. t if following char
 </a>                 (<a id='5832' tid='5831' class='u'>nth</a> <a id='5834' tid='5833' class='u'>5</a> <a id='5836' tid='5835' class='u'>end-state</a>)))))))   <span class='i'>;    quote
 </span>
-(<a id='6142' tid='6141' class='u'>defvar</a> <a id='6144' tid='6143' class='u'>paredit-space-for-delimiter-p
+(<a id='6142' tid='6141' class='u'>defvar</a> <a id='6144' tid='6143' class='u'>paredit-space-for-delimiter-predicates</a> <a id='6146' tid='6145' class='u'>nil</a>
+  <a id='6148' tid='6147' class='u'>&quot;List of predicates for whether to put space by delimiter at point.
+Each predicate is a function that is is applied to two arguments, ENDP
+  and DELIMITER, and that returns a boolean saying whether to put a
+  space next to the delimiter -- before the delimiter if ENDP is false,
+  after the delimiter if ENDP is true.
+If any predicate returns false, no space is inserted: every predicate
+  has veto power.
+Each predicate may assume that the point is not at the beginning of the
+  buffer, if ENDP is false, or at the end of the buffer, if ENDP is
+  true; and that the point is not preceded, if ENDP is false, or
+  followed, if ENDP is true, by a word or symbol constituent, a quote,
+  or the delimiter matching DELIMITER.
+Each predicate should examine only text before the point, if ENDP is
+  false, or only text after the point, if ENDP is true.&quot;</a>)
+
+(<a id='6028' tid='6027' class='u'>
