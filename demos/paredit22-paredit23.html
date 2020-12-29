@@ -3333,4 +3333,10 @@ Each predicate may assume that the point is not at the beginning of the
 Each predicate should examine only text before the point, if ENDP is
   false, or only text after the point, if ENDP is true.&quot;</a>)
 
-(<a id='6028' tid='6027' class='u'>
+(<a id='6028' tid='6027' class='u'>defun</a> <a id='6030' tid='6029' class='u'>paredit-space-for-delimiter-p</a> (<a id='6032' tid='6031' class='u'>endp</a> <a id='6034' tid='6033' class='u'>delimiter</a>)
+  <a id='6036' tid='6035' class='u'>;; If at the buffer limit, don&#39;t insert a space.  If there is a word,
+</a>  <a id='6038' tid='6037' class='u'>;; symbol, other quote, or non-matching parenthesis delimiter (i.e. a
+</a>  <a id='6040' tid='6039' class='u'>;; close when want an open the string or an open when we want to
+</a>  <a id='6042' tid='6041' class='u'>;; close the string), do insert a space.
+</a>  (<a id='6044' tid='6043' class='u'>and</a> (<a id='6046' tid='6045' class='u'>not</a> (<a id='6048' tid='6047' class='u'>if</a> <a id='6050' tid='6049' class='u'>endp</a> (<a id='6052' tid='6051' class='u'>eobp</a>) (<a id='6054' tid='6053' class='u'>bobp</a>)))
+       (<a id='6056' tid='6055' class='u'>memq</a> (<a id='6058' tid='6057' class='u'>char-syntax</a> (<a id='6060' tid='6059'
