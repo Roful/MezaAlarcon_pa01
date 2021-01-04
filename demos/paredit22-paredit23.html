@@ -3389,4 +3389,13 @@ Each predicate should examine only text before the point, if ENDP is
   (<a id='5268' tid='5267' class='u'>save-excursion</a>
     (<a id='5270' tid='5269' class='u'>paredit-handle-sexp-errors</a> (<a id='5272' tid='5271' class='u'>backward-up-list</a>)
       (<a id='5274' tid='5273' class='u'>error</a> <a id='5276' tid='5275' class='u'>&quot;Not inside a list.&quot;</a>))
-    (<a id='5278' tid='5277' class='u'>let</a> ((<a id='5280' tid='5279' class='u'>open</a> (<a id='5282' tid='5281' class='u'>char-af
+    (<a id='5278' tid='5277' class='u'>let</a> ((<a id='5280' tid='5279' class='u'>open</a> (<a id='5282' tid='5281' class='u'>char-after</a>)))
+      (<a id='5284' tid='5283' class='u'>paredit-handle-sexp-errors</a> (<a id='5286' tid='5285' class='u'>progn</a> (<a id='5288' tid='5287' class='u'>forward-sexp</a>) <a id='5290' tid='5289' class='u'>nil</a>)
+        <a id='5292' tid='5291' class='u'>open</a>))))
+
+(<a id='2992' tid='2991' class='u'>defun</a> <a id='2994' tid='2993' class='u'>paredit-delete-leading-whitespace</a> ()
+  <a id='2996' tid='2995' class='u'>;; This assumes that we&#39;re on the closing delimiter already.
+</a>  (<a id='2998' tid='2997' class='u'>save-excursion</a>
+    (<a id='3000' tid='2999' class='u'>backward-char</a>)
+    (<a id='3002' tid='3001' class='u'>while</a> (<a id='3004' tid='3003' class='u'>let</a> ((<a id='3006' tid='3005' class='u'>syn</a> (<a id='3008' tid='3007' class='u'>char-syntax</a> (<a id='3010' tid='3009' class='u'>char-before</a>))))
+             (<a id='3012' tid='3011' class='u'>and</a> (<a id='3014' tid='3013' class='u'>or</a> (<a id='3016' tid='3015' class=
