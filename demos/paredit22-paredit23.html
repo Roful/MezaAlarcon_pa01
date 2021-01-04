@@ -3358,4 +3358,11 @@ Each predicate should examine only text before the point, if ENDP is
         (<a id='5338' tid='5337' class='u'>if</a> (<a id='5340' tid='5339' class='u'>eq</a> <a id='5342' tid='5341' class='u'>close</a> (<a id='5344' tid='5343' class='u'>matching-paren</a> <a id='5346' tid='5345' class='u'>open</a>))
             (<a id='5348' tid='5347' class='u'>save-excursion</a>
               (<a id='5350' tid='5349' class='u'>message</a> <a id='5352' tid='5351' class='u'>&quot;Missing closing delimiter: %c&quot;</a> <a id='5354' tid='5353' class='u'>close</a>)
-              (<a id='5356' tid='5355' class='u'>
+              (<a id='5356' tid='5355' class='u'>insert</a> <a id='5358' tid='5357' class='u'>close</a>))
+            (<a id='5360' tid='5359' class='u'>error</a> <a id='5362' tid='5361' class='u'>&quot;Mismatched missing closing delimiter: %c ... %c&quot;</a>
+                   <a id='5364' tid='5363' class='u'>open</a> <a id='5366' tid='5365' class='u'>close</a>))))
+  (<a id='5368' tid='5367' class='u'>up-list</a>)
+  (<a id='5370' tid='5369' class='u'>if</a> (<a id='5372' tid='5371' class='u'>catch</a> <a id='5374' tid='5373' class='u'>&#39;</a><a id='5376' tid='5375' class='u'>return</a>                    <a id='5378' tid='5377' class='u'>; This CATCH returns T if it
+</a>        (<a id='5380' tid='5379' class='u'>while</a> <a id='5382' tid='5381' class='u'>t</a>                        <a id='5384' tid='5383' class='u'>; should delete leading spaces
+</a>          (<a id='5386' tid='5385' class='u'>save-excursion</a>               <a id='5388' tid='5387' class='u'>; and NIL if not.
+</a>            (<a id='5390' tid=
