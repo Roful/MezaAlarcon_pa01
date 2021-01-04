@@ -3349,4 +3349,13 @@ Each predicate should examine only text before the point, if ENDP is
        (<a id='6108' tid='6107' class='u'>catch</a> <a id='6110' tid='6109' class='u'>&#39;</a><a id='6112' tid='6111' class='u'>exit</a>
          (<a id='6114' tid='6113' class='u'>dolist</a> (<a id='6116' tid='6115' class='u'>predicate</a> <a id='6118' tid='6117' class='u'>paredit-space-for-delimiter-predicates</a>)
            (<a id='6120' tid='6119' class='u'>if</a> (<a id='6122' tid='6121' class='u'>not</a> (<a id='6124' tid='6123' class='u'>funcall</a> <a id='6126' tid='6125' class='u'>predicate</a> <a id='6128' tid='6127' class='u'>endp</a> <a id='6130' tid='6129' class='u'>delimiter</a>))
-               (<a id='6132' tid='6131' class='u'>throw</a> <a id='6134' tid='6133' class='u'>&#39;</a><a id='6136' tid='6135' class='u'>exit</a> <a id='6138' tid='6137'
+               (<a id='6132' tid='6131' class='u'>throw</a> <a id='6134' tid='6133' class='u'>&#39;</a><a id='6136' tid='6135' class='u'>exit</a> <a id='6138' tid='6137' class='u'>nil</a>)))
+         <a id='6140' tid='6139' class='u'>t</a>)))
+
+(<a id='5322' tid='5321' class='u'>defun</a> <a id='5324' tid='5323' class='u'>paredit-move-past-close-and-reindent</a> (<a id='5326' tid='5325' class='u'>close</a>)
+  (<a id='5328' tid='5327' class='u'>let</a> ((<a id='5330' tid='5329' class='u'>open</a> (<a id='5332' tid='5331' class='u'>paredit-missing-close</a>)))
+    (<a id='5334' tid='5333' class='u'>if</a> <a id='5336' tid='5335' class='u'>open</a>
+        (<a id='5338' tid='5337' class='u'>if</a> (<a id='5340' tid='5339' class='u'>eq</a> <a id='5342' tid='5341' class='u'>close</a> (<a id='5344' tid='5343' class='u'>matching-paren</a> <a id='5346' tid='5345' class='u'>open</a>))
+            (<a id='5348' tid='5347' class='u'>save-excursion</a>
+              (<a id='5350' tid='5349' class='u'>message</a> <a id='5352' tid='5351' class='u'>&quot;Missing closing delimiter: %c&quot;</a> <a id='5354' tid='5353' class='u'>close</a>)
+              (<a id='5356' tid='5355' class='u'>
