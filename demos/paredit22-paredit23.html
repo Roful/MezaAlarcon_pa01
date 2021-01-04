@@ -3398,4 +3398,11 @@ Each predicate should examine only text before the point, if ENDP is
 </a>  (<a id='2998' tid='2997' class='u'>save-excursion</a>
     (<a id='3000' tid='2999' class='u'>backward-char</a>)
     (<a id='3002' tid='3001' class='u'>while</a> (<a id='3004' tid='3003' class='u'>let</a> ((<a id='3006' tid='3005' class='u'>syn</a> (<a id='3008' tid='3007' class='u'>char-syntax</a> (<a id='3010' tid='3009' class='u'>char-before</a>))))
-             (<a id='3012' tid='3011' class='u'>and</a> (<a id='3014' tid='3013' class='u'>or</a> (<a id='3016' tid='3015' class=
+             (<a id='3012' tid='3011' class='u'>and</a> (<a id='3014' tid='3013' class='u'>or</a> (<a id='3016' tid='3015' class='u'>eq</a> <a id='3018' tid='3017' class='u'>syn</a> <a id='3020' tid='3019' class='u'>?\ </a>) (<a id='3022' tid='3021' class='u'>eq</a> <a id='3024' tid='3023' class='u'>syn</a> <a id='3026' tid='3025' class='u'>?-</a>))     <a id='3028' tid='3027' class='u'>; whitespace syntax
+</a>                  <a id='3030' tid='3029' class='u'>;; The above line is a perfect example of why the
+</a>                  <a id='3032' tid='3031' class='u'>;; following test is necessary.
+</a>                  (<a id='3034' tid='3033' class='u'>not</a> (<a id='3036' tid='3035' class='u'>paredit-in-char-p</a> (<a id='3038' tid='3037' class='u'>1-</a> (<a id='3040' tid='3039' class='u'>point</a>))))))
+      (<a id='3042' tid='3041' class='u'>backward-delete-char</a> <a id='3044' tid='3043' class='u'>1</a>))))
+
+(<a id='2570' tid='2569' class='u'>defun</a> <a id='2572' tid='2571' class='u'>paredit-blink-paren-match</a> (<a id='2574' tid='2573' class='u'>another-line-p</a>)
+  (<a id='2576' tid='2575' class='u'>
