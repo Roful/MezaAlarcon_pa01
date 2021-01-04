@@ -3371,4 +3371,13 @@ Each predicate should examine only text before the point, if ENDP is
                      <a id='5410' tid='5409' class='u'>;; Can&#39;t call PAREDIT-DELETE-LEADING-WHITESPACE
 </a>                     <a id='5412' tid='5411' class='u'>;; here -- we must return from SAVE-EXCURSION
 </a>                     <a id='5414' tid='5413' class='u'>;; first.
-</a>                     (<a id='5416' tid='5415' class='u'>throw</a> <a id='5418' tid='5417' class='u'>&#39;</a><a id='5420' tid='5419' class='u'>return</a> <a id='5422' tid='5421' class='u
+</a>                     (<a id='5416' tid='5415' class='u'>throw</a> <a id='5418' tid='5417' class='u'>&#39;</a><a id='5420' tid='5419' class='u'>return</a> <a id='5422' tid='5421' class='u'>t</a>))
+                    ((<a id='5424' tid='5423' class='u'>save-excursion</a> (<a id='5426' tid='5425' class='u'>forward-line</a> <a id='5428' tid='5427' class='u'>-1</a>)
+                                     (<a id='5430' tid='5429' class='u'>end-of-line</a>)
+                                     (<a id='5432' tid='5431' class='u'>paredit-in-comment-p</a>))
+                     <a id='5434' tid='5433' class='u'>;; Moving the closing delimiter any further
+</a>                     <a id='5436' tid='5435' class='u'>;; would put it into a comment, so we just
+</a>                     <a id='5438' tid='5437' class='u'>;; indent the closing delimiter where it is and
+</a>                     <a id='5440' tid='5439' class='u'>;; abort the loop, telling its continuation that
+</a>                     <a id='5442' tid='5441' class='u'>;; no leading whitespace should be deleted.
+</a>                     (<a id='5444' tid='5443' class='u'>lisp
