@@ -3405,4 +3405,13 @@ Each predicate should examine only text before the point, if ENDP is
       (<a id='3042' tid='3041' class='u'>backward-delete-char</a> <a id='3044' tid='3043' class='u'>1</a>))))
 
 (<a id='2570' tid='2569' class='u'>defun</a> <a id='2572' tid='2571' class='u'>paredit-blink-paren-match</a> (<a id='2574' tid='2573' class='u'>another-line-p</a>)
-  (<a id='2576' tid='2575' class='u'>
+  (<a id='2576' tid='2575' class='u'>if</a> (<a id='2578' tid='2577' class='u'>and</a> <a id='2580' tid='2579' class='u'>blink-matching-paren</a>
+           (<a id='2582' tid='2581' class='u'>or</a> (<a id='2584' tid='2583' class='u'>not</a> <a id='2586' tid='2585' class='u'>show-paren-mode</a>) <a id='2588' tid='2587' class='u'>another-line-p</a>))
+      (<a id='2590' tid='2589' class='u'>paredit-ignore-sexp-errors</a>
+        (<a id='2592' tid='2591' class='u'>save-excursion</a>
+          (<a id='2594' tid='2593' class='u'>backward-sexp</a>)
+          (<a id='2596' tid='2595' class='u'>forward-sexp</a>)
+          <a id='2598' tid='2597' class='u'>;; SHOW-PAREN-MODE inhibits any blinking, so we disable it
+</a>          <a id='2600' tid='2599' class='u'>;; locally here.
+</a>          (<a id='2602' tid='2601' class='u'>let</a> ((<a id='2604' tid='2603' class='u'>show-paren-mode</a> <a id='2606' tid='2605' class='u'>nil</a>))
+            (<a id='2608' tid='2607' class='u'>blink-matching-open<
