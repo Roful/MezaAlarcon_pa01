@@ -3414,4 +3414,19 @@ Each predicate should examine only text before the point, if ENDP is
           <a id='2598' tid='2597' class='u'>;; SHOW-PAREN-MODE inhibits any blinking, so we disable it
 </a>          <a id='2600' tid='2599' class='u'>;; locally here.
 </a>          (<a id='2602' tid='2601' class='u'>let</a> ((<a id='2604' tid='2603' class='u'>show-paren-mode</a> <a id='2606' tid='2605' class='u'>nil</a>))
-            (<a id='2608' tid='2607' class='u'>blink-matching-open<
+            (<a id='2608' tid='2607' class='u'>blink-matching-open</a>))))))
+
+(<a id='3046' tid='3045' class='u'>defun</a> <a id='3048' tid='3047' class='u'>paredit-doublequote</a> (<a id='3050' tid='3049' class='u'>&optional</a> <a id='3052' tid='3051' class='u'>n</a>)
+  <a id='3054' tid='3053' class='u'>&quot;Insert a pair of double-quotes.
+With a prefix argument N, wrap the following N S-expressions in
+  double-quotes, escaping intermediate characters if necessary.
+If the region is active, `transient-mark-mode&#39; is enabled, and the
+  region&#39;s start and end fall in the same parenthesis depth, insert a
+  pair of double-quotes around the region, again escaping intermediate
+  characters if necessary.
+Inside a comment, insert a literal double-quote.
+At the end of a string, move past the closing double-quote.
+In the middle of a string, insert a backslash-escaped double-quote.
+If in a character literal, do nothing.  This prevents accidentally
+  changing a what was in the character literal to become a meaningful
+  delimiter unintentionall
