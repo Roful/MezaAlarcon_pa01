@@ -3438,4 +3438,13 @@ If in a character literal, do nothing.  This prevents accidentally
 </a>             (<a id='3078' tid='3077' class='u'>insert</a> <a id='3080' tid='3079' class='u'>?\\</a> <a id='3082' tid='3081' class='u'>?\&quot;</a> )))
         ((<a id='3084' tid='3083' class='u'>paredit-in-comment-p</a>)
          (<a id='3086' tid='3085' class='u'>insert</a> <a id='3088' tid='3087' class='u'>?\&quot;</a> ))
-      
+        ((<a id='3090' tid='3089' class='u'>not</a> (<a id='3092' tid='3091' class='u'>paredit-in-char-p</a>))
+         (<a id='3094' tid='3093' class='u'>paredit-insert-pair</a> <a id='3096' tid='3095' class='u'>n</a> <a id='3098' tid='3097' class='u'>?\&quot;</a> <a id='3100' tid='3099' class='u'>?\&quot;</a> <a id='3102' tid='3101' class='u'>&#39;</a><a id='3104' tid='3103' class='u'>paredit-forward-for-quote</a>))))
+
+(<a id='5208' tid='5207' class='u'>defun</a> <a id='5210' tid='5209' class='u'>paredit-meta-doublequote</a> (<a id='5212' tid='5211' class='u'>&optional</a> <a id='5214' tid='5213' class='u'>n</a>)
+  <a id='5216' tid='5215' class='u'>&quot;Move to the end of the string, insert a newline, and indent.
+If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
+  is specified and the region is not active or `transient-mark-mode&#39; is
+  disabled, the default is to wrap one S-expression, however, not
+  zero.&quot;</a>
+  (<a id='5218' tid=
