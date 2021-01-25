@@ -3429,4 +3429,13 @@ At the end of a string, move past the closing double-quote.
 In the middle of a string, insert a backslash-escaped double-quote.
 If in a character literal, do nothing.  This prevents accidentally
   changing a what was in the character literal to become a meaningful
-  delimiter unintentionall
+  delimiter unintentionally.&quot;</a>
+  (<a id='3056' tid='3055' class='u'>interactive</a> <a id='3058' tid='3057' class='u'>&quot;P&quot;</a>)
+  (<a id='3060' tid='3059' class='u'>cond</a> ((<a id='3062' tid='3061' class='u'>paredit-in-string-p</a>)
+         (<a id='3064' tid='3063' class='u'>if</a> (<a id='3066' tid='3065' class='u'>eq</a> (<a id='3068' tid='3067' class='u'>cdr</a> (<a id='3070' tid='3069' class='u'>paredit-string-start+end-points</a>))
+                 (<a id='3072' tid='3071' class='u'>point</a>))
+             (<a id='3074' tid='3073' class='u'>forward-char</a>)             <a id='3076' tid='3075' class='u'>; We&#39;re on the closing quote.
+</a>             (<a id='3078' tid='3077' class='u'>insert</a> <a id='3080' tid='3079' class='u'>?\\</a> <a id='3082' tid='3081' class='u'>?\&quot;</a> )))
+        ((<a id='3084' tid='3083' class='u'>paredit-in-comment-p</a>)
+         (<a id='3086' tid='3085' class='u'>insert</a> <a id='3088' tid='3087' class='u'>?\&quot;</a> ))
+      
