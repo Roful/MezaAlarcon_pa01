@@ -3447,4 +3447,11 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
   is specified and the region is not active or `transient-mark-mode&#39; is
   disabled, the default is to wrap one S-expression, however, not
   zero.&quot;</a>
-  (<a id='5218' tid=
+  (<a id='5218' tid='5217' class='u'>interactive</a> <a id='5220' tid='5219' class='u'>&quot;P&quot;</a>)
+  (<a id='5222' tid='5221' class='u'>if</a> (<a id='5224' tid='5223' class='u'>not</a> (<a id='5226' tid='5225' class='u'>paredit-in-string-p</a>))
+      (<a id='5228' tid='5227' class='u'>paredit-doublequote</a> (<a id='5230' tid='5229' class='u'>or</a> <a id='5232' tid='5231' class='u'>n</a>
+                               (<a id='5234' tid='5233' class='u'>and</a> (<a id='5236' tid='5235' class='u'>not</a> (<a id='5238' tid='5237' class='u'>paredit-region-active-p</a>))
+                                    <a id='5240' tid='5239' class='u'>1</a>)))
+    (<a id='5242' tid='5241' class='u'>let</a> ((<a id='5244' tid='5243' class='u'>start+end</a> (<a id='5246' tid='5245' class='u'>paredit-string-start+end-points</a>)))
+      (<a id='5248' tid='5247' class='u'>goto-char</a> (<a id='5250' tid='5249' class='u'>1+</a> (<a id='5252' tid='5251' class='u'>cdr</a> <a id='5254' tid='5253' class='u'>start+end</a>)))
+      (<a id
