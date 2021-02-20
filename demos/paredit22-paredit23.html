@@ -3454,4 +3454,11 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
                                     <a id='5240' tid='5239' class='u'>1</a>)))
     (<a id='5242' tid='5241' class='u'>let</a> ((<a id='5244' tid='5243' class='u'>start+end</a> (<a id='5246' tid='5245' class='u'>paredit-string-start+end-points</a>)))
       (<a id='5248' tid='5247' class='u'>goto-char</a> (<a id='5250' tid='5249' class='u'>1+</a> (<a id='5252' tid='5251' class='u'>cdr</a> <a id='5254' tid='5253' class='u'>start+end</a>)))
-      (<a id
+      (<a id='5256' tid='5255' class='u'>newline</a>)
+      (<a id='5258' tid='5257' class='u'>lisp-indent-line</a>)
+      (<a id='5260' tid='5259' class='u'>paredit-ignore-sexp-errors</a> (<a id='5262' tid='5261' class='u'>indent-sexp</a>)))))
+
+(<a id='3374' tid='3373' class='u'>defun</a> <a id='3376' tid='3375' class='u'>paredit-forward-for-quote</a> (<a id='3378' tid='3377' class='u'>end</a>)
+  (<a id='3380' tid='3379' class='u'>let</a> ((<a id='3382' tid='3381' class='u'>state</a> (<a id='3384' tid='3383' class='u'>paredit-current-parse-state</a>)))
+    (<a id='3386' tid='3385' class='u'>while</a> (<a id='3388' tid='3387' class='u'>&lt;</a> (<a id='3390' tid='3389' class='u'>point</a>) <a id='3392' tid='3391' class='u'>end</a>)
+      (<a id='3394' tid='3393' class='u'>let</a> ((<a id='3396' tid='3395' class='u'>new-state</a> (<a id='3398' tid='3397' class='u'>parse-partial-sexp</a> (<a id='3400' tid='3399' class='u'>point</a>) (<a id='3402' tid='3401' class='u'>1+</a> (
