@@ -3461,4 +3461,11 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
 (<a id='3374' tid='3373' class='u'>defun</a> <a id='3376' tid='3375' class='u'>paredit-forward-for-quote</a> (<a id='3378' tid='3377' class='u'>end</a>)
   (<a id='3380' tid='3379' class='u'>let</a> ((<a id='3382' tid='3381' class='u'>state</a> (<a id='3384' tid='3383' class='u'>paredit-current-parse-state</a>)))
     (<a id='3386' tid='3385' class='u'>while</a> (<a id='3388' tid='3387' class='u'>&lt;</a> (<a id='3390' tid='3389' class='u'>point</a>) <a id='3392' tid='3391' class='u'>end</a>)
-      (<a id='3394' tid='3393' class='u'>let</a> ((<a id='3396' tid='3395' class='u'>new-state</a> (<a id='3398' tid='3397' class='u'>parse-partial-sexp</a> (<a id='3400' tid='3399' class='u'>point</a>) (<a id='3402' tid='3401' class='u'>1+</a> (
+      (<a id='3394' tid='3393' class='u'>let</a> ((<a id='3396' tid='3395' class='u'>new-state</a> (<a id='3398' tid='3397' class='u'>parse-partial-sexp</a> (<a id='3400' tid='3399' class='u'>point</a>) (<a id='3402' tid='3401' class='u'>1+</a> (<a id='3404' tid='3403' class='u'>point</a>))
+                                           <a id='3406' tid='3405' class='u'>nil</a> <a id='3408' tid='3407' class='u'>nil</a> <a id='3410' tid='3409' class='u'>state</a>)))
+        (<a id='3412' tid='3411' class='u'>if</a> (<a id='3414' tid='3413' class='u'>paredit-in-string-p</a> <a id='3416' tid='3415' class='u'>new-state</a>)
+            (<a id='3418' tid='3417' class='u'>if</a> (<a id='3420' tid='3419' class='u'>not</a> (<a id='3422' tid='3421' class='u'>paredit-in-string-escape-p</a>))
+                (<a id='3424' tid='3423' class='u'>setq</a> <a id='3426' tid='3425' class='u'>state</a> <a id='3428' tid='3427' class='u'>new-state</a>)
+              <a id='3430' tid='3429' class='u'>;; Escape character: turn it into an escaped escape
+</a>              <a id='3432' tid='3431' class='u'>;; character by appending another backslash.
+</a>              (<a id='3434' tid='3433' class='u'>insert
