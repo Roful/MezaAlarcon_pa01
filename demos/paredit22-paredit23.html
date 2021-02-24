@@ -3468,4 +3468,12 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
                 (<a id='3424' tid='3423' class='u'>setq</a> <a id='3426' tid='3425' class='u'>state</a> <a id='3428' tid='3427' class='u'>new-state</a>)
               <a id='3430' tid='3429' class='u'>;; Escape character: turn it into an escaped escape
 </a>              <a id='3432' tid='3431' class='u'>;; character by appending another backslash.
-</a>              (<a id='3434' tid='3433' class='u'>insert
+</a>              (<a id='3434' tid='3433' class='u'>insert</a> <a id='3436' tid='3435' class='u'>?\\</a> )
+              <a id='3438' tid='3437' class='u'>;; Now the point is after both escapes, and we want to
+</a>              <a id='3440' tid='3439' class='u'>;; rescan from before the first one to after the second
+</a>              <a id='3442' tid='3441' class='u'>;; one.
+</a>              (<a id='3444' tid='3443' class='u'>setq</a> <a id='3446' tid='3445' class='u'>state</a>
+                    (<a id='3448' tid='3447' class='u'>parse-partial-sexp</a> (<a id='3450' tid='3449' class='u'>-</a> (<a id='3452' tid='3451' class='u'>point</a>) <a id='3454' tid='3453' class='u'>2</a>) (<a id='3456' tid='3455' class='u'>point</a>)
+                                        <a id='3458' tid='3457' class='u'>nil</a> <a id='3460' tid='3459' class='u'>nil</a> <a id='3462' tid='3461' class='u'>state</a>))
+              <a id='3464' tid='3463' class='u'>;; Advance the end point, since we just inserted a new
+</a>              <a
