@@ -3494,4 +3494,24 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
 (<a id='2026' tid='2025' class='u'>defun</a> <a id='2028' tid='2027' class='u'>paredit-backslash</a> ()
   <a id='2030' tid='2029' class='u'>&quot;Insert a backslash followed by a character to escape.&quot;</a>
   (<a id='2032' tid='2031' class='u'>interactive</a>)
-  <span class='i'>(cond 
+  <span class='i'>(cond ((paredit-in-string-p) (paredit-backslash-interactive))
+        ((paredit-in-comment-p) (insert ?\\))
+        ((paredit-in-char-p) (forward-char) (paredit-backslash-interactive))
+        (t (paredit-backslash-interactive)))</span>)
+
+<span class='i'>(defun paredit-backslash-interactive ()
+  (insert ?\\ )
+  ;; Read a character to insert after the backslash.  If anything
+  ;; goes wrong -- the user hits delete (entering the rubout
+  ;; `character&#39;), aborts with C-g, or enters non-character input
+  ;; -- then delete the backslash to avoid a dangling escape.
+  (let ((delete-p t))
+    (unwind-protect
+        (let ((char (read-char &quot;Character to escape: &quot;)))
+          (if (not (eq char ?\^?))
+              (progn (message &quot;Character to escape: %c&quot; char)
+                     (insert char)
+                     (setq delete-p nil))))
+      (if delete-p
+          (progn (message &quot;Deleting escape.&quot;)
+                 (backward-de
