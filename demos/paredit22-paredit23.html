@@ -3514,4 +3514,22 @@ If not in a string, act as `paredit-doublequote&#39;; if no prefix argument
                      (setq delete-p nil))))
       (if delete-p
           (progn (message &quot;Deleting escape.&quot;)
-                 (backward-de
+                 (backward-delete-char 1))))))</span>
+
+(<a id='5460' tid='5459' class='u'>defun</a> <a id='5462' tid='5461' class='u'>paredit-newline</a> ()
+  <a id='5464' tid='5463' class='u'>&quot;Insert a newline and indent it.
+This is like `newline-and-indent&#39;, but it not only indents the line
+  that the point is on but also the S-expression following the point,
+  if there is one.
+Move forward one character first if on an escaped character.
+If in a string, just insert a literal newline.
+If in a comment and if followed by invalid structure, call
+  `indent-new-comment-line&#39; to keep the invalid structure in a
+  comment.&quot;</a>
+  (<a id='5466' tid='5465' class='u'>interactive</a>)
+  (<span class='i'>cond</span> <span class='i'>((paredit-in-string-p)
+         (newline))</span>
+        <span class='i'>((paredit-in-comment-p)
+         (if (paredit-region-ok-p (point) (point-at-eol))
+             (progn (newline-and-indent)
+    
