@@ -3556,4 +3556,22 @@ If the point is in a string or a comment, fill the paragraph instead,
       ;; Preserve the point&#39;s position either in the indentation or in
       ;; the code: if on code, move with the code; if in indentation,
       ;; leave it in the indentation, either where it was (if that&#39;s
-      ;; still indentation) or at the end of the indentation
+      ;; still indentation) or at the end of the indentation (if the
+      ;; code moved far enough left).
+      (let ((indentation* (paredit-current-indentation)))
+        (goto-char
+         (+ (point-at-bol)
+            (cond ((not (&lt; column indentation))
+                   (+ column (- indentation* indentation)))
+                  ((&lt;= indentation* column) indentation*)
+                  (t column)))))))</span>)
+
+<span class='i'>;;;; Comment Insertion
+</span>
+(<a id='5852' tid='5851' class='u'>defun</a> <a id='5854' tid='5853' class='u'>paredit-semicolon</a> (<a id='5856' tid='5855' class='u'>&optional</a> <a id='5858' tid='5857' class='u'>n</a>)
+  <a id='5860' tid='5859' class='u'>&quot;Insert a semicolon.
+With a prefix argument N, insert N semicolons.
+If in a string, do just that and nothing else.
+If in a character literal, move to the beginning of the character
+  literal before inserting the semicolon.
+If the enclosing list ends on the line after the point, bre
