@@ -3542,4 +3542,18 @@ If in a comment and if followed by invalid structure, call
 </a>         <a id='1090' tid='1089' class='m'>;; error if there&#39;s only a closing delimiter after the point.
 </a>         (<a id='1092' tid='1091' class='m'>paredit-ignore-sexp-errors</a> (<a id='1094' tid='1093' class='m'>indent-sexp</a>)))))
 
-(<a id='5838' tid='5837' class='u'>defun</a> <a id='5840' tid='5839' class='u'>paredit-reindent-defun</a> (<a id='5842' tid='5841' class='u'>&optional</a> <a id='5844' tid='5843' class='u'
+(<a id='5838' tid='5837' class='u'>defun</a> <a id='5840' tid='5839' class='u'>paredit-reindent-defun</a> (<a id='5842' tid='5841' class='u'>&optional</a> <a id='5844' tid='5843' class='u'>argument</a>)
+  <a id='5846' tid='5845' class='u'>&quot;Reindent the definition that the point is on.
+If the point is in a string or a comment, fill the paragraph instead,
+  and with a prefix argument, justify as well.&quot;</a>
+  (<a id='5848' tid='5847' class='u'>interactive</a> <a id='5850' tid='5849' class='u'>&quot;P&quot;</a>)
+  <span class='i'>(if (or (paredit-in-string-p)
+          (paredit-in-comment-p))
+      (lisp-fill-paragraph argument)
+    (let ((column (current-column))
+          (indentation (paredit-current-indentation)))
+      (save-excursion (end-of-defun) (beginning-of-defun) (indent-sexp))
+      ;; Preserve the point&#39;s position either in the indentation or in
+      ;; the code: if on code, move with the code; if in indentation,
+      ;; leave it in the indentation, either where it was (if that&#39;s
+      ;; still indentation) or at the end of the indentation
