@@ -3532,4 +3532,14 @@ If in a comment and if followed by invalid structure, call
         <span class='i'>((paredit-in-comment-p)
          (if (paredit-region-ok-p (point) (point-at-eol))
              (progn (newline-and-indent)
-    
+                    (paredit-ignore-sexp-errors (indent-sexp)))
+             (indent-new-comment-line)))</span>
+        (<a id='1078' tid='1077' class='m'>t</a>
+         (<a id='1080' tid='1079' class='m'>if</a> (<a id='1082' tid='1081' class='m'>paredit-in-char-p</a>)
+             (<a id='1084' tid='1083' class='m'>forward-char</a>))
+         (<a id='1086' tid='1085' class='m'>newline-and-indent</a>)
+         <a id='1088' tid='1087' class='m'>;; Indent the following S-expression, but don&#39;t signal an
+</a>         <a id='1090' tid='1089' class='m'>;; error if there&#39;s only a closing delimiter after the point.
+</a>         (<a id='1092' tid='1091' class='m'>paredit-ignore-sexp-errors</a> (<a id='1094' tid='1093' class='m'>indent-sexp</a>)))))
+
+(<a id='5838' tid='5837' class='u'>defun</a> <a id='5840' tid='5839' class='u'>paredit-reindent-defun</a> (<a id='5842' tid='5841' class='u'>&optional</a> <a id='5844' tid='5843' class='u'
