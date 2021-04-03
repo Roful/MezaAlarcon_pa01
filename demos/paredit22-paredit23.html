@@ -3574,4 +3574,13 @@ With a prefix argument N, insert N semicolons.
 If in a string, do just that and nothing else.
 If in a character literal, move to the beginning of the character
   literal before inserting the semicolon.
-If the enclosing list ends on the line after the point, bre
+If the enclosing list ends on the line after the point, break the line
+  after the last S-expression following the point.
+If a list begins on the line after the point but ends on a different
+  line, break the line after the last S-expression following the point
+  before the list.&quot;</a>
+  (<a id='5862' tid='5861' class='u'>interactive</a> <a id='5864' tid='5863' class='u'>&quot;p&quot;</a>)
+  (<a id='5866' tid='5865' class='u'>if</a> (<a id='5868' tid='5867' class='u'>or</a> (<a id='5870' tid='5869' class='u'>paredit-in-string-p</a>) (<a id='5872' tid='5871' class='u'>paredit-in-comment-p</a>))
+      (<a id='5874' tid='5873' class='u'>insert</a> (<a id='5876' tid='5875' class='u'>make-string</a> (<a id='5878' tid='5877' class='u'>or</a> <a id='5880' tid='5879' class='u'>n</a> <a id='5882' tid='5881' class='u'>1</a>) <a id='5884' tid='5883' class='u'>?\;</a> ))
+    (<a id='5886' tid='5885' class='u'>if</a> (<a id='5888' tid='5887' class='u'>paredit-in-char-p</a>)
+        (<a id='5890' tid='5889' class='u
