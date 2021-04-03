@@ -3583,4 +3583,10 @@ If a list begins on the line after the point but ends on a different
   (<a id='5866' tid='5865' class='u'>if</a> (<a id='5868' tid='5867' class='u'>or</a> (<a id='5870' tid='5869' class='u'>paredit-in-string-p</a>) (<a id='5872' tid='5871' class='u'>paredit-in-comment-p</a>))
       (<a id='5874' tid='5873' class='u'>insert</a> (<a id='5876' tid='5875' class='u'>make-string</a> (<a id='5878' tid='5877' class='u'>or</a> <a id='5880' tid='5879' class='u'>n</a> <a id='5882' tid='5881' class='u'>1</a>) <a id='5884' tid='5883' class='u'>?\;</a> ))
     (<a id='5886' tid='5885' class='u'>if</a> (<a id='5888' tid='5887' class='u'>paredit-in-char-p</a>)
-        (<a id='5890' tid='5889' class='u
+        (<a id='5890' tid='5889' class='u'>backward-char</a> <a id='5892' tid='5891' class='u'>2</a>))
+    (<a id='5894' tid='5893' class='u'>let</a> ((<a id='5896' tid='5895' class='u'>line-break-point</a> (<a id='5898' tid='5897' class='u'>paredit-semicolon-find-line-break-point</a>)))
+      (<a id='5900' tid='5899' class='u'>if</a> <a id='5902' tid='5901' class='u'>line-break-point</a>
+          (<a id='5904' tid='5903' class='u'>paredit-semicolon-with-line-break</a> <a id='5906' tid='5905' class='u'>line-break-point</a> (<a id='5908' tid='5907' class='u'>or</a> <a id='5910' tid='5909' class='u'>n</a> <a id='5912' tid='5911' class='u'>1</a>))
+          (<a id='5914' tid='5913' class='u'>insert</a> (<a id='5916' tid='5915' class='u'>make-string</a> (<a id='5918' tid='5917' class='u'>or</a> <a id='5920' tid='5919' class='u'>n</a> <a id='5922' tid='5921' class='u'>1</a>) <a id='5924' tid='5923' class='u'>?\;</a> ))))))
+
+(<a id='5926' tid='5925' class='u'>defun</a
