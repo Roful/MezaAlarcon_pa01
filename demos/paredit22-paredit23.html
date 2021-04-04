@@ -3589,4 +3589,14 @@ If a list begins on the line after the point but ends on a different
           (<a id='5904' tid='5903' class='u'>paredit-semicolon-with-line-break</a> <a id='5906' tid='5905' class='u'>line-break-point</a> (<a id='5908' tid='5907' class='u'>or</a> <a id='5910' tid='5909' class='u'>n</a> <a id='5912' tid='5911' class='u'>1</a>))
           (<a id='5914' tid='5913' class='u'>insert</a> (<a id='5916' tid='5915' class='u'>make-string</a> (<a id='5918' tid='5917' class='u'>or</a> <a id='5920' tid='5919' class='u'>n</a> <a id='5922' tid='5921' class='u'>1</a>) <a id='5924' tid='5923' class='u'>?\;</a> ))))))
 
-(<a id='5926' tid='5925' class='u'>defun</a
+(<a id='5926' tid='5925' class='u'>defun</a> <a id='5928' tid='5927' class='u'>paredit-semicolon-find-line-break-point</a> ()
+  (<a id='1096' tid='1095' class='m'>let</a> ((<a id='1098' tid='1097' class='m'>line-break-point</a> <a id='1100' tid='1099' class='m'>nil</a>)
+        (<a id='1102' tid='1101' class='m'>eol</a> (<a id='1104' tid='1103' class='m'>point-at-eol</a>)))
+    (<span class='i'>and</span> <span class='i'>(not (eolp))</span>                   <span class='i'>;Implies (not (eobp)).
+</span>         (<span class='i'>save-excursion</span>
+           (<a id='550' tid='549' class='m'>paredit-handle-sexp-errors</a>
+               (<span class='i'>progn</span>
+                 (<a id='1106' tid='1105' class='m'>while</a>
+                     (<a id='1108' tid='1107' class='m'>progn</a>
+                       (<a id='1110' tid='1109' class='m'>setq</a> <a id='1112' tid='1111' class='m'>line-break-point</a> (<a id='1114' tid='1113' class='m'>point</a>))
+                       (<a id='1116' tid='1115' class='m'>
