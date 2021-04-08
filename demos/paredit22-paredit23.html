@@ -3599,4 +3599,15 @@ If a list begins on the line after the point but ends on a different
                  (<a id='1106' tid='1105' class='m'>while</a>
                      (<a id='1108' tid='1107' class='m'>progn</a>
                        (<a id='1110' tid='1109' class='m'>setq</a> <a id='1112' tid='1111' class='m'>line-break-point</a> (<a id='1114' tid='1113' class='m'>point</a>))
-                       (<a id='1116' tid='1115' class='m'>
+                       (<a id='1116' tid='1115' class='m'>forward-sexp</a>)
+                       (<a id='1118' tid='1117' class='m'>and</a> (<a id='1120' tid='1119' class='m'>eq</a> <a id='1122' tid='1121' class='m'>eol</a> (<a id='1124' tid='1123' class='m'>point-at-eol</a>))
+                            (<a id='1126' tid='1125' class='m'>not</a> (<a id='1128' tid='1127' class='m'>eobp</a>)))))
+                 <span class='i'>(backward-sexp)</span>
+                 <span class='i'>(and (eq eol (point-at-eol))
+                      ;; Don&#39;t break the line if the end of the last
+                      ;; S-expression is at the end of the buffer.
+                      (progn (forward-sexp) (not (eobp))))</span>)
+             <a id='552' tid='551' class='m'>;; If we hit the end of an expression, but the closing
+</a>             <a id='554' tid='553' class='m'>;; delimiter is on another line, don&#39;t break the line.
+</a>             (<a id='556' tid='555' class='m'>save-excursion</a>
+               (<a id='558' 
