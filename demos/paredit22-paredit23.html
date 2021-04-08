@@ -3616,4 +3616,12 @@ If a list begins on the line after the point but ends on a different
 
 (<a id='5930' tid='5929' class='u'>defun</a> <a id='5932' tid='5931' class='u'>paredit-semicolon-with-line-break</a> (<a id='5934' tid='5933' class='u'>line-break-point</a> <a id='5936' tid='5935' class='u'>n</a>)
   (<a id='5938' tid='5937' class='u'>let</a> ((<a id='5940' tid='5939' class='u'>line-break-marker</a> (<a id='5942' tid='5941' class='u'>make-marker</a>)))
-    (<a id='5944' tid='5943' class='u'>set-marker</a> <a id='5946' tid='5945' class='u'>line-break-marker</a> <
+    (<a id='5944' tid='5943' class='u'>set-marker</a> <a id='5946' tid='5945' class='u'>line-break-marker</a> <a id='5948' tid='5947' class='u'>line-break-point</a>)
+    (<a id='5950' tid='5949' class='u'>set-marker-insertion-type</a> <a id='5952' tid='5951' class='u'>line-break-marker</a> <a id='5954' tid='5953' class='u'>t</a>)
+    (<a id='5956' tid='5955' class='u'>insert</a> (<a id='5958' tid='5957' class='u'>make-string</a> (<a id='5960' tid='5959' class='u'>or</a> <a id='5962' tid='5961' class='u'>n</a> <a id='5964' tid='5963' class='u'>1</a>) <a id='5966' tid='5965' class='u'>?\;</a> ))
+    (<a id='5968' tid='5967' class='u'>save-excursion</a>
+      (<a id='5970' tid='5969' class='u'>goto-char</a> <a id='5972' tid='5971' class='u'>line-break-marker</a>)
+      (<a id='5974' tid='5973' class='u'>set-marker</a> <a id='5976' tid='5975' class='u'>line-break-marker</a> <a id='5978' tid='5977' class='u'>nil</a>)
+      (<a id='5980' tid='5979' class='u'>newline</a>)
+      (<a id='5982' tid='5981' class='u'>lisp-indent-line</a>)
+      <a id='5984' tid='5983' class='u'>;; This step is redundant if we
