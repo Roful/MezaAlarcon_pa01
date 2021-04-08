@@ -3610,4 +3610,10 @@ If a list begins on the line after the point but ends on a different
              <a id='552' tid='551' class='m'>;; If we hit the end of an expression, but the closing
 </a>             <a id='554' tid='553' class='m'>;; delimiter is on another line, don&#39;t break the line.
 </a>             (<a id='556' tid='555' class='m'>save-excursion</a>
-               (<a id='558' 
+               (<a id='558' tid='557' class='m'>paredit-skip-whitespace</a> <a id='560' tid='559' class='m'>t</a> (<a id='562' tid='561' class='m'>point-at-eol</a>))
+               (<a id='564' tid='563' class='m'>not</a> (<a id='566' tid='565' class='m'>or</a> (<a id='568' tid='567' class='m'>eolp</a>) (<a id='570' tid='569' class='m'>eq</a> (<a id='572' tid='571' class='m'>char-after</a>) <a id='574' tid='573' class='m'>?\;</a> ))))))
+         <span class='i'>line-break-point</span>)))
+
+(<a id='5930' tid='5929' class='u'>defun</a> <a id='5932' tid='5931' class='u'>paredit-semicolon-with-line-break</a> (<a id='5934' tid='5933' class='u'>line-break-point</a> <a id='5936' tid='5935' class='u'>n</a>)
+  (<a id='5938' tid='5937' class='u'>let</a> ((<a id='5940' tid='5939' class='u'>line-break-marker</a> (<a id='5942' tid='5941' class='u'>make-marker</a>)))
+    (<a id='5944' tid='5943' class='u'>set-marker</a> <a id='5946' tid='5945' class='u'>line-break-marker</a> <
