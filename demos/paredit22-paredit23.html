@@ -3641,4 +3641,9 @@ If a list begins on the line after the point but ends on a different
 
 (<a id='4172' tid='4171' class='u'>defun</a> <a id='4174' tid='4173' class='u'>paredit-initialize-comment-dwim</a> ()
   (<a id='4176' tid='4175' class='u'>require</a> <a id='4178' tid='4177' class='u'>&#39;</a><a id='4180' tid='4179' class='u'>newcomment</a>)
-  (<a id='4182' tid='4181' class='u'>if</a> (<a i
+  (<a id='4182' tid='4181' class='u'>if</a> (<a id='4184' tid='4183' class='u'>not</a> (<a id='4186' tid='4185' class='u'>fboundp</a> <a id='4188' tid='4187' class='u'>&#39;</a><a id='4190' tid='4189' class='u'>comment-or-uncomment-region</a>))
+      (<a id='4192' tid='4191' class='u'>defalias</a> <a id='4194' tid='4193' class='u'>&#39;</a><a id='4196' tid='4195' class='u'>comment-or-uncomment-region</a>
+        (<a id='4198' tid='4197' class='u'>lambda</a> (<a id='4200' tid='4199' class='u'>beginning</a> <a id='4202' tid='4201' class='u'>end</a> <a id='4204' tid='4203' class='u'>&optional</a> <a id='4206' tid='4205' class='u'>argument</a>)
+          (<a id='4208' tid='4207' class='u'>interactive</a> <a id='4210' tid='4209' class='u'>&quot;*r\nP&quot;</a>)
+          (<a id='4212' tid='4211' class='u'>if</a> (<a id='4214' tid='4213' class='u'>save-excursion</a> (<a id='4216' tid='4215' class='u'>goto-char</a> <a id='4218' tid='4217' class='u'>beginning</a>)
+                              (<a id='4220' tid='4219' class='u'>comment-forward</a
