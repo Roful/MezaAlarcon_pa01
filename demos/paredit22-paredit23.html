@@ -3665,4 +3665,15 @@ If there is already a comment on the current line, with no prefix
 Otherwise, insert a comment appropriate for the context and ensure that
   any code following the comment is moved to the next line.
 At the top level, where indentation is calculated to be at column 0,
-  insert a triple-semicolon comment; within code, where the i
+  insert a triple-semicolon comment; within code, where the indentation
+  is calculated to be non-zero, and on the line there is either no code
+  at all or code after the point, insert a double-semicolon comment;
+  and if the point is after all code on the line, insert a single-
+  semicolon margin comment at `comment-column&#39;.&quot;</a>
+  (<a id='2636' tid='2635' class='u'>interactive</a> <a id='2638' tid='2637' class='u'>&quot;*P&quot;</a>)
+  (<a id='2640' tid='2639' class='u'>paredit-initialize-comment-dwim</a>)
+  (<a id='2642' tid='2641' class='u'>cond</a> ((<a id='2644' tid='2643' class='u'>paredit-region-active-p</a>)
+         (<a id='2646' tid='2645' class='u'>comment-or-uncomment-region</a> (<a id='2648' tid='2647' class='u'>region-beginning</a>)
+                                      (<a id='2650' tid='2649' class='u'>region-end</a>)
+                                      <a id='2652' tid='2651' class='u'>argument</a>))
+        ((<a id='2654' tid='2653' class='u'>paredit-comment-on-line-p</a>)
