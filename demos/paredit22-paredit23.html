@@ -3646,4 +3646,11 @@ If a list begins on the line after the point but ends on a different
         (<a id='4198' tid='4197' class='u'>lambda</a> (<a id='4200' tid='4199' class='u'>beginning</a> <a id='4202' tid='4201' class='u'>end</a> <a id='4204' tid='4203' class='u'>&optional</a> <a id='4206' tid='4205' class='u'>argument</a>)
           (<a id='4208' tid='4207' class='u'>interactive</a> <a id='4210' tid='4209' class='u'>&quot;*r\nP&quot;</a>)
           (<a id='4212' tid='4211' class='u'>if</a> (<a id='4214' tid='4213' class='u'>save-excursion</a> (<a id='4216' tid='4215' class='u'>goto-char</a> <a id='4218' tid='4217' class='u'>beginning</a>)
-                              (<a id='4220' tid='4219' class='u'>comment-forward</a
+                              (<a id='4220' tid='4219' class='u'>comment-forward</a> (<a id='4222' tid='4221' class='u'>point-max</a>))
+                              (<a id='4224' tid='4223' class='u'>&lt;=</a> <a id='4226' tid='4225' class='u'>end</a> (<a id='4228' tid='4227' class='u'>point</a>)))
+              (<a id='4230' tid='4229' class='u'>uncomment-region</a> <a id='4232' tid='4231' class='u'>beginning</a> <a id='4234' tid='4233' class='u'>end</a> <a id='4236' tid='4235' class='u'>argument</a>)
+              (<a id='4238' tid='4237' class='u'>comment-region</a> <a id='4240' tid='4239' class='u'>beginning</a> <a id='4242' tid='4241' class='u'>end</a> <a id='4244' tid='4243' class='u'>argument</a>)))))
+  (<a id='4246' tid='4245' class='u'>defalias</a> <a id='4248' tid='4247' class='u'>&#39;</a><a id='4250' tid='4249' class='u'>paredit-initialize-comment-dwim</a> <a id='4252' tid='4251' class='u'>&#39;</a><a id='4254' tid='4253' class='u'>comment-normalize-vars</a>)
+  (<a id='4256' tid='4255' class='u'>comment-normalize-vars</a>))
+
+(<a id='2626' tid='2625' class='u'>defun
