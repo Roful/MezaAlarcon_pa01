@@ -3705,3 +3705,9 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
          (<a id='1134' tid='1133' class='m'>save-excursion</a> (<a id='1136' tid='1135' class='m'>paredit-skip-whitespace</a> <a id='1138' tid='1137' class='m'>t</a> (<a id='1140' tid='1139' class='m'>point-at-eol</a>))
                          (<a id='1142' tid='1141' class='m'>not</a> (<a id='1144' tid='1143' class='m'>eolp</a>))))
         (<a id='1146' tid='1145' class='m'>code-before-p</a>
+         (<a id='1148' tid='1147' class='m'>save-excursion</a> (<a id='1150' tid='1149' class='m'>paredit-skip-whitespace</a> <a id='1152' tid='1151' class='m'>nil</a> (<a id='1154' tid='1153' class='m'>point-at-bol</a>))
+                         (<a id='1156' tid='1155' class='m'>not</a> (<a id='1158' tid='1157' class='m'>bolp</a>)))))
+    (<a id='1160' tid='1159' class='m'>cond</a> ((<a id='1162' tid='1161' class='m'>and</a> (<a id='1164' tid='1163' class='m'>bolp</a>)
+                (<a id='1166' tid='1165' class='m'>let</a> ((<a id='1168' tid='1167' class='m'>indent</a>
+                       (<a id='1170' tid='1169' class='m'>let</a> ((<a id='1172' tid='1171' class='m'>indent</a> (<a id='1174' tid='1173' class='m'>calculate-lisp-indent</a>)))
+                         (<a id='1176' tid='1175' class='m'>if</a> (<a id='1178' tid='1177' class='m'>consp</a> <a id='1180' tid='1179' class='m'>indent</a>) (<a id='1182' tid='1181' class='m'>car</a> <a id='1184' tid='1183'
