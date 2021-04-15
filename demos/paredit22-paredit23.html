@@ -3677,3 +3677,14 @@ At the top level, where indentation is calculated to be at column 0,
                                       (<a id='2650' tid='2649' class='u'>region-end</a>)
                                       <a id='2652' tid='2651' class='u'>argument</a>))
         ((<a id='2654' tid='2653' class='u'>paredit-comment-on-line-p</a>)
+         (<a id='2656' tid='2655' class='u'>if</a> <a id='2658' tid='2657' class='u'>argument</a>
+             (<a id='2660' tid='2659' class='u'>comment-kill</a> (<a id='2662' tid='2661' class='u'>if</a> (<a id='2664' tid='2663' class='u'>integerp</a> <a id='2666' tid='2665' class='u'>argument</a>) <a id='2668' tid='2667' class='u'>argument</a> <a id='2670' tid='2669' class='u'>nil</a>))
+             (<a id='2672' tid='2671' class='u'>comment-indent</a>)))
+        (<a id='2674' tid='2673' class='u'>t</a> (<a id='2676' tid='2675' class='u'>paredit-insert-comment</a>))))
+
+(<a id='2678' tid='2677' class='u'>defun</a> <a id='2680' tid='2679' class='u'>paredit-comment-on-line-p</a> ()
+  <a id='2682' tid='2681' class='u'>&quot;True if there is a comment on the line following point.
+This is expected to be called only in `paredit-comment-dwim&#39;; do not
+  call it elsewhere.&quot;</a>
+  (<a id='2684' tid='2683' class='u'>save-excursion</a>
+    (<a id='2686' tid='
