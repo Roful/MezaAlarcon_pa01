@@ -3710,4 +3710,15 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
     (<a id='1160' tid='1159' class='m'>cond</a> ((<a id='1162' tid='1161' class='m'>and</a> (<a id='1164' tid='1163' class='m'>bolp</a>)
                 (<a id='1166' tid='1165' class='m'>let</a> ((<a id='1168' tid='1167' class='m'>indent</a>
                        (<a id='1170' tid='1169' class='m'>let</a> ((<a id='1172' tid='1171' class='m'>indent</a> (<a id='1174' tid='1173' class='m'>calculate-lisp-indent</a>)))
-                         (<a id='1176' tid='1175' class='m'>if</a> (<a id='1178' tid='1177' class='m'>consp</a> <a id='1180' tid='1179' class='m'>indent</a>) (<a id='1182' tid='1181' class='m'>car</a> <a id='1184' tid='1183'
+                         (<a id='1176' tid='1175' class='m'>if</a> (<a id='1178' tid='1177' class='m'>consp</a> <a id='1180' tid='1179' class='m'>indent</a>) (<a id='1182' tid='1181' class='m'>car</a> <a id='1184' tid='1183' class='m'>indent</a>) <a id='1186' tid='1185' class='m'>indent</a>))))
+                  (<a id='1188' tid='1187' class='m'>and</a> <a id='1190' tid='1189' class='m'>indent</a> (<a id='1192' tid='1191' class='m'>zerop</a> <a id='1194' tid='1193' class='m'>indent</a>))))
+           <a id='1196' tid='1195' class='m'>;; Top-level comment
+</a>           (<a id='1198' tid='1197' class='m'>if</a> <a id='1200' tid='1199' class='m'>code-after-p</a> (<a id='1202' tid='1201' class='m'>save-excursion</a> (<a id='1204' tid='1203' class='m'>newline</a>)))
+           (<a id='1206' tid='1205' class='m'>insert</a> <a id='1208' tid='1207' class='m'>&quot;;;; &quot;</a>))
+          (<span class='i'>(or code-after-p (not code-before-p))</span>
+           <span class='i'>;; Code comment
+</span>           <span class='i'>(if code-before-p
+               (newline-and-indent)
+               (lisp-indent-line))</span>
+           <span class='i'>(insert &quot;;; &quot;)</span>
+          
