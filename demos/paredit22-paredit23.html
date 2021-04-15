@@ -3721,4 +3721,16 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
                (newline-and-indent)
                (lisp-indent-line))</span>
            <span class='i'>(insert &quot;;; &quot;)</span>
-          
+           (<a id='1210' tid='1209' class='m'>if</a> <a id='1212' tid='1211' class='m'>code-after-p</a>
+               (<a id='1214' tid='1213' class='m'>save-excursion</a>
+                 (<a id='1216' tid='1215' class='m'>newline</a>)
+                 (<a id='1218' tid='1217' class='m'>lisp-indent-line</a>)
+                 (<a id='1220' tid='1219' class='m'>paredit-indent-sexps</a>))))
+          (<a id='1222' tid='1221' class='m'>t</a>
+           <a id='1224' tid='1223' class='m'>;; Margin comment
+</a>           (<a id='1226' tid='1225' class='m'>indent-to</a> <a id='1228' tid='1227' class='m'>comment-column</a> <a id='1230' tid='1229' class='m'>1</a>) <a id='1232' tid='1231' class='m'>; 1 -&gt; force one leading space
+</a>           (<a id='1234' tid='1233' class='m'>insert</a> <a id='1236' tid='1235' class='m'>?\;</a> )))))
+
+<a id='7344' tid='7343' class='u'>;;;; Character Deletion
+</a>
+(<a id='3232' tid='3231' class='u'>defun</a> <a id='3234' tid='3233' class='u'>pare
