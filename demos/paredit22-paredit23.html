@@ -3687,4 +3687,12 @@ At the top level, where indentation is calculated to be at column 0,
 This is expected to be called only in `paredit-comment-dwim&#39;; do not
   call it elsewhere.&quot;</a>
   (<a id='2684' tid='2683' class='u'>save-excursion</a>
-    (<a id='2686' tid='
+    (<a id='2686' tid='2685' class='u'>beginning-of-line</a>)
+    (<a id='2688' tid='2687' class='u'>let</a> ((<a id='2690' tid='2689' class='u'>comment-p</a> <a id='2692' tid='2691' class='u'>nil</a>))
+      <a id='2694' tid='2693' class='u'>;; Search forward for a comment beginning.  If there is one, set
+</a>      <a id='2696' tid='2695' class='u'>;; COMMENT-P to true; if not, it will be nil.
+</a>      (<a id='2698' tid='2697' class='u'>while</a> (<a id='2700' tid='2699' class='u'>progn</a>
+               (<a id='2702' tid='2701' class='u'>setq</a> <a id='2704' tid='2703' class='u'>comment-p</a>          <a id='2706' tid='2705' class='u'>;t -&gt; no error
+</a>                     (<a id='2708' tid='2707' class='u'>comment-search-forward</a> (<a id='2710' tid='2709' class='u'>point-at-eol</a>) <a id='2712' tid='2711' class='u'>t</a>))
+               (<a id='2714' tid='2713' class='u'>and</a> <a id='2716' tid='2715' class='u'>comment-p</a>
+                    (<a id='2718' tid='2717' class='u'>or</a> (<a id='2
