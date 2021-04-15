@@ -3695,4 +3695,13 @@ This is expected to be called only in `paredit-comment-dwim&#39;; do not
                (<a id='2702' tid='2701' class='u'>setq</a> <a id='2704' tid='2703' class='u'>comment-p</a>          <a id='2706' tid='2705' class='u'>;t -&gt; no error
 </a>                     (<a id='2708' tid='2707' class='u'>comment-search-forward</a> (<a id='2710' tid='2709' class='u'>point-at-eol</a>) <a id='2712' tid='2711' class='u'>t</a>))
                (<a id='2714' tid='2713' class='u'>and</a> <a id='2716' tid='2715' class='u'>comment-p</a>
-                    (<a id='2718' tid='2717' class='u'>or</a> (<a id='2
+                    (<a id='2718' tid='2717' class='u'>or</a> (<a id='2720' tid='2719' class='u'>paredit-in-string-p</a>)
+                        (<a id='2722' tid='2721' class='u'>paredit-in-char-p</a> (<a id='2724' tid='2723' class='u'>1-</a> (<a id='2726' tid='2725' class='u'>point</a>))))))
+        (<a id='2728' tid='2727' class='u'>forward-char</a>))
+      <a id='2730' tid='2729' class='u'>comment-p</a>)))
+
+(<a id='4258' tid='4257' class='u'>defun</a> <a id='4260' tid='4259' class='u'>paredit-insert-comment</a> ()
+  (<a id='1130' tid='1129' class='m'>let</a> ((<a id='1132' tid='1131' class='m'>code-after-p</a>
+         (<a id='1134' tid='1133' class='m'>save-excursion</a> (<a id='1136' tid='1135' class='m'>paredit-skip-whitespace</a> <a id='1138' tid='1137' class='m'>t</a> (<a id='1140' tid='1139' class='m'>point-at-eol</a>))
+                         (<a id='1142' tid='1141' class='m'>not</a> (<a id='1144' tid='1143' class='m'>eolp</a>))))
+        (<a id='1146' tid='1145' class='m'>code-before-p</a>
