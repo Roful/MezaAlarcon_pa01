@@ -3744,4 +3744,12 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
   without regard for delimiter balancing.&quot;</a>
   (<a id='3242' tid='3241' class='u'>interactive</a> <a id='3244' tid='3243' class='u'>&quot;P&quot;</a>)
   (<span class='i'>cond</span> ((<a id='1238' tid='1237' class='m'>or</a> (<a id='1240' tid='1239' class='m'>consp</a> <a id='1242' tid='1241' class='m'>argument</a>) (<a id='1244' tid='1243' class='m'>eobp</a>))
-         (<a id='1246' tid='1245' class='m'>delete-char</a> <
+         (<a id='1246' tid='1245' class='m'>delete-char</a> <a id='1248' tid='1247' class='m'>1</a>))
+        ((<a id='576' tid='575' class='m'>integerp</a> <a id='578' tid='577' class='m'>argument</a>)
+         (<a id='580' tid='579' class='m'>if</a> (<a id='582' tid='581' class='m'>&lt;</a> <a id='584' tid='583' class='m'>argument</a> <a id='586' tid='585' class='m'>0</a>)
+             (<a id='588' tid='587' class='m'>paredit-backward-delete</a> <a id='590' tid='589' class='m'>argument</a>)
+             (<a id='592' tid='591' class='m'>while</a> (<a id='594' tid='593' class='m'>&gt;</a> <a id='596' tid='595' class='m'>argument</a> <a id='598' tid='597' class='m'>0</a>)
+               (<a id='600' tid='599' class='m'>paredit-forward-delete</a>)
+               (<a id='602' tid='601' class='m'>setq</a> <a id='604' tid='603' class='m'>argument</a> (<a id='606' tid='605' class='m'>-</a> <a id='608' tid='607' class='m'>argument</a> <a id='610' tid='609' class='m'>1</a>)))))
+        <span class='i'>((paredit-in-string-p)
+         (paredit-forwar
