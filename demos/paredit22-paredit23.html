@@ -3752,4 +3752,13 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
                (<a id='600' tid='599' class='m'>paredit-forward-delete</a>)
                (<a id='602' tid='601' class='m'>setq</a> <a id='604' tid='603' class='m'>argument</a> (<a id='606' tid='605' class='m'>-</a> <a id='608' tid='607' class='m'>argument</a> <a id='610' tid='609' class='m'>1</a>)))))
         <span class='i'>((paredit-in-string-p)
-         (paredit-forwar
+         (paredit-forward-delete-in-string))</span>
+        <span class='i'>((paredit-in-comment-p)
+         (paredit-forward-delete-in-comment))</span>
+        ((<a id='472' tid='471' class='m'>paredit-in-char-p</a>)            <a id='474' tid='473' class='m'>; Escape -- delete both chars.
+</a>         (<a id='476' tid='475' class='m'>backward-delete-char</a> <a id='478' tid='477' class='m'>1</a>)
+         (<a id='480' tid='479' class='m'>delete-char</a> <a id='482' tid='481' class='m'>1</a>))
+        ((<a id='438' tid='437' class='m'>eq</a> (<a id='440' tid='439' class='m'>char-after</a>) <a id='442' tid='441' class='m'>?\\</a> )         <a id='444' tid='443' class='m'>; ditto
+</a>         (<a id='446' tid='445' class='m'>delete-char</a> <a id='448' tid='447' class='m'>2</a>))
+        ((<a id='334' tid='333' class='m'>let</a> ((<a id='336' tid='335' class='m'>syn</a> (<a id='338' tid='337' class='m'>char-syntax</a> (<a id='340' tid='339' class='m'>char-after</a>))))
+  
