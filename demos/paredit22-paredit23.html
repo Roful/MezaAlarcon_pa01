@@ -3761,4 +3761,12 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
         ((<a id='438' tid='437' class='m'>eq</a> (<a id='440' tid='439' class='m'>char-after</a>) <a id='442' tid='441' class='m'>?\\</a> )         <a id='444' tid='443' class='m'>; ditto
 </a>         (<a id='446' tid='445' class='m'>delete-char</a> <a id='448' tid='447' class='m'>2</a>))
         ((<a id='334' tid='333' class='m'>let</a> ((<a id='336' tid='335' class='m'>syn</a> (<a id='338' tid='337' class='m'>char-syntax</a> (<a id='340' tid='339' class='m'>char-after</a>))))
-  
+           (<a id='342' tid='341' class='m'>or</a> (<a id='344' tid='343' class='m'>eq</a> <a id='346' tid='345' class='m'>syn</a> <a id='348' tid='347' class='m'>?\(</a> )
+               (<a id='350' tid='349' class='m'>eq</a> <a id='352' tid='351' class='m'>syn</a> <a id='354' tid='353' class='m'>?\&quot;</a> )))
+         (<a id='356' tid='355' class='m'>if</a> (<a id='358' tid='357' class='m'>save-excursion</a>
+               (<a id='360' tid='359' class='m'>paredit-handle-sexp-errors</a> (<a id='362' tid='361' class='m'>progn</a> (<a id='364' tid='363' class='m'>forward-sexp</a>) <a id='366' tid='365' class='m'>t</a>)
+                 <a id='368' tid='367' class='m'>nil</a>))
+             (<a id='370' tid='369' class='m'>forward-char</a>)
+           (<a id='372' tid='371' class='m'>message</a> <a id='374' tid='373' class='m'>&quot;Deleting spurious opening delimiter.&quot;</a>)
+           (<a id='376' tid='375' class='m'>delete-char</a> <a id='378' tid='377' class='m'>1</a>)))
+        ((<
