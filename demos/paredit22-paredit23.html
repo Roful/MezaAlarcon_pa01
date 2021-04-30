@@ -3799,3 +3799,20 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
 </a>                  (<a id='3298' tid='3297' class='u'>delete-char</a> <a id='3300' tid='3299' class='u'>1</a>)))
            (<a id='3302' tid='3301' class='u'>delete-char</a> <a id='3304' tid='3303' class='u'>1</a>))
           ((<a id='3306' tid='3305' class='u'>eq</a> (<a id='3308' tid='3307' class='u'>1-</a> (<a id='3310' tid='3309' class='u'>point</a>)) (<a id='3312' tid='3311' class='u'>car</a> <a id='3314' tid='3313' class='u'>start+end</a>))
+           <a id='3316' tid='3315' class='u'>;; If it is the close-quote, delete only if we&#39;re also right
+</a>           <a id='3318' tid='3317' class='u'>;; past the open-quote (i.e. it&#39;s empty), and then delete
+</a>           <a id='3320' tid='3319' class='u'>;; both quotes.  Otherwise we refuse to delete it.
+</a>           (<a id='3322' tid='3321' class='u'>backward-delete-char</a> <a id='3324' tid='3323' class='u'>1</a>)
+           (<a id='3326' tid='3325' class='u'>delete-char</a> <a id='3328' tid='3327' class='u'>1</a>)))))
+
+<span class='i'>(defun paredit-forward-delete-in-comment ()
+  ;; Point is in a comment, possibly at eol.  Refuse to delete a
+  ;; comment end if moving the next line into the comment would break
+  ;; structure.
+  (if (eolp)
+      (let ((next-line-start (point-at-bol 2))
+            (next-line-end (point-at-eol 2)))
+        (paredit-check-region next-line-start next-line-end)))
+  (delete-char 1))</span>
+
+<span class='i'>(defun 
