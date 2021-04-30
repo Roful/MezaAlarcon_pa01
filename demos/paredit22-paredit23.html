@@ -3790,4 +3790,12 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
 </a>           (<a id='3272' tid='3271' class='u'>cond</a> ((<a id='3274' tid='3273' class='u'>paredit-in-string-escape-p</a>)
                   <a id='3276' tid='3275' class='u'>;; We&#39;re right after the backslash, so backward
 </a>                  <a id='3278' tid='3277' class='u'>;; delete it before deleting the escaped character.
-</a>                  (<a id='3280' tid='3279' class='u'>backward-delete-char</a> <a id='3282' tid='3281' class='u'
+</a>                  (<a id='3280' tid='3279' class='u'>backward-delete-char</a> <a id='3282' tid='3281' class='u'>1</a>))
+                 ((<a id='3284' tid='3283' class='u'>eq</a> (<a id='3286' tid='3285' class='u'>char-after</a>) <a id='3288' tid='3287' class='u'>?\\</a> )
+                  <a id='3290' tid='3289' class='u'>;; If we&#39;re not in a string escape, but we are on a
+</a>                  <a id='3292' tid='3291' class='u'>;; backslash, it must start the escape for the next
+</a>                  <a id='3294' tid='3293' class='u'>;; character, so delete the backslash before deleting
+</a>                  <a id='3296' tid='3295' class='u'>;; the next character.
+</a>                  (<a id='3298' tid='3297' class='u'>delete-char</a> <a id='3300' tid='3299' class='u'>1</a>)))
+           (<a id='3302' tid='3301' class='u'>delete-char</a> <a id='3304' tid='3303' class='u'>1</a>))
+          ((<a id='3306' tid='3305' class='u'>eq</a> (<a id='3308' tid='3307' class='u'>1-</a> (<a id='3310' tid='3309' class='u'>point</a>)) (<a id='3312' tid='3311' class='u'>car</a> <a id='3314' tid='3313' class='u'>start+end</a>))
