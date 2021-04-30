@@ -3783,4 +3783,11 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
          (<a id='208' tid='207' class='m'>delete-char</a> <a id='210' tid='209' class='m'>1</a>))))
 
 (<a id='3246' tid='3245' class='u'>defun</a> <a id='3248' tid='3247' class='u'>paredit-forward-delete-in-string</a> ()
-  (<a id='3250' tid='3249' class='u'>let</a> ((<a id='3252' tid='3251' class='u'>start+end</a> (<a id='3254' tid=
+  (<a id='3250' tid='3249' class='u'>let</a> ((<a id='3252' tid='3251' class='u'>start+end</a> (<a id='3254' tid='3253' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='3256' tid='3255' class='u'>cond</a> ((<a id='3258' tid='3257' class='u'>not</a> (<a id='3260' tid='3259' class='u'>eq</a> (<a id='3262' tid='3261' class='u'>point</a>) (<a id='3264' tid='3263' class='u'>cdr</a> <a id='3266' tid='3265' class='u'>start+end</a>)))
+           <a id='3268' tid='3267' class='u'>;; If it&#39;s not the close-quote, it&#39;s safe to delete.  But
+</a>           <a id='3270' tid='3269' class='u'>;; first handle the case that we&#39;re in a string escape.
+</a>           (<a id='3272' tid='3271' class='u'>cond</a> ((<a id='3274' tid='3273' class='u'>paredit-in-string-escape-p</a>)
+                  <a id='3276' tid='3275' class='u'>;; We&#39;re right after the backslash, so backward
+</a>                  <a id='3278' tid='3277' class='u'>;; delete it before deleting the escaped character.
+</a>                  (<a id='3280' tid='3279' class='u'>backward-delete-char</a> <a id='3282' tid='3281' class='u'
