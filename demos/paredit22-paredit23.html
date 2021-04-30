@@ -3829,4 +3829,12 @@ If on an opening S-expression delimiter, refuse to delete unless the
   S-expression is empty, in which case delete the whole S-expression.
 With a numeric prefix argument N, delete N characters backward.
 With a `C-u&#39; prefix argument, simply delete a character backward,
-  without regard for delimite
+  without regard for delimiter balancing.&quot;</a>
+  (<a id='2118' tid='2117' class='u'>interactive</a> <a id='2120' tid='2119' class='u'>&quot;P&quot;</a>)
+  (<span class='i'>cond</span> ((<a id='1250' tid='1249' class='m'>or</a> (<a id='1252' tid='1251' class='m'>consp</a> <a id='1254' tid='1253' class='m'>argument</a>) (<a id='1256' tid='1255' class='m'>bobp</a>))
+         <a id='1258' tid='1257' class='m'>;++ Should this untabify?
+</a>         (<a id='1260' tid='1259' class='m'>backward-delete-char</a> <a id='1262' tid='1261' class='m'>1</a>))
+        ((<a id='612' tid='611' class='m'>integerp</a> <a id='614' tid='613' class='m'>argument</a>)
+         (<a id='616' tid='615' class='m'>if</a> (<a id='618' tid='617' class='m'>&lt;</a> <a id='620' tid='619' class='m'>argument</a> <a id='622' tid='621' class='m'>0</a>)
+             (<a id='624' tid='623' class='m'>paredit-forward-delete</a> (<a id='626' tid='625' class='m'>-</a> <a id='628' tid='627' class='m'>0</a> <a id='630' tid='629' class='m'>argument</a>))
+             (<a id=
