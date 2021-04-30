@@ -3774,4 +3774,13 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
               (<a id='270' tid='269' class='m'>eq</a> (<a id='272' tid='271' class='m'>char-before</a>) (<a id='274' tid='273' class='m'>matching-paren</a> (<a id='276' tid='275' class='m'>char-after</a>))))
          (<a id='278' tid='277' class='m'>backward-delete-char</a> <a id='280' tid='279' class='m'>1</a>)       <a id='282' tid='281' class='m'>; Empty list -- delete both
 </a>         (<a id='284' tid='283' class='m'>delete-char</a> <a id='286' tid='285' class='m'>1</a>))               <span class='i'>;   delimiters.
-</span>        <s
+</span>        <span class='i'>((eq ?\; (char-after))
+         (paredit-forward-delete-comment-start))</span>
+        <span class='i'>;; Just delete a single character, if it&#39;s not a closing
+</span>        <span class='i'>;; delimiter.  (The character literal case is already handled
+</span>        <span class='i'>;; by now.)
+</span>        ((<a id='198' tid='197' class='m'>not</a> (<a id='200' tid='199' class='m'>eq</a> (<a id='202' tid='201' class='m'>char-syntax</a> (<a id='204' tid='203' class='m'>char-after</a>)) <a id='206' tid='205' class='m'>?\)</a> ))
+         (<a id='208' tid='207' class='m'>delete-char</a> <a id='210' tid='209' class='m'>1</a>))))
+
+(<a id='3246' tid='3245' class='u'>defun</a> <a id='3248' tid='3247' class='u'>paredit-forward-delete-in-string</a> ()
+  (<a id='3250' tid='3249' class='u'>let</a> ((<a id='3252' tid='3251' class='u'>start+end</a> (<a id='3254' tid=
