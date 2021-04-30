@@ -3846,4 +3846,11 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
          (paredit-backward-delete-in-comment))</span>
         ((<a id='484' tid='483' class='m'>paredit-in-char-p</a>)            <a id='486' tid='485' class='m'>; Escape -- delete both chars.
 </a>         (<a id='488' tid='487' class='m'>backward-delete-char</a> <a id='490' tid='489' class='m'>1</a>)
-         (<a id='492' tid='491' class='m'>delete-char</a> <a id='494' t
+         (<a id='492' tid='491' class='m'>delete-char</a> <a id='494' tid='493' class='m'>1</a>))
+        ((<a id='450' tid='449' class='m'>paredit-in-char-p</a> (<a id='452' tid='451' class='m'>1-</a> (<a id='454' tid='453' class='m'>point</a>)))
+         (<a id='456' tid='455' class='m'>backward-delete-char</a> <a id='458' tid='457' class='m'>2</a>))      <span class='i'>; ditto
+</span>        ((<a id='380' tid='379' class='m'>let</a> ((<a id='382' tid='381' class='m'>syn</a> (<a id='384' tid='383' class='m'>char-syntax</a> (<a id='386' tid='385' class='m'>char-before</a>))))
+           (<a id='388' tid='387' class='m'>or</a> (<a id='390' tid='389' class='m'>eq</a> <a id='392' tid='391' class='m'>syn</a> <a id='394' tid='393' class='m'>?\)</a> )
+               (<a id='396' tid='395' class='m'>eq</a> <a id='398' tid='397' class='m'>syn</a> <a id='400' tid='399' class='m'>?\&quot;</a> )))
+         (<a id='402' tid='401' class='m'>if</a> (<a id='404' tid='403' class='m'>save-excursion</a>
+               (<a id='406' tid='405' class='m'>pare
