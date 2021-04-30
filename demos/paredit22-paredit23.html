@@ -3815,4 +3815,18 @@ With a `C-u&#39; prefix argument, simply delete a character forward,
         (paredit-check-region next-line-start next-line-end)))
   (delete-char 1))</span>
 
-<span class='i'>(defun 
+<span class='i'>(defun paredit-forward-delete-comment-start ()
+  ;; Point precedes a comment start (not at eol).  Refuse to delete a
+  ;; comment start if the comment contains unbalanced junk.
+  (paredit-check-region (+ (point) 1) (point-at-eol))
+  (delete-char 1))</span>
+
+(<a id='2108' tid='2107' class='u'>defun</a> <a id='2110' tid='2109' class='u'>paredit-backward-delete</a> (<a id='2112' tid='2111' class='u'>&optional</a> <a id='2114' tid='2113' class='u'>argument</a>)
+  <a id='2116' tid='2115' class='u'>&quot;Delete a character backward or move backward over a delimiter.
+If on a closing S-expression delimiter, move backward into the
+  S-expression.
+If on an opening S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a numeric prefix argument N, delete N characters backward.
+With a `C-u&#39; prefix argument, simply delete a character backward,
+  without regard for delimite
