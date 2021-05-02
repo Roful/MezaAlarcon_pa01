@@ -3860,4 +3860,13 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
            (<a id='422' tid='421' class='m'>backward-delete-char</a> <a id='424' tid='423' class='m'>1</a>)))
         ((<a id='288' tid='287' class='m'>and</a> (<a id='290' tid='289' class='m'>eq</a> (<a id='292' tid='291' class='m'>char-syntax</a> (<a id='294' tid='293' class='m'>char-before</a>)) <a id='296' tid='295' class='m'>?\(</a> )
               (<a id='298' tid='297' class='m'>eq</a> (<a id='300' tid='299' class='m'>char-after</a>) (<a id='302' tid='301' class='m'>matching-paren</a> (<a id='304' tid='303' class='m'>char-before</a>))))
-    
+         (<a id='306' tid='305' class='m'>backward-delete-char</a> <a id='308' tid='307' class='m'>1</a>)       <a id='310' tid='309' class='m'>; Empty list -- delete both
+</a>         (<a id='312' tid='311' class='m'>delete-char</a> <a id='314' tid='313' class='m'>1</a>))               <span class='i'>;   delimiters.
+</span>        <span class='i'>((bolp)
+         (paredit-backward-delete-maybe-comment-end))</span>
+        <span class='i'>;; Delete it, unless it&#39;s an opening delimiter.  The case of
+</span>        <span class='i'>;; character literals is already handled by now.
+</span>        ((<a id='212' tid='211' class='m'>not</a> (<a id='214' tid='213' class='m'>eq</a> (<a id='216' tid='215' class='m'>char-syntax</a> (<a id='218' tid='217' class='m'>char-before</a>)) <a id='220' tid='219' class='m'>?\(</a> ))
+         (<a id='222' tid='221' class='m'>backward-delete-char-untabify</a> <a id='224' tid='223' class='m'>1</a>))))
+
+(<a id='2122' tid='2121
