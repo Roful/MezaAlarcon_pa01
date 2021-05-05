@@ -3876,4 +3876,13 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
 </a>           (<a id='2148' tid='2147' class='u'>if</a> (<a id='2150' tid='2149' class='u'>paredit-in-string-escape-p</a>)
                <a id='2152' tid='2151' class='u'>;; If we&#39;re on a string escape, since we&#39;re about to
 </a>               <a id='2154' tid='2153' class='u'>;; delete the backslash, we must first delete the
-</a>        
+</a>               <a id='2156' tid='2155' class='u'>;; escaped char.
+</a>               (<a id='2158' tid='2157' class='u'>delete-char</a> <a id='2160' tid='2159' class='u'>1</a>))
+           (<a id='2162' tid='2161' class='u'>backward-delete-char</a> <a id='2164' tid='2163' class='u'>1</a>)
+           (<a id='2166' tid='2165' class='u'>if</a> (<a id='2168' tid='2167' class='u'>paredit-in-string-escape-p</a>)
+               <a id='2170' tid='2169' class='u'>;; If, after deleting a character, we find ourselves in
+</a>               <a id='2172' tid='2171' class='u'>;; a string escape, we must have deleted the escaped
+</a>               <a id='2174' tid='2173' class='u'>;; character, and the backslash is behind the point, so
+</a>               <a id='2176' tid='2175' class='u'>;; backward delete it.
+</a>               (<a id='2178' tid='2177' class='u'>backward-delete-char</a> <a id='2180' tid='2179' class='u'>1</a>)))
+          ((<a id='2182' tid='2181' class='u'>eq</a> (<a 
