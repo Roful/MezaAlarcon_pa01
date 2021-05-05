@@ -3949,4 +3949,18 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
       <a id='4586' tid='4585' class='u'>;; Be careful not to split an escape sequence.
 </a>      (<a id='4588' tid='4587' class='u'>if</a> (<a id='4590' tid='4589' class='u'>paredit-in-string-escape-p</a>)
           (<a id='4592' tid='4591' class='u'>backward-char</a>))
-      (<a id='4594' tid='4593' class='u'>kill-region</a> (<a id='4596' tid='4595' c
+      (<a id='4594' tid='4593' class='u'>kill-region</a> (<a id='4596' tid='4595' class='u'>point</a>)
+                   (<a id='4598' tid='4597' class='u'>min</a> (<a id='4600' tid='4599' class='u'>point-at-eol</a>)
+                        (<a id='4602' tid='4601' class='u'>cdr</a> (<a id='4604' tid='4603' class='u'>paredit-string-start+end-points</a>)))))))
+
+<span class='i'>(defun paredit-kill-line-in-comment ()
+  ;; If we&#39;re at the end of line, this is the same as deleting the line
+  ;; end, which `paredit-forward-delete-in-comment&#39; handles carefully.
+  ;; The variable `kill-whole-line&#39; is not relevant: the point is in a
+  ;; comment, and hence not at the beginning of the line.
+  (if (eolp)
+      (paredit-forward-delete-in-comment)
+      (kill-line)))</span>
+
+(<a id='4622' tid='4621' class='u'>defun</a> <a id='4624' tid='4623' class='u'>paredit-kill-sexps-on-line</a> ()
+  (<a id='4626' tid='4625' class='u'>if</a> (<a id='4628' tid='4627' class='u'>paredit-in-char-p</a>)               <a id='4630' ti
