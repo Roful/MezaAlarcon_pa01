@@ -3963,4 +3963,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
       (kill-line)))</span>
 
 (<a id='4622' tid='4621' class='u'>defun</a> <a id='4624' tid='4623' class='u'>paredit-kill-sexps-on-line</a> ()
-  (<a id='4626' tid='4625' class='u'>if</a> (<a id='4628' tid='4627' class='u'>paredit-in-char-p</a>)               <a id='4630' ti
+  (<a id='4626' tid='4625' class='u'>if</a> (<a id='4628' tid='4627' class='u'>paredit-in-char-p</a>)               <a id='4630' tid='4629' class='u'>; Move past the \ and prefix.
+</a>      (<a id='4632' tid='4631' class='u'>backward-char</a> <a id='4634' tid='4633' class='u'>2</a>))                <a id='4636' tid='4635' class='u'>; (# in Scheme/CL, ? in elisp)
+</a>  (<a id='4638' tid='4637' class='u'>let</a> ((<a id='4640' tid='4639' class='u'>beginning</a> (<a id='4642' tid='4641' class='u'>point</a>))
+        (<a id='4644' tid='4643' class='u'>eol</a> (<a id='4646' tid='4645' class='u'>point-at-eol</a>)))
+    (<a id='4648' tid='4647' class='u'>let</a> ((<a id='4650' tid='4649' class='u'>end-of-list-p</a> (<a id='4652' tid='4651' class='u'>paredit-forward-sexps-to-kill</a> <a id='4654' tid='4653' class='u'>beginning</a> <a id='4656' tid='4655' class='u'>eol</a>)))
+      <a id='4658' tid='4657' class='u'>;; If we got to the end of the list and it&#39;s on the same line,
+</a>      <a id='4660' tid='4659' class='u'>;; move backward past the closing delimiter before killing.  (Th
