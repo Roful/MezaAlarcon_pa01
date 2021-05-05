@@ -3900,4 +3900,21 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
         (backward-char)
         ;; Must call `paredit-in-string-p&#39; before
         ;; `paredit-in-comment-p&#39;.
-     
+        (not (or (paredit-in-string-p) (paredit-in-comment-p))))
+      (paredit-check-region (point) (point-at-eol)))
+  (backward-delete-char-untabify +1))</span>
+
+<span class='i'>(defun paredit-backward-delete-maybe-comment-end ()
+  ;; Point is at bol, possibly just after a comment end (i.e., the
+  ;; previous line may have had a line comment).  Refuse to delete a
+  ;; comment end if moving the current line into the previous line&#39;s
+  ;; comment would break structure.
+  (if (save-excursion
+        (backward-char)
+        (and (not (paredit-in-string-p)) (paredit-in-comment-p)))
+      (paredit-check-region (point-at-eol) (point-at-bol)))
+  (backward-delete-char 1))</span>
+
+<a id='7346' tid='7345' class='u'>;;;; Killing
+</a>
+(<a id='4552' tid='4551' class='u'>defun</a> <a id='4554' tid='4553' class='u'>paredit-kill</a> (<a id='4556' tid='4555' class='u'>&optional</a> <a id='4558' tid='4557' class='u'>argument<
