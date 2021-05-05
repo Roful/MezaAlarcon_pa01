@@ -3885,4 +3885,19 @@ With a `C-u&#39; prefix argument, simply delete a character backward,
 </a>               <a id='2174' tid='2173' class='u'>;; character, and the backslash is behind the point, so
 </a>               <a id='2176' tid='2175' class='u'>;; backward delete it.
 </a>               (<a id='2178' tid='2177' class='u'>backward-delete-char</a> <a id='2180' tid='2179' class='u'>1</a>)))
-          ((<a id='2182' tid='2181' class='u'>eq</a> (<a 
+          ((<a id='2182' tid='2181' class='u'>eq</a> (<a id='2184' tid='2183' class='u'>point</a>) (<a id='2186' tid='2185' class='u'>cdr</a> <a id='2188' tid='2187' class='u'>start+end</a>))
+           <a id='2190' tid='2189' class='u'>;; If it is the open-quote, delete only if we&#39;re also right
+</a>           <a id='2192' tid='2191' class='u'>;; past the close-quote (i.e. it&#39;s empty), and then delete
+</a>           <a id='2194' tid='2193' class='u'>;; both quotes.  Otherwise we refuse to delete it.
+</a>           (<a id='2196' tid='2195' class='u'>backward-delete-char</a> <a id='2198' tid='2197' class='u'>1</a>)
+           (<a id='2200' tid='2199' class='u'>delete-char</a> <a id='2202' tid='2201' class='u'>1</a>)))))
+
+<span class='i'>(defun paredit-backward-delete-in-comment ()
+  ;; Point is in a comment, possibly just after the comment start.
+  ;; Refuse to delete a comment start if the comment contains
+  ;; unbalanced junk.
+  (if (save-excursion
+        (backward-char)
+        ;; Must call `paredit-in-string-p&#39; before
+        ;; `paredit-in-comment-p&#39;.
+     
