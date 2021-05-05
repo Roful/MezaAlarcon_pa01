@@ -3928,4 +3928,14 @@ With a `C-u&#39; prefix argument, just do the standard `kill-line&#39;.
 With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='4562' tid='4561' class='u'>interactive</a> <a id='4564' tid='4563' class='u'>&quot;P&quot;</a>)
   (<span class='i'>cond</span> (<a id='1264' tid='1263' class='m'>argument</a>
-         (<a id='1266' tid='1265' class='m'>kill-line</a> (<a id='1268' tid='1267' class='m'>if</a> (<a id='1270' tid='1269' class='m'>integerp</a> <a id='1272' tid='1271' class='m'>argument</a>) <a id='1274' tid='1273' class='m'>argument</a> <a id='1
+         (<a id='1266' tid='1265' class='m'>kill-line</a> (<a id='1268' tid='1267' class='m'>if</a> (<a id='1270' tid='1269' class='m'>integerp</a> <a id='1272' tid='1271' class='m'>argument</a>) <a id='1274' tid='1273' class='m'>argument</a> <a id='1276' tid='1275' class='m'>1</a>)))
+        <span class='i'>((paredit-in-string-p)
+         (paredit-kill-line-in-string))</span>
+        <span class='i'>((paredit-in-comment-p)
+         (paredit-kill-line-in-comment))</span>
+        ((<a id='652' tid='651' class='m'>save-excursion</a> (<a id='654' tid='653' class='m'>paredit-skip-whitespace</a> <a id='656' tid='655' class='m'>t</a> (<a id='658' tid='657' class='m'>point-at-eol</a>))
+                         (<a id='660' tid='659' class='m'>or</a> (<a id='662' tid='661' class='m'>eolp</a>) (<a id='664' tid='663' class='m'>eq</a> (<a id='666' tid='665' class='m'>char-after</a>) <a id='668' tid='667' class='m'>?\;</a> )))
+         <a id='670' tid='669' class='m'>;** Be careful about trailing backslashes.
+</a>         (<a id='672' tid='671' class='m'>if</a> (<a id='674' tid='673' class='m'>paredit-in-char-p</a>)
+             (<a id='676' tid='675' class='m'>backward-char</a>))
+         (<a id='678' tid='677' class='m'>kill
