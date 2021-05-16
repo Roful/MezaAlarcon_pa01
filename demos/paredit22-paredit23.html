@@ -3977,4 +3977,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
         (<a id='4682' tid='4681' class='u'>kill-region</a> <a id='4684' tid='4683' class='u'>beginning</a>
                      <a id='4686' tid='4685' class='u'>;; If all of the S-expressions were on one line,
 </a>                     <a id='4688' tid='4687' class='u'>;; i.e. we&#39;re still on that line after moving past
-</a>                     <a id='4690' tid='4689' class='u'>;; the last one, kill the 
+</a>                     <a id='4690' tid='4689' class='u'>;; the last one, kill the whole line, including
+</a>                     <a id='4692' tid='4691' class='u'>;; any comments; otherwise just kill to the end of
+</a>                     <a id='4694' tid='4693' class='u'>;; the last S-expression we found.  Be sure,
+</a>                     <a id='4696' tid='4695' class='u'>;; though, not to kill any closing parentheses.
+</a>                     (<a id='4698' tid='4697' class='u'>if</a> (<a id='4700' tid='4699' class='u'>and</a> (<a id='4702' tid='4701' class='u'>not</a> <a id='4704' tid='4703' class='u'>end-of-list-p</a>)
+                              (<a id='4706' tid='4705' class='u'>eq</a> (<a id='4708' tid='4707' class='u'>point-at-eol</a>) <a id='4710' tid='4709' class='u'>eol</a>))
+                         <a id='4712' tid='4711' class='u'>eol</a>
+                         (<a id='4714' tid='4713' class='u'>point</a>)))))))
+
+<a id='7348' tid='7347' class='u'>;;; Please do not try to understand this code unless you 
