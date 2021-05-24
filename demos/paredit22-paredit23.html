@@ -3996,4 +3996,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
     <a id='3666' tid='3665' class='u'>;; Move to the end of the last S-expression that started on this
 </a>    <a id='3668' tid='3667' class='u'>;; line, or to the closing delimiter if the last S-expression in
 </a>    <a id='3670' tid='3669' class='u'>;; this list is on the line.
-</a>    (<a id='3672' tid='3671' class='u'>catch</a> <a id='3674' tid='3673' class='u'>&#39;
+</a>    (<a id='3672' tid='3671' class='u'>catch</a> <a id='3674' tid='3673' class='u'>&#39;</a><a id='3676' tid='3675' class='u'>return</a>
+      (<a id='3678' tid='3677' class='u'>while</a> <a id='3680' tid='3679' class='u'>t</a>
+        <a id='3682' tid='3681' class='u'>;; This and the `kill-whole-line&#39; business below fix a bug that
+</a>        <a id='3684' tid='3683' class='u'>;; inhibited any S-expression at the very end of the buffer
+</a>        <a id='3686' tid='3685' class='u'>;; (with no trailing newline) from being deleted.  It&#39;s a
+</a>        <a id='3688' tid='3687' class='u'>;; bizarre fix that I ought to document at some point, but I am
+</a>        <a id='3690' tid='3689' class='u'>;; too busy at the moment to do so.
+</a>        (<a id='3692' tid='3691' class='u'>if</a> (<a id='3694' tid='3693' class='u'>and</a> <a id='3696' tid='3695' class='u'>kill-whole-line</a> (<a id='3698' tid='3697' class='u'>eobp</a>)) (<a id='3700' tid='3699' class='u'>throw</a> <a id='3702' tid='3701' class='u'>&#39;</a><a id='3704' tid='3703' class='u'>ret
