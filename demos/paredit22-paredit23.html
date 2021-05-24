@@ -3986,4 +3986,14 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                          <a id='4712' tid='4711' class='u'>eol</a>
                          (<a id='4714' tid='4713' class='u'>point</a>)))))))
 
-<a id='7348' tid='7347' class='u'>;;; Please do not try to understand this code unless you 
+<a id='7348' tid='7347' class='u'>;;; Please do not try to understand this code unless you have a VERY
+</a><a id='7350' tid='7349' class='u'>;;; good reason to do so.  I gave up trying to figure it out well
+</a><a id='7352' tid='7351' class='u'>;;; enough to explain it, long ago.
+</a>
+(<a id='3648' tid='3647' class='u'>defun</a> <a id='3650' tid='3649' class='u'>paredit-forward-sexps-to-kill</a> (<a id='3652' tid='3651' class='u'>beginning</a> <a id='3654' tid='3653' class='u'>eol</a>)
+  (<a id='3656' tid='3655' class='u'>let</a> ((<a id='3658' tid='3657' class='u'>end-of-list-p</a> <a id='3660' tid='3659' class='u'>nil</a>)
+        (<a id='3662' tid='3661' class='u'>firstp</a> <a id='3664' tid='3663' class='u'>t</a>))
+    <a id='3666' tid='3665' class='u'>;; Move to the end of the last S-expression that started on this
+</a>    <a id='3668' tid='3667' class='u'>;; line, or to the closing delimiter if the last S-expression in
+</a>    <a id='3670' tid='3669' class='u'>;; this list is on the line.
+</a>    (<a id='3672' tid='3671' class='u'>catch</a> <a id='3674' tid='3673' class='u'>&#39;
