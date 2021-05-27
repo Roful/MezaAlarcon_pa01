@@ -4003,4 +4003,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>        <a id='3686' tid='3685' class='u'>;; (with no trailing newline) from being deleted.  It&#39;s a
 </a>        <a id='3688' tid='3687' class='u'>;; bizarre fix that I ought to document at some point, but I am
 </a>        <a id='3690' tid='3689' class='u'>;; too busy at the moment to do so.
-</a>        (<a id='3692' tid='3691' class='u'>if</a> (<a id='3694' tid='3693' class='u'>and</a> <a id='3696' tid='3695' class='u'>kill-whole-line</a> (<a id='3698' tid='3697' class='u'>eobp</a>)) (<a id='3700' tid='3699' class='u'>throw</a> <a id='3702' tid='3701' class='u'>&#39;</a><a id='3704' tid='3703' class='u'>ret
+</a>        (<a id='3692' tid='3691' class='u'>if</a> (<a id='3694' tid='3693' class='u'>and</a> <a id='3696' tid='3695' class='u'>kill-whole-line</a> (<a id='3698' tid='3697' class='u'>eobp</a>)) (<a id='3700' tid='3699' class='u'>throw</a> <a id='3702' tid='3701' class='u'>&#39;</a><a id='3704' tid='3703' class='u'>return</a> <a id='3706' tid='3705' class='u'>nil</a>))
+        (<a id='3708' tid='3707' class='u'>save-excursion</a>
+          (<a id='3710' tid='3709' class='u'>paredit-handle-sexp-errors</a> (<a id='3712' tid='3711' class='u'>forward-sexp</a>)
+            (<a id='3714' tid='3713' class='u'>up-list</a>)
+            (<a id='3716' tid='3715' class='u'>setq</a> <a id='3718' tid='3717' class='u'>end-of-list-p</a> (<a id='3720' tid='3719' class='u'>eq</a> (<a id='3722' tid='3721' class='u'>point-at-eol</a>) <a id='3724' tid='3723' class='u'>eol</a>))
+            (<a id='3726' tid='3725' class='u'>throw</a> <a id='3728' tid='3727' class='u'>&#39;</a><a id='3730' tid='3729' class='u'>return</a> <a id='3732' tid='3731' class='u'>nil</a>))
+          (<a id='3734' tid='3733' class='u'>if</a> (<a id='3736' tid='3735' class='u'>or</a> (<a id='3738' tid='3737' class='u'>and</a> (<a id='3740' tid='3739' class='u'>not</a> <a id='3742' tid='3741' class='u'>firstp</a>)
+     
