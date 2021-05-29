@@ -4010,4 +4010,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
             (<a id='3716' tid='3715' class='u'>setq</a> <a id='3718' tid='3717' class='u'>end-of-list-p</a> (<a id='3720' tid='3719' class='u'>eq</a> (<a id='3722' tid='3721' class='u'>point-at-eol</a>) <a id='3724' tid='3723' class='u'>eol</a>))
             (<a id='3726' tid='3725' class='u'>throw</a> <a id='3728' tid='3727' class='u'>&#39;</a><a id='3730' tid='3729' class='u'>return</a> <a id='3732' tid='3731' class='u'>nil</a>))
           (<a id='3734' tid='3733' class='u'>if</a> (<a id='3736' tid='3735' class='u'>or</a> (<a id='3738' tid='3737' class='u'>and</a> (<a id='3740' tid='3739' class='u'>not</a> <a id='3742' tid='3741' class='u'>firstp</a>)
-     
+                       (<a id='3744' tid='3743' class='u'>not</a> <a id='3746' tid='3745' class='u'>kill-whole-line</a>)
+                       (<a id='3748' tid='3747' class='u'>eobp</a>))
+                  (<a id='3750' tid='3749' class='u'>paredit-handle-sexp-errors</a>
+                      (<a id='3752' tid='3751' class='u'>progn</a> (<a id='3754' tid='3753' class='u'>backward-sexp</a>) <a id='3756' tid='3755' class='u'>nil</a>)
+                    <a id='3758' tid='3757' class='u'>t</a>)
+                  (<a id='3760' tid='3759' class='u'>not</a> (<a id='3762' tid='3761' class='u'>eq</a> (<a id='3764' tid='3763' class='u'>point-at-eol</a>) <a id='3766' tid='3765' class='u'>eol</a>)))
+              (<a id='3768' tid='3767' class='u'>throw</a> <a id='3770' tid='3769' class='u'>&#39;</a><a id='3772' tid='3771' class='u'>return</a> <a id='3774' tid='3773' class='u'>nil</a>)))
+        (<a id='3776' tid='3775' class='u'>forward-sexp</a>)
+        (
