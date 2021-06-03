@@ -4027,4 +4027,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 
 (<a id='4716' tid='4715' class='u'>defun</a> <a id='4718' tid='4717' class='u'>paredit-kill-sexps-on-whole-line</a> (<a id='4720' tid='4719' class='u'>beginning</a>)
   (<a id='4722' tid='4721' class='u'>kill-region</a> <a id='4724' tid='4723' class='u'>beginning</a>
-               (<a id='4726' tid='4725' c
+               (<a id='4726' tid='4725' class='u'>or</a> (<a id='4728' tid='4727' class='u'>save-excursion</a>     <a id='4730' tid='4729' class='u'>; Delete trailing indentation...
+</a>                     (<a id='4732' tid='4731' class='u'>paredit-skip-whitespace</a> <a id='4734' tid='4733' class='u'>t</a>)
+                     (<a id='4736' tid='4735' class='u'>and</a> (<a id='4738' tid='4737' class='u'>not</a> (<a id='4740' tid='4739' class='u'>eq</a> (<a id='4742' tid='4741' class='u'>char-after</a>) <a id='4744' tid='4743' class='u'>?\;</a> ))
+                          (<a id='4746' tid='4745' class='u'>point</a>)))
+                   <a id='4748' tid='4747' class='u'>;; ...or just use the point past the newline, if
+</a>                   <a id='4750' tid='4749' class='u'>;; we encounter a comment.
+</a>                   (<a id='4752' tid='4751' class='u'>point-at-eol</a>)))
+  (<a id='4754' tid='4753' class='u'>cond</a> ((<a id='4756' tid='4755' class='u'>save-excursion</a> (<a id='4758' tid='4757
