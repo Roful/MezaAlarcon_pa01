@@ -4045,4 +4045,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
            (<a id='4792' tid='4791' class='u'>or</a> (<a id='4794' tid='4793' class='u'>and</a> (<a id='4796' tid='4795' class='u'>eq</a> <a id='4798' tid='4797' class='u'>syn-before</a> <a id='4800' tid='4799' class='u'>?\)</a> )            <a id='4802' tid='4801' class='u'>; Separate opposing
 </a>                    (<a id='4804' tid='4803' class='u'>eq</a> <a id='4806' tid='4805' class='u'>syn-after</a>  <a id='4808' tid='4807' class='u'>?\(</a> ))           <a id='4810' tid='4809' class='u'>;   parentheses,
 </a>               (<a id='4812' tid='4811' class='u'>and</a> (<a id='4814' tid='4813' class='u'>eq</a> <a id='4816' tid='4815' class='u'>syn-before</a> <a id='4818' tid='4817' class='u'>?\&quot;</a> )            <a id='4820' tid='4819' class='u'>; string delimiter
-</a>                    (<a id='4822' tid='4821' class='u'>eq</a> <a id='4824' t
+</a>                    (<a id='4822' tid='4821' class='u'>eq</a> <a id='4824' tid='4823' class='u'>syn-after</a>  <a id='4826' tid='4825' class='u'>?\&quot;</a> ))           <a id='4828' tid='4827' class='u'>;   pairs,
+</a>               (<a id='4830' tid='4829' class='u'>and</a> (<a id='4832' tid='4831' class='u'>memq</a> <a id='4834' tid='4833' class='u'>syn-before</a> <a id='4836' tid='4835' class='u'>&#39;</a>(<a id='4838' tid='4837' class='u'>?_</a> <a id='4840' tid='4839' class='u'>?w</a>))      <a id='4842' tid='4841' class='u'>; or word or symbol
+</a>                    (<a id='4844' tid='4843' class='u'>memq</a> <a id='4846' tid='4845' class='u'>syn-after</a>  <a id='4848' tid='4847' class='u'>&#39;</a>(<a id='4850' tid='4849' class='u'>?_</a> <a id='4852' tid='4851' class='u'>?w</a>)))))   <a id='4854' tid='4853' class='u'>;   constituents.
+</a>         (<a id='4856' tid='4855' class='u'>insert</a> <a id='4858' tid='4857' class='u'>&quot; &quot;</a>))))
+
+<a id='7354' tid='7353' class='u'>;;;;; Killing Words
+</a>
+<a id='7356' tid='7355' class='u'>;;; This is tri
