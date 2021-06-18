@@ -4062,4 +4062,9 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='3526' tid='3525' class='u'>let</a> ((<a id='3528' tid='3527' class='u'>beginning</a> (<a id='3530' tid='3529' class='u'>point</a>)))
     (<a id='3532' tid='3531' class='u'>skip-syntax-forward</a> <a id='3534' tid='3533' class='u'>&quot; -&quot;</a>)
     (<a id='3536' tid='3535' class='u'>let*</a> ((<a id='3538' tid='3537' class='u'>parse-state</a> (<a id='3540' tid='3539' class='u'>paredit-current-parse-state</a>))
-    
+           (<a id='3542' tid='3541' class='u'>state</a> (<a id='3544' tid='3543' class='u'>paredit-kill-word-state</a> <a id='3546' tid='3545' class='u'>parse-state</a> <a id='3548' tid='3547' class='u'>&#39;</a><a id='3550' tid='3549' class='u'>char-after</a>)))
+      (<a id='3552' tid='3551' class='u'>while</a> (<a id='3554' tid='3553' class='u'>not</a> (<a id='3556' tid='3555' class='u'>or</a> (<a id='3558' tid='3557' class='u'>eobp</a>)
+                      (<a id='3560' tid='3559' class='u'>eq</a> <a id='3562' tid='3561' class='u'>?w</a> (<a id='3564' tid='3563' class='u'>char-syntax</a> (<a id='3566' tid='3565' class='u'>char-after</a>)))))
+        (<a id='3568' tid='3567' class='u'>setq</a> <a id='3570' tid='3569' class='u'>parse-state</a>
+              (<a id='3572' tid='3571' class='u'>progn</a> (<a id='3574' tid='3573' class='u'>forward-char</a> <a id='3576' tid='3575' class='u'>1</a>) (<a id='3578' tid='3577' class='u'>paredit-current-parse-state</a>))
+<a id='3580
