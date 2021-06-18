@@ -4067,4 +4067,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                       (<a id='3560' tid='3559' class='u'>eq</a> <a id='3562' tid='3561' class='u'>?w</a> (<a id='3564' tid='3563' class='u'>char-syntax</a> (<a id='3566' tid='3565' class='u'>char-after</a>)))))
         (<a id='3568' tid='3567' class='u'>setq</a> <a id='3570' tid='3569' class='u'>parse-state</a>
               (<a id='3572' tid='3571' class='u'>progn</a> (<a id='3574' tid='3573' class='u'>forward-char</a> <a id='3576' tid='3575' class='u'>1</a>) (<a id='3578' tid='3577' class='u'>paredit-current-parse-state</a>))
-<a id='3580
+<a id='3580' tid='3579' class='u'>;;               (parse-partial-sexp (point) (1+ (point))
+</a><a id='3582' tid='3581' class='u'>;;                                   nil nil parse-state)
+</a>              )
+        (<a id='3584' tid='3583' class='u'>let*</a> ((<a id='3586' tid='3585' class='u'>old-state</a> <a id='3588' tid='3587' class='u'>state</a>)
+               (<a id='3590' tid='3589' class='u'>new-state</a>
+                (<a id='3592' tid='3591' class='u'>paredit-kill-word-state</a> <a id='3594' tid='3593' class='u'>parse-state</a> <a id='3596' tid='3595' class='u'>&#39;</a><a id='3598' tid='3597' class='u'>char-after</a>)))
+          (<a id='3600' tid='3599' class='u'>cond</a> ((<a id='3602' tid='3601' class='u'>not</a> (<a id='3604' tid='3603' class='u'>eq</a> <a id='3606' tid='3605' class='u'>old-state</a> <a id='3608' tid='3607' class='u'>new-state</a>))
+                 (<a id='3610' tid='3609' class='u'>setq</a> <a id='3612' tid='3611' class='u'>parse-state</a>
+                   
