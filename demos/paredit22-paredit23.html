@@ -4052,4 +4052,14 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 
 <a id='7354' tid='7353' class='u'>;;;;; Killing Words
 </a>
-<a id='7356' tid='7355' class='u'>;;; This is tri
+<a id='7356' tid='7355' class='u'>;;; This is tricky and asymmetrical because backward parsing is
+</a><a id='7358' tid='7357' class='u'>;;; extraordinarily difficult or impossible, so we have to implement
+</a><a id='7360' tid='7359' class='u'>;;; killing in both directions by parsing forward.
+</a>
+(<a id='3518' tid='3517' class='u'>defun</a> <a id='3520' tid='3519' class='u'>paredit-forward-kill-word</a> ()
+  <a id='3522' tid='3521' class='u'>&quot;Kill a word forward, skipping over intervening delimiters.&quot;</a>
+  (<a id='3524' tid='3523' class='u'>interactive</a>)
+  (<a id='3526' tid='3525' class='u'>let</a> ((<a id='3528' tid='3527' class='u'>beginning</a> (<a id='3530' tid='3529' class='u'>point</a>)))
+    (<a id='3532' tid='3531' class='u'>skip-syntax-forward</a> <a id='3534' tid='3533' class='u'>&quot; -&quot;</a>)
+    (<a id='3536' tid='3535' class='u'>let*</a> ((<a id='3538' tid='3537' class='u'>parse-state</a> (<a id='3540' tid='3539' class='u'>paredit-current-parse-state</a>))
+    
