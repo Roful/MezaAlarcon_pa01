@@ -4082,4 +4082,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                        (<a id='3626' tid='3625' class='u'>paredit-kill-word-state</a> <a id='3628' tid='3627' class='u'>parse-state</a>
                                                 <a id='3630' tid='3629' class='u'>&#39;</a><a id='3632' tid='3631' class='u'>char-after</a>))
                  (<a id='3634' tid='3633' class='u'>setq</a> <a id='3636' tid='3635' class='u'>beginning</a> (<a id='3638' tid='3637' class='u'>point</a>)))))))
-    (<a id='3640' tid='3639' class='u'
+    (<a id='3640' tid='3639' class='u'>goto-char</a> <a id='3642' tid='3641' class='u'>beginning</a>)
+    (<a id='3644' tid='3643' class='u'>kill-word</a> <a id='3646' tid='3645' class='u'>1</a>)))
+
+(<a id='2246' tid='2245' class='u'>defun</a> <a id='2248' tid='2247' class='u'>paredit-backward-kill-word</a> ()
+  <a id='2250' tid='2249' class='u'>&quot;Kill a word backward, skipping over any intervening delimiters.&quot;</a>
+  (<a id='2252' tid='2251' class='u'>interactive</a>)
+  (<a id='2254' tid='2253' class='u'>if</a> (<a id='2256' tid='2255' class='u'>not</a> (<a id='2258' tid='2257' class='u'>or</a> (<a id='2260' tid='2259' class='u'>bobp</a>)
+               (<a id='2262' tid='2261' class='u'>eq</a> (<a id='2264' tid='2263' class='u'>char-syntax</a> (<a id='2266' tid='2265' class='u'>char-before</a>)) <a id='2268' tid='2267' class='u'>?w</a>)))
+      (<a id='2270' tid='2269' class='u'>let</a> ((<a id='2272' tid='2271' class='u'>end</a> (<a id='2274' tid='2273' class='u'>point</a>)))
+        (<a id='2276' tid
