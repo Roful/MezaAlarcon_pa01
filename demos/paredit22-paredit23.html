@@ -4091,4 +4091,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
   (<a id='2254' tid='2253' class='u'>if</a> (<a id='2256' tid='2255' class='u'>not</a> (<a id='2258' tid='2257' class='u'>or</a> (<a id='2260' tid='2259' class='u'>bobp</a>)
                (<a id='2262' tid='2261' class='u'>eq</a> (<a id='2264' tid='2263' class='u'>char-syntax</a> (<a id='2266' tid='2265' class='u'>char-before</a>)) <a id='2268' tid='2267' class='u'>?w</a>)))
       (<a id='2270' tid='2269' class='u'>let</a> ((<a id='2272' tid='2271' class='u'>end</a> (<a id='2274' tid='2273' class='u'>point</a>)))
-        (<a id='2276' tid
+        (<a id='2276' tid='2275' class='u'>backward-word</a> <a id='2278' tid='2277' class='u'>1</a>)
+        (<a id='2280' tid='2279' class='u'>forward-word</a> <a id='2282' tid='2281' class='u'>1</a>)
+        (<a id='2284' tid='2283' class='u'>goto-char</a> (<a id='2286' tid='2285' class='u'>min</a> <a id='2288' tid='2287' class='u'>end</a> (<a id='2290' tid='2289' class='u'>point</a>)))
+        (<a id='2292' tid='2291' class='u'>let*</a> ((<a id='2294' tid='2293' class='u'>parse-state</a> (<a id='2296' tid='2295' class='u'>paredit-current-parse-state</a>))
+               (<a id='2298' tid='2297' class='u'>state</a>
+                (<a id='2300' tid='2299' class='u'>paredit-kill-word-state</a> <a id='2302' tid='2301' class='u'>parse-state</a> <a id='2304' tid='2303' class='u'>&#39;</a><a id='2306' tid='2305' class='u'>char-before</a>)))
+          (<a id='2308' tid='2307' class='u'>while</a> (<a id='2310' tid='2309' class='u'>and</a> (<a id='2312' tid='2311'
