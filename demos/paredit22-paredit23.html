@@ -4103,4 +4103,9 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                               (<a id='2324' tid='2323' class='u'>parse-partial-sexp</a> (<a id='2326' tid='2325' class='u'>point</a>) (<a id='2328' tid='2327' class='u'>1+</a> (<a id='2330' tid='2329' class='u'>point</a>))
                                                   <a id='2332' tid='2331' class='u'>nil</a> <a id='2334' tid='2333' class='u'>nil</a> <a id='2336' tid='2335' class='u'>parse-state</a>))
                         (<a id='2338' tid='2337' class='u'>or</a> (<a id='2340' tid='2339' class='u'>eq</a> <a id='2342' tid='2341' class='u'>state</a>
-                                (<a id='2344' tid='2343' class='u'>paredit-kill-word-state</a> <a id='2346' tid='2345' class='u'>parse-
+                                (<a id='2344' tid='2343' class='u'>paredit-kill-word-state</a> <a id='2346' tid='2345' class='u'>parse-state</a>
+                                                         <a id='2348' tid='2347' class='u'>&#39;</a><a id='2350' tid='2349' class='u'>char-before</a>))
+                            (<a id='2352' tid='2351' class='u'>progn</a> (<a id='2354' tid='2353' class='u'>backward-char</a> <a id='2356' tid='2355' class='u'>1</a>) <a id='2358' tid='2357' class='u'>nil</a>)))))
+          (<a id='2360' tid='2359' class='u'>if</a> (<a id='2362' tid='2361' class='u'>and</a> (<a id='2364' tid='2363' class='u'>eq</a> <a id='2366' tid='2365' class='u'>state</a> <a id='2368' tid='2367' class='u'>&#39;</a><a id='2370' tid='2369' class='u'>comment</a>)
+                   (<a id='2372' tid='2371' class='u'>eq</a> <a id='2374' tid='2373' class='u'>?\#</a> (<a id='2376' tid='2375' class='u'>char-after</a> (<a id='2378' tid='2377' class='u'>point</a>)))
+                   (<a id='2380' tid='2379' class='u'>eq</a> <a id='2382' tid='2381' class='u'>?\|</a> (<a id='2384' tid
