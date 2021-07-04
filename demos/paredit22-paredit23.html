@@ -4108,4 +4108,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                             (<a id='2352' tid='2351' class='u'>progn</a> (<a id='2354' tid='2353' class='u'>backward-char</a> <a id='2356' tid='2355' class='u'>1</a>) <a id='2358' tid='2357' class='u'>nil</a>)))))
           (<a id='2360' tid='2359' class='u'>if</a> (<a id='2362' tid='2361' class='u'>and</a> (<a id='2364' tid='2363' class='u'>eq</a> <a id='2366' tid='2365' class='u'>state</a> <a id='2368' tid='2367' class='u'>&#39;</a><a id='2370' tid='2369' class='u'>comment</a>)
                    (<a id='2372' tid='2371' class='u'>eq</a> <a id='2374' tid='2373' class='u'>?\#</a> (<a id='2376' tid='2375' class='u'>char-after</a> (<a id='2378' tid='2377' class='u'>point</a>)))
-                   (<a id='2380' tid='2379' class='u'>eq</a> <a id='2382' tid='2381' class='u'>?\|</a> (<a id='2384' tid
+                   (<a id='2380' tid='2379' class='u'>eq</a> <a id='2382' tid='2381' class='u'>?\|</a> (<a id='2384' tid='2383' class='u'>char-before</a> (<a id='2386' tid='2385' class='u'>point</a>))))
+              (<a id='2388' tid='2387' class='u'>backward-char</a> <a id='2390' tid='2389' class='u'>1</a>)))))
+  (<a id='2392' tid='2391' class='u'>backward-kill-word</a> <a id='2394' tid='2393' class='u'>1</a>))
+
+<a id='7362' tid='7361' class='u'>;;;;;; Word-Killing Auxiliaries
+</a>
+(<a id='5136' tid='5135' class='u'>defun</a> <a id='5138' tid='5137' class='u'>paredit-kill-word-state</a> (<a id='5140' tid='5139' class='u'>parse-state</a> <a id='5142' tid='5141' class='u'>adjacent-char-fn</a>)
+  (<a id='5144' tid='5143' class='u'>cond</a> ((<a id='5146' tid='5145' class='u'>paredit-in-comment-p</a> <a id='5148' tid='5147' class='u'>parse-state</a>) <a id='5150' tid='5149' class='u'>&#39;</a><a id='5152' tid='5151' class='u'>comment</a>)
+        ((<a id='5154' tid='5153' class='u'>paredit-in-string-p</a>  <a id='5156' tid='5155' class='u'>parse-state</a>) <
