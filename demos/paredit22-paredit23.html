@@ -4116,4 +4116,12 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>
 (<a id='5136' tid='5135' class='u'>defun</a> <a id='5138' tid='5137' class='u'>paredit-kill-word-state</a> (<a id='5140' tid='5139' class='u'>parse-state</a> <a id='5142' tid='5141' class='u'>adjacent-char-fn</a>)
   (<a id='5144' tid='5143' class='u'>cond</a> ((<a id='5146' tid='5145' class='u'>paredit-in-comment-p</a> <a id='5148' tid='5147' class='u'>parse-state</a>) <a id='5150' tid='5149' class='u'>&#39;</a><a id='5152' tid='5151' class='u'>comment</a>)
-        ((<a id='5154' tid='5153' class='u'>paredit-in-string-p</a>  <a id='5156' tid='5155' class='u'>parse-state</a>) <
+        ((<a id='5154' tid='5153' class='u'>paredit-in-string-p</a>  <a id='5156' tid='5155' class='u'>parse-state</a>) <a id='5158' tid='5157' class='u'>&#39;</a><a id='5160' tid='5159' class='u'>string</a>)
+        ((<a id='5162' tid='5161' class='u'>memq</a> (<a id='5164' tid='5163' class='u'>char-syntax</a> (<a id='5166' tid='5165' class='u'>funcall</a> <a id='5168' tid='5167' class='u'>adjacent-char-fn</a>))
+               <a id='5170' tid='5169' class='u'>&#39;</a>(<a id='5172' tid='5171' class='u'>?\(</a> <a id='5174' tid='5173' class='u'>?\)</a> ))
+         <a id='5176' tid='5175' class='u'>&#39;</a><a id='5178' tid='5177' class='u'>delimiter</a>)
+        (<a id='5180' tid='5179' class='u'>t</a> <a id='5182' tid='5181' class='u'>&#39;</a><a id='5184' tid='5183' class='u'>other</a>)))
+
+<a id='7364' tid='7363' class='u'>;;; This optionally advances the point past any comment delimiters that
+</a><a id='7366' tid='7365' class='u'>;;; should probably not be touched, based on the last state change and
+</a
