@@ -4129,4 +4129,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a>
 (<a id='5034' tid='5033' class='u'>defun</a> <a id='5036' tid='5035' class='u'>paredit-kill-word-hack</a> (<a id='5038' tid='5037' class='u'>old-state</a> <a id='5040' tid='5039' class='u'>new-state</a> <a id='5042' tid='5041' class='u'>parse-state</a>)
   (<a id='5044' tid='5043' class='u'>cond</a> ((<a id='5046' tid='5045' class='u'>and</a> (<a id='5048' tid='5047' class='u'>not</a> (<a id='5050' tid='5049' class='u'>eq</a> <a id='5052' tid='5051' class='u'>old-state</a> <a id='5054' tid='5053' class='u'>&#39;</a><a id='5056' tid='5055' class='u'>comment</a>))
-              (<a id='5058' tid='5057' class='u'>not</a> (<a id='5060' tid='5059' class='u'>eq</a> <a id='5062' tid='5061' class='u'>new-state</a> <a id='5064' tid='5063' class='u'>&#39;</a><a id='5066' tid='5065' class='u'>co
+              (<a id='5058' tid='5057' class='u'>not</a> (<a id='5060' tid='5059' class='u'>eq</a> <a id='5062' tid='5061' class='u'>new-state</a> <a id='5064' tid='5063' class='u'>&#39;</a><a id='5066' tid='5065' class='u'>comment</a>))
+              (<a id='5068' tid='5067' class='u'>not</a> (<a id='5070' tid='5069' class='u'>paredit-in-string-escape-p</a>))
+              (<a id='5072' tid='5071' class='u'>eq</a> <a id='5074' tid='5073' class='u'>?\#</a> (<a id='5076' tid='5075' class='u'>char-before</a>))
+              (<a id='5078' tid='5077' class='u'>eq</a> <a id='5080' tid='5079' class='u'>?\|</a> (<a id='5082' tid='5081' class='u'>char-after</a>)))
+         (<a id='5084' tid='5083' class='u'>forward-char</a> <a id='5086' tid='5085' class='u'>1</a>)
+         (<a id='5088' tid='5087' class='u'>paredit-current-parse-state</a>)
+<a id='5090' tid='5089' class='u'>;;          (parse-partial-sexp (point) (1+ (point))
+</a><a id='5092' tid='5091' class='u'>;;                              nil nil parse-state)
+</a>         )
+        ((<a id='5094' tid='5093' class='u'>and</a> (<a id='5096' tid='5095' class='u'>not</a> (<a id='5098' tid='5097' class='u'>eq</a> <a id='5100' tid='5099
