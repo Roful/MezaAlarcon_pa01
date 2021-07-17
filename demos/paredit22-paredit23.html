@@ -4147,4 +4147,13 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 </a><a id='5128' tid='5127' class='u'>;;                                        (skip-chars-forward &quot;;&quot;))
 </a><a id='5130' tid='5129' class='u'>;;                              nil nil parse-state)
 </a>         )
-  
+        (<a id='5132' tid='5131' class='u'>t</a> <a id='5134' tid='5133' class='u'>parse-state</a>)))
+
+(<a id='2752' tid='2751' class='u'>defun</a> <a id='2754' tid='2753' class='u'>paredit-copy-as-kill</a> ()
+  <a id='2756' tid='2755' class='u'>&quot;Save in the kill ring the region that `paredit-kill&#39; would kill.&quot;</a>
+  (<a id='2758' tid='2757' class='u'>interactive</a>)
+  (<a id='2760' tid='2759' class='u'>cond</a> ((<a id='2762' tid='2761' class='u'>paredit-in-string-p</a>)
+         (<a id='2764' tid='2763' class='u'>paredit-copy-as-kill-in-string</a>))
+        ((<a id='2766' tid='2765' class='u'>paredit-in-comment-p</a>)
+         (<a id='2768' tid='2767' class='u'>copy-region-as-kill</a> (<a id='2770' tid='2769' class='u'>point</a>) (<a id='2772' tid='2771' class='u'>point-at-eol</a>)))
+        ((<a id='2774' tid='2773' class='u'>save-excursion</a> (<a id='2776' tid='2775' class='u'>paredit-skip-whitespace</a> <a id='2778' tid='2777' class='u
