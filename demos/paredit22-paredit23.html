@@ -4175,4 +4175,10 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
 
 (<a id='2836' tid='2835' class='u'>defun</a> <a id='2838' tid='2837' class='u'>paredit-copy-sexps-as-kill</a> ()
   (<a id='2840' tid='2839' class='u'>save-excursion</a>
-    (<a id='2842' tid='2841' class='u'>if</a> (<a id='2844' tid='2843' class='u'>paredit-in-c
+    (<a id='2842' tid='2841' class='u'>if</a> (<a id='2844' tid='2843' class='u'>paredit-in-char-p</a>)
+        (<a id='2846' tid='2845' class='u'>backward-char</a> <a id='2848' tid='2847' class='u'>2</a>))
+    (<a id='2850' tid='2849' class='u'>let</a> ((<a id='2852' tid='2851' class='u'>beginning</a> (<a id='2854' tid='2853' class='u'>point</a>))
+          (<a id='2856' tid='2855' class='u'>eol</a> (<a id='2858' tid='2857' class='u'>point-at-eol</a>)))
+      (<a id='2860' tid='2859' class='u'>let</a> ((<a id='2862' tid='2861' class='u'>end-of-list-p</a> (<a id='2864' tid='2863' class='u'>paredit-forward-sexps-to-kill</a> <a id='2866' tid='2865' class='u'>beginning</a> <a id='2868' tid='2867' class='u'>eol</a>)))
+        (<a id='2870' tid='2869' class='u'>if</a> <a id='2872' tid='2871' class='u'>end-of-list-p</a> (<a id='2874' tid='2873' class='u'>progn</a> (<a id='2876' tid='2875' class='u'>up-list</a>) (<a id='2878' tid='2877' class='u'>backward-char</a>)))
+        (<a id='2880' tid='2879' class='u'>copy-region-as-kill</a> <a id='2882' 
