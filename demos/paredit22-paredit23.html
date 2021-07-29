@@ -4253,4 +4253,21 @@ With a prefix argument, skip the balance check.&quot;</span>
                  ;; comment, make sure that the text is balanced.  (The
                  ;; comment state may be a number, not t or nil at all,
                  ;; for nestable comments, which are not handled by
-                 ;; this heuristic 
+                 ;; this heuristic (or any of paredit, really).)
+                 (and (or (and (eq start-comment-state nil)
+                               (eq end-comment-state t))
+                          (and (eq start-comment-state t)
+                               (eq end-comment-state nil)))
+                      (save-excursion
+                        (goto-char end)
+                        (paredit-region-ok-p (point) (point-at-eol))))))
+        (error &quot;Mismatched comment state: %s&quot;
+               (cond ((and (integerp start-comment-state)
+                           (integerp end-comment-state))
+                      (format &quot;depth %S at start, depth %S at end.&quot;
+                              start-comment-state
+                              end-comment-state))
+                     ((integerp start-comment-state)
+                      &quot;start in nested comment, end otherwise.&quot;)
+                     ((integerp end-comment-state)
+                      &quot;end in n
