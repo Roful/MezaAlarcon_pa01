@@ -4218,3 +4218,22 @@ With a prefix argument, skip the balance check.&quot;</span>
 
 <span class='i'>(defun paredit-check-region-for-delete (start end)
   &quot;Signal an error deleting text between START and END is unsafe.&quot;
+  (save-excursion
+    (goto-char start)
+    (let* ((start-state (paredit-current-parse-state))
+           (end-state (parse-partial-sexp start end nil nil start-state)))
+      (paredit-check-region-for-delete:depth start start-state end end-state)
+      (paredit-check-region-for-delete:string start start-state end end-state)
+      (paredit-check-region-for-delete:comment start start-state end end-state)
+      (paredit-check-region-for-delete:char-quote start start-state
+                                                  end end-state))))</span>
+
+<span class='i'>(defun paredit-check-region-for-delete:depth (start start-state end end-state)
+  (let ((start-depth (nth 0 start-state))
+        (end-depth (nth 0 end-state)))
+    (if (not (= start-depth end-depth))
+        (error &quot;Mismatched parenthesis depth: %S at start, %S at end.&quot;
+               start-depth
+               end-depth))))</span>
+
+<span class='i'>(defun paredit-check-regio
