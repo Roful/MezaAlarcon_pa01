@@ -4181,4 +4181,11 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
           (<a id='2856' tid='2855' class='u'>eol</a> (<a id='2858' tid='2857' class='u'>point-at-eol</a>)))
       (<a id='2860' tid='2859' class='u'>let</a> ((<a id='2862' tid='2861' class='u'>end-of-list-p</a> (<a id='2864' tid='2863' class='u'>paredit-forward-sexps-to-kill</a> <a id='2866' tid='2865' class='u'>beginning</a> <a id='2868' tid='2867' class='u'>eol</a>)))
         (<a id='2870' tid='2869' class='u'>if</a> <a id='2872' tid='2871' class='u'>end-of-list-p</a> (<a id='2874' tid='2873' class='u'>progn</a> (<a id='2876' tid='2875' class='u'>up-list</a>) (<a id='2878' tid='2877' class='u'>backward-char</a>)))
-        (<a id='2880' tid='2879' class='u'>copy-region-as-kill</a> <a id='2882' 
+        (<a id='2880' tid='2879' class='u'>copy-region-as-kill</a> <a id='2882' tid='2881' class='u'>beginning</a>
+                             (<a id='2884' tid='2883' class='u'>cond</a> (<a id='2886' tid='2885' class='u'>kill-whole-line</a>
+                                    (<a id='2888' tid='2887' class='u'>or</a> (<a id='2890' tid='2889' class='u'>save-excursion</a>
+                                          (<a id='2892' tid='2891' class='u'>paredit-skip-whitespace</a> <a id='2894' tid='2893' class='u'>t</a>)
+                                          (<a id='2896' tid='2895' class='u'>and</a> (<a id='2898' tid='2897' class='u'>not</a> (<a id='2900' tid='2899' class='u'>eq</a> (<a id='2902' tid='2901' class='u'>char-after</a>) <a id='2904' tid='2903' class='u'>?\;</a> ))
+                                               (<a id='2906' tid='2905' class='u'>point</a>)))
+                                        (<a id='2908' tid='2907' class='u'>point-at-eol</a>)))
+                                   ((<a id='2910' tid='2909' class='u'>and</a> (<a id='2912' tid='2911' class='u'>not</a> <a 
