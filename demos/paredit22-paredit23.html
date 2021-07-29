@@ -4270,4 +4270,23 @@ With a prefix argument, skip the balance check.&quot;</span>
                      ((integerp start-comment-state)
                       &quot;start in nested comment, end otherwise.&quot;)
                      ((integerp end-comment-state)
-                      &quot;end in n
+                      &quot;end in nested comment, start otherwise.&quot;)
+                     (start-comment-state
+                      &quot;start in comment, end not in comment.&quot;)
+                     (end-comment-state
+                      &quot;end in comment, start not in comment.&quot;)
+                     (t
+                      (format &quot;start %S, end %S.&quot;
+                              start-comment-state
+                              end-comment-state)))))))</span>
+
+<span class='i'>(defun paredit-check-region-for-delete:char-quote
+    (start start-state end end-state)
+  (let ((start-char-quote (nth 5 start-state))
+        (end-char-quote (nth 5 end-state)))
+    (if (not (eq start-char-quote end-char-quote))
+        (let ((phrase &quot;character quotation&quot;))
+          (error &quot;Mismatched %s: start %sin %s, end %sin %s.&quot;
+                 phrase
+                 (if start-char-quote &quot;&quot; &quot;not &quot;)
+                
