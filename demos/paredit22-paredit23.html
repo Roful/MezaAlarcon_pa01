@@ -4236,4 +4236,21 @@ With a prefix argument, skip the balance check.&quot;</span>
                start-depth
                end-depth))))</span>
 
-<span class='i'>(defun paredit-check-regio
+<span class='i'>(defun paredit-check-region-for-delete:string (start start-state end end-state)
+  (let ((start-string-p (nth 3 start-state))
+        (end-string-p (nth 3 end-state)))
+    (if (not (eq start-string-p end-string-p))
+        (error &quot;Mismatched string state: start %sin string, end %sin string.&quot;
+               (if start-string-p &quot;&quot; &quot;not &quot;)
+               (if end-string-p &quot;&quot; &quot;not &quot;)))))</span>
+
+<span class='i'>(defun paredit-check-region-for-delete:comment
+    (start start-state end end-state)
+  (let ((start-comment-state (nth 4 start-state))
+        (end-comment-state (nth 4 end-state)))
+    (if (not (or (eq start-comment-state end-comment-state)
+                 ;; If we are moving text into or out of a line
+                 ;; comment, make sure that the text is balanced.  (The
+                 ;; comment state may be a number, not t or nil at all,
+                 ;; for nestable comments, which are not handled by
+                 ;; this heuristic 
