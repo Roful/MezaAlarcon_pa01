@@ -4188,4 +4188,20 @@ With a numeric prefix argument N, do `kill-line&#39; that many times.&quot;</a>
                                           (<a id='2896' tid='2895' class='u'>and</a> (<a id='2898' tid='2897' class='u'>not</a> (<a id='2900' tid='2899' class='u'>eq</a> (<a id='2902' tid='2901' class='u'>char-after</a>) <a id='2904' tid='2903' class='u'>?\;</a> ))
                                                (<a id='2906' tid='2905' class='u'>point</a>)))
                                         (<a id='2908' tid='2907' class='u'>point-at-eol</a>)))
-                                   ((<a id='2910' tid='2909' class='u'>and</a> (<a id='2912' tid='2911' class='u'>not</a> <a 
+                                   ((<a id='2910' tid='2909' class='u'>and</a> (<a id='2912' tid='2911' class='u'>not</a> <a id='2914' tid='2913' class='u'>end-of-list-p</a>)
+                                         (<a id='2916' tid='2915' class='u'>eq</a> (<a id='2918' tid='2917' class='u'>point-at-eol</a>) <a id='2920' tid='2919' class='u'>eol</a>))
+                                    <a id='2922' tid='2921' class='u'>eol</a>)
+                                   (<a id='2924' tid='2923' class='u'>t</a>
+                                    (<a id='2926' tid='2925' class='u'>point</a>))))))))
+
+<span class='i'>;;;; Deleting Regions
+</span>
+<span class='i'>(defun paredit-delete-region (start end)
+  &quot;Delete the text between point and mark, like `delete-region&#39;.
+If that text is unbalanced, signal an error instead.
+With a prefix argument, skip the balance check.&quot;
+  (interactive &quot;r&quot;)
+  (if (and start end (not current-prefix-arg))
+      (paredit-check-region-for-delete start end))
+  (setq this-command &#39;delete-region)
+  (delete-region
