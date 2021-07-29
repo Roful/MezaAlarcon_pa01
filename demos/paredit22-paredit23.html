@@ -4204,4 +4204,17 @@ With a prefix argument, skip the balance check.&quot;
   (if (and start end (not current-prefix-arg))
       (paredit-check-region-for-delete start end))
   (setq this-command &#39;delete-region)
-  (delete-region
+  (delete-region start end))</span>
+
+(<a id='4606' tid='4605' class='u'>defun</a> <a id='4608' tid='4607' class='u'>paredit-kill-region</a> <span class='i'>(start end)</span>
+  <span class='i'>&quot;Kill the text between point and mark, like `kill-region&#39;.
+If that text is unbalanced, signal an error instead.
+With a prefix argument, skip the balance check.&quot;</span>
+  (<a id='4610' tid='4609' class='u'>interactive</a> <a id='4612' tid='4611' class='u'>&quot;r&quot;</a>)
+  <span class='i'>(if (and start end (not current-prefix-arg))
+      (paredit-check-region-for-delete start end))</span>
+  (<a id='4614' tid='4613' class='u'>setq</a> <a id='4616' tid='4615' class='u'>this-command</a> <a id='4618' tid='4617' class='u'>&#39;</a><a id='4620' tid='4619' class='u'>kill-region</a>)
+  <span class='i'>(kill-region start end)</span>)
+
+<span class='i'>(defun paredit-check-region-for-delete (start end)
+  &quot;Signal an error deleting text between START and END is unsafe.&quot;
