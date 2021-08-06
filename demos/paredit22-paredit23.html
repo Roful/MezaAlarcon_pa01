@@ -4299,4 +4299,17 @@ With a prefix argument, skip the balance check.&quot;</span>
   (<a id='7410' tid='7409' class='u'>defmacro</a> <a id='7412' tid='7411' class='u'>defun-saving-mark</a> (<a id='7414' tid='7413' class='u'>name</a> <a id='7416' tid='7415' class='u'>bvl</a> <a id='7418' tid='7417' class='u'>doc</a> <a id='7420' tid='7419' class='u'>&rest</a> <a id='7422' tid='7421' class='u'>body</a>)
     <a id='7424' tid='7423' class='u'>`</a>(<a id='7374' tid='7373' class='u'>defun</a> <a id='7376' tid='7375' class='u'>,</a><a id='7378' tid='7377' class='u'>name</a> <a id='7380' tid='7379' class='u'>,</a><a id='7382' tid='7381' class='u'>bvl</a>
        <a id='7384' tid='7383' class='u'>,</a><a id='7386' tid='7385' class='u'>doc</a>
-       <a id='7388' tid='7387' class='u'>,</a>(<a id='7390' tid='7389' class='u'>xcond</a> ((<a id='7392' tid='7391' class='u'>paredit-xema
+       <a id='7388' tid='7387' class='u'>,</a>(<a id='7390' tid='7389' class='u'>xcond</a> ((<a id='7392' tid='7391' class='u'>paredit-xemacs-p</a>)
+                <a id='7394' tid='7393' class='u'>&#39;</a>(<a id='7396' tid='7395' class='u'>interactive</a> <a id='7398' tid='7397' class='u'>&quot;_&quot;</a>))
+               ((<a id='7400' tid='7399' class='u'>paredit-gnu-emacs-p</a>)
+                <a id='7402' tid='7401' class='u'>&#39;</a>(<a id='7404' tid='7403' class='u'>interactive</a>)))
+       <a id='7406' tid='7405' class='u'>,</a><a id='7408' tid='7407' class='u'>@body</a>)))
+
+(<a id='7426' tid='7425' class='u'>defun-saving-mark</a> <a id='7428' tid='7427' class='u'>paredit-forward</a> ()
+  <a id='7430' tid='7429' class='u'>&quot;Move forward an S-expression, or up an S-expression forward.
+If there are no more S-expressions in this one before the closing
+  delimiter, move past that closing delimiter; otherwise, move forward
+  past the S-expression following the point.&quot;</a>
+  (<a id='7432' tid='7431' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='7434' tid='7433' class='u'>forward-sexp</a>)
+    <span class
