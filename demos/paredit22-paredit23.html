@@ -4289,4 +4289,14 @@ With a prefix argument, skip the balance check.&quot;</span>
           (error &quot;Mismatched %s: start %sin %s, end %sin %s.&quot;
                  phrase
                  (if start-char-quote &quot;&quot; &quot;not &quot;)
-                
+                 phrase
+                 (if end-char-quote &quot;&quot; &quot;not &quot;)
+                 phrase)))))</span>
+
+<span class='i'>;;;; Point Motion
+</span>
+(<a id='7372' tid='7371' class='u'>eval-and-compile</a>
+  (<a id='7410' tid='7409' class='u'>defmacro</a> <a id='7412' tid='7411' class='u'>defun-saving-mark</a> (<a id='7414' tid='7413' class='u'>name</a> <a id='7416' tid='7415' class='u'>bvl</a> <a id='7418' tid='7417' class='u'>doc</a> <a id='7420' tid='7419' class='u'>&rest</a> <a id='7422' tid='7421' class='u'>body</a>)
+    <a id='7424' tid='7423' class='u'>`</a>(<a id='7374' tid='7373' class='u'>defun</a> <a id='7376' tid='7375' class='u'>,</a><a id='7378' tid='7377' class='u'>name</a> <a id='7380' tid='7379' class='u'>,</a><a id='7382' tid='7381' class='u'>bvl</a>
+       <a id='7384' tid='7383' class='u'>,</a><a id='7386' tid='7385' class='u'>doc</a>
+       <a id='7388' tid='7387' class='u'>,</a>(<a id='7390' tid='7389' class='u'>xcond</a> ((<a id='7392' tid='7391' class='u'>paredit-xema
