@@ -4312,4 +4312,15 @@ If there are no more S-expressions in this one before the closing
   past the S-expression following the point.&quot;</a>
   (<a id='7432' tid='7431' class='u'>paredit-handle-sexp-errors</a>
       (<a id='7434' tid='7433' class='u'>forward-sexp</a>)
-    <span class
+    <span class='i'>;; Use `up-list&#39; if outside a string in case there is whitespace
+</span>    <span class='i'>;; between the point and the end of the list.
+</span>    (<a id='7436' tid='7435' class='u'>if</a> (<a id='7438' tid='7437' class='u'>paredit-in-string-p</a>) (<a id='7440' tid='7439' class='u'>forward-char</a>) (<a id='7442' tid='7441' class='u'>up-list</a>))))
+
+(<a id='7444' tid='7443' class='u'>defun-saving-mark</a> <a id='7446' tid='7445' class='u'>paredit-backward</a> ()
+  <a id='7448' tid='7447' class='u'>&quot;Move backward an S-expression, or up an S-expression backward.
+If there are no more S-expressions in this one before the opening
+  delimiter, move past that opening delimiter backward; otherwise, move
+  move backward past the S-expression preceding the point.&quot;</a>
+  (<a id='7450' tid='7449' class='u'>paredit-handle-sexp-errors</a>
+      (<a id='7452' tid='7451' class='u'>backward-sexp</a>)
+    <span class='i'>;; Use `backward-up-list&#39; if outside a string in case ther
