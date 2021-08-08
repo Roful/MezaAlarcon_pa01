@@ -4323,4 +4323,15 @@ If there are no more S-expressions in this one before the opening
   move backward past the S-expression preceding the point.&quot;</a>
   (<a id='7450' tid='7449' class='u'>paredit-handle-sexp-errors</a>
       (<a id='7452' tid='7451' class='u'>backward-sexp</a>)
-    <span class='i'>;; Use `backward-up-list&#39; if outside a string in case ther
+    <span class='i'>;; Use `backward-up-list&#39; if outside a string in case there is
+</span>    <span class='i'>;; whitespace between the point and the beginning of the list.
+</span>    (<a id='7454' tid='7453' class='u'>if</a> (<a id='7456' tid='7455' class='u'>paredit-in-string-p</a>) (<a id='7458' tid='7457' class='u'>backward-char</a>) (<a id='7460' tid='7459' class='u'>backward-up-list</a>))))
+
+<a id='7462' tid='7461' class='u'>;;; Why is this not in lisp.el?
+</a>
+(<a id='1742' tid='1741' class='u'>defun</a> <a id='1744' tid='1743' class='u'>backward-down-list</a> (<a id='1746' tid='1745' class='u'>&optional</a> <a id='1748' tid='1747' class='u'>arg</a>)
+  <a id='1750' tid='1749' class='u'>&quot;Move backward and descend into one level of parentheses.
+With ARG, do this that many times.
+A negative argument means move forward but still descend a level.&quot;</a>
+  (<a id='1752' tid='1751' class='u'>interactive</a> <a id='1754' tid='1753' class='u'>&quot;p&quot;</a>)
+  (<a id='1756' tid='1755' class='u'>down-list</a>
