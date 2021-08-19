@@ -4352,4 +4352,25 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
       (save-excursion
         (forward-line (/ (count-lines start-point end-point) 2))
         (recenter)
-        (setq p-visible (pos-visible-in
+        (setq p-visible (pos-visible-in-window-p p))
+        (setq start-visible (pos-visible-in-window-p start-point)))
+      (cond ((not start-visible)
+             ;; Implies (not p-visible).  Put the start at the top of
+             ;; the screen.
+             (recenter 0))
+            (p-visible
+             ;; Go back to p if we can.
+             (goto-char p))))))</span>
+
+<span class='i'>(defun paredit-recenter-on-defun ()
+  &quot;Recenter the screen on the definition at point.&quot;
+  (interactive)
+  (save-excursion
+    (beginning-of-defun)
+    (paredit-recenter-on-sexp)))</span>
+
+(<a id='3198' tid='3197' class='u'>defun</a> <a id='3200' tid='3199' class='u'>paredit-focus-on-defun</a> ()
+  <a id='3202' tid='3201' class='u'>&quot;Moves display to the top of the definition at point.&quot;</a>
+  (<a id='3204' tid='3203' class='u'>interactive</a>)
+  (<a id='3206' tid='3205' class='u'>beginning-of-defun</a>)
+  (<a id='3208' tid='3207' cl
