@@ -4388,4 +4388,9 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
   (<a id='5476' tid='5475' class='u'>let</a> ((<a id='5478' tid='5477' class='u'>state</a> (<a id='5480' tid='5479' class='u'>paredit-current-parse-state</a>))
         (<a id='5482' tid='5481' class='u'>scan-lists</a>
          (<a id='5484' tid='5483' class='u'>lambda</a> ()
-           (<a id='5486' tid='5485' class='u'>scan-lists</a> (<a id='5488' tid='5
+           (<a id='5486' tid='5485' class='u'>scan-lists</a> (<a id='5488' tid='5487' class='u'>point</a>) <a id='5490' tid='5489' class='u'>horizontal-direction</a> <a id='5492' tid='5491' class='u'>vertical-direction</a>))))
+    (<a id='5494' tid='5493' class='u'>cond</a> ((<a id='5496' tid='5495' class='u'>paredit-in-string-p</a> <a id='5498' tid='5497' class='u'>state</a>)
+           (<a id='5500' tid='5499' class='u'>let</a> ((<a id='5502' tid='5501' class='u'>start+end</a> (<a id='5504' tid='5503' class='u'>paredit-string-start+end-points</a> <a id='5506' tid='5505' class='u'>state</a>)))
+             (<a id='5508' tid='5507' class='u'>if</a> (<a id='5510' tid='5509' class='u'>&lt;</a> <a id='5512' tid='5511' class='u'>0</a> <a id='5514' tid='5513' class='u'>vertical-direction</a>)
+                 (<a id='5516' tid='5515' class='u'>if</a> (<a id='5518' tid='5517' class='u'>&lt;</a> <a id='5520' tid='5519' class='u'>0</a> <a id='5522' tid='5521' class='u'>horizontal-direction</a>)
+                
