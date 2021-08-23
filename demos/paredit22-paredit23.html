@@ -4381,4 +4381,11 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
   (<a id='6496' tid='6495' class='u'>let</a> ((<a id='6498' tid='6497' class='u'>horizontal-direction</a> (<a id='6500' tid='6499' class='u'>if</a> (<a id='6502' tid='6501' class='u'>&lt;</a> <a id='6504' tid='6503' class='u'>0</a> <a id='6506' tid='6505' class='u'>n</a>) <a id='6508' tid='6507' class='u'>+1</a> <a id='6510' tid='6509' class='u'>-1</a>)))
     (<a id='6512' tid='6511' class='u'>while</a> (<a id='6514' tid='6513' class='u'>/=</a> <a id='6516' tid='6515' class='u'>n</a> <a id='6518' tid='6517' class='u'>0</a>)
       (<a id='6520' tid='6519' class='u'>goto-char</a>
-       (<a id='6522' tid='6521' class='u'>paredit-next-up/do
+       (<a id='6522' tid='6521' class='u'>paredit-next-up/down-point</a> <a id='6524' tid='6523' class='u'>horizontal-direction</a> <a id='6526' tid='6525' class='u'>vertical-direction</a>))
+      (<a id='6528' tid='6527' class='u'>setq</a> <a id='6530' tid='6529' class='u'>n</a> (<a id='6532' tid='6531' class='u'>-</a> <a id='6534' tid='6533' class='u'>n</a> <a id='6536' tid='6535' class='u'>horizontal-direction</a>)))))
+
+(<a id='5468' tid='5467' class='u'>defun</a> <a id='5470' tid='5469' class='u'>paredit-next-up/down-point</a> (<a id='5472' tid='5471' class='u'>horizontal-direction</a> <a id='5474' tid='5473' class='u'>vertical-direction</a>)
+  (<a id='5476' tid='5475' class='u'>let</a> ((<a id='5478' tid='5477' class='u'>state</a> (<a id='5480' tid='5479' class='u'>paredit-current-parse-state</a>))
+        (<a id='5482' tid='5481' class='u'>scan-lists</a>
+         (<a id='5484' tid='5483' class='u'>lambda</a> ()
+           (<a id='5486' tid='5485' class='u'>scan-lists</a> (<a id='5488' tid='5
