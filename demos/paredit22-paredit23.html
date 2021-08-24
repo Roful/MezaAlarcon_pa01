@@ -4393,4 +4393,11 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
            (<a id='5500' tid='5499' class='u'>let</a> ((<a id='5502' tid='5501' class='u'>start+end</a> (<a id='5504' tid='5503' class='u'>paredit-string-start+end-points</a> <a id='5506' tid='5505' class='u'>state</a>)))
              (<a id='5508' tid='5507' class='u'>if</a> (<a id='5510' tid='5509' class='u'>&lt;</a> <a id='5512' tid='5511' class='u'>0</a> <a id='5514' tid='5513' class='u'>vertical-direction</a>)
                  (<a id='5516' tid='5515' class='u'>if</a> (<a id='5518' tid='5517' class='u'>&lt;</a> <a id='5520' tid='5519' class='u'>0</a> <a id='5522' tid='5521' class='u'>horizontal-direction</a>)
-                
+                     (<a id='5524' tid='5523' class='u'>+</a> <a id='5526' tid='5525' class='u'>1</a> (<a id='5528' tid='5527' class='u'>cdr</a> <a id='5530' tid='5529' class='u'>start+end</a>))
+                     (<a id='5532' tid='5531' class='u'>car</a> <a id='5534' tid='5533' class='u'>start+end</a>))
+                 <a id='5536' tid='5535' class='u'>;; We could let the user try to descend into lists
+</a>                 <a id='5538' tid='5537' class='u'>;; within the string, but that would be asymmetric
+</a>                 <a id='5540' tid='5539' class='u'>;; with the up case, which rises out of the whole
+</a>                 <a id='5542' tid='5541' class='u'>;; string and not just out of a list within the
+</a>                 <a id='5544' tid='5543' class='u'>;; string, so this case will just be an error.
+</a>                 (<a id='5546' tid='5545' class='u'>error</a> <a id='5548' tid='5547' class='u'>&quot;Can&#39;t descend further into string.&
