@@ -4400,4 +4400,12 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
 </a>                 <a id='5540' tid='5539' class='u'>;; with the up case, which rises out of the whole
 </a>                 <a id='5542' tid='5541' class='u'>;; string and not just out of a list within the
 </a>                 <a id='5544' tid='5543' class='u'>;; string, so this case will just be an error.
-</a>                 (<a id='5546' tid='5545' class='u'>error</a> <a id='5548' tid='5547' class='u'>&quot;Can&#39;t descend further into string.&
+</a>                 (<a id='5546' tid='5545' class='u'>error</a> <a id='5548' tid='5547' class='u'>&quot;Can&#39;t descend further into string.&quot;</a>))))
+          ((<a id='5550' tid='5549' class='u'>&lt;</a> <a id='5552' tid='5551' class='u'>0</a> <a id='5554' tid='5553' class='u'>vertical-direction</a>)
+           <a id='5556' tid='5555' class='u'>;; When moving up, just try to rise up out of the list.
+</a>           (<a id='5558' tid='5557' class='u'>or</a> (<a id='5560' tid='5559' class='u'>funcall</a> <a id='5562' tid='5561' class='u'>scan-lists</a>)
+               (<a id='5564' tid='5563' class='u'>buffer-end</a> <a id='5566' tid='5565' class='u'>horizontal-direction</a>)))
+          ((<a id='5568' tid='5567' class='u'>&lt;</a> <a id='5570' tid='5569' class='u'>vertical-direction</a> <a id='5572' tid='5571' class='u'>0</a>)
+           <a id='5574' tid='5573' class='u'>;; When moving down, look for a string closer than a list,
+</a>           <a id='5576' tid='5575' class='u'>;; and use that if we find it.
+</a>           (<a id='5578' tid='5577' class='u'>let*</a> ((<a id='5580' tid='5579' class=
