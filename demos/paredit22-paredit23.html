@@ -4408,4 +4408,10 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
           ((<a id='5568' tid='5567' class='u'>&lt;</a> <a id='5570' tid='5569' class='u'>vertical-direction</a> <a id='5572' tid='5571' class='u'>0</a>)
            <a id='5574' tid='5573' class='u'>;; When moving down, look for a string closer than a list,
 </a>           <a id='5576' tid='5575' class='u'>;; and use that if we find it.
-</a>           (<a id='5578' tid='5577' class='u'>let*</a> ((<a id='5580' tid='5579' class=
+</a>           (<a id='5578' tid='5577' class='u'>let*</a> ((<a id='5580' tid='5579' class='u'>list-start</a>
+                   (<a id='5582' tid='5581' class='u'>paredit-handle-sexp-errors</a> (<a id='5584' tid='5583' class='u'>funcall</a> <a id='5586' tid='5585' class='u'>scan-lists</a>) <a id='5588' tid='5587' class='u'>nil</a>))
+                  (<a id='5590' tid='5589' class='u'>string-start</a>
+                   (<a id='5592' tid='5591' class='u'>paredit-find-next-string-start</a> <a id='5594' tid='5593' class='u'>horizontal-direction</a>
+                                                   <a id='5596' tid='5595' class='u'>list-start</a>)))
+             (<a id='5598' tid='5597' class='u'>if</a> (<a id='5600' tid='5599' class='u'>and</a> <a id='5602' tid='5601' class='u'>string-start</a> <a id='5604' tid='5603' class='u'>list-start</a>)
+                 (<a id='5606' tid='5605' class='u'>if</a> (<a id='5608' tid='5607' class='u'>&lt;</a> <a id='5610' tid='5609' class='u'>0</a> <a id='5612' tid='5611' clas
