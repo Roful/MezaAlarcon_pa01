@@ -4428,4 +4428,12 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
 
 (<a id='3190' tid='3189' class='u'>defun</a> <a id='3192' tid='3191' class='u'>paredit-find-next-string-start</a> (<a id='3194' tid='3193' class='u'>horizontal-direction</a> <a id='3196' tid='3195' class='u'>limit</a>)
   (<a id='1278' tid='1277' class='m'>let</a> (<span class='i'>(buffer-limit-p (if (&lt; 0 horizontal-direction) &#39;eobp &#39;bobp))</span>
-        (<a id='1280' tid='1279' class='m'>next-char</a> (<a id='1282' tid='1281' class='m'>if</a> (<a id='1284' tid='1283' class='m'>&lt;</a> <a id='1286' tid='1285' class='m'>0</a> <a id='1288' tid='1287' class='m'>horizontal-direction</a>) <a id='1290' tid='1289' class='m'>&#39;</a><a id='1292' tid='1291' class='m'>char-after
+        (<a id='1280' tid='1279' class='m'>next-char</a> (<a id='1282' tid='1281' class='m'>if</a> (<a id='1284' tid='1283' class='m'>&lt;</a> <a id='1286' tid='1285' class='m'>0</a> <a id='1288' tid='1287' class='m'>horizontal-direction</a>) <a id='1290' tid='1289' class='m'>&#39;</a><a id='1292' tid='1291' class='m'>char-after</a> <a id='1294' tid='1293' class='m'>&#39;</a><a id='1296' tid='1295' class='m'>char-before</a>))
+        <span class='i'>(pastp (if (&lt; 0 horizontal-direction) &#39;&gt; &#39;&lt;))</span>)
+    (<a id='1298' tid='1297' class='m'>paredit-handle-sexp-errors</a>
+        (<a id='1300' tid='1299' class='m'>save-excursion</a>
+          (<a id='1302' tid='1301' class='m'>catch</a> <a id='1304' tid='1303' class='m'>&#39;</a><a id='1306' tid='1305' class='m'>exit</a>
+            (<a id='1308' tid='1307' class='m'>while</a> <a id='1310' tid='1309' class='m'>t</a>
+              (<a id='1312' tid='1311' class='m'>if</a> (<span class='i'>or</span> <span class='i'>(funcall buffer-limit-p)</span>
+                      (<a id='1314' tid='1313' class='m'>and</a> <a id='1316' tid='1315' class='m'>limit</a> (<a id='1318' tid='1317' class='m'>funcall</a> <a id='1320' tid='1319' class='m'>pastp</a> (<a id='1322' tid='1321' class='m'>point</a>) <a id='1324' tid='1323' class='m'>limit</a>)))
+                  (<a id='1326' tid='1325' class='m'>throw</a> <a id='1328
