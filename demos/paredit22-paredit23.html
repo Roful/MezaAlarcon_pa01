@@ -4414,4 +4414,12 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
                    (<a id='5592' tid='5591' class='u'>paredit-find-next-string-start</a> <a id='5594' tid='5593' class='u'>horizontal-direction</a>
                                                    <a id='5596' tid='5595' class='u'>list-start</a>)))
              (<a id='5598' tid='5597' class='u'>if</a> (<a id='5600' tid='5599' class='u'>and</a> <a id='5602' tid='5601' class='u'>string-start</a> <a id='5604' tid='5603' class='u'>list-start</a>)
-                 (<a id='5606' tid='5605' class='u'>if</a> (<a id='5608' tid='5607' class='u'>&lt;</a> <a id='5610' tid='5609' class='u'>0</a> <a id='5612' tid='5611' clas
+                 (<a id='5606' tid='5605' class='u'>if</a> (<a id='5608' tid='5607' class='u'>&lt;</a> <a id='5610' tid='5609' class='u'>0</a> <a id='5612' tid='5611' class='u'>horizontal-direction</a>)
+                     (<a id='5614' tid='5613' class='u'>min</a> <a id='5616' tid='5615' class='u'>string-start</a> <a id='5618' tid='5617' class='u'>list-start</a>)
+                     (<a id='5620' tid='5619' class='u'>max</a> <a id='5622' tid='5621' class='u'>string-start</a> <a id='5624' tid='5623' class='u'>list-start</a>))
+                 (<a id='5626' tid='5625' class='u'>or</a> <a id='5628' tid='5627' class='u'>string-start</a>
+                     <a id='5630' tid='5629' class='u'>;; Scan again: this is a kludgey way to report the
+</a>                     <a id='5632' tid='5631' class='u'>;; error if there really was one.
+</a>                     (<a id='5634' tid='5633' class='u'>funcall</a> <a id='5636' tid='5635' class='u'>scan-lists</a>)
+                     (<a id='5638' tid='5637' class='u'>buffer-end</a> <a id='5640' tid='5639' class='u'>horizontal-direction</a>)))))
+          (<a id='5642' tid='5641' class='
