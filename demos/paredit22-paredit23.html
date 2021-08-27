@@ -4422,4 +4422,10 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
 </a>                     <a id='5632' tid='5631' class='u'>;; error if there really was one.
 </a>                     (<a id='5634' tid='5633' class='u'>funcall</a> <a id='5636' tid='5635' class='u'>scan-lists</a>)
                      (<a id='5638' tid='5637' class='u'>buffer-end</a> <a id='5640' tid='5639' class='u'>horizontal-direction</a>)))))
-          (<a id='5642' tid='5641' class='
+          (<a id='5642' tid='5641' class='u'>t</a>
+           (<a id='5644' tid='5643' class='u'>error</a> <a id='5646' tid='5645' class='u'>&quot;Vertical direction must be nonzero in `%s&#39;.&quot;</a>
+                  <a id='5648' tid='5647' class='u'>&#39;</a><a id='5650' tid='5649' class='u'>paredit-up/down</a>)))))
+
+(<a id='3190' tid='3189' class='u'>defun</a> <a id='3192' tid='3191' class='u'>paredit-find-next-string-start</a> (<a id='3194' tid='3193' class='u'>horizontal-direction</a> <a id='3196' tid='3195' class='u'>limit</a>)
+  (<a id='1278' tid='1277' class='m'>let</a> (<span class='i'>(buffer-limit-p (if (&lt; 0 horizontal-direction) &#39;eobp &#39;bobp))</span>
+        (<a id='1280' tid='1279' class='m'>next-char</a> (<a id='1282' tid='1281' class='m'>if</a> (<a id='1284' tid='1283' class='m'>&lt;</a> <a id='1286' tid='1285' class='m'>0</a> <a id='1288' tid='1287' class='m'>horizontal-direction</a>) <a id='1290' tid='1289' class='m'>&#39;</a><a id='1292' tid='1291' class='m'>char-after
