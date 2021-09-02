@@ -4441,4 +4441,14 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
               (<a id='1338' tid='1337' class='m'>save-excursion</a>
                 (<a id='1340' tid='1339' class='m'>backward-sexp</a> <a id='1342' tid='1341' class='m'>horizontal-direction</a>)
                 (<a id='1344' tid='1343' class='m'>if</a> (<a id='1346' tid='1345' class='m'>eq</a> <a id='1348' tid='1347' class='m'>?\&quot;</a> (<a id='1350' tid='1349' class='m'>char-syntax</a> (<a id='1352' tid='1351' class='m'>funcall</a> <a id='1354' tid='1353' class='m'>next-char</a>)))
-                    (<a id='1356' tid='1355' class='m'>throw</a> <a id='1358' tid='1357' class='m'>&#39;</a><a id='1360' tid='1359' class='m'>exit</a> (<a id='1362' tid='1361' class='m'>+</a> (<a
+                    (<a id='1356' tid='1355' class='m'>throw</a> <a id='1358' tid='1357' class='m'>&#39;</a><a id='1360' tid='1359' class='m'>exit</a> (<a id='1362' tid='1361' class='m'>+</a> (<a id='1364' tid='1363' class='m'>point</a>) <a id='1366' tid='1365' class='m'>horizontal-direction</a>)))))))
+      <a id='1368' tid='1367' class='m'>nil</a>)))
+
+(<a id='3350' tid='3349' class='u'>defun</a> <a id='3352' tid='3351' class='u'>paredit-forward-down</a> (<a id='3354' tid='3353' class='u'>&optional</a> <a id='3356' tid='3355' class='u'>argument</a>)
+  <a id='3358' tid='3357' class='u'>&quot;Move forward down into a list.
+With a positive argument, move forward down that many levels.
+With a negative argument, move backward down that many levels.&quot;</a>
+  (<a id='3360' tid='3359' class='u'>interactive</a> <a id='3362' tid='3361' class='u'>&quot;p&quot;</a>)
+  (<a id='3364' tid='3363' class='u'>paredit-up/down</a> (<a id='3366' tid='3365' class='u'>or</a> <a id='3368' tid='3367' class='u'>argument</a> <a id='3370' tid='3369' class='u'>+1</a>) <a id='3372' tid='3371' class='u'>-1</a>))
+
+(<a id='2542' tid='2541' class='u'>defun</a> <a id='2544' tid='2543'
