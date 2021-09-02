@@ -4436,4 +4436,9 @@ With a prefix argument N, encompass all N S-expressions forward.&quot;
             (<a id='1308' tid='1307' class='m'>while</a> <a id='1310' tid='1309' class='m'>t</a>
               (<a id='1312' tid='1311' class='m'>if</a> (<span class='i'>or</span> <span class='i'>(funcall buffer-limit-p)</span>
                       (<a id='1314' tid='1313' class='m'>and</a> <a id='1316' tid='1315' class='m'>limit</a> (<a id='1318' tid='1317' class='m'>funcall</a> <a id='1320' tid='1319' class='m'>pastp</a> (<a id='1322' tid='1321' class='m'>point</a>) <a id='1324' tid='1323' class='m'>limit</a>)))
-                  (<a id='1326' tid='1325' class='m'>throw</a> <a id='1328
+                  (<a id='1326' tid='1325' class='m'>throw</a> <a id='1328' tid='1327' class='m'>&#39;</a><a id='1330' tid='1329' class='m'>exit</a> <a id='1332' tid='1331' class='m'>nil</a>))
+              (<a id='1334' tid='1333' class='m'>forward-sexp</a> <a id='1336' tid='1335' class='m'>horizontal-direction</a>)
+              (<a id='1338' tid='1337' class='m'>save-excursion</a>
+                (<a id='1340' tid='1339' class='m'>backward-sexp</a> <a id='1342' tid='1341' class='m'>horizontal-direction</a>)
+                (<a id='1344' tid='1343' class='m'>if</a> (<a id='1346' tid='1345' class='m'>eq</a> <a id='1348' tid='1347' class='m'>?\&quot;</a> (<a id='1350' tid='1349' class='m'>char-syntax</a> (<a id='1352' tid='1351' class='m'>funcall</a> <a id='1354' tid='1353' class='m'>next-char</a>)))
+                    (<a id='1356' tid='1355' class='m'>throw</a> <a id='1358' tid='1357' class='m'>&#39;</a><a id='1360' tid='1359' class='m'>exit</a> (<a id='1362' tid='1361' class='m'>+</a> (<a
