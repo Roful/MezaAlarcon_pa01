@@ -4460,4 +4460,14 @@ If in a string initially, that counts as one level.&quot;</a>
   (<a id='2556' tid='2555' class='u'>paredit-up/down</a> (<a id='2558' tid='2557' class='u'>-</a> <a id='2560' tid='2559' class='u'>0</a> (<a id='2562' tid='2561' class='u'>or</a> <a id='2564' tid='2563' class='u'>argument</a> <a id='2566' tid='2565' class='u'>+1</a>)) <a id='2568' tid='2567' class='u'>+1</a>))
 
 (<a id='3886' tid='3885' class='u'>defun</a> <a id='3888' tid='3887' class='u'>paredit-forward-up</a> (<a id='3890' tid='3889' class='u'>&optional</a> <a id='3892' tid='3891' class='u'>argument</a>)
-  <a id='3
+  <a id='3894' tid='3893' class='u'>&quot;Move forward up out of the enclosing list.
+With a positive argument, move forward up that many levels.
+With a negative argument, move backward up that many levels.
+If in a string initially, that counts as one level.&quot;</a>
+  (<a id='3896' tid='3895' class='u'>interactive</a> <a id='3898' tid='3897' class='u'>&quot;p&quot;</a>)
+  (<a id='3900' tid='3899' class='u'>paredit-up/down</a> (<a id='3902' tid='3901' class='u'>or</a> <a id='3904' tid='3903' class='u'>argument</a> <a id='3906' tid='3905' class='u'>+1</a>) <a id='3908' tid='3907' class='u'>+1</a>))
+
+(<a id='2218' tid='2217' class='u'>defun</a> <a id='2220' tid='2219' class='u'>paredit-backward-down</a> (<a id='2222' tid='2221' class='u'>&optional</a> <a id='2224' tid='2223' class='u'>argument</a>)
+  <a id='2226' tid='2225' class='u'>&quot;Move backward down into a list.
+With a positive argument, move backward down that many levels.
+With a negative a
