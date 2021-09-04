@@ -4470,4 +4470,12 @@ If in a string initially, that counts as one level.&quot;</a>
 (<a id='2218' tid='2217' class='u'>defun</a> <a id='2220' tid='2219' class='u'>paredit-backward-down</a> (<a id='2222' tid='2221' class='u'>&optional</a> <a id='2224' tid='2223' class='u'>argument</a>)
   <a id='2226' tid='2225' class='u'>&quot;Move backward down into a list.
 With a positive argument, move backward down that many levels.
-With a negative a
+With a negative argument, move forward down that many levels.&quot;</a>
+  (<a id='2228' tid='2227' class='u'>interactive</a> <a id='2230' tid='2229' class='u'>&quot;p&quot;</a>)
+  (<a id='2232' tid='2231' class='u'>paredit-up/down</a> (<a id='2234' tid='2233' class='u'>-</a> <a id='2236' tid='2235' class='u'>0</a> (<a id='2238' tid='2237' class='u'>or</a> <a id='2240' tid='2239' class='u'>argument</a> <a id='2242' tid='2241' class='u'>+1</a>)) <a id='2244' tid='2243' class='u'>-1</a>))
+
+<span class='i'>;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
+</span>
+(<a id='6548' tid='6547' class='u'>defun</a> <a id='6550' tid='6549' class='u'>paredit-wrap-sexp</a> (<a id='6552' tid='6551' class='u'>&optional</a> <a id='6554' tid='6553' class='u'>argument</a> <a id='6556' tid='6555' class='u'>open</a> <a id='6558' tid='6557' class='u'>close</a>)
+  <a id='6560' tid='6559' class='u'>&quot;Wrap the following S-expression.
+If a `C-u&#39; prefix argument is given, wrap all S-expressio
