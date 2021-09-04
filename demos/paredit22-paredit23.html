@@ -4490,4 +4490,9 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
   (<a id='6562' tid='6561' class='u'>interactive</a> <a id='6564' tid='6563' class='u'>&quot;P&quot;</a>)
   (<a id='6566' tid='6565' class='u'>paredit-lose-if-not-in-sexp</a> <a id='6568' tid='6567' class='u'>&#39;</a><a id='6570' tid='6569' class='u'>paredit-wrap-sexp</a>)
   (<a id='6572' tid='6571' class='u'>let</a> ((<a id='6574' tid='6573' class='u'>open</a> (<a id='6576' tid='6575' class='u'>or</a> <a id='6578' tid='6577' class='u'>open</a> <a id='6580' tid='6579' class='u'>?\(</a> ))
-        (<a id='6582' tid='6581' class='u
+        (<a id='6582' tid='6581' class='u'>close</a> (<a id='6584' tid='6583' class='u'>or</a> <a id='6586' tid='6585' class='u'>close</a> <a id='6588' tid='6587' class='u'>?\)</a> )))
+    (<a id='6590' tid='6589' class='u'>paredit-handle-sexp-errors</a>
+        ((<a id='6592' tid='6591' class='u'>lambda</a> (<a id='6594' tid='6593' class='u'>n</a>) (<a id='6596' tid='6595' class='u'>paredit-insert-pair</a> <a id='6598' tid='6597' class='u'>n</a> <a id='6600' tid='6599' class='u'>open</a> <a id='6602' tid='6601' class='u'>close</a> <a id='6604' tid='6603' class='u'>&#39;</a><a id='6606' tid='6605' class='u'>goto-char</a>))
+         (<a id='6608' tid='6607' class='u'>cond</a> ((<a id='6610' tid='6609' class='u'>integerp</a> <a id='6612' tid='6611' class='u'>argument</a>) <a id='6614' tid='6613' class='u'>argument</a>)
+               ((<a id='6616' tid='6615' class='u'>consp</a> <a id='6618' tid='6617' class='u'>argument</a>) (<a id='6620' tid='6619' class='u'>paredit-count-sexps-forward</a>))
+               ((<a id='6622' tid='6
