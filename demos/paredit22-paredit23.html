@@ -4478,4 +4478,16 @@ With a negative argument, move forward down that many levels.&quot;</a>
 </span>
 (<a id='6548' tid='6547' class='u'>defun</a> <a id='6550' tid='6549' class='u'>paredit-wrap-sexp</a> (<a id='6552' tid='6551' class='u'>&optional</a> <a id='6554' tid='6553' class='u'>argument</a> <a id='6556' tid='6555' class='u'>open</a> <a id='6558' tid='6557' class='u'>close</a>)
   <a id='6560' tid='6559' class='u'>&quot;Wrap the following S-expression.
-If a `C-u&#39; prefix argument is given, wrap all S-expressio
+If a `C-u&#39; prefix argument is given, wrap all S-expressions following
+  the point until the end of the buffer or of the enclosing list.
+If a numeric prefix argument N is given, wrap N S-expressions.
+Automatically indent the newly wrapped S-expression.
+As a special case, if the point is at the end of a list, simply insert
+  a parenthesis pair, rather than inserting a lone opening delimiter
+  and then signalling an error, in the interest of preserving
+  structure.
+By default OPEN and CLOSE are round delimiters.&quot;</a>
+  (<a id='6562' tid='6561' class='u'>interactive</a> <a id='6564' tid='6563' class='u'>&quot;P&quot;</a>)
+  (<a id='6566' tid='6565' class='u'>paredit-lose-if-not-in-sexp</a> <a id='6568' tid='6567' class='u'>&#39;</a><a id='6570' tid='6569' class='u'>paredit-wrap-sexp</a>)
+  (<a id='6572' tid='6571' class='u'>let</a> ((<a id='6574' tid='6573' class='u'>open</a> (<a id='6576' tid='6575' class='u'>or</a> <a id='6578' tid='6577' class='u'>open</a> <a id='6580' tid='6579' class='u'>?\(</a> ))
+        (<a id='6582' tid='6581' class='u
