@@ -4495,4 +4495,15 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
         ((<a id='6592' tid='6591' class='u'>lambda</a> (<a id='6594' tid='6593' class='u'>n</a>) (<a id='6596' tid='6595' class='u'>paredit-insert-pair</a> <a id='6598' tid='6597' class='u'>n</a> <a id='6600' tid='6599' class='u'>open</a> <a id='6602' tid='6601' class='u'>close</a> <a id='6604' tid='6603' class='u'>&#39;</a><a id='6606' tid='6605' class='u'>goto-char</a>))
          (<a id='6608' tid='6607' class='u'>cond</a> ((<a id='6610' tid='6609' class='u'>integerp</a> <a id='6612' tid='6611' class='u'>argument</a>) <a id='6614' tid='6613' class='u'>argument</a>)
                ((<a id='6616' tid='6615' class='u'>consp</a> <a id='6618' tid='6617' class='u'>argument</a>) (<a id='6620' tid='6619' class='u'>paredit-count-sexps-forward</a>))
-               ((<a id='6622' tid='6
+               ((<a id='6622' tid='6621' class='u'>paredit-region-active-p</a>) <a id='6624' tid='6623' class='u'>nil</a>)
+               (<a id='6626' tid='6625' class='u'>t</a> <a id='6628' tid='6627' class='u'>1</a>)))
+      (<a id='6630' tid='6629' class='u'>insert</a> <a id='6632' tid='6631' class='u'>close</a>)
+      (<a id='6634' tid='6633' class='u'>backward-char</a>)))
+  (<a id='6636' tid='6635' class='u'>save-excursion</a> (<a id='6638' tid='6637' class='u'>backward-up-list</a>) (<a id='6640' tid='6639' class='u'>indent-sexp</a>)))
+
+(<a id='2928' tid='2927' class='u'>defun</a> <a id='2930' tid='2929' class='u'>paredit-count-sexps-forward</a> ()
+  (<a id='1370' tid='1369' class='m'>save-excursion</a>
+    (<span class='i'>let</span> <span class='i'>((n 0) (p nil))</span>                <span class='i'>;hurk
+</span>      (<span class='i'>paredit-ignore-sexp-errors</span>
+        (<span class='i'>while</span> <span class='i'>(setq p (scan-sexps (point) +1))</span>
+          
