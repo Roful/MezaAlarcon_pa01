@@ -4519,4 +4519,12 @@ If this command follows a `paredit-wrap-sexp&#39;, or any other paredit
 If this command is repeated, run `yank-pop&#39; and reindent the enclosing
   S-expression.
 
-The argument
+The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
+  documentation for details.&quot;</a>
+  (<a id='6652' tid='6651' class='u'>interactive</a> <a id='6654' tid='6653' class='u'>&quot;*p&quot;</a>)
+  (<a id='6656' tid='6655' class='u'>cond</a> ((<a id='6658' tid='6657' class='u'>eq</a> <a id='6660' tid='6659' class='u'>last-command</a> <a id='6662' tid='6661' class='u'>&#39;</a><a id='6664' tid='6663' class='u'>yank</a>)
+         (<a id='6666' tid='6665' class='u'>yank-pop</a> <a id='6668' tid='6667' class='u'>argument</a>))
+        ((<a id='6670' tid='6669' class='u'>memq</a> <a id='6672' tid='6671' class='u'>last-command</a> <a id='6674' tid='6673' class='u'>paredit-wrap-commands</a>)
+         (<a id='6676' tid='6675' class='u'>yank</a> <a id='6678' tid='6677' class='u'>argument</a>)
+         <a id='6680' tid='6679' class='u'>;; `yank&#39; futzes with `this-command&#39;.
+</a>         (<a id='6682' tid='6681' class='u'>setq</a> <a id='6684' tid='6683' class='u'>this-command</a> <a
