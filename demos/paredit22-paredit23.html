@@ -4506,4 +4506,17 @@ By default OPEN and CLOSE are round delimiters.&quot;</a>
     (<span class='i'>let</span> <span class='i'>((n 0) (p nil))</span>                <span class='i'>;hurk
 </span>      (<span class='i'>paredit-ignore-sexp-errors</span>
         (<span class='i'>while</span> <span class='i'>(setq p (scan-sexps (point) +1))</span>
-          
+          <span class='i'>(goto-char p)</span>
+          (<a id='1372' tid='1371' class='m'>setq</a> <a id='1374' tid='1373' class='m'>n</a> (<a id='1376' tid='1375' class='m'>+</a> <a id='1378' tid='1377' class='m'>n</a> <a id='1380' tid='1379' class='m'>1</a>))))
+      <span class='i'>n</span>)))
+
+(<a id='6642' tid='6641' class='u'>defun</a> <a id='6644' tid='6643' class='u'>paredit-yank-pop</a> (<a id='6646' tid='6645' class='u'>&optional</a> <a id='6648' tid='6647' class='u'>argument</a>)
+  <a id='6650' tid='6649' class='u'>&quot;Replace just-yanked text with the next item in the kill ring.
+If this command follows a `yank&#39;, just run `yank-pop&#39;.
+If this command follows a `paredit-wrap-sexp&#39;, or any other paredit
+  wrapping command (see `paredit-wrap-commands&#39;), run `yank&#39; and
+  reindent the enclosing S-expression.
+If this command is repeated, run `yank-pop&#39; and reindent the enclosing
+  S-expression.
+
+The argument
