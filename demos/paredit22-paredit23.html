@@ -4527,4 +4527,10 @@ The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
         ((<a id='6670' tid='6669' class='u'>memq</a> <a id='6672' tid='6671' class='u'>last-command</a> <a id='6674' tid='6673' class='u'>paredit-wrap-commands</a>)
          (<a id='6676' tid='6675' class='u'>yank</a> <a id='6678' tid='6677' class='u'>argument</a>)
          <a id='6680' tid='6679' class='u'>;; `yank&#39; futzes with `this-command&#39;.
-</a>         (<a id='6682' tid='6681' class='u'>setq</a> <a id='6684' tid='6683' class='u'>this-command</a> <a
+</a>         (<a id='6682' tid='6681' class='u'>setq</a> <a id='6684' tid='6683' class='u'>this-command</a> <a id='6686' tid='6685' class='u'>&#39;</a><a id='6688' tid='6687' class='u'>paredit-yank-pop</a>)
+         (<a id='6690' tid='6689' class='u'>save-excursion</a> (<a id='6692' tid='6691' class='u'>backward-up-list</a>) (<a id='6694' tid='6693' class='u'>indent-sexp</a>)))
+        ((<a id='6696' tid='6695' class='u'>eq</a> <a id='6698' tid='6697' class='u'>last-command</a> <a id='6700' tid='6699' class='u'>&#39;</a><a id='6702' tid='6701' class='u'>paredit-yank-pop</a>)
+         <a id='6704' tid='6703' class='u'>;; Pretend we just did a `yank&#39;, so that we can use
+</a>         <a id='6706' tid='6705' class='u'>;; `yank-pop&#39; without duplicating its definition.
+</a>         (<a id='6708' tid='6707' class='u'>setq</a> <a id='6710' tid='6709' class='u'>last-command</a> <a id='6712' tid='6711' class='u'>&#39;</a><a id='6714' tid='6713' class='u'>yank</a>)
+         (<a id='6716' tid='6715' class='u'>yank-pop</a> <a id='6718' tid='6717' clas
