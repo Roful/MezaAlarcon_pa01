@@ -4552,4 +4552,13 @@ With a numerical prefix argument N, kill N S-expressions backward in
   the current list before splicing the remaining S-expressions into the
   enclosing list.  If N is negative, kill forward.
 Inside a string, unescape all backslashes, or signal an error if doing
-  so would invalidate the
+  so would invalidate the buffer&#39;s structure.&quot;</a>
+  (<a id='6160' tid='6159' class='u'>interactive</a> <a id='6162' tid='6161' class='u'>&quot;P&quot;</a>)
+  (<a id='1382' tid='1381' class='m'>if</a> (<a id='1384' tid='1383' class='m'>paredit-in-string-p</a>)
+      (<a id='1386' tid='1385' class='m'>paredit-splice-string</a> <a id='1388' tid='1387' class='m'>argument</a>)
+      (<a id='1390' tid='1389' class='m'>save-excursion</a>
+        (<a id='1392' tid='1391' class='m'>paredit-kill-surrounding-sexps-for-splice</a> <a id='1394' tid='1393' class='m'>argument</a>)
+        (<a id='1396' tid='1395' class='m'>let</a> ((<a id='1398' tid='1397' class='m'>end</a> (<a id='1400' tid='1399' class='m'>point</a>)))
+          (<a id='1402' tid='1401' class='m'>backward-up-list</a>)            <a id='1404' tid='1403' class='m'>; Go up to the beginning...
+</a>          (<a id='1406' tid='1405' class='m'>save-excursion</a>
+            (<a id='1408' tid='1407' class='m'>forward-char</a> <a id='1410' tid='1409' class='m'>1</
