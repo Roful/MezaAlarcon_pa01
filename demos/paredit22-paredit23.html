@@ -4540,4 +4540,16 @@ The argument is passed on to `yank&#39; or `yank-pop&#39;; see their
          (<a id='6738' tid='6737' class='u'>save-excursion</a> (<a id='6740' tid='6739' class='u'>backward-up-list</a>) (<a id='6742' tid='6741' class='u'>indent-sexp</a>)))
         (<a id='6744' tid='6743' class='u'>t</a> (<a id='6746' tid='6745' class='u'>error</a> <a id='6748' tid='6747' class='u'>&quot;Last command was not a yank or a wrap: %s&quot;</a> <a id='6750' tid='6749' class='u'>last-command</a>))))
 
-(<a id='6150' tid='614
+(<a id='6150' tid='6149' class='u'>defun</a> <a id='6152' tid='6151' class='u'>paredit-splice-sexp</a> (<a id='6154' tid='6153' class='u'>&optional</a> <a id='6156' tid='6155' class='u'>argument</a>)
+  <a id='6158' tid='6157' class='u'>&quot;Splice the list that the point is on by removing its delimiters.
+With a prefix argument as in `C-u&#39;, kill all S-expressions backward in
+  the current list before splicing all S-expressions forward into the
+  enclosing list.
+With two prefix arguments as in `C-u C-u&#39;, kill all S-expressions
+  forward in the current list before splicing all S-expressions
+  backward into the enclosing list.
+With a numerical prefix argument N, kill N S-expressions backward in
+  the current list before splicing the remaining S-expressions into the
+  enclosing list.  If N is negative, kill forward.
+Inside a string, unescape all backslashes, or signal an error if doing
+  so would invalidate the
