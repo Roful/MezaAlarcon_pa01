@@ -4577,4 +4577,9 @@ Inside a string, unescape all backslashes, or signal an error if doing
 (<a id='4860' tid='4859' class='u'>defun</a> <a id='4862' tid='4861' class='u'>paredit-kill-surrounding-sexps-for-splice</a> (<a id='4864' tid='4863' class='u'>argument</a>)
   (<a id='4866' tid='4865' class='u'>cond</a> ((<a id='4868' tid='4867' class='u'>or</a> (<a id='4870' tid='4869' class='u'>paredit-in-string-p</a>)
              (<a id='4872' tid='4871' class='u'>paredit-in-comment-p</a>))
-         (<a id='4874' tid='4873' clas
+         (<a id='4874' tid='4873' class='u'>error</a> <a id='4876' tid='4875' class='u'>&quot;Invalid context for splicing S-expressions.&quot;</a>))
+        ((<a id='4878' tid='4877' class='u'>or</a> (<a id='4880' tid='4879' class='u'>not</a> <a id='4882' tid='4881' class='u'>argument</a>) (<a id='4884' tid='4883' class='u'>eq</a> <a id='4886' tid='4885' class='u'>argument</a> <a id='4888' tid='4887' class='u'>0</a>)) <a id='4890' tid='4889' class='u'>nil</a>)
+        ((<a id='4892' tid='4891' class='u'>or</a> (<a id='4894' tid='4893' class='u'>numberp</a> <a id='4896' tid='4895' class='u'>argument</a>) (<a id='4898' tid='4897' class='u'>eq</a> <a id='4900' tid='4899' class='u'>argument</a> <a id='4902' tid='4901' class='u'>&#39;</a><a id='4904' tid='4903' class='u'>-</a>))
+         <a id='4906' tid='4905' class='u'>;; Kill S-expressions before/after the point by saving the
+</a>         <a id='4908' tid='4907' class='u'>;; point, moving across them, and killing the region.
+</
