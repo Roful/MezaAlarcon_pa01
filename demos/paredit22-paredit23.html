@@ -4582,4 +4582,8 @@ Inside a string, unescape all backslashes, or signal an error if doing
         ((<a id='4892' tid='4891' class='u'>or</a> (<a id='4894' tid='4893' class='u'>numberp</a> <a id='4896' tid='4895' class='u'>argument</a>) (<a id='4898' tid='4897' class='u'>eq</a> <a id='4900' tid='4899' class='u'>argument</a> <a id='4902' tid='4901' class='u'>&#39;</a><a id='4904' tid='4903' class='u'>-</a>))
          <a id='4906' tid='4905' class='u'>;; Kill S-expressions before/after the point by saving the
 </a>         <a id='4908' tid='4907' class='u'>;; point, moving across them, and killing the region.
-</
+</a>         (<a id='4910' tid='4909' class='u'>let*</a> ((<a id='4912' tid='4911' class='u'>argument</a> (<a id='4914' tid='4913' class='u'>if</a> (<a id='4916' tid='4915' class='u'>eq</a> <a id='4918' tid='4917' class='u'>argument</a> <a id='4920' tid='4919' class='u'>&#39;</a><a id='4922' tid='4921' class='u'>-</a>) <a id='4924' tid='4923' class='u'>-1</a> <a id='4926' tid='4925' class='u'>argument</a>))
+                (<a id='4928' tid='4927' class='u'>saved</a> (<a id='4930' tid='4929' class='u'>paredit-point-at-sexp-boundary</a> (<a id='4932' tid='4931' class='u'>-</a> <a id='4934' tid='4933' class='u'>argument</a>))))
+           (<a id='4936' tid='4935' class='u'>goto-char</a> <a id='4938' tid='4937' class='u'>saved</a>)
+           (<a id='4940' tid='4939' class='u'>paredit-ignore-sexp-errors</a> (<a id='4942' tid='4941' class='u'>backward-sexp</a> <a id='4944' tid='4943' class='u'>argument</a>))
+           (<a id='4946' tid='4945' class='u'>paredit-hack-kill-region</a> <a id='49
