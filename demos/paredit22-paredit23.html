@@ -4568,4 +4568,13 @@ Inside a string, unescape all backslashes, or signal an error if doing
             (<a id='1428' tid='1427' class='m'>save-excursion</a>
               (<a id='1430' tid='1429' class='m'>setq</a> <a id='1432' tid='1431' class='m'>indent-start</a> (<a id='1434' tid='1433' class='m'>point</a>))
               (<a id='1436' tid='1435' class='m'>forward-sexp</a>)            <a id='1438' tid='1437' class='m'>; Go forward an expression, to
-</a>     
+</a>              (<a id='1440' tid='1439' class='m'>backward-delete-char</a> <a id='1442' tid='1441' class='m'>1</a>)  <a id='1444' tid='1443' class='m'>;   delete the end delimiter.
+</a>              (<a id='1446' tid='1445' class='m'>setq</a> <a id='1448' tid='1447' class='m'>indent-end</a> (<a id='1450' tid='1449' class='m'>point</a>)))
+            <span class='i'>(delete-region (point) end)</span> <span class='i'>; ...to delete the open char.
+</span>            <span class='i'>;; Reindent only the region we preserved.
+</span>            <span class='i'>(indent-region indent-start indent-end nil)</span>)))))
+
+(<a id='4860' tid='4859' class='u'>defun</a> <a id='4862' tid='4861' class='u'>paredit-kill-surrounding-sexps-for-splice</a> (<a id='4864' tid='4863' class='u'>argument</a>)
+  (<a id='4866' tid='4865' class='u'>cond</a> ((<a id='4868' tid='4867' class='u'>or</a> (<a id='4870' tid='4869' class='u'>paredit-in-string-p</a>)
+             (<a id='4872' tid='4871' class='u'>paredit-in-comment-p</a>))
+         (<a id='4874' tid='4873' clas
