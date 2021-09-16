@@ -4592,4 +4592,13 @@ Inside a string, unescape all backslashes, or signal an error if doing
            (<a id='4964' tid='4963' class='u'>if</a> (<a id='4966' tid='4965' class='u'>=</a> <a id='4968' tid='4967' class='u'>v</a> <a id='4970' tid='4969' class='u'>4</a>)                  <a id='4972' tid='4971' class='u'>;One `C-u&#39;.
 </a>               <a id='4974' tid='4973' class='u'>;; Move backward until we hit the open paren; then
 </a>               <a id='4976' tid='4975' class='u'>;; kill that selected region.
-</a>               (<a id='4978' tid='4977' class='u'>let</a> ((<a id='4980' tid='4979' class='u'>end</a> (<a id='4982' tid='4
+</a>               (<a id='4978' tid='4977' class='u'>let</a> ((<a id='4980' tid='4979' class='u'>end</a> (<a id='4982' tid='4981' class='u'>point</a>)))
+                 (<a id='4984' tid='4983' class='u'>paredit-ignore-sexp-errors</a>
+                   (<a id='4986' tid='4985' class='u'>while</a> (<a id='4988' tid='4987' class='u'>not</a> (<a id='4990' tid='4989' class='u'>bobp</a>))
+                     (<a id='4992' tid='4991' class='u'>backward-sexp</a>)))
+                 (<a id='4994' tid='4993' class='u'>paredit-hack-kill-region</a> (<a id='4996' tid='4995' class='u'>point</a>) <a id='4998' tid='4997' class='u'>end</a>))
+               <a id='5000' tid='4999' class='u'>;; Move forward until we hit the close paren; then
+</a>               <a id='5002' tid='5001' class='u'>;; kill that selected region.
+</a>               (<a id='5004' tid='5003' class='u'>let</a> ((<a id='5006' tid='5005' class='u'>beginning</a> (<a id='5008' tid='5007' class='u'>point</a>)))
+                 (<a id='5010' tid='5009' class='u'>paredit-ignore-sexp-errors</a>
+                   (<
