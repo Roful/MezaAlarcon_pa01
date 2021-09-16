@@ -4601,4 +4601,11 @@ Inside a string, unescape all backslashes, or signal an error if doing
 </a>               <a id='5002' tid='5001' class='u'>;; kill that selected region.
 </a>               (<a id='5004' tid='5003' class='u'>let</a> ((<a id='5006' tid='5005' class='u'>beginning</a> (<a id='5008' tid='5007' class='u'>point</a>)))
                  (<a id='5010' tid='5009' class='u'>paredit-ignore-sexp-errors</a>
-                   (<
+                   (<a id='5012' tid='5011' class='u'>while</a> (<a id='5014' tid='5013' class='u'>not</a> (<a id='5016' tid='5015' class='u'>eobp</a>))
+                     (<a id='5018' tid='5017' class='u'>forward-sexp</a>)))
+                 (<a id='5020' tid='5019' class='u'>paredit-hack-kill-region</a> <a id='5022' tid='5021' class='u'>beginning</a> (<a id='5024' tid='5023' class='u'>point</a>))))))
+        (<a id='5026' tid='5025' class='u'>t</a> (<a id='5028' tid='5027' class='u'>error</a> <a id='5030' tid='5029' class='u'>&quot;Bizarre prefix argument `%s&#39;.&quot;</a> <a id='5032' tid='5031' class='u'>argument</a>))))
+
+(<a id='6164' tid='6163' class='u'>defun</a> <a id='6166' tid='6165' class='u'>paredit-splice-sexp-killing-backward</a> (<a id='6168' tid='6167' class='u'>&optional</a> <a id='6170' tid='6169' class='u'>n</a>)
+  <a id='6172' tid='6171' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions before the point in the current lis
