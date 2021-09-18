@@ -4618,4 +4618,12 @@ With a prefix argument N, kill only the preceding N S-expressions.&quot;</a>
 (<a id='6192' tid='6191' class='u'>defun</a> <a id='6194' tid='6193' class='u'>paredit-splice-sexp-killing-forward</a> (<a id='6196' tid='6195' class='u'>&optional</a> <a id='6198' tid='6197' class='u'>n</a>)
   <a id='6200' tid='6199' class='u'>&quot;Splice the list the point is on by removing its delimiters, and
   also kill all S-expressions after the point in the current list.
-With a prefi
+With a prefix argument N, kill only the following N S-expressions.&quot;</a>
+  (<a id='6202' tid='6201' class='u'>interactive</a> <a id='6204' tid='6203' class='u'>&quot;P&quot;</a>)
+  (<a id='6206' tid='6205' class='u'>paredit-splice-sexp</a> (<a id='6208' tid='6207' class='u'>if</a> <a id='6210' tid='6209' class='u'>n</a>
+                           (<a id='6212' tid='6211' class='u'>-</a> (<a id='6214' tid='6213' class='u'>prefix-numeric-value</a> <a id='6216' tid='6215' class='u'>n</a>))
+                           <a id='6218' tid='6217' class='u'>&#39;</a>(<a id='6220' tid='6219' class='u'>16</a>))))
+
+(<a id='5708' tid='5707' class='u'>defun</a> <a id='5710' tid='5709' class='u'>paredit-raise-sexp</a> (<a id='5712' tid='5711' class='u'>&optional</a> <a id='5714' tid='5713' class='u'>argument</a>)
+  <a id='5716' tid='5715' class='u'>&quot;Raise the following S-expression in a tree, deleting its siblings.
+With a prefix argument N, raise the following N S-expressio
