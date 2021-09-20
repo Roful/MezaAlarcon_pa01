@@ -4637,4 +4637,11 @@ If the point is on an S-expression, such as a string or a symbol, not
           ((<a id='1464' tid='1463' class='m'>paredit-in-char-p</a>)
            (<a id='1466' tid='1465' class='m'>backward-sexp</a>))
           ((<a id='1468' tid='1467' class='m'>paredit-in-comment-p</a>)
-           (<a id='1470' tid='1469' class='m'>error</a> <a id='1472' tid='1471' class='m'>&quot;No S-expression to raise in
+           (<a id='1470' tid='1469' class='m'>error</a> <a id='1472' tid='1471' class='m'>&quot;No S-expression to raise in comment.&quot;</a>)))
+    <a id='1474' tid='1473' class='m'>;; Select the S-expressions we want to raise in a buffer substring.
+</a>    (<a id='1476' tid='1475' class='m'>let*</a> ((<a id='1478' tid='1477' class='m'>n</a> (<a id='1480' tid='1479' class='m'>prefix-numeric-value</a> <a id='1482' tid='1481' class='m'>argument</a>))
+           (<a id='1484' tid='1483' class='m'>bound</a> (<a id='1486' tid='1485' class='m'>scan-sexps</a> (<a id='1488' tid='1487' class='m'>point</a>) <a id='1490' tid='1489' class='m'>n</a>))
+           (<a id='1492' tid='1491' class='m'>sexps</a>
+            (<a id='1494' tid='1493' class='m'>if</a> (<a id='1496' tid='1495' class='m'>&lt;</a> <a id='1498' tid='1497' class='m'>n</a> <a id='1500' tid='1499' class='m'>0</a>)
+                (<a id='1502' tid='1501' class='m'>buffer-substring</a> <a id='1504' tid='1503' class='m'>bound</a> (<a id='1506' tid='1505' class='m'>paredit-point-at-sexp-end</a>))
+                (<a id='1508' tid='1507' class='m'>buffer-substring</a> (<a
