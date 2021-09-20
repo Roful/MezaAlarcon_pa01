@@ -4644,4 +4644,10 @@ If the point is on an S-expression, such as a string or a symbol, not
            (<a id='1492' tid='1491' class='m'>sexps</a>
             (<a id='1494' tid='1493' class='m'>if</a> (<a id='1496' tid='1495' class='m'>&lt;</a> <a id='1498' tid='1497' class='m'>n</a> <a id='1500' tid='1499' class='m'>0</a>)
                 (<a id='1502' tid='1501' class='m'>buffer-substring</a> <a id='1504' tid='1503' class='m'>bound</a> (<a id='1506' tid='1505' class='m'>paredit-point-at-sexp-end</a>))
-                (<a id='1508' tid='1507' class='m'>buffer-substring</a> (<a
+                (<a id='1508' tid='1507' class='m'>buffer-substring</a> (<a id='1510' tid='1509' class='m'>paredit-point-at-sexp-start</a>) <a id='1512' tid='1511' class='m'>bound</a>))))
+      <a id='1514' tid='1513' class='m'>;; Move up to the list we&#39;re raising those S-expressions out of and
+</a>      <a id='1516' tid='1515' class='m'>;; delete it.
+</a>      (<a id='1518' tid='1517' class='m'>backward-up-list</a>)
+      (<a id='1520' tid='1519' class='m'>delete-region</a> (<a id='1522' tid='1521' class='m'>point</a>) (<a id='1524' tid='1523' class='m'>scan-sexps</a> (<a id='1526' tid='1525' class='m'>point</a>) <a id='1528' tid='1527' class='m'>1</a>))
+      (<span class='i'>let*</span> ((<a id='1530' tid='1529' class='m'>indent-start</a> (<a id='1532' tid='1531' class='m'>point</a>))
+             (<a id='1534' tid='1533' class='m'>indent-end</a> (<a id='1536' tid='1535' class='m'>save-excursion</a> (<a id='1538' tid='1537' class='m'>insert</a> <a id='1540' tid='1539' class='m'>sexps</a>) (<a id='1542' tid='1541' 
