@@ -4626,4 +4626,15 @@ With a prefix argument N, kill only the following N S-expressions.&quot;</a>
 
 (<a id='5708' tid='5707' class='u'>defun</a> <a id='5710' tid='5709' class='u'>paredit-raise-sexp</a> (<a id='5712' tid='5711' class='u'>&optional</a> <a id='5714' tid='5713' class='u'>argument</a>)
   <a id='5716' tid='5715' class='u'>&quot;Raise the following S-expression in a tree, deleting its siblings.
-With a prefix argument N, raise the following N S-expressio
+With a prefix argument N, raise the following N S-expressions.  If N
+  is negative, raise the preceding N S-expressions.
+If the point is on an S-expression, such as a string or a symbol, not
+  between them, that S-expression is considered to follow the point.&quot;</a>
+  (<a id='5718' tid='5717' class='u'>interactive</a> <a id='5720' tid='5719' class='u'>&quot;P&quot;</a>)
+  (<a id='1452' tid='1451' class='m'>save-excursion</a>
+    (<a id='1454' tid='1453' class='m'>cond</a> ((<a id='1456' tid='1455' class='m'>paredit-in-string-p</a>)
+           (<a id='1458' tid='1457' class='m'>goto-char</a> (<a id='1460' tid='1459' class='m'>car</a> (<a id='1462' tid='1461' class='m'>paredit-string-start+end-points</a>))))
+          ((<a id='1464' tid='1463' class='m'>paredit-in-char-p</a>)
+           (<a id='1466' tid='1465' class='m'>backward-sexp</a>))
+          ((<a id='1468' tid='1467' class='m'>paredit-in-comment-p</a>)
+           (<a id='1470' tid='1469' class='m'>error</a> <a id='1472' tid='1471' class='m'>&quot;No S-expression to raise in
