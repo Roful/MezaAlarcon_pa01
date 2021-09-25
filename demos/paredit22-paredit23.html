@@ -4650,4 +4650,17 @@ If the point is on an S-expression, such as a string or a symbol, not
 </a>      (<a id='1518' tid='1517' class='m'>backward-up-list</a>)
       (<a id='1520' tid='1519' class='m'>delete-region</a> (<a id='1522' tid='1521' class='m'>point</a>) (<a id='1524' tid='1523' class='m'>scan-sexps</a> (<a id='1526' tid='1525' class='m'>point</a>) <a id='1528' tid='1527' class='m'>1</a>))
       (<span class='i'>let*</span> ((<a id='1530' tid='1529' class='m'>indent-start</a> (<a id='1532' tid='1531' class='m'>point</a>))
-             (<a id='1534' tid='1533' class='m'>indent-end</a> (<a id='1536' tid='1535' class='m'>save-excursion</a> (<a id='1538' tid='1537' class='m'>insert</a> <a id='1540' tid='1539' class='m'>sexps</a>) (<a id='1542' tid='1541' 
+             (<a id='1534' tid='1533' class='m'>indent-end</a> (<a id='1536' tid='1535' class='m'>save-excursion</a> (<a id='1538' tid='1537' class='m'>insert</a> <a id='1540' tid='1539' class='m'>sexps</a>) (<a id='1542' tid='1541' class='m'>point</a>))))
+        <span class='i'>(indent-region indent-start indent-end nil)</span>))))
+
+<span class='i'>;;; The effects of convolution on the surrounding whitespace are pretty
+</span><span class='i'>;;; random.  If you have better suggestions, please let me know.
+</span>
+(<a id='2732' tid='2731' class='u'>defun</a> <a id='2734' tid='2733' class='u'>paredit-convolute-sexp</a> (<a id='2736' tid='2735' class='u'>&optional</a> <a id='2738' tid='2737' class='u'>n</a>)
+  <a id='2740' tid='2739' class='u'>&quot;Convolute S-expressions.
+Save the S-expressions preceding point and delete them.
+Splice the S-expressions following point.
+Wrap the enclosing list in a new list prefixed by the saved text.
+With a prefix argument N, move up N lists before wrapping.&quot;</a>
+  (<a id='2742' tid='2741' class='u'>interactive</a> <a id='2744' tid='2743' class='u'>&quot;p&quot;</a>)
+  (<a id='2746' tid='2745' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2748' tid='2747' 
