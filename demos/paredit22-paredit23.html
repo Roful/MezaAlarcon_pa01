@@ -4663,4 +4663,12 @@ Splice the S-expressions following point.
 Wrap the enclosing list in a new list prefixed by the saved text.
 With a prefix argument N, move up N lists before wrapping.&quot;</a>
   (<a id='2742' tid='2741' class='u'>interactive</a> <a id='2744' tid='2743' class='u'>&quot;p&quot;</a>)
-  (<a id='2746' tid='2745' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2748' tid='2747' 
+  (<a id='2746' tid='2745' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2748' tid='2747' class='u'>&#39;</a><a id='2750' tid='2749' class='u'>paredit-convolute-sexp</a>)
+  <span class='i'>;; Make sure we can move up before destroying anything.
+</span>  <span class='i'>(save-excursion (backward-up-list n) (backward-up-list))</span>
+  (<a id='1544' tid='1543' class='m'>let</a> (<a id='1546' tid='1545' class='m'>open</a> <a id='1548' tid='1547' class='m'>close</a>)                     <a id='1550' tid='1549' class='m'>;++ Is this a good idea?
+</a>    (<span class='i'>let</span> ((<a id='1552' tid='1551' class='m'>prefix</a>
+           (<a id='1554' tid='1553' class='m'>let</a> ((<a id='1556' tid='1555' class='m'>end</a> (<a id='1558' tid='1557' class='m'>point</a>)))
+             (<a id='1560' tid='1559' class='m'>paredit-ignore-sexp-errors</a>
+               (<a id='1562' tid='1561' class='m'>while</a> (<a id='1564' tid='1563' class='m'>not</a> (<a id='1566' tid='1565' class='m'>bobp</a>)) (<a id='1568' tid='1567' class='m'>backward-sexp</a>)))
+             (<span class='i'>pro
