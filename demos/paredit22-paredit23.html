@@ -4671,4 +4671,14 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
            (<a id='1554' tid='1553' class='m'>let</a> ((<a id='1556' tid='1555' class='m'>end</a> (<a id='1558' tid='1557' class='m'>point</a>)))
              (<a id='1560' tid='1559' class='m'>paredit-ignore-sexp-errors</a>
                (<a id='1562' tid='1561' class='m'>while</a> (<a id='1564' tid='1563' class='m'>not</a> (<a id='1566' tid='1565' class='m'>bobp</a>)) (<a id='1568' tid='1567' class='m'>backward-sexp</a>)))
-             (<span class='i'>pro
+             (<span class='i'>prog1</span> <span class='i'>(buffer-substring (point) end)</span>
+               <span class='i'>(backward-up-list)</span>
+               (<a id='1570' tid='1569' class='m'>save-excursion</a> (<a id='1572' tid='1571' class='m'>forward-sexp</a>)
+                               (<a id='1574' tid='1573' class='m'>setq</a> <a id='1576' tid='1575' class='m'>close</a> (<a id='1578' tid='1577' class='m'>char-before</a>))
+                               (<a id='1580' tid='1579' class='m'>backward-delete-char</a> <a id='1582' tid='1581' class='m'>1</a>))
+               <span class='i'>(setq open (char-after))</span>
+               <span class='i'>(delete-region (point) end)</span>
+               <span class='i'>;; I&#39;m not sure this makes sense...
+</span>               <span class='i'>(if (not (eolp)) (just-one-space))</span>))))
+      <span class='i'>(backward-up-list n)</span>
+      (<a id='680' tid='679' class='m'>paredit-insert-pair</a> <a id='682' tid='681' class='m'>1</a> <a id='684' tid='
