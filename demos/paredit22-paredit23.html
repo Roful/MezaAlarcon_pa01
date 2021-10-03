@@ -4706,4 +4706,11 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
                     (<a id='6294' tid='6293' class='u'>t</a>
                      (<a id='6296' tid='6295' class='u'>buffer-substring</a> (<a id='6298' tid='6297' class='u'>1+</a> <a id='6300' tid='6299' class='u'>start</a>) <a id='6302' tid='6301' class='u'>original-point</a>))))
              (<a id='6304' tid='6303' class='u'>unescaped-string</a>
-              (<a id='6306' tid='6305' class='u'>paredit-unescape-string</a>
+              (<a id='6306' tid='6305' class='u'>paredit-unescape-string</a> <a id='6308' tid='6307' class='u'>escaped-string</a>)))
+        (<a id='6310' tid='6309' class='u'>if</a> (<a id='6312' tid='6311' class='u'>not</a> <a id='6314' tid='6313' class='u'>unescaped-string</a>)
+            (<a id='6316' tid='6315' class='u'>error</a> <a id='6318' tid='6317' class='u'>&quot;Unspliceable string.&quot;</a>)
+          (<a id='6320' tid='6319' class='u'>save-excursion</a>
+            (<a id='6322' tid='6321' class='u'>goto-char</a> <a id='6324' tid='6323' class='u'>start</a>)
+            (<a id='6326' tid='6325' class='u'>delete-region</a> <a id='6328' tid='6327' class='u'>start</a> (<a id='6330' tid='6329' class='u'>1+</a> <a id='6332' tid='6331' class='u'>end</a>))
+            (<a id='6334' tid='6333' class='u'>insert</a> <a id='6336' tid='6335' class='u'>unescaped-string</a>))
+          (<a id='6338' tid='6337' class='u'>if</a> (<a id='6340' tid='6339' class='u'>not</a> (
