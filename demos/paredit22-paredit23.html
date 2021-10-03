@@ -4681,4 +4681,15 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
                <span class='i'>;; I&#39;m not sure this makes sense...
 </span>               <span class='i'>(if (not (eolp)) (just-one-space))</span>))))
       <span class='i'>(backward-up-list n)</span>
-      (<a id='680' tid='679' class='m'>paredit-insert-pair</a> <a id='682' tid='681' class='m'>1</a> <a id='684' tid='
+      (<a id='680' tid='679' class='m'>paredit-insert-pair</a> <a id='682' tid='681' class='m'>1</a> <a id='684' tid='683' class='m'>open</a> <a id='686' tid='685' class='m'>close</a> <a id='688' tid='687' class='m'>&#39;</a><a id='690' tid='689' class='m'>goto-char</a>)
+      <span class='i'>(insert prefix)</span>
+      <span class='i'>;; I&#39;m not sure this makes sense either...
+</span>      <span class='i'>(if (not (eolp)) (just-one-space))</span>
+      <span class='i'>(save-excursion
+        (backward-up-list)
+        (paredit-ignore-sexp-errors (indent-sexp)))</span>)))
+
+(<a id='6222' tid='6221' class='u'>defun</a> <a id='6224' tid='6223' class='u'>paredit-splice-string</a> (<a id='6226' tid='6225' class='u'>argument</a>)
+  (<a id='6228' tid='6227' class='u'>let</a> ((<a id='6230' tid='6229' class='u'>original-point</a> (<a id='6232' tid='6231' class='u'>point</a>))
+        (<a id='6234' tid='6233' class='u'>start+end</a> (<a id='6236' tid='6235' class='u'>paredit-string-start+end-points</a>)))
+    (<a id='6238' tid='6237' class='u'>let</a> ((<a id='6240' tid='6239' class='u'>start</a>
