@@ -4713,4 +4713,12 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
             (<a id='6322' tid='6321' class='u'>goto-char</a> <a id='6324' tid='6323' class='u'>start</a>)
             (<a id='6326' tid='6325' class='u'>delete-region</a> <a id='6328' tid='6327' class='u'>start</a> (<a id='6330' tid='6329' class='u'>1+</a> <a id='6332' tid='6331' class='u'>end</a>))
             (<a id='6334' tid='6333' class='u'>insert</a> <a id='6336' tid='6335' class='u'>unescaped-string</a>))
-          (<a id='6338' tid='6337' class='u'>if</a> (<a id='6340' tid='6339' class='u'>not</a> (
+          (<a id='6338' tid='6337' class='u'>if</a> (<a id='6340' tid='6339' class='u'>not</a> (<a id='6342' tid='6341' class='u'>and</a> (<a id='6344' tid='6343' class='u'>consp</a> <a id='6346' tid='6345' class='u'>argument</a>)
+                        (<a id='6348' tid='6347' class='u'>=</a> <a id='6350' tid='6349' class='u'>4</a> (<a id='6352' tid='6351' class='u'>car</a> <a id='6354' tid='6353' class='u'>argument</a>))))
+              (<a id='6356' tid='6355' class='u'>goto-char</a> (<a id='6358' tid='6357' class='u'>-</a> <a id='6360' tid='6359' class='u'>original-point</a> <a id='6362' tid='6361' class='u'>1</a>))))))))
+
+(<a id='6482' tid='6481' class='u'>defun</a> <a id='6484' tid='6483' class='u'>paredit-unescape-string</a> (<a id='6486' tid='6485' class='u'>string</a>)
+  (<span class='i'>with-temp-buffer</span>
+    <span class='i'>(insert string)</span>
+    <span class='i'>(goto-char (point-min))</span>
+    (<a id='1584' tid='1583' class='m'>while</a> (<a id='1586' tid='1585' class='m'>and</a> (<a id='1588' tid='1587' class='m'>not</a> (<a id='15
