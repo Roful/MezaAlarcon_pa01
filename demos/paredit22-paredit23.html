@@ -4765,4 +4765,14 @@ If in a string, move the opening double-quote forward by one
 </a>                  (<a id='1628' tid='1627' class='m'>prog1</a> (<a id='1630' tid='1629' class='m'>char-before</a>)  <a id='1632' tid='1631' class='m'>;   delimiters as necessary,
 </a>                    (<a id='1634' tid='1633' class='m'>backward-delete-char</a> <a id='1636' tid='1635' class='m'>1</a>)
                     (<a id='1638' tid='1637' class='m'>insert</a> <a id='1640' tid='1639' class='m'>close</a>))))))
-      <span class='i'>(insert close)</span>                    <span class='i'>; to 
+      <span class='i'>(insert close)</span>                    <span class='i'>; to insert that delimiter.
+</span>      <span class='i'>(indent-region start (point) nil)</span>)))
+
+(<a id='3814' tid='3813' class='u'>defun</a> <a id='3816' tid='3815' class='u'>paredit-forward-slurp-into-string</a> ()
+  (<a id='3818' tid='3817' class='u'>goto-char</a> (<a id='3820' tid='3819' class='u'>1+</a> (<a id='3822' tid='3821' class='u'>cdr</a> (<a id='3824' tid='3823' class='u'>paredit-string-start+end-points</a>))))
+  <a id='3826' tid='3825' class='u'>;; Signal any errors that we might get first, before mucking with the
+</a>  <a id='3828' tid='3827' class='u'>;; buffer&#39;s contents.
+</a>  (<a id='3830' tid='3829' class='u'>save-excursion</a> (<a id='3832' tid='3831' class='u'>forward-sexp</a>))
+  (<a id='3834' tid='3833' class='u'>let</a> ((<a id='3836' tid='3835' class='u'>close</a> (<a id='3838' tid='3837' class='u'>char-before</a>)))
+    (<a id='3840' tid='3839' class='u'>backward-delete-char</a> <a id='3842' tid='3841' class='u'>1</a>)
+   
