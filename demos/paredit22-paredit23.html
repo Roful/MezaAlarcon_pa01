@@ -4735,4 +4735,17 @@ With a prefix argument N, move up N lists before wrapping.&quot;</a>
 </span>
 (<a id='3856' tid='3855' class='u'>defun</a> <a id='3858' tid='3857' class='u'>paredit-forward-slurp-sexp</a> ()
   <a id='3860' tid='3859' class='u'>&quot;Add the S-expression following the current list into that list
-  by moving the closi
+  by moving the closing delimiter.
+Automatically reindent the newly slurped S-expression with respect to
+  its new enclosing form.
+If in a string, move the opening double-quote forward by one
+  S-expression and escape any intervening characters as necessary,
+  without altering any indentation or formatting.&quot;</a>
+  (<a id='3862' tid='3861' class='u'>interactive</a>)
+  (<a id='3864' tid='3863' class='u'>save-excursion</a>
+    (<a id='3866' tid='3865' class='u'>cond</a> ((<a id='3868' tid='3867' class='u'>or</a> (<a id='3870' tid='3869' class='u'>paredit-in-comment-p</a>)
+               (<a id='3872' tid='3871' class='u'>paredit-in-char-p</a>))
+           (<a id='3874' tid='3873' class='u'>error</a> <a id='3876' tid='3875' class='u'>&quot;Invalid context for slurping S-expressions.&quot;</a>))
+          ((<a id='3878' tid='3877' class='u'>paredit-in-string-p</a>)
+           (<a id='3880' tid='3879' class='u'>paredit-forward-slurp-into-string</a>))
+          (<a id='3882' tid='3881' c
