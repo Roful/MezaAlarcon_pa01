@@ -4757,4 +4757,12 @@ If in a string, move the opening double-quote forward by one
 </span>    <span class='i'>(backward-delete-char 1)</span>            <span class='i'>;   delimiter.
 </span>    (<span class='i'>let</span> <span class='i'>((start (point)))</span>
       (<a id='1608' tid='1607' class='m'>catch</a> <a id='1610' tid='1609' class='m'>&#39;</a><a id='1612' tid='1611' class='m'>return</a>                    <a id='1614' tid='1613' class='m'>; Go to the end of the desired
-</a>        (<a id='1616' tid='1615' class='m'>while</a> <a id='1618' tid='1617' class='m'>t</a>                        <a id='1620' tid='1619' class='m'>;   S-expressio
+</a>        (<a id='1616' tid='1615' class='m'>while</a> <a id='1618' tid='1617' class='m'>t</a>                        <a id='1620' tid='1619' class='m'>;   S-expression, going up a
+</a>          (<span class='i'>paredit-handle-sexp-errors</span>   <span class='i'>;   list if it&#39;s not in this,
+</span>              <span class='i'>(progn (forward-sexp) (throw &#39;return nil))</span>
+            <span class='i'>(up-list)</span>
+            (<a id='1622' tid='1621' class='m'>setq</a> <a id='1624' tid='1623' class='m'>close</a>                 <a id='1626' tid='1625' class='m'>; adjusting for mixed
+</a>                  (<a id='1628' tid='1627' class='m'>prog1</a> (<a id='1630' tid='1629' class='m'>char-before</a>)  <a id='1632' tid='1631' class='m'>;   delimiters as necessary,
+</a>                    (<a id='1634' tid='1633' class='m'>backward-delete-char</a> <a id='1636' tid='1635' class='m'>1</a>)
+                    (<a id='1638' tid='1637' class='m'>insert</a> <a id='1640' tid='1639' class='m'>close</a>))))))
+      <span class='i'>(insert close)</span>                    <span class='i'>; to 
