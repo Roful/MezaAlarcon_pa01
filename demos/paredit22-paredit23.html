@@ -4775,4 +4775,15 @@ If in a string, move the opening double-quote forward by one
 </a>  (<a id='3830' tid='3829' class='u'>save-excursion</a> (<a id='3832' tid='3831' class='u'>forward-sexp</a>))
   (<a id='3834' tid='3833' class='u'>let</a> ((<a id='3836' tid='3835' class='u'>close</a> (<a id='3838' tid='3837' class='u'>char-before</a>)))
     (<a id='3840' tid='3839' class='u'>backward-delete-char</a> <a id='3842' tid='3841' class='u'>1</a>)
-   
+    (<a id='3844' tid='3843' class='u'>paredit-forward-for-quote</a> (<a id='3846' tid='3845' class='u'>save-excursion</a> (<a id='3848' tid='3847' class='u'>forward-sexp</a>) (<a id='3850' tid='3849' class='u'>point</a>)))
+    (<a id='3852' tid='3851' class='u'>insert</a> <a id='3854' tid='3853' class='u'>close</a>)))
+
+(<a id='3218' tid='3217' class='u'>defun</a> <a id='3220' tid='3219' class='u'>paredit-forward-barf-sexp</a> ()
+  <a id='3222' tid='3221' class='u'>&quot;Remove the last S-expression in the current list from that list
+  by moving the closing delimiter.
+Automatically reindent the newly barfed S-expression with respect to
+  its new enclosing form.&quot;</a>
+  (<a id='3224' tid='3223' class='u'>interactive</a>)
+  (<a id='3226' tid='3225' class='u'>paredit-lose-if-not-in-sexp</a> <a id='3228' tid='3227' class='u'>&#39;</a><a id='3230' tid='3229' class='u'>paredit-forward-barf-sexp</a>)
+  <span class='i'>(save-excursion
+    (up-list)                           ; 
