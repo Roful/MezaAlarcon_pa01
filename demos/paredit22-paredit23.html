@@ -4786,4 +4786,20 @@ Automatically reindent the newly barfed S-expression with respect to
   (<a id='3224' tid='3223' class='u'>interactive</a>)
   (<a id='3226' tid='3225' class='u'>paredit-lose-if-not-in-sexp</a> <a id='3228' tid='3227' class='u'>&#39;</a><a id='3230' tid='3229' class='u'>paredit-forward-barf-sexp</a>)
   <span class='i'>(save-excursion
-    (up-list)                           ; 
+    (up-list)                           ; Up to the end of the list to
+    (let ((close (char-before)))        ;   save and delete the closing
+      (backward-delete-char 1)          ;   delimiter.
+      (paredit-ignore-sexp-errors       ; Go back to where we want to
+        (backward-sexp))                ;   insert the delimiter.
+      (paredit-skip-whitespace nil)     ; Skip leading whitespace.
+      (cond ((bobp)
+             (error &quot;Barfing all subexpressions with no open-paren?&quot;))
+            ((paredit-in-comment-p)     ; Don&#39;t put the close-paren in
+             (newline)))                ;   a comment.
+      (insert close))
+    ;; Reindent all of the newly barfed S-expressions.
+    (paredit-forward-and-indent))</span>)
+
+(<a id='2512' tid='2511' class='u'>defun</a> <a id='2514' tid='2513' class='u'>paredit-backward-slurp-sexp</a> ()
+  <a id='2516' tid='2515' class='u'>&quot;Add the S-expression preceding the current list into that list
+  by moving the closing 
