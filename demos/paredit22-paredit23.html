@@ -4825,4 +4825,11 @@ If in a string, move the opening double-quote backward by one
     (<a id='2412' tid='2411' class='u'>catch</a> <a id='2414' tid='2413' class='u'>&#39;</a><a id='2416' tid='2415' class='u'>return</a>
       (<a id='2418' tid='2417' class='u'>while</a> <a id='2420' tid='2419' class='u'>t</a>
         (<a id='2422' tid='2421' class='u'>paredit-handle-sexp-errors</a>
-            (<a id='2424' tid='2423' class='u'>progn</a> (<a id='2426' tid='2425' class='u'>backward-sexp</a>) (<a id='2428' tid='2427' class='u
+            (<a id='2424' tid='2423' class='u'>progn</a> (<a id='2426' tid='2425' class='u'>backward-sexp</a>) (<a id='2428' tid='2427' class='u'>throw</a> <a id='2430' tid='2429' class='u'>&#39;</a><a id='2432' tid='2431' class='u'>return</a> <a id='2434' tid='2433' class='u'>nil</a>))
+          (<a id='2436' tid='2435' class='u'>backward-up-list</a>)
+          (<a id='2438' tid='2437' class='u'>setq</a> <a id='2440' tid='2439' class='u'>open</a>
+                (<a id='2442' tid='2441' class='u'>prog1</a> (<a id='2444' tid='2443' class='u'>char-after</a>)
+                  (<a id='2446' tid='2445' class='u'>save-excursion</a> (<a id='2448' tid='2447' class='u'>insert</a> <a id='2450' tid='2449' class='u'>open</a>) (<a id='2452' tid='2451' class='u'>delete-char</a> <a id='2454' tid='2453' class='u'>1</a>)))))))
+    (<a id='2456' tid='2455' class='u'>insert</a> <a id='2458' tid='2457' class='u'>open</a>))
+  <a id='2460' tid='2459' class='u'>;; Reindent the line at the beginning of wherever we inserted the
+</a>  <a id='2462' tid='2461' class='u'>;; opening delimiter, and then indent the whole S-expression.
