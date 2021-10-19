@@ -4855,4 +4855,13 @@ If in a string, move the opening double-quote backward by one
 Automatically reindent the barfed S-expression and the form from which
   it was barfed.&quot;</a>
   (<a id='2040' tid='2039' class='u'>interactive</a>)
-  (<a id='2042' tid='2041' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2044
+  (<a id='2042' tid='2041' class='u'>paredit-lose-if-not-in-sexp</a> <a id='2044' tid='2043' class='u'>&#39;</a><a id='2046' tid='2045' class='u'>paredit-backward-barf-sexp</a>)
+  (<a id='2048' tid='2047' class='u'>save-excursion</a>
+    (<a id='2050' tid='2049' class='u'>backward-up-list</a>)
+    (<a id='2052' tid='2051' class='u'>let</a> ((<a id='2054' tid='2053' class='u'>open</a> (<a id='2056' tid='2055' class='u'>char-after</a>)))
+      (<a id='2058' tid='2057' class='u'>delete-char</a> <a id='2060' tid='2059' class='u'>1</a>)
+      (<a id='2062' tid='2061' class='u'>paredit-ignore-sexp-errors</a>
+        (<a id='2064' tid='2063' class='u'>paredit-forward-and-indent</a>))
+      (<a id='2066' tid='2065' class='u'>while</a> (<a id='2068' tid='2067' class='u'>progn</a> (<a id='2070' tid='2069' class='u'>paredit-skip-whitespace</a> <a id='2072' tid='2071' class='u'>t</a>)
+                    (<a id='2074' tid='2073' class='u'>eq</a> (<a id='2076' tid='2075' class='u'>char-after</a>) <a id='2078' tid='2077' class='u'>?\;</a> ))
+        (<a id='2080' tid='2079' class='u'>forward-line</a> 
