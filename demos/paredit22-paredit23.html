@@ -4864,4 +4864,17 @@ Automatically reindent the barfed S-expression and the form from which
         (<a id='2064' tid='2063' class='u'>paredit-forward-and-indent</a>))
       (<a id='2066' tid='2065' class='u'>while</a> (<a id='2068' tid='2067' class='u'>progn</a> (<a id='2070' tid='2069' class='u'>paredit-skip-whitespace</a> <a id='2072' tid='2071' class='u'>t</a>)
                     (<a id='2074' tid='2073' class='u'>eq</a> (<a id='2076' tid='2075' class='u'>char-after</a>) <a id='2078' tid='2077' class='u'>?\;</a> ))
-        (<a id='2080' tid='2079' class='u'>forward-line</a> 
+        (<a id='2080' tid='2079' class='u'>forward-line</a> <a id='2082' tid='2081' class='u'>1</a>))
+      (<a id='2084' tid='2083' class='u'>if</a> (<a id='2086' tid='2085' class='u'>eobp</a>)
+          (<a id='2088' tid='2087' class='u'>error</a> <a id='2090' tid='2089' class='u'>&quot;Barfing all subexpressions with no close-paren?&quot;</a>))
+      <a id='2092' tid='2091' class='u'>;** Don&#39;t use `insert&#39; here.  Consider, e.g., barfing from
+</a>      <a id='2094' tid='2093' class='u'>;**   (foo|)
+</a>      <a id='2096' tid='2095' class='u'>;** and how `save-excursion&#39; works.
+</a>      (<a id='2098' tid='2097' class='u'>insert-before-markers</a> <a id='2100' tid='2099' class='u'>open</a>))
+    (<a id='2102' tid='2101' class='u'>backward-up-list</a>)
+    (<a id='2104' tid='2103' class='u'>lisp-indent-line</a>)
+    (<a id='2106' tid='2105' class='u'>indent-sexp</a>)))
+
+<span class='i'>;;;; Splitting & Joining
+</span>
+(<a id='6364' tid='6363' class='u'>defun</a> <a id='6366' tid='6365' class
