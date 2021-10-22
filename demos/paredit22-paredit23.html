@@ -4886,4 +4886,12 @@ Automatically reindent the barfed S-expression and the form from which
         ((<a id='6386' tid='6385' class='u'>or</a> (<a id='6388' tid='6387' class='u'>paredit-in-comment-p</a>)
              (<a id='6390' tid='6389' class='u'>paredit-in-char-p</a>))
          (<a id='6392' tid='6391' class='u'>error</a> <a id='6394' tid='6393' class='u'>&quot;Invalid context for splitting S-expression.&quot;</a>))
-        (<a id='6396' tid='6395' class='u'>t</a> (<a id='6398' tid='6397' class='u'>le
+        (<a id='6396' tid='6395' class='u'>t</a> (<a id='6398' tid='6397' class='u'>let</a> ((<a id='6400' tid='6399' class='u'>open</a>  (<a id='6402' tid='6401' class='u'>save-excursion</a> (<a id='6404' tid='6403' class='u'>backward-up-list</a>)
+                                        (<a id='6406' tid='6405' class='u'>char-after</a>)))
+                 (<a id='6408' tid='6407' class='u'>close</a> (<a id='6410' tid='6409' class='u'>save-excursion</a> (<a id='6412' tid='6411' class='u'>up-list</a>)
+                                        (<a id='6414' tid='6413' class='u'>char-before</a>))))
+             (<a id='6416' tid='6415' class='u'>delete-horizontal-space</a>)
+             (<a id='6418' tid='6417' class='u'>insert</a> <a id='6420' tid='6419' class='u'>close</a>)
+             (<a id='6422' tid='6421' class='u'>save-excursion</a> (<a id='6424' tid='6423' class='u'>insert</a> <a id='6426' tid='6425' class='u'>?\ </a>)
+                             (<a id='6428' tid='6427' class='u'>insert</a> <a id='6430' tid='6429' class='u'>open</a>)
+ 
