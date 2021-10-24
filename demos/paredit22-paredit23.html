@@ -4911,4 +4911,10 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
             (<a id='1664' tid='1663' class='m'>right-point</a> (<a id='1666' tid='1665' class='m'>paredit-point-at-sexp-start</a>)))
         (<a id='1668' tid='1667' class='m'>let</a> ((<a id='1670' tid='1669' class='m'>left-char</a> (<a id='1672' tid='1671' class='m'>char-before</a> <a id='1674' tid='1673' class='m'>left-point</a>))
               (<a id='1676' tid='1675' class='m'>right-char</a> (<a id='1678' tid='1677' class='m'>char-after</a> <a id='1680' tid='1679' class='m'>right-point</a>)))
-          (<a id='1682' tid='1681' class='m'>let</a> ((<a id='1684' tid='1683' class='m'>left-syntax</a> (<a id='1686' tid='1685' class='m'>cha
+          (<a id='1682' tid='1681' class='m'>let</a> ((<a id='1684' tid='1683' class='m'>left-syntax</a> (<a id='1686' tid='1685' class='m'>char-syntax</a> <a id='1688' tid='1687' class='m'>left-char</a>))
+                (<a id='1690' tid='1689' class='m'>right-syntax</a> (<a id='1692' tid='1691' class='m'>char-syntax</a> <a id='1694' tid='1693' class='m'>right-char</a>)))
+            (<span class='i'>cond</span> <span class='i'>((&lt; right-point left-point)
+                   (error &quot;Can&#39;t join a datum with itself.&quot;))</span>
+                  ((<a id='1696' tid='1695' class='m'>and</a> (<a id='1698' tid='1697' class='m'>eq</a> <a id='1700' tid='1699' class='m'>left-syntax</a>  <a id='1702' tid='1701' class='m'>?\)</a> )
+                        (<a id='1704' tid='1703' class='m'>eq</a> <a id='1706' tid='1705' class='m'>right-syntax</a> <a id='1708' tid='1707' class='m'>?\(</a> )
+                        (<a id='1710' tid='1709' class='m'>eq</a> <a id='1712' tid='1711' class='m'>left-char</a> (<a id='1714' tid='1713' class='m'>matching-paren</a> <a id='1716' tid='1715' class='m'>right-char<
