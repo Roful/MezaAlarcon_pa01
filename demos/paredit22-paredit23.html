@@ -4930,4 +4930,9 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
                                      (eq ?\  (char-syntax (char-after))))))
                        (insert ?\  ))</span>
                    <span class='i'>(backward-up-list)</span>
-                   
+                   <span class='i'>(indent-sexp)</span>)
+                  ((<a id='692' tid='691' class='m'>and</a> (<a id='694' tid='693' class='m'>eq</a> <a id='696' tid='695' class='m'>left-syntax</a>  <a id='698' tid='697' class='m'>?\&quot;</a> )
+                        (<a id='700' tid='699' class='m'>eq</a> <a id='702' tid='701' class='m'>right-syntax</a> <a id='704' tid='703' class='m'>?\&quot;</a> ))
+                   <a id='706' tid='705' class='m'>;; Delete any intermediate formatting.
+</a>                   (<a id='708' tid='707' class='m'>delete-region</a> (<a id='710' tid='709' class='m'>1-</a> <a id='712' tid='711' class='m'>left-point</a>) (<a id='714' tid='713' class='m'>1+</a> <a id='716' tid='715' class='m'>right-point</a>)))
+                  ((<a id='496' tid='495' class='m'>and</a> (<a id='498' tid='497' class='m'>memq</a> <a id='500' tid='499' class='m'>left-syntax</a>  <a id='502' tid='501' class='m'>&#39;</a>(<a id='504
