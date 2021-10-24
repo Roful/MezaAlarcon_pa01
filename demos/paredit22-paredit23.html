@@ -4917,4 +4917,17 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
                    (error &quot;Can&#39;t join a datum with itself.&quot;))</span>
                   ((<a id='1696' tid='1695' class='m'>and</a> (<a id='1698' tid='1697' class='m'>eq</a> <a id='1700' tid='1699' class='m'>left-syntax</a>  <a id='1702' tid='1701' class='m'>?\)</a> )
                         (<a id='1704' tid='1703' class='m'>eq</a> <a id='1706' tid='1705' class='m'>right-syntax</a> <a id='1708' tid='1707' class='m'>?\(</a> )
-                        (<a id='1710' tid='1709' class='m'>eq</a> <a id='1712' tid='1711' class='m'>left-char</a> (<a id='1714' tid='1713' class='m'>matching-paren</a> <a id='1716' tid='1715' class='m'>right-char<
+                        (<a id='1710' tid='1709' class='m'>eq</a> <a id='1712' tid='1711' class='m'>left-char</a> (<a id='1714' tid='1713' class='m'>matching-paren</a> <a id='1716' tid='1715' class='m'>right-char</a>))
+                        (<a id='1718' tid='1717' class='m'>eq</a> <a id='1720' tid='1719' class='m'>right-char</a> (<a id='1722' tid='1721' class='m'>matching-paren</a> <a id='1724' tid='1723' class='m'>left-char</a>)))
+                   <span class='i'>;; Leave intermediate formatting alone.
+</span>                   <span class='i'>(goto-char right-point)</span>
+                   <span class='i'>(delete-char 1)</span>
+                   <span class='i'>(goto-char left-point)</span>
+                   <span class='i'>(backward-delete-char 1)</span>
+                   <span class='i'>;; Heuristic kludge: (foo)(bar) =&gt; (foo bar).
+</span>                   <span class='i'>(if (and (= left-point right-point)
+                            (not (or (eq ?\  (char-syntax (char-before)))
+                                     (eq ?\  (char-syntax (char-after))))))
+                       (insert ?\  ))</span>
+                   <span class='i'>(backward-up-list)</span>
+                   
