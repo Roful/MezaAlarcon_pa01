@@ -4957,4 +4957,14 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
   <a id='1794' tid='1793' class='u'>&quot;Add the S-expression preceding point to the list following point.
 If no S-expression precedes point, move up the tree until one does.&quot;</a>
   (<a id='1796' tid='1795' class='u'>interactive</a>)
-  (<a id='1798' tid='1797' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1800' tid='1799' class='u'>&#39;</a><a id='1802' tid='1801' cla
+  (<a id='1798' tid='1797' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1800' tid='1799' class='u'>&#39;</a><a id='1802' tid='1801' class='u'>paredit-add-to-next-list</a>)
+  (<a id='1804' tid='1803' class='u'>save-excursion</a>
+    (<a id='1806' tid='1805' class='u'>down-list</a>)
+    (<a id='1808' tid='1807' class='u'>paredit-backward-slurp-sexp</a>)))
+
+(<a id='4520' tid='4519' class='u'>defun</a> <a id='4522' tid='4521' class='u'>paredit-join-with-previous-list</a> ()
+  <a id='4524' tid='4523' class='u'>&quot;Join the list the point is on with the previous list in the buffer.&quot;</a>
+  (<a id='4526' tid='4525' class='u'>interactive</a>)
+  (<a id='4528' tid='4527' class='u'>paredit-lose-if-not-in-sexp</a> <a id='4530' tid='4529' class='u'>&#39;</a><a id='4532' tid='4531' class='u'>paredit-join-with-previous-list</a>)
+  (<a id='4534' tid='4533' class='u'>save-excursion</a>
+    (<a id='4536' tid='4535' class='u'>while</a> (<a id='4538' tid='4537' class='u'>paredit-handle-sexp-errors</a> (<a id='4540' tid='4539' class='u'>save-excursion</a> (<a id='4542' tid='4541' class='u'>backward-sexp</a>) <a id='4544' tid='45
