@@ -4935,4 +4935,15 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
                         (<a id='700' tid='699' class='m'>eq</a> <a id='702' tid='701' class='m'>right-syntax</a> <a id='704' tid='703' class='m'>?\&quot;</a> ))
                    <a id='706' tid='705' class='m'>;; Delete any intermediate formatting.
 </a>                   (<a id='708' tid='707' class='m'>delete-region</a> (<a id='710' tid='709' class='m'>1-</a> <a id='712' tid='711' class='m'>left-point</a>) (<a id='714' tid='713' class='m'>1+</a> <a id='716' tid='715' class='m'>right-point</a>)))
-                  ((<a id='496' tid='495' class='m'>and</a> (<a id='498' tid='497' class='m'>memq</a> <a id='500' tid='499' class='m'>left-syntax</a>  <a id='502' tid='501' class='m'>&#39;</a>(<a id='504
+                  ((<a id='496' tid='495' class='m'>and</a> (<a id='498' tid='497' class='m'>memq</a> <a id='500' tid='499' class='m'>left-syntax</a>  <a id='502' tid='501' class='m'>&#39;</a>(<a id='504' tid='503' class='m'>?w</a> <a id='506' tid='505' class='m'>?_</a>)) <a id='508' tid='507' class='m'>; Word or symbol
+</a>                        (<a id='510' tid='509' class='m'>memq</a> <a id='512' tid='511' class='m'>right-syntax</a> <a id='514' tid='513' class='m'>&#39;</a>(<a id='516' tid='515' class='m'>?w</a> <a id='518' tid='517' class='m'>?_</a>)))
+                   (<a id='520' tid='519' class='m'>delete-region</a> <a id='522' tid='521' class='m'>left-point</a> <a id='524' tid='523' class='m'>right-point</a>))
+                  <span class='i'>(t
+                   (error &quot;Mismatched S-expressions to join.&quot;))</span>)))))))
+
+<span class='i'>;;;; Variations on the Lurid Theme
+</span>
+<span class='i'>;;; I haven&#39;t the imagination to concoct clever names for these.
+</span>
+(<a id='1810' tid='1809' class='u'>defun</a> <a id='1812' tid='1811' class='u'>paredit-add-to-previous-list</a> ()
+  <a id='1814' tid='1813' class=
