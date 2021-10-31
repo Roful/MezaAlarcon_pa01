@@ -4946,4 +4946,15 @@ Both must be lists, strings, or atoms; error if there is a mismatch.&quot;</a>
 <span class='i'>;;; I haven&#39;t the imagination to concoct clever names for these.
 </span>
 (<a id='1810' tid='1809' class='u'>defun</a> <a id='1812' tid='1811' class='u'>paredit-add-to-previous-list</a> ()
-  <a id='1814' tid='1813' class=
+  <a id='1814' tid='1813' class='u'>&quot;Add the S-expression following point to the list preceding point.&quot;</a>
+  (<a id='1816' tid='1815' class='u'>interactive</a>)
+  (<a id='1818' tid='1817' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1820' tid='1819' class='u'>&#39;</a><a id='1822' tid='1821' class='u'>paredit-add-to-previous-list</a>)
+  (<a id='1824' tid='1823' class='u'>save-excursion</a>
+    (<a id='1826' tid='1825' class='u'>backward-down-list</a>)
+    (<a id='1828' tid='1827' class='u'>paredit-forward-slurp-sexp</a>)))
+
+(<a id='1790' tid='1789' class='u'>defun</a> <a id='1792' tid='1791' class='u'>paredit-add-to-next-list</a> ()
+  <a id='1794' tid='1793' class='u'>&quot;Add the S-expression preceding point to the list following point.
+If no S-expression precedes point, move up the tree until one does.&quot;</a>
+  (<a id='1796' tid='1795' class='u'>interactive</a>)
+  (<a id='1798' tid='1797' class='u'>paredit-lose-if-not-in-sexp</a> <a id='1800' tid='1799' class='u'>&#39;</a><a id='1802' tid='1801' cla
