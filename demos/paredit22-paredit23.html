@@ -4991,4 +4991,16 @@ This is true only if the character is preceded by an odd number of
 This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
   (<a id='4112' tid='4111' class='u'>let</a> ((<a id='4114' tid='4113' class='u'>oddp</a> <a id='4116' tid='4115' class='u'>nil</a>))
     (<a id='4118' tid='4117' class='u'>save-excursion</a>
-      (<a id='4120' tid='4119' class='u'>while</a> (<a id='4122' tid='4121' class='u'>eq</a> (<a id='4124' tid='412
+      (<a id='4120' tid='4119' class='u'>while</a> (<a id='4122' tid='4121' class='u'>eq</a> (<a id='4124' tid='4123' class='u'>char-before</a>) <a id='4126' tid='4125' class='u'>?\\</a> )
+        (<a id='4128' tid='4127' class='u'>setq</a> <a id='4130' tid='4129' class='u'>oddp</a> (<a id='4132' tid='4131' class='u'>not</a> <a id='4134' tid='4133' class='u'>oddp</a>))
+        (<a id='4136' tid='4135' class='u'>backward-char</a>)))
+    <a id='4138' tid='4137' class='u'>oddp</a>))
+
+(<a id='4074' tid='4073' class='u'>defun</a> <a id='4076' tid='4075' class='u'>paredit-in-char-p</a> <span class='i'>(&optional position)</span>
+  <span class='i'>&quot;True if point is on a character escape outside a string.&quot;</span>
+  <span class='i'>(save-excursion
+    (goto-char (or position (point)))
+    (paredit-in-string-escape-p))</span>)
+
+(<a id='4166' tid='4165' class='u'>defun</a> <a id='4168' tid='4167' class='u'>paredit-indent-sexps</a> ()
+  <a id='4170' tid='4169' class='u'>&quot;If in a list, indent all following S-expressions in the list.&quo
