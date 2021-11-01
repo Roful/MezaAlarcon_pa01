@@ -4977,4 +4977,18 @@ If no S-expression precedes point, move up the tree until one does.&quot;</a>
   (<a id='4494' tid='4493' class='u'>interactive</a>)
   (<a id='4496' tid='4495' class='u'>paredit-lose-if-not-in-sexp</a> <a id='4498' tid='4497' class='u'>&#39;</a><a id='4500' tid='4499' class='u'>paredit-join-with-next-list</a>)
   (<a id='4502' tid='4501' class='u'>save-excursion</a>
-    (<a id='4504' tid='4503' class='u'>while</a> (<a id='4506' tid='4505' class='u'>paredit-handle-sexp-errors</a> (<a id='4508' tid='4507' class='u'>save-excursion</a> (<a id='4510' tid='4
+    (<a id='4504' tid='4503' class='u'>while</a> (<a id='4506' tid='4505' class='u'>paredit-handle-sexp-errors</a> (<a id='4508' tid='4507' class='u'>save-excursion</a> (<a id='4510' tid='4509' class='u'>forward-sexp</a>) <a id='4512' tid='4511' class='u'>nil</a>)
+             (<a id='4514' tid='4513' class='u'>up-list</a>)
+             <a id='4516' tid='4515' class='u'>t</a>))
+    (<a id='4518' tid='4517' class='u'>paredit-join-sexps</a>)))
+
+<span class='i'>;;;; Utilities
+</span>
+(<a id='4106' tid='4105' class='u'>defun</a> <a id='4108' tid='4107' class='u'>paredit-in-string-escape-p</a> ()
+  <a id='4110' tid='4109' class='u'>&quot;True if the point is on a character escape of a string.
+This is true only if the character is preceded by an odd number of
+  backslashes.
+This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
+  (<a id='4112' tid='4111' class='u'>let</a> ((<a id='4114' tid='4113' class='u'>oddp</a> <a id='4116' tid='4115' class='u'>nil</a>))
+    (<a id='4118' tid='4117' class='u'>save-excursion</a>
+      (<a id='4120' tid='4119' class='u'>while</a> (<a id='4122' tid='4121' class='u'>eq</a> (<a id='4124' tid='412
