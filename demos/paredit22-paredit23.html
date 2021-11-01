@@ -5003,4 +5003,16 @@ This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
     (paredit-in-string-escape-p))</span>)
 
 (<a id='4166' tid='4165' class='u'>defun</a> <a id='4168' tid='4167' class='u'>paredit-indent-sexps</a> ()
-  <a id='4170' tid='4169' class='u'>&quot;If in a list, indent all following S-expressions in the list.&quo
+  <a id='4170' tid='4169' class='u'>&quot;If in a list, indent all following S-expressions in the list.&quot;</a>
+  (<span class='i'>let*</span> ((<a id='1726' tid='1725' class='m'>start</a> (<a id='1728' tid='1727' class='m'>point</a>))
+         (<a id='1730' tid='1729' class='m'>end</a> (<a id='1732' tid='1731' class='m'>paredit-handle-sexp-errors</a> (<a id='1734' tid='1733' class='m'>progn</a> (<a id='1736' tid='1735' class='m'>up-list</a>) (<a id='1738' tid='1737' class='m'>point</a>)) <a id='1740' tid='1739' class='m'>nil</a>)))
+    <span class='i'>(if end
+        (indent-region start end nil))</span>))
+
+(<a id='3212' tid='3211' class='u'>defun</a> <a id='3214' tid='3213' class='u'>paredit-forward-and-indent</a> ()
+  <a id='3216' tid='3215' class='u'>&quot;Move forward an S-expression, indenting it with `indent-region&#39;.&quot;</a>
+  <span class='i'>(let ((start (point)))
+    (forward-sexp)
+    (indent-region start (point) nil))</span>)
+
+(<a id='5996' tid='5995' class='u'>defun</a> <a id='5998' tid='5997' cl
