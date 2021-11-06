@@ -5015,4 +5015,10 @@ This assumes that `paredit-in-string-p&#39; has already returned true.&quot;</a>
     (forward-sexp)
     (indent-region start (point) nil))</span>)
 
-(<a id='5996' tid='5995' class='u'>defun</a> <a id='5998' tid='5997' cl
+(<a id='5996' tid='5995' class='u'>defun</a> <a id='5998' tid='5997' class='u'>paredit-skip-whitespace</a> (<a id='6000' tid='5999' class='u'>trailing-p</a> <a id='6002' tid='6001' class='u'>&optional</a> <a id='6004' tid='6003' class='u'>limit</a>)
+  <a id='6006' tid='6005' class='u'>&quot;Skip past any whitespace, or until the point LIMIT is reached.
+If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
+  whitespace.&quot;</a>
+  (<a id='6008' tid='6007' class='u'>funcall</a> (<a id='6010' tid='6009' class='u'>if</a> <a id='6012' tid='6011' class='u'>trailing-p</a> <a id='6014' tid='6013' class='u'>&#39;</a><a id='6016' tid='6015' class='u'>skip-chars-forward</a> <a id='6018' tid='6017' class='u'>&#39;</a><a id='6020' tid='6019' class='u'>skip-chars-backward</a>)
+           <a id='6022' tid='6021' class='u'>&quot; \t\n&quot;</a>  <a id='6024' tid='6023' class='u'>; This should skip using the syntax table, but LF
+</a>           <a id='6026' tid='6025' class='u'>limit</a>))    <span class='i'>; is a comment end, not newli
