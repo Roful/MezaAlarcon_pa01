@@ -5030,4 +5030,14 @@ If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
             (<a id='7482' tid='7481' class='u'>and</a> <a id='7484' tid='7483' class='u'>mark-active</a> <a id='7486' tid='7485' class='u'>transient-mark-mode</a>)))))
 
 (<a id='3956' tid='3955' class='u'>defun</a> <a id='3958' tid='3957' class='u'>paredit-hack-kill-region</a> (<a id='3960' tid='3959' class='u'>start</a> <a id='3962' tid='3961' class='u'>end</a>)
-  <a id='3964' tid='3963' class='u'>&quot
+  <a id='3964' tid='3963' class='u'>&quot;Kill the region between START and END.
+Do not append to any current kill, and
+ do not let the next kill append to this one.&quot;</a>
+  (<a id='3966' tid='3965' class='u'>interactive</a> <a id='3968' tid='3967' class='u'>&quot;r&quot;</a>)                     <a id='3970' tid='3969' class='u'>;Eh, why not?
+</a>  <a id='3972' tid='3971' class='u'>;; KILL-REGION sets THIS-COMMAND to tell the next kill that the last
+</a>  <a id='3974' tid='3973' class='u'>;; command was a kill.  It also checks LAST-COMMAND to see whether it
+</a>  <a id='3976' tid='3975' class='u'>;; should append.  If we bind these locally, any modifications to
+</a>  <a id='3978' tid='3977' class='u'>;; THIS-COMMAND will be masked, and it will not see LAST-COMMAND to
+</a>  <a id='3980' tid='3979' class='u'>;; indicate that it should append.
+</a>  (<a id='3982' tid='3981' class='u'>let</a> ((<a id='3984' tid='3983' class='u'>this-command</a> <a id='3986' tid='3985' class='u'>nil</a>)
+        (<a id='3988' tid='3
