@@ -5061,4 +5061,14 @@ Do not append to any current kill, and
 </a>    (<a id='2952' tid='2951' class='u'>parse-partial-sexp</a> (<a id='2954' tid='2953' class='u'>point</a>) <a id='2956' tid='2955' class='u'>point</a>)))
 
 (<a id='4140' tid='4139' class='u'>defun</a> <a id='4142' tid='4141' class='u'>paredit-in-string-p</a> (<a id='4144' tid='4143' class='u'>&optional</a> <a id='4146' tid='4145' class='u'>state</a>)
-  <a id='4148' tid='4147' class
+  <a id='4148' tid='4147' class='u'>&quot;True if the parse state is within a double-quote-delimited string.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point.&quot;</a>
+  <a id='4150' tid='4149' class='u'>;; 3. non-nil if inside a string (the terminator character, really)
+</a>  (<a id='4152' tid='4151' class='u'>and</a> (<a id='4154' tid='4153' class='u'>nth</a> <a id='4156' tid='4155' class='u'>3</a> (<a id='4158' tid='4157' class='u'>or</a> <a id='4160' tid='4159' class='u'>state</a> (<a id='4162' tid='4161' class='u'>paredit-current-parse-state</a>)))
+       <a id='4164' tid='4163' class='u'>t</a>))
+
+(<a id='6436' tid='6435' class='u'>defun</a> <a id='6438' tid='6437' class='u'>paredit-string-start+end-points</a> (<a id='6440' tid='6439' class='u'>&optional</a> <a id='6442' tid='6441' class='u'>state</a>)
+  <a id='6444' tid='6443' class='u'>&quot;Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from 
