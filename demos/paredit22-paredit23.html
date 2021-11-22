@@ -5111,4 +5111,14 @@ If no parse state is supplied, compute one from the beginning of the
 (<a id='5186' tid='5185' class='u'>defun</a> <a id='5188' tid='5187' class='u'>paredit-lose-if-not-in-sexp</a> (<a id='5190' tid='5189' class='u'>command</a>)
   (<a id='5192' tid='5191' class='u'>if</a> (<a id='5194' tid='5193' class='u'>or</a> (<a id='5196' tid='5195' class='u'>paredit-in-string-p</a>)
           (<a id='5198' tid='5197' class='u'>paredit-in-comment-p</a>)
-          (<a id='5200'
+          (<a id='5200' tid='5199' class='u'>paredit-in-char-p</a>))
+      (<a id='5202' tid='5201' class='u'>error</a> <a id='5204' tid='5203' class='u'>&quot;Invalid context for command `%s&#39;.&quot;</a> <a id='5206' tid='5205' class='u'>command</a>)))
+
+(<a id='2610' tid='2609' class='u'>defun</a> <a id='2612' tid='2611' class='u'>paredit-check-region</a> (<a id='2614' tid='2613' class='u'>start</a> <a id='2616' tid='2615' class='u'>end</a>)
+  <span class='i'>&quot;Signal an error if text between `start&#39; and `end&#39; is unbalanced.&quot;</span>
+  <span class='i'>;; `narrow-to-region&#39; will move the point, so avoid calling it if we
+</span>  <span class='i'>;; don&#39;t need to.  We don&#39;t want to use `save-excursion&#39; because we
+</span>  <span class='i'>;; want the point to move if `check-parens&#39; reports an error.
+</span>  <span class='i'>(if (not (paredit-region-ok-p start end))
+      (save-restriction
+        (narrow-to-r
