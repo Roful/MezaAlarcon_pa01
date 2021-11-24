@@ -5121,4 +5121,28 @@ If no parse state is supplied, compute one from the beginning of the
 </span>  <span class='i'>;; want the point to move if `check-parens&#39; reports an error.
 </span>  <span class='i'>(if (not (paredit-region-ok-p start end))
       (save-restriction
-        (narrow-to-r
+        (narrow-to-region start end)
+        (check-parens)))</span>)
+
+(<a id='5722' tid='5721' class='u'>defun</a> <a id='5724' tid='5723' class='u'>paredit-region-ok-p</a> (<a id='5726' tid='5725' class='u'>start</a> <a id='5728' tid='5727' class='u'>end</a>)
+  <span class='i'>&quot;Return true iff the region between `start&#39; and `end&#39; is balanced.
+This is independent of context -- it doesn&#39;t check what state the
+  text at `start&#39; is in.&quot;</span>
+  <span class='i'>(save-excursion
+    (paredit-handle-sexp-errors
+        (progn
+          (save-restriction
+            (narrow-to-region start end)
+            (scan-sexps (point-min) (point-max)))
+          t)
+      nil))</span>)
+
+<span class='i'>(defun paredit-current-indentation ()
+  (save-excursion
+    (back-to-indentation)
+    (current-column)))</span>
+
+<a id='7500' tid='7499' class='u'>;;;; Initialization
+</a>
+(<a id='7502' tid='7501' class='u'>paredit-define-keys</a>)
+(<a id='7504' tid='7503' 
