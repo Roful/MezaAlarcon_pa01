@@ -77,4 +77,21 @@
 ;;; along with the sequence of keys or commands,
 ;;;
 ;;;   (1) the version of Emacs,
-;;;   (2) the version of paredit.el[*
+;;;   (2) the version of paredit.el[*], and
+;;;   (3) the **COMPLETE** state of the buffer used to reproduce the
+;;;       problem, including major mode, minor modes, local key
+;;;       bindings, entire contents of the buffer, leading line breaks
+;;;       or spaces, &c.
+;;;
+;;; It is often extremely difficult to reproduce problems, especially
+;;; with commands such as `paredit-kill'.  If you do not supply **ALL**
+;;; of this information, then it is highly probable that I cannot
+;;; reproduce your problem no matter how hard I try, and the effect of
+;;; submitting a bug without this information is only to waste your
+;;; time and mine.  So, please, include all of the above information.
+;;;
+;;; [*] If you are using a beta version of paredit, be sure that you
+;;;     are using the *latest* edition of the beta version, available
+;;;     at <http://mumble.net/~campbell/emacs/paredit-beta.el>.  If you
+;;;     are not using a beta version, then upgrade either to that or to
+;;;     the lat
