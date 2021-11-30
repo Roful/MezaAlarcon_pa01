@@ -94,4 +94,20 @@
 ;;;     are using the *latest* edition of the beta version, available
 ;;;     at <http://mumble.net/~campbell/emacs/paredit-beta.el>.  If you
 ;;;     are not using a beta version, then upgrade either to that or to
-;;;     the lat
+;;;     the latest release version; I cannot support older versions,
+;;;     and I can't fathom any reason why you might be using them.  So
+;;;     the answer to item (2) should be either `release' or `beta'.
+
+;;; The paredit minor mode, Paredit Mode, binds a number of simple
+;;; keys, notably `(', `)', `"', and `\', to commands that more
+;;; carefully insert S-expression structures in the buffer.  The
+;;; parenthesis delimiter keys (round or square) are defined to insert
+;;; parenthesis pairs and move past the closing delimiter,
+;;; respectively; the double-quote key is multiplexed to do both, and
+;;; also to insert an escape if within a string; and backslashes prompt
+;;; the user for the next character to input, because a lone backslash
+;;; can break structure inadvertently.  These all have their ordinary
+;;; behaviour when inside comments, and, outside comments, if truly
+;;; necessary, you can insert them literally with `C-q'.
+;;;
+;;; The key b
