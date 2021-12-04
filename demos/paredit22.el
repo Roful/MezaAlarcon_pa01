@@ -110,4 +110,21 @@
 ;;; behaviour when inside comments, and, outside comments, if truly
 ;;; necessary, you can insert them literally with `C-q'.
 ;;;
-;;; The key b
+;;; The key bindings are designed so that when typing new code in
+;;; Paredit Mode, you can generally use exactly the same keystrokes as
+;;; you would have used without Paredit Mode.  Earlier versions of
+;;; paredit.el did not conform to this, because Paredit Mode bound `)'
+;;; to a command that would insert a newline.  Now `)' is bound to a
+;;; command that does not insert a newline, and `M-)' is bound to the
+;;; command that inserts a newline.  To revert to the former behaviour,
+;;; add the following forms to an `eval-after-load' form for paredit.el
+;;; in your .emacs file:
+;;;
+;;;   (define-key paredit-mode-map (kbd ")")
+;;;     'paredit-close-round-and-newline)
+;;;   (define-key paredit-mode-map (kbd "M-)")
+;;;     'paredit-close-round)
+;;;
+;;; Paredit Mode also binds the usual keys for deleting and killing, so
+;;; that they will not destroy any S-expression structure by killing or
+;;; deleting only one side of a parenthesis or quote pair. 
