@@ -127,4 +127,20 @@
 ;;;
 ;;; Paredit Mode also binds the usual keys for deleting and killing, so
 ;;; that they will not destroy any S-expression structure by killing or
-;;; deleting only one side of a parenthesis or quote pair. 
+;;; deleting only one side of a parenthesis or quote pair.  If the
+;;; point is on a closing delimiter, `DEL' will move left over it; if
+;;; it is on an opening delimiter, `C-d' will move right over it.  Only
+;;; if the point is between a pair of delimiters will `C-d' or `DEL'
+;;; delete them, and in that case it will delete both simultaneously.
+;;; `M-d' and `M-DEL' kill words, but skip over any S-expression
+;;; structure.  `C-k' kills from the start of the line, either to the
+;;; line's end, if it contains only balanced expressions; to the first
+;;; closing delimiter, if the point is within a form that ends on the
+;;; line; or up to the end of the last expression that starts on the
+;;; line after the point.
+;;;
+;;; The behaviour of the commands for deleting and killing can be
+;;; overridden by passing a `C-u' prefix argument: `C-u DEL' will
+;;; delete a character backward, `C-u C-d' will delete a character
+;;; forward, and `C-u C-k' will kill text from the point to the end of
+;;; the l
