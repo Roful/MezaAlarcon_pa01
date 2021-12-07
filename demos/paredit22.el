@@ -162,4 +162,37 @@
 ;;; This assumes Unix-style LF line endings.
 
 (defconst paredit-version 22)
-(defconst paredit-beta-p 
+(defconst paredit-beta-p nil)
+
+(eval-and-compile
+
+  (defun paredit-xemacs-p ()
+    ;; No idea where I got this definition from.  Edward O'Connor
+    ;; (hober in #emacs) suggested the current definition.
+    ;;   (and (boundp 'running-xemacs)
+    ;;        running-xemacs)
+    (featurep 'xemacs))
+
+  (defun paredit-gnu-emacs-p ()
+    ;++ This could probably be improved.
+    (not (paredit-xemacs-p)))
+
+  (defmacro xcond (&rest clauses)
+    "Exhaustive COND.
+Signal an error if no clause matches."
+    `(cond ,@clauses
+           (t (error "XCOND lost."))))
+
+  (defalias 'paredit-warn (if (fboundp 'warn) 'warn 'message))
+
+  (defvar paredit-sexp-error-type
+    (with-temp-buffer
+      (insert "(")
+      (condition-case condition
+          (backward-sexp)
+        (error (if (eq (car condition) 'error)
+                   (paredit-warn "%s%s%s%s%s"
+                                 "Paredit is unable to discriminate"
+                                 " S-expression parse errors from"
+                                 " other errors. "
+                   
