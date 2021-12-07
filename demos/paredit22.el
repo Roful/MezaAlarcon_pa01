@@ -143,4 +143,23 @@
 ;;; overridden by passing a `C-u' prefix argument: `C-u DEL' will
 ;;; delete a character backward, `C-u C-d' will delete a character
 ;;; forward, and `C-u C-k' will kill text from the point to the end of
-;;; the l
+;;; the line, irrespective of the S-expression structure in the buffer.
+;;; This can be used to fix mistakes in a buffer, but should generally
+;;; be avoided.
+;;;
+;;; Paredit performs automatic reindentation as locally as possible, to
+;;; avoid interfering with custom indentation used elsewhere in some
+;;; S-expression.  Only the advanced S-expression manipulation commands
+;;; automatically reindent, and only the forms that were immediately
+;;; operated upon (and their subforms).
+;;;
+;;; This code is written for clarity, not efficiency.  It frequently
+;;; walks over S-expressions redundantly.  If you have problems with
+;;; the time it takes to execute some of the commands, let me know, but
+;;; first be sure that what you're doing is reasonable: it is
+;;; preferable to avoid immense S-expressions in code anyway.
+
+;;; This assumes Unix-style LF line endings.
+
+(defconst paredit-version 22)
+(defconst paredit-beta-p 
