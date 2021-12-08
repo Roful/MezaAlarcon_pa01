@@ -195,4 +195,34 @@ Signal an error if no clause matches."
                                  "Paredit is unable to discriminate"
                                  " S-expression parse errors from"
                                  " other errors. "
-                   
+                                 " This may cause obscure problems. "
+                                 " Please upgrade Emacs."))
+               (car condition)))))
+
+  (defmacro paredit-handle-sexp-errors (body &rest handler)
+    `(condition-case ()
+         ,body
+       (,paredit-sexp-error-type ,@handler)))
+
+  (put 'paredit-handle-sexp-errors 'lisp-indent-function 1)
+
+  (defmacro paredit-ignore-sexp-errors (&rest body)
+    `(paredit-handle-sexp-errors (progn ,@body)
+       nil))
+
+  (put 'paredit-ignore-sexp-errors 'lisp-indent-function 0)
+
+  nil)
+
+;;;; Minor Mode Definition
+
+(defvar paredit-mode-map (make-sparse-keymap)
+  "Keymap for the paredit minor mode.")
+
+;;;###autoload
+(define-minor-mode paredit-mode
+  "Minor mode for pseudo-structurally editing Lisp code.
+With a prefix argument, enable Paredit Mode even if there are
+  imbalanced parentheses in the buffer.
+Paredit behaves badly if parentheses are imbalanced, so exercise
+  caution when forcing Paredit Mode to be enabled, and
