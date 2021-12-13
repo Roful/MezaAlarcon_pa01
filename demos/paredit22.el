@@ -225,4 +225,25 @@ Signal an error if no clause matches."
 With a prefix argument, enable Paredit Mode even if there are
   imbalanced parentheses in the buffer.
 Paredit behaves badly if parentheses are imbalanced, so exercise
-  caution when forcing Paredit Mode to be enabled, and
+  caution when forcing Paredit Mode to be enabled, and consider
+  fixing imbalanced parentheses instead.
+\\<paredit-mode-map>"
+  :lighter " Paredit"
+  ;; If we're enabling paredit-mode, the prefix to this code that
+  ;; DEFINE-MINOR-MODE inserts will have already set PAREDIT-MODE to
+  ;; true.  If this is the case, then first check the parentheses, and
+  ;; if there are any imbalanced ones we must inhibit the activation of
+  ;; paredit mode.  We skip the check, though, if the user supplied a
+  ;; prefix argument interactively.
+  (if (and paredit-mode
+           (not current-prefix-arg))
+      (if (not (fboundp 'check-parens))
+          (paredit-warn "`check-parens' is not defined; %s"
+                        "be careful of malformed S-expressions.")
+          (condition-case condition
+              (check-parens)
+            (error (setq paredit-mode nil)
+                   (signal (car condition) (cdr condition)))))))
+
+(defun enable-paredit-mode ()
+  "Turn on pseudo-structural editing of Lisp code
