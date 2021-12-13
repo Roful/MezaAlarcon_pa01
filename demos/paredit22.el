@@ -246,4 +246,34 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                    (signal (car condition) (cdr condition)))))))
 
 (defun enable-paredit-mode ()
-  "Turn on pseudo-structural editing of Lisp code
+  "Turn on pseudo-structural editing of Lisp code."
+  (interactive)
+  (paredit-mode +1))
+
+(defun disable-paredit-mode ()
+  "Turn off pseudo-structural editing of Lisp code."
+  (interactive)
+  (paredit-mode -1))
+
+(defvar paredit-backward-delete-key
+  (xcond ((paredit-xemacs-p)    "BS")
+         ((paredit-gnu-emacs-p) "DEL")))
+
+(defvar paredit-forward-delete-keys
+  (xcond ((paredit-xemacs-p)    '("DEL"))
+         ((paredit-gnu-emacs-p) '("<delete>" "<deletechar>"))))
+
+;;;; Paredit Keys
+
+;;; Separating the definition and initialization of this variable
+;;; simplifies the development of paredit, since re-evaluating DEFVAR
+;;; forms doesn't actually do anything.
+
+(defvar paredit-commands nil
+  "List of paredit commands with their keys and examples.")
+
+;;; Each specifier is of the form:
+;;;   (key[s] function (example-input example-output) ...)
+;;; where key[s] is either a single string suitable for passing to KBD
+;;; or a list of such strings.  Entries in this list may also just be
+;;; strings, in which case
