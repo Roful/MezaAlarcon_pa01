@@ -304,4 +304,25 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("(define-key keymap [frob|  ] 'frobnicate)"
                  "(define-key keymap [frob]| 'frobnicate)")
                 ("; [Bar.|"
- 
+                 "; [Bar.]|"))
+   ("\""        paredit-doublequote
+                ("(frob grovel |full lexical)"
+                 "(frob grovel \"|\" full lexical)")
+                ("(foo \"bar |baz\" quux)"
+                 "(foo \"bar \\\"|baz\" quux)"))
+   ("M-\""      paredit-meta-doublequote
+                ("(foo \"bar |baz\" quux)"
+                 "(foo \"bar baz\"\n     |quux)")
+                ("(foo |(bar #\\x \"baz \\\\ quux\") zot)"
+                 ,(concat "(foo \"|(bar #\\\\x \\\"baz \\\\"
+                          "\\\\ quux\\\")\" zot)")))
+   ("\\"        paredit-backslash
+                ("(string #|)\n  ; Escaping character... (x)"
+                 "(string #\\x|)")
+                ("\"foo|bar\"\n  ; Escaping character... (\")"
+                 "\"foo\\\"|bar\""))
+   (";"         paredit-semicolon
+                ("|(frob grovel)"
+                 ";|(frob grovel)")
+                ("(frob |grovel)"
+                 
