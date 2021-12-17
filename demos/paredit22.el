@@ -276,4 +276,32 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 ;;;   (key[s] function (example-input example-output) ...)
 ;;; where key[s] is either a single string suitable for passing to KBD
 ;;; or a list of such strings.  Entries in this list may also just be
-;;; strings, in which case
+;;; strings, in which case they are headings for the next entries.
+
+(progn (setq paredit-commands
+ `(
+   "Basic Insertion Commands"
+   ("("         paredit-open-round
+                ("(a b |c d)"
+                 "(a b (|) c d)")
+                ("(foo \"bar |baz\" quux)"
+                 "(foo \"bar (|baz\" quux)"))
+   (")"         paredit-close-round
+                ("(a b |c   )" "(a b c)|")
+                ("; Hello,| world!"
+                 "; Hello,)| world!"))
+   ("M-)"       paredit-close-round-and-newline
+                ("(defun f (x|  ))"
+                 "(defun f (x)\n  |)")
+                ("; (Foo.|"
+                 "; (Foo.)|"))
+   ("["         paredit-open-square
+                ("(a b |c d)"
+                 "(a b [|] c d)")
+                ("(foo \"bar |baz\" quux)"
+                 "(foo \"bar [baz\" quux)"))
+   ("]"         paredit-close-square
+                ("(define-key keymap [frob|  ] 'frobnicate)"
+                 "(define-key keymap [frob]| 'frobnicate)")
+                ("; [Bar.|"
+ 
