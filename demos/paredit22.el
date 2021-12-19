@@ -345,4 +345,28 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
    ("C-j"       paredit-newline
                 ("(let ((n (frobbotz))) |(display (+ n 1)\nport))"
                  ,(concat "(let ((n (frobbotz)))"
-                          
+                          "\n  |(display (+ n 1)"
+                          "\n            port))")))
+
+   "Deleting & Killing"
+   (("C-d" ,@paredit-forward-delete-keys)
+                paredit-forward-delete
+                ("(quu|x \"zot\")" "(quu| \"zot\")")
+                ("(quux |\"zot\")"
+                 "(quux \"|zot\")"
+                 "(quux \"|ot\")")
+                ("(foo (|) bar)" "(foo | bar)")
+                ("|(foo bar)" "(|foo bar)"))
+   (,paredit-backward-delete-key
+                paredit-backward-delete
+                ("(\"zot\" q|uux)" "(\"zot\" |uux)")
+                ("(\"zot\"| quux)"
+                 "(\"zot|\" quux)"
+                 "(\"zo|\" quux)")
+                ("(foo (|) bar)" "(foo | bar)")
+                ("(foo bar)|" "(foo bar|)"))
+   ("C-k"       paredit-kill
+                ("(foo bar)|     ; Useless comment!"
+                 "(foo bar)|")
+                ("(|foo bar)     ; Useful comment!"
+            
