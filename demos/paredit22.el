@@ -369,4 +369,30 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("(foo bar)|     ; Useless comment!"
                  "(foo bar)|")
                 ("(|foo bar)     ; Useful comment!"
-            
+                 "(|)     ; Useful comment!")
+                ("|(foo bar)     ; Useless line!"
+                 "|")
+                ("(foo \"|bar baz\"\n     quux)"
+                 "(foo \"|\"\n     quux)"))
+   ("M-d"       paredit-forward-kill-word
+                ("|(foo bar)    ; baz"
+                 "(| bar)    ; baz"
+                 "(|)    ; baz"
+                 "()    ;|")
+                (";;;| Frobnicate\n(defun frobnicate ...)"
+                 ";;;|\n(defun frobnicate ...)"
+                 ";;;\n(| frobnicate ...)"))
+   (,(concat "M-" paredit-backward-delete-key)
+                paredit-backward-kill-word
+                ("(foo bar)    ; baz\n(quux)|"
+                 "(foo bar)    ; baz\n(|)"
+                 "(foo bar)    ; |\n()"
+                 "(foo |)    ; \n()"
+                 "(|)    ; \n()"))
+
+   "Movement & Navigation"
+   ("C-M-f"     paredit-forward
+                ("(foo |(bar baz) quux)"
+                 "(foo (bar baz)| quux)")
+                ("(foo (bar)|)"
+               
