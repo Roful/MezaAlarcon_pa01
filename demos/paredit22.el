@@ -395,4 +395,28 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("(foo |(bar baz) quux)"
                  "(foo (bar baz)| quux)")
                 ("(foo (bar)|)"
-               
+                 "(foo (bar))|"))
+   ("C-M-b"     paredit-backward
+                ("(foo (bar baz)| quux)"
+                 "(foo |(bar baz) quux)")
+                ("(|(foo) bar)"
+                 "|((foo) bar)"))
+   ("C-M-u"     paredit-backward-up)
+   ("C-M-d"     paredit-forward-down)
+   ("C-M-p"     paredit-backward-down)  ; Built-in, these are FORWARD-
+   ("C-M-n"     paredit-forward-up)     ; & BACKWARD-LIST, which have
+                                        ; no need given C-M-f & C-M-b.
+
+   "Depth-Changing Commands"
+   ("M-("       paredit-wrap-round
+                ("(foo |bar baz)"
+                 "(foo (|bar) baz)"))
+   ("M-s"       paredit-splice-sexp
+                ("(foo (bar| baz) quux)"
+                 "(foo bar| baz quux)"))
+   (("M-<up>" "ESC <up>")
+                paredit-splice-sexp-killing-backward
+                ("(foo (let ((x 5)) |(sqrt n)) bar)"
+                 "(foo (sqrt n) bar)"))
+   (("M-<down>" "ESC <down>")
+                paredit-splice-sexp-kill
