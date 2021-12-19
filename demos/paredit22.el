@@ -325,4 +325,24 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("|(frob grovel)"
                  ";|(frob grovel)")
                 ("(frob |grovel)"
-                 
+                 "(frob ;grovel\n)")
+                ("(frob |grovel (bloit\n               zargh))"
+                 "(frob ;|grovel\n (bloit\n  zargh))")
+                ("(frob grovel)          |"
+                 "(frob grovel)          ;|"))
+   ("M-;"       paredit-comment-dwim
+                ("(foo |bar)   ; baz"
+                 "(foo bar)                               ; |baz")
+                ("(frob grovel)|"
+                 "(frob grovel)                           ;|")
+                ("    (foo bar)\n|\n    (baz quux)"
+                 "    (foo bar)\n    ;; |\n    (baz quux)")
+                ("    (foo bar) |(baz quux)"
+                 "    (foo bar)\n    ;; |\n    (baz quux)")
+                ("|(defun hello-world ...)"
+                 ";;; |\n(defun hello-world ...)"))
+
+   ("C-j"       paredit-newline
+                ("(let ((n (frobbotz))) |(display (+ n 1)\nport))"
+                 ,(concat "(let ((n (frobbotz)))"
+                          
