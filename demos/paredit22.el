@@ -419,4 +419,30 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("(foo (let ((x 5)) |(sqrt n)) bar)"
                  "(foo (sqrt n) bar)"))
    (("M-<down>" "ESC <down>")
-                paredit-splice-sexp-kill
+                paredit-splice-sexp-killing-forward
+                ("(a (b c| d e) f)"
+                 "(a b c f)"))
+   ("M-r"       paredit-raise-sexp
+                ("(dynamic-wind in (lambda () |body) out)"
+                 "(dynamic-wind in |body out)"
+                 "|body"))
+
+   "Barfage & Slurpage"
+   (("C-)" "C-<right>")
+                paredit-forward-slurp-sexp
+                ("(foo (bar |baz) quux zot)"
+                 "(foo (bar |baz quux) zot)")
+                ("(a b ((c| d)) e f)"
+                 "(a b ((c| d) e) f)"))
+   (("C-}" "C-<left>")
+                paredit-forward-barf-sexp
+                ("(foo (bar |baz quux) zot)"
+                 "(foo (bar |baz) quux zot)"))
+   (("C-(" "C-M-<left>" "ESC C-<left>")
+                paredit-backward-slurp-sexp
+                ("(foo bar (baz| quux) zot)"
+                 "(foo (bar baz| quux) zot)")
+                ("(a b ((c| d)) e f)"
+                 "(a (b (c| d)) e f)"))
+   (("C-{" "C-M-<right>" "ESC C-<right>")
+                paredit-backwar
