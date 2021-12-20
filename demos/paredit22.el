@@ -445,4 +445,34 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                 ("(a b ((c| d)) e f)"
                  "(a (b (c| d)) e f)"))
    (("C-{" "C-M-<right>" "ESC C-<right>")
-                paredit-backwar
+                paredit-backward-barf-sexp
+                ("(foo (bar baz |quux) zot)"
+                 "(foo bar (baz |quux) zot)"))
+
+   "Miscellaneous Commands"
+   ("M-S"       paredit-split-sexp
+                ("(hello| world)"
+                 "(hello)| (world)")
+                ("\"Hello, |world!\""
+                 "\"Hello, \"| \"world!\""))
+   ("M-J"       paredit-join-sexps
+                ("(hello)| (world)"
+                 "(hello| world)")
+                ("\"Hello, \"| \"world!\""
+                 "\"Hello, |world!\"")
+                ("hello-\n|  world"
+                 "hello-|world"))
+   ("C-c C-M-l" paredit-recentre-on-sexp)
+   ("M-q"       paredit-reindent-defun)
+   ))
+       nil)                             ; end of PROGN
+
+;;;;; Command Examples
+
+(eval-and-compile
+  (defmacro paredit-do-commands (vars string-case &rest body)
+    (let ((spec     (nth 0 vars))
+          (keys     (nth 1 vars))
+          (fn       (nth 2 vars))
+          (examples (nth 3 vars)))
+     
