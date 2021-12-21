@@ -499,4 +499,25 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
   (let ((original-doc (get fn 'paredit-original-documentation))
         (doc (documentation fn 'function-documentation)))
     (or original-doc
-        (progn (put fn 'paredit-original-docum
+        (progn (put fn 'paredit-original-documentation doc)
+               doc))))
+
+(defun paredit-annotate-mode-with-examples ()
+  (let ((contents
+         (list (paredit-function-documentation 'paredit-mode))))
+    (paredit-do-commands (spec keys fn examples)
+        (push (concat "\n\n" spec "\n")
+              contents)
+      (let ((name (symbol-name fn)))
+        (if (string-match (symbol-name 'paredit-) name)
+            (push (concat "\n\n\\[" name "]\t" name
+                          (if examples
+                              (mapconcat (lambda (example)
+                                           (concat
+                                            "\n"
+                                            (mapconcat 'identity
+                                                       example
+                                                       "\n  --->\n")
+                                            "\n"))
+                                         examples
+                                         "")
