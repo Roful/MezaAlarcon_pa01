@@ -475,4 +475,28 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
           (keys     (nth 1 vars))
           (fn       (nth 2 vars))
           (examples (nth 3 vars)))
-     
+      `(dolist (,spec paredit-commands)
+         (if (stringp ,spec)
+             ,string-case
+           (let ((,keys (let ((k (car ,spec)))
+                          (cond ((stringp k) (list k))
+                                ((listp k) k)
+                                (t (error "Invalid paredit command %s."
+                                          ,spec)))))
+                 (,fn (cadr ,spec))
+                 (,examples (cddr ,spec)))
+             ,@body)))))
+
+  (put 'paredit-do-commands 'lisp-indent-function 2))
+
+(defun paredit-define-keys ()
+  (paredit-do-commands (spec keys fn examples)
+      nil       ; string case
+    (dolist (key keys)
+      (define-key paredit-mode-map (read-kbd-macro key) fn))))
+
+(defun paredit-function-documentation (fn)
+  (let ((original-doc (get fn 'paredit-original-documentation))
+        (doc (documentation fn 'function-documentation)))
+    (or original-doc
+        (progn (put fn 'paredit-original-docum
