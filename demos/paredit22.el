@@ -521,3 +521,27 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                                             "\n"))
                                          examples
                                          "")
+                              "\n  (no examples)\n"))
+                  contents))))
+    (put 'paredit-mode 'function-documentation
+         (apply 'concat (reverse contents))))
+  ;; PUT returns the huge string we just constructed, which we don't
+  ;; want it to return.
+  nil)
+
+(defun paredit-annotate-functions-with-examples ()
+  (paredit-do-commands (spec keys fn examples)
+      nil       ; string case
+    (put fn 'function-documentation
+         (concat (paredit-function-documentation fn)
+                 "\n\n\\<paredit-mode-map>\\[" (symbol-name fn) "]\n"
+                 (mapconcat (lambda (example)
+                              (concat "\n"
+                                      (mapconcat 'identity
+                                                 example
+                                                 "\n  ->\n")
+                                      "\n"))
+                            examples
+                            "")))))
+
+;;;;; HTML Exam
