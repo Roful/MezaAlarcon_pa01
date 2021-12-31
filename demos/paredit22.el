@@ -569,4 +569,25 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
     (paredit-do-commands (spec keys fn examples)
         (progn (if (not firstp)
                    (insert "</table>\n")
-                   (setq fir
+                   (setq firstp nil))
+               (funcall insert-lines
+                        (concat "<h3>" spec "</h3>")
+                        "<table border=\"1\" cellpadding=\"1\">"
+                        "  <tr>"
+                        "    <th>Command</th>"
+                        "    <th>Keys</th>"
+                        "    <th>Examples</th>"
+                        "  </tr>"))
+      (let ((name (symbol-name fn)))
+        (if (string-match (symbol-name 'paredit-) name)
+            (funcall insert-lines
+                     "  <tr>"
+                     (concat "    <td><tt>" name "</tt></td>")
+                     (concat "    <td align=\"center\">"
+                             (funcall html-keys keys)
+                             "</td>")
+                     (concat "    <td>"
+                             (if examples
+                                 (mapconcat html-example examples
+                                            "<hr>")
+                                 "(no exampl
