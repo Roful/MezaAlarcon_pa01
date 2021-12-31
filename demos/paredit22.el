@@ -544,4 +544,29 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                             examples
                             "")))))
 
-;;;;; HTML Exam
+;;;;; HTML Examples
+
+(defun paredit-insert-html-examples ()
+  "Insert HTML for a paredit quick reference table."
+  (interactive)
+  (let ((insert-lines
+         (lambda (&rest lines)
+           (mapc (lambda (line) (insert line) (newline))
+                 lines)))
+        (html-keys
+         (lambda (keys)
+           (mapconcat 'paredit-html-quote keys ", ")))
+        (html-example
+         (lambda (example)
+           (concat "<table><tr><td><pre>"
+                   (mapconcat 'paredit-html-quote
+                              example
+                              (concat "</pre></td></tr><tr><td>"
+                                      "&nbsp;&nbsp;&nbsp;&nbsp;---&gt;"
+                                      "</td></tr><tr><td><pre>"))
+                   "</pre></td></tr></table>")))
+        (firstp t))
+    (paredit-do-commands (spec keys fn examples)
+        (progn (if (not firstp)
+                   (insert "</table>\n")
+                   (setq fir
