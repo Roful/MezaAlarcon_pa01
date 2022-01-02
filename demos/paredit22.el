@@ -590,4 +590,34 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
                              (if examples
                                  (mapconcat html-example examples
                                             "<hr>")
-                                 "(no exampl
+                                 "(no examples)")
+                             "</td>")
+                     "  </tr>")))))
+  (insert "</table>\n"))
+
+(defun paredit-html-quote (string)
+  (with-temp-buffer
+    (dotimes (i (length string))
+      (insert (let ((c (elt string i)))
+                (cond ((eq c ?\<) "&lt;")
+                      ((eq c ?\>) "&gt;")
+                      ((eq c ?\&) "&amp;")
+                      ((eq c ?\') "&apos;")
+                      ((eq c ?\") "&quot;")
+                      (t c)))))
+    (buffer-string)))
+
+;;;; Delimiter Insertion
+
+(eval-and-compile
+  (defun paredit-conc-name (&rest strings)
+    (intern (apply 'concat strings)))
+
+  (defmacro define-paredit-pair (open close name)
+    `(progn
+       (defun ,(paredit-conc-name "paredit-open-" name) (&optional n)
+         ,(concat "Insert a balanced " name " pair.
+With a prefix argument N, put the closing " name " after N
+  S-expressions forward.
+If the region is active, `transient-mark-mode' is enabled, and the
+  region's start
