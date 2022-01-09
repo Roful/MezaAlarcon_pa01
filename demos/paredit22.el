@@ -620,4 +620,22 @@ Paredit behaves badly if parentheses are imbalanced, so exercise
 With a prefix argument N, put the closing " name " after N
   S-expressions forward.
 If the region is active, `transient-mark-mode' is enabled, and the
-  region's start
+  region's start and end fall in the same parenthesis depth, insert a
+  " name " pair around the region.
+If in a string or a comment, insert a single " name ".
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.")
+         (interactive "P")
+         (cond ((or (paredit-in-string-p)
+                    (paredit-in-comment-p))
+                (insert ,open))
+               ((not (paredit-in-char-p))
+                (paredit-insert-pair n ,open ,close 'goto-char))))
+       (defun ,(paredit-conc-name "paredit-close-" name) ()
+         ,(concat "Move past one closing delimiter and reindent.
+\(Agnostic to the specific closing delimiter.)
+If in a string or comment, insert a single closing " name ".
+If in a character literal, do nothing.  This prevents changing what was
+  in the character literal to a meaningful delimiter unintentionally.")
+         (interactive)
+         (paredit-move-
