@@ -660,4 +660,31 @@ See `paredit-wrap-sexp' for more details.")
 Used by `paredit-yank-pop'; for internal paredit use only.")
 
 (define-paredit-pair ?\( ?\) "round")
-(define-paredit-pair ?\[ ?
+(define-paredit-pair ?\[ ?\] "square")
+(define-paredit-pair ?\{ ?\} "curly")
+(define-paredit-pair ?\< ?\> "angled")
+
+;;; Aliases for the old names.
+
+(defalias 'paredit-open-parenthesis 'paredit-open-round)
+(defalias 'paredit-close-parenthesis 'paredit-close-round)
+(defalias 'paredit-close-parenthesis-and-newline
+  'paredit-close-round-and-newline)
+
+(defalias 'paredit-open-bracket 'paredit-open-square)
+(defalias 'paredit-close-bracket 'paredit-close-square)
+(defalias 'paredit-close-bracket-and-newline
+  'paredit-close-square-and-newline)
+
+(defun paredit-move-past-close (close)
+  (cond ((or (paredit-in-string-p)
+             (paredit-in-comment-p))
+         (insert close))
+        ((not (paredit-in-char-p))
+         (paredit-move-past-close-and-reindent close)
+         (paredit-blink-paren-match nil))))
+
+(defun paredit-move-past-close-and-newline (close)
+  (if (or (paredit-in-string-p)
+          (paredit-in-comment-p))
+      (insert clos
