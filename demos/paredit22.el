@@ -638,4 +638,26 @@ If in a string or comment, insert a single closing " name ".
 If in a character literal, do nothing.  This prevents changing what was
   in the character literal to a meaningful delimiter unintentionally.")
          (interactive)
-         (paredit-move-
+         (paredit-move-past-close ,close))
+       (defun ,(paredit-conc-name "paredit-close-" name "-and-newline") ()
+         ,(concat "Move past one closing delimiter, add a newline,"
+                  " and reindent.
+If there was a margin comment after the closing delimiter, preserve it
+  on the same line.")
+         (interactive)
+         (paredit-move-past-close-and-newline ,close))
+       (defun ,(paredit-conc-name "paredit-wrap-" name)
+           (&optional argument)
+         ,(concat "Wrap the following S-expression.
+See `paredit-wrap-sexp' for more details.")
+         (interactive "P")
+         (paredit-wrap-sexp argument ,open ,close))
+       (add-to-list 'paredit-wrap-commands
+                    ',(paredit-conc-name "paredit-wrap-" name)))))
+
+(defvar paredit-wrap-commands '(paredit-wrap-sexp)
+  "List of paredit commands that wrap S-expressions.
+Used by `paredit-yank-pop'; for internal paredit use only.")
+
+(define-paredit-pair ?\( ?\) "round")
+(define-paredit-pair ?\[ ?
