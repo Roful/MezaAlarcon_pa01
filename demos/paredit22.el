@@ -687,4 +687,29 @@ Used by `paredit-yank-pop'; for internal paredit use only.")
 (defun paredit-move-past-close-and-newline (close)
   (if (or (paredit-in-string-p)
           (paredit-in-comment-p))
-      (insert clos
+      (insert close)
+    (if (paredit-in-char-p) (forward-char))
+    (paredit-move-past-close-and-reindent close)
+    (let ((comment.point (paredit-find-comment-on-line)))
+      (newline)
+      (if comment.point
+          (save-excursion
+            (forward-line -1)
+            (end-of-line)
+            (indent-to (cdr comment.point))
+            (insert (car comment.point)))))
+    (lisp-indent-line)
+    (paredit-ignore-sexp-errors (indent-sexp))
+    (paredit-blink-paren-match t)))
+
+(defun paredit-find-comment-on-line ()
+  "Find a margin comment on the current line.
+Return nil if there is no such comment or if there is anything but
+  whitespace until such a comment.
+If such a comment exists, delete the comment (including all leading
+  whitespace) and return a cons whose car is the comment as a string
+  and whose cdr is the point of the comment's initial semicolon,
+  relative to the start of the line."
+  (save-excursion
+    (paredit-skip-whitespace t (point-at-eol))
+    (and (eq ?\; 
