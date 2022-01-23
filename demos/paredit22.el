@@ -712,4 +712,27 @@ If such a comment exists, delete the comment (including all leading
   relative to the start of the line."
   (save-excursion
     (paredit-skip-whitespace t (point-at-eol))
-    (and (eq ?\; 
+    (and (eq ?\; (char-after))
+         (not (eq ?\; (char-after (1+ (point)))))
+         (not (or (paredit-in-string-p)
+                  (paredit-in-char-p)))
+         (let* ((start                  ;Move to before the semicolon.
+                 (progn (backward-char) (point)))
+                (comment
+                 (buffer-substring start (point-at-eol))))
+           (paredit-skip-whitespace nil (point-at-bol))
+           (delete-region (point) (point-at-eol))
+           (cons comment (- start (point-at-bol)))))))
+
+(defun paredit-insert-pair (n open close forward)
+  (let* ((regionp
+          (and (paredit-region-active-p)
+               (paredit-region-safe-for-insert-p)))
+         (end
+          (and regionp
+               (not n)
+               (prog1 (region-end) (goto-char (region-beginning))))))
+    (let ((spacep (paredit-space-for-delimiter-p nil open)))
+      (if spacep (insert " "))
+      (insert open)
+      (
