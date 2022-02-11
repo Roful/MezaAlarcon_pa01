@@ -776,4 +776,26 @@ Each predicate may assume that the point is not at the beginning of the
   true; and that the point is not preceded, if ENDP is false, or
   followed, if ENDP is true, by a word or symbol constituent, a quote,
   or the delimiter matching DELIMITER.
-Each predicate 
+Each predicate should examine only text before the point, if ENDP is
+  false, or only text after the point, if ENDP is true.")
+
+(defun paredit-space-for-delimiter-p (endp delimiter)
+  ;; If at the buffer limit, don't insert a space.  If there is a word,
+  ;; symbol, other quote, or non-matching parenthesis delimiter (i.e. a
+  ;; close when want an open the string or an open when we want to
+  ;; close the string), do insert a space.
+  (and (not (if endp (eobp) (bobp)))
+       (memq (char-syntax (if endp (char-after) (char-before)))
+             (list ?w ?_ ?\"
+                   (let ((matching (matching-paren delimiter)))
+                     (and matching (char-syntax matching)))
+                   (and (not endp)
+                        (eq ?\" (char-syntax delimiter))
+                        ?\) )))
+       (catch 'exit
+         (dolist (predicate paredit-space-for-delimiter-predicates)
+           (if (not (funcall predicate endp delimiter))
+               (throw 'exit nil)))
+         t)))
+
+(defun pa
