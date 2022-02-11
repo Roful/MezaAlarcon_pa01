@@ -758,4 +758,22 @@ If such a comment exists, delete the comment (including all leading
                  (nth 0 end-state))
              (eq (nth 3 beginning-state)   ; 3. non-nil if inside a
                  (nth 3 end-state))        ;    string
-             (eq (nth 4 beginnin
+             (eq (nth 4 beginning-state)   ; 4. comment status, yada
+                 (nth 4 end-state))
+             (eq (nth 5 beginning-state)   ; 5. t if following char
+                 (nth 5 end-state)))))))   ;    quote
+
+(defvar paredit-space-for-delimiter-predicates nil
+  "List of predicates for whether to put space by delimiter at point.
+Each predicate is a function that is is applied to two arguments, ENDP
+  and DELIMITER, and that returns a boolean saying whether to put a
+  space next to the delimiter -- before the delimiter if ENDP is false,
+  after the delimiter if ENDP is true.
+If any predicate returns false, no space is inserted: every predicate
+  has veto power.
+Each predicate may assume that the point is not at the beginning of the
+  buffer, if ENDP is false, or at the end of the buffer, if ENDP is
+  true; and that the point is not preceded, if ENDP is false, or
+  followed, if ENDP is true, by a word or symbol constituent, a quote,
+  or the delimiter matching DELIMITER.
+Each predicate 
