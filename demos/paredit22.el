@@ -735,4 +735,27 @@ If such a comment exists, delete the comment (including all leading
     (let ((spacep (paredit-space-for-delimiter-p nil open)))
       (if spacep (insert " "))
       (insert open)
-      (
+      (save-excursion
+        ;; Move past the desired region.
+        (cond (n (funcall forward
+                          (save-excursion
+                            (forward-sexp (prefix-numeric-value n))
+                            (point))))
+              (regionp (funcall forward (+ end (if spacep 2 1)))))
+        (insert close)
+        (if (paredit-space-for-delimiter-p t close)
+            (insert " "))))))
+
+(defun paredit-region-safe-for-insert-p ()
+  (save-excursion
+    (let ((beginning (region-beginning))
+          (end (region-end)))
+      (goto-char beginning)
+      (let* ((beginning-state (paredit-current-parse-state))
+             (end-state
+              (parse-partial-sexp beginning end nil nil beginning-state)))
+        (and (=  (nth 0 beginning-state)   ; 0. depth in parens
+                 (nth 0 end-state))
+             (eq (nth 3 beginning-state)   ; 3. non-nil if inside a
+                 (nth 3 end-state))        ;    string
+             (eq (nth 4 beginnin
