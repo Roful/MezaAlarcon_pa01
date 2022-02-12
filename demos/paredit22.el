@@ -798,4 +798,24 @@ Each predicate should examine only text before the point, if ENDP is
                (throw 'exit nil)))
          t)))
 
-(defun pa
+(defun paredit-move-past-close-and-reindent (close)
+  (let ((open (paredit-missing-close)))
+    (if open
+        (if (eq close (matching-paren open))
+            (save-excursion
+              (message "Missing closing delimiter: %c" close)
+              (insert close))
+            (error "Mismatched missing closing delimiter: %c ... %c"
+                   open close))))
+  (up-list)
+  (if (catch 'return                    ; This CATCH returns T if it
+        (while t                        ; should delete leading spaces
+          (save-excursion               ; and NIL if not.
+            (let ((before-paren (1- (point))))
+              (back-to-indentation)
+              (cond ((not (eq (point) before-paren))
+                     ;; Can't call PAREDIT-DELETE-LEADING-WHITESPACE
+                     ;; here -- we must return from SAVE-EXCURSION
+                     ;; first.
+                     (throw 'return t))
+                    ((save-excursion (fo
