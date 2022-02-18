@@ -818,4 +818,28 @@ Each predicate should examine only text before the point, if ENDP is
                      ;; here -- we must return from SAVE-EXCURSION
                      ;; first.
                      (throw 'return t))
-                    ((save-excursion (fo
+                    ((save-excursion (forward-line -1)
+                                     (end-of-line)
+                                     (paredit-in-comment-p))
+                     ;; Moving the closing delimiter any further
+                     ;; would put it into a comment, so we just
+                     ;; indent the closing delimiter where it is and
+                     ;; abort the loop, telling its continuation that
+                     ;; no leading whitespace should be deleted.
+                     (lisp-indent-line)
+                     (throw 'return nil))
+                    (t (delete-indentation)))))))
+      (paredit-delete-leading-whitespace)))
+
+(defun paredit-missing-close ()
+  (save-excursion
+    (paredit-handle-sexp-errors (backward-up-list)
+      (error "Not inside a list."))
+    (let ((open (char-after)))
+      (paredit-handle-sexp-errors (progn (forward-sexp) nil)
+        open))))
+
+(defun paredit-delete-leading-whitespace ()
+  ;; This assumes that we're on the closing delimiter already.
+  (save-excursion
+    (
