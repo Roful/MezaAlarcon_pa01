@@ -842,4 +842,27 @@ Each predicate should examine only text before the point, if ENDP is
 (defun paredit-delete-leading-whitespace ()
   ;; This assumes that we're on the closing delimiter already.
   (save-excursion
-    (
+    (backward-char)
+    (while (let ((syn (char-syntax (char-before))))
+             (and (or (eq syn ?\ ) (eq syn ?-))     ; whitespace syntax
+                  ;; The above line is a perfect example of why the
+                  ;; following test is necessary.
+                  (not (paredit-in-char-p (1- (point))))))
+      (backward-delete-char 1))))
+
+(defun paredit-blink-paren-match (another-line-p)
+  (if (and blink-matching-paren
+           (or (not show-paren-mode) another-line-p))
+      (paredit-ignore-sexp-errors
+        (save-excursion
+          (backward-sexp)
+          (forward-sexp)
+          ;; SHOW-PAREN-MODE inhibits any blinking, so we disable it
+          ;; locally here.
+          (let ((show-paren-mode nil))
+            (blink-matching-open))))))
+
+(defun paredit-doublequote (&optional n)
+  "Insert a pair of double-quotes.
+With a prefix argument N, wrap the following N S-expressions in
+  double-quotes, escaping intermediate characters if necessa
