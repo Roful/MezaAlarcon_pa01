@@ -865,4 +865,24 @@ Each predicate should examine only text before the point, if ENDP is
 (defun paredit-doublequote (&optional n)
   "Insert a pair of double-quotes.
 With a prefix argument N, wrap the following N S-expressions in
-  double-quotes, escaping intermediate characters if necessa
+  double-quotes, escaping intermediate characters if necessary.
+If the region is active, `transient-mark-mode' is enabled, and the
+  region's start and end fall in the same parenthesis depth, insert a
+  pair of double-quotes around the region, again escaping intermediate
+  characters if necessary.
+Inside a comment, insert a literal double-quote.
+At the end of a string, move past the closing double-quote.
+In the middle of a string, insert a backslash-escaped double-quote.
+If in a character literal, do nothing.  This prevents accidentally
+  changing a what was in the character literal to become a meaningful
+  delimiter unintentionally."
+  (interactive "P")
+  (cond ((paredit-in-string-p)
+         (if (eq (cdr (paredit-string-start+end-points))
+                 (point))
+             (forward-char)             ; We're on the closing quote.
+             (insert ?\\ ?\" )))
+        ((paredit-in-comment-p)
+         (insert ?\" ))
+        ((not (paredit-in-char-p))
+         (paredit-insert-pair n ?\" ?\" 'paredit-forward-for-
