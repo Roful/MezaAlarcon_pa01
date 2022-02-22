@@ -908,4 +908,24 @@ If not in a string, act as `paredit-doublequote'; if no prefix argument
   (let ((state (paredit-current-parse-state)))
     (while (< (point) end)
       (let ((new-state (parse-partial-sexp (point) (1+ (point))
-                                           n
+                                           nil nil state)))
+        (if (paredit-in-string-p new-state)
+            (if (not (paredit-in-string-escape-p))
+                (setq state new-state)
+              ;; Escape character: turn it into an escaped escape
+              ;; character by appending another backslash.
+              (insert ?\\ )
+              ;; Now the point is after both escapes, and we want to
+              ;; rescan from before the first one to after the second
+              ;; one.
+              (setq state
+                    (parse-partial-sexp (- (point) 2) (point)
+                                        nil nil state))
+              ;; Advance the end point, since we just inserted a new
+              ;; character.
+              (setq end (1+ end)))
+          ;; String: escape by inserting a backslash before the quote.
+          (backward-char)
+          (insert ?\\ )
+          ;; The point is now between the escape and the quote, and we
+          ;; want to rescan from before the
