@@ -928,4 +928,27 @@ If not in a string, act as `paredit-doublequote'; if no prefix argument
           (backward-char)
           (insert ?\\ )
           ;; The point is now between the escape and the quote, and we
-          ;; want to rescan from before the
+          ;; want to rescan from before the escape to after the quote.
+          (setq state
+                (parse-partial-sexp (1- (point)) (1+ (point))
+                                    nil nil state))
+          ;; Advance the end point for the same reason as above.
+          (setq end (1+ end)))))))
+
+;;;; Escape Insertion
+
+(defun paredit-backslash ()
+  "Insert a backslash followed by a character to escape."
+  (interactive)
+  (insert ?\\ )
+  ;; This funny conditional is necessary because PAREDIT-IN-COMMENT-P
+  ;; assumes that PAREDIT-IN-STRING-P already returned false; otherwise
+  ;; it may give erroneous answers.
+  (if (or (paredit-in-string-p)
+          (not (paredit-in-comment-p)))
+      (let ((delp t))
+        (unwind-protect (setq delp
+                              (call-interactively 'paredit-escape))
+          ;; We need this in an UNWIND-PROTECT so that the backlash is
+          ;; left in there *only* if PAREDIT-ESCAPE return NIL normally
+          ;; -- in any other case, such as the
