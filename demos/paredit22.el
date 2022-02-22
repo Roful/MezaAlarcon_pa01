@@ -885,4 +885,27 @@ If in a character literal, do nothing.  This prevents accidentally
         ((paredit-in-comment-p)
          (insert ?\" ))
         ((not (paredit-in-char-p))
-         (paredit-insert-pair n ?\" ?\" 'paredit-forward-for-
+         (paredit-insert-pair n ?\" ?\" 'paredit-forward-for-quote))))
+
+(defun paredit-meta-doublequote (&optional n)
+  "Move to the end of the string, insert a newline, and indent.
+If not in a string, act as `paredit-doublequote'; if no prefix argument
+  is specified and the region is not active or `transient-mark-mode' is
+  disabled, the default is to wrap one S-expression, however, not
+  zero."
+  (interactive "P")
+  (if (not (paredit-in-string-p))
+      (paredit-doublequote (or n
+                               (and (not (paredit-region-active-p))
+                                    1)))
+    (let ((start+end (paredit-string-start+end-points)))
+      (goto-char (1+ (cdr start+end)))
+      (newline)
+      (lisp-indent-line)
+      (paredit-ignore-sexp-errors (indent-sexp)))))
+
+(defun paredit-forward-for-quote (end)
+  (let ((state (paredit-current-parse-state)))
+    (while (< (point) end)
+      (let ((new-state (parse-partial-sexp (point) (1+ (point))
+                                           n
