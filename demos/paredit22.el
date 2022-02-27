@@ -1022,4 +1022,27 @@ If a list begins on the line after the point but ends on a different
   line, break the line after the last S-expression following the point
   before the list."
   (interactive "p")
-  (if (or
+  (if (or (paredit-in-string-p) (paredit-in-comment-p))
+      (insert (make-string (or n 1) ?\; ))
+    (if (paredit-in-char-p)
+        (backward-char 2))
+    (let ((line-break-point (paredit-semicolon-find-line-break-point)))
+      (if line-break-point
+          (paredit-semicolon-with-line-break line-break-point (or n 1))
+          (insert (make-string (or n 1) ?\; ))))))
+
+(defun paredit-semicolon-find-line-break-point ()
+  (let ((line-break-point nil)
+        (eol (point-at-eol)))
+    (and (save-excursion
+           (paredit-handle-sexp-errors
+               (progn
+                 (while
+                     (progn
+                       (setq line-break-point (point))
+                       (forward-sexp)
+                       (and (eq eol (point-at-eol))
+                            (not (eobp)))))
+                 (backward-sexp)
+                 (eq eol (point-at-eol)))
+             ;; If we hit the end of an expression, but the clo
