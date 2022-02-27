@@ -972,4 +972,28 @@ If not in a string, act as `paredit-doublequote'; if no prefix argument
 
 (defun paredit-newline ()
   "Insert a newline and indent it.
-This is like `newline-and-inde
+This is like `newline-and-indent', but it not only indents the line
+  that the point is on but also the S-expression following the point,
+  if there is one.
+Move forward one character first if on an escaped character.
+If in a string, just insert a literal newline.
+If in a comment and if followed by invalid structure, call
+  `indent-new-comment-line' to keep the invalid structure in a
+  comment."
+  (interactive)
+  (cond ((paredit-in-string-p)
+         (newline))
+        ((paredit-in-comment-p)
+         (if (paredit-region-ok-p (point) (point-at-eol))
+             (progn (newline-and-indent) (indent-sexp))
+             (indent-new-comment-line)))
+        (t
+         (if (paredit-in-char-p)
+             (forward-char))
+         (newline-and-indent)
+         ;; Indent the following S-expression, but don't signal an
+         ;; error if there's only a closing delimiter after the point.
+         (paredit-ignore-sexp-errors (indent-sexp)))))
+
+(defun paredit-reindent-defun (&optional argument)
+  "Rein
