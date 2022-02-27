@@ -996,4 +996,30 @@ If in a comment and if followed by invalid structure, call
          (paredit-ignore-sexp-errors (indent-sexp)))))
 
 (defun paredit-reindent-defun (&optional argument)
-  "Rein
+  "Reindent the definition that the point is on.
+If the point is in a string or a comment, fill the paragraph instead,
+  and with a prefix argument, justify as well."
+  (interactive "P")
+  (if (or (paredit-in-string-p)
+          (paredit-in-comment-p))
+      (fill-paragraph argument)
+    (save-excursion
+      (end-of-defun)
+      (beginning-of-defun)
+      (indent-sexp))))
+
+;;;; Comment Insertion
+
+(defun paredit-semicolon (&optional n)
+  "Insert a semicolon.
+With a prefix argument N, insert N semicolons.
+If in a string, do just that and nothing else.
+If in a character literal, move to the beginning of the character
+  literal before inserting the semicolon.
+If the enclosing list ends on the line after the point, break the line
+  after the last S-expression following the point.
+If a list begins on the line after the point but ends on a different
+  line, break the line after the last S-expression following the point
+  before the list."
+  (interactive "p")
+  (if (or
