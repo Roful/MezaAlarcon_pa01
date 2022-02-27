@@ -951,4 +951,25 @@ If not in a string, act as `paredit-doublequote'; if no prefix argument
                               (call-interactively 'paredit-escape))
           ;; We need this in an UNWIND-PROTECT so that the backlash is
           ;; left in there *only* if PAREDIT-ESCAPE return NIL normally
-          ;; -- in any other case, such as the
+          ;; -- in any other case, such as the user hitting C-g or an
+          ;; error occurring, we must delete the backslash to avoid
+          ;; leaving a dangling escape.  (This control structure is a
+          ;; crock.)
+          (if delp (backward-delete-char 1))))))
+
+;;; This auxiliary interactive function returns true if the backslash
+;;; should be deleted and false if not.
+
+(defun paredit-escape (char)
+  ;; I'm too lazy to figure out how to do this without a separate
+  ;; interactive function.
+  (interactive "cEscaping character...")
+  (if (eq char 127)                     ; The backslash was a typo, so
+      t                                 ; the luser wants to delete it.
+    (insert char)                       ; (Is there a better way to
+    nil))                               ; express the rubout char?
+                                        ; ?\^? works, but ugh...)
+
+(defun paredit-newline ()
+  "Insert a newline and indent it.
+This is like `newline-and-inde
