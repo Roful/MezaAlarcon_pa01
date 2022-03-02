@@ -1045,4 +1045,28 @@ If a list begins on the line after the point but ends on a different
                             (not (eobp)))))
                  (backward-sexp)
                  (eq eol (point-at-eol)))
-             ;; If we hit the end of an expression, but the clo
+             ;; If we hit the end of an expression, but the closing
+             ;; delimiter is on another line, don't break the line.
+             (save-excursion
+               (paredit-skip-whitespace t (point-at-eol))
+               (not (or (eolp) (eq (char-after) ?\; ))))))
+         line-break-point)))
+
+(defun paredit-semicolon-with-line-break (line-break-point n)
+  (let ((line-break-marker (make-marker)))
+    (set-marker line-break-marker line-break-point)
+    (set-marker-insertion-type line-break-marker t)
+    (insert (make-string (or n 1) ?\; ))
+    (save-excursion
+      (goto-char line-break-marker)
+      (set-marker line-break-marker nil)
+      (newline)
+      (lisp-indent-line)
+      ;; This step is redundant if we are inside a list, but even if we
+      ;; are at the top level, we want at least to indent whatever we
+      ;; bumped off the line.
+      (paredit-ignore-sexp-errors (indent-sexp))
+      (paredit-indent-sexps))))
+
+;;; This is all a horrible, horrible hack, primarily for GNU Emacs 21,
+;;; in w
