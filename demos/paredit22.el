@@ -1093,4 +1093,21 @@ If a list begins on the line after the point but ends on a different
 
 (defun paredit-comment-dwim (&optional argument)
   "Call the Lisp comment command you want (Do What I Mean).
-This is lik
+This is like `comment-dwim', but it is specialized for Lisp editing.
+If transient mark mode is enabled and the mark is active, comment or
+  uncomment the selected region, depending on whether it was entirely
+  commented not not already.
+If there is already a comment on the current line, with no prefix
+  argument, indent to that comment; with a prefix argument, kill that
+  comment.
+Otherwise, insert a comment appropriate for the context and ensure that
+  any code following the comment is moved to the next line.
+At the top level, where indentation is calculated to be at column 0,
+  insert a triple-semicolon comment; within code, where the indentation
+  is calculated to be non-zero, and on the line there is either no code
+  at all or code after the point, insert a double-semicolon comment;
+  and if the point is after all code on the line, insert a single-
+  semicolon margin comment at `comment-column'."
+  (interactive "*P")
+  (paredit-initialize-comment-dwim)
+  (cond ((paredit-r
