@@ -1069,4 +1069,28 @@ If a list begins on the line after the point but ends on a different
       (paredit-indent-sexps))))
 
 ;;; This is all a horrible, horrible hack, primarily for GNU Emacs 21,
-;;; in w
+;;; in which there is no `comment-or-uncomment-region'.
+
+(autoload 'comment-forward "newcomment")
+(autoload 'comment-normalize-vars "newcomment")
+(autoload 'comment-region "newcomment")
+(autoload 'comment-search-forward "newcomment")
+(autoload 'uncomment-region "newcomment")
+
+(defun paredit-initialize-comment-dwim ()
+  (require 'newcomment)
+  (if (not (fboundp 'comment-or-uncomment-region))
+      (defalias 'comment-or-uncomment-region
+        (lambda (beginning end &optional argument)
+          (interactive "*r\nP")
+          (if (save-excursion (goto-char beginning)
+                              (comment-forward (point-max))
+                              (<= end (point)))
+              (uncomment-region beginning end argument)
+              (comment-region beginning end argument)))))
+  (defalias 'paredit-initialize-comment-dwim 'comment-normalize-vars)
+  (comment-normalize-vars))
+
+(defun paredit-comment-dwim (&optional argument)
+  "Call the Lisp comment command you want (Do What I Mean).
+This is lik
