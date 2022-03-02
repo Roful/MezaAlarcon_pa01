@@ -1110,4 +1110,28 @@ At the top level, where indentation is calculated to be at column 0,
   semicolon margin comment at `comment-column'."
   (interactive "*P")
   (paredit-initialize-comment-dwim)
-  (cond ((paredit-r
+  (cond ((paredit-region-active-p)
+         (comment-or-uncomment-region (region-beginning)
+                                      (region-end)
+                                      argument))
+        ((paredit-comment-on-line-p)
+         (if argument
+             (comment-kill (if (integerp argument) argument nil))
+             (comment-indent)))
+        (t (paredit-insert-comment))))
+
+(defun paredit-comment-on-line-p ()
+  "True if there is a comment on the line following point.
+This is expected to be called only in `paredit-comment-dwim'; do not
+  call it elsewhere."
+  (save-excursion
+    (beginning-of-line)
+    (let ((comment-p nil))
+      ;; Search forward for a comment beginning.  If there is one, set
+      ;; COMMENT-P to true; if not, it will be nil.
+      (while (progn
+               (setq comment-p          ;t -> no error
+                     (comment-search-forward (point-at-eol) t))
+               (and comment-p
+                    (or (paredit-in-string-p)
+            
