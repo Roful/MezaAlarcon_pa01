@@ -1134,4 +1134,32 @@ This is expected to be called only in `paredit-comment-dwim'; do not
                      (comment-search-forward (point-at-eol) t))
                (and comment-p
                     (or (paredit-in-string-p)
-            
+                        (paredit-in-char-p (1- (point))))))
+        (forward-char))
+      comment-p)))
+
+(defun paredit-insert-comment ()
+  (let ((code-after-p
+         (save-excursion (paredit-skip-whitespace t (point-at-eol))
+                         (not (eolp))))
+        (code-before-p
+         (save-excursion (paredit-skip-whitespace nil (point-at-bol))
+                         (not (bolp)))))
+    (cond ((and (bolp)
+                (let ((indent
+                       (let ((indent (calculate-lisp-indent)))
+                         (if (consp indent) (car indent) indent))))
+                  (and indent (zerop indent))))
+           ;; Top-level comment
+           (if code-after-p (save-excursion (newline)))
+           (insert ";;; "))
+          ((or code-after-p (not code-before-p))
+           ;; Code comment
+           (if code-before-p (newline))
+           (lisp-indent-line)
+           (insert ";; ")
+           (if code-after-p
+               (save-excursion
+                 (newline)
+                 (lisp-indent-line)
+                 (paredit-indent-sex
