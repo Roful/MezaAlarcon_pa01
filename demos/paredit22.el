@@ -1162,4 +1162,30 @@ This is expected to be called only in `paredit-comment-dwim'; do not
                (save-excursion
                  (newline)
                  (lisp-indent-line)
-                 (paredit-indent-sex
+                 (paredit-indent-sexps))))
+          (t
+           ;; Margin comment
+           (indent-to comment-column 1) ; 1 -> force one leading space
+           (insert ?\; )))))
+
+;;;; Character Deletion
+
+(defun paredit-forward-delete (&optional argument)
+  "Delete a character forward or move forward over a delimiter.
+If on an opening S-expression delimiter, move forward into the
+  S-expression.
+If on a closing S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a numeric prefix argument N, delete N characters forward.
+With a `C-u' prefix argument, simply delete a character forward,
+  without regard for delimiter balancing."
+  (interactive "P")
+  (cond ((or (consp argument) (eobp))
+         (delete-char 1))
+        ((integerp argument)
+         (if (< argument 0)
+             (paredit-backward-delete argument)
+             (while (> argument 0)
+               (paredit-forward-delete)
+               (setq argument (- argument 1)))))
+        ((paredit-in-
