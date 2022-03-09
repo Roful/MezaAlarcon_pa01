@@ -1249,4 +1249,28 @@ If on a closing S-expression delimiter, move backward into the
   S-expression.
 If on an opening S-expression delimiter, refuse to delete unless the
   S-expression is empty, in which case delete the whole S-expression.
-With a numeric prefix argument N, delete N characters
+With a numeric prefix argument N, delete N characters backward.
+With a `C-u' prefix argument, simply delete a character backward,
+  without regard for delimiter balancing."
+  (interactive "P")
+  (cond ((or (consp argument) (bobp))
+         ;++ Should this untabify?
+         (backward-delete-char 1))
+        ((integerp argument)
+         (if (< argument 0)
+             (paredit-forward-delete (- 0 argument))
+             (while (> argument 0)
+               (paredit-backward-delete)
+               (setq argument (- argument 1)))))
+        ((paredit-in-string-p)
+         (paredit-backward-delete-in-string))
+        ((paredit-in-comment-p)
+         (backward-delete-char 1))
+        ((paredit-in-char-p)            ; Escape -- delete both chars.
+         (backward-delete-char 1)
+         (delete-char 1))
+        ((paredit-in-char-p (1- (point)))
+         (backward-delete-char 2))      ; ditto
+        ((let ((syn (char-syntax (char-before))))
+           (or (eq syn ?\) )
+               (eq
