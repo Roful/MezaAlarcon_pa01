@@ -1211,4 +1211,22 @@ With a `C-u' prefix argument, simply delete a character forward,
            (delete-char 1)))
         ((and (not (paredit-in-char-p (1- (point))))
               (eq (char-syntax (char-after)) ?\) )
-         
+              (eq (char-before) (matching-paren (char-after))))
+         (backward-delete-char 1)       ; Empty list -- delete both
+         (delete-char 1))               ;   delimiters.
+        ;; Just delete a single character, if it's not a closing
+        ;; delimiter.  (The character literal case is already handled
+        ;; by now.)
+        ((not (eq (char-syntax (char-after)) ?\) ))
+         (delete-char 1))))
+
+(defun paredit-forward-delete-in-string ()
+  (let ((start+end (paredit-string-start+end-points)))
+    (cond ((not (eq (point) (cdr start+end)))
+           ;; If it's not the close-quote, it's safe to delete.  But
+           ;; first handle the case that we're in a string escape.
+           (cond ((paredit-in-string-escape-p)
+                  ;; We're right after the backslash, so backward
+                  ;; delete it before deleting the escaped character.
+                  (backward-delete-char 1))
+                 ((eq (char-after) ?\\ )
