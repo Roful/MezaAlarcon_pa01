@@ -1230,3 +1230,23 @@ With a `C-u' prefix argument, simply delete a character forward,
                   ;; delete it before deleting the escaped character.
                   (backward-delete-char 1))
                  ((eq (char-after) ?\\ )
+                  ;; If we're not in a string escape, but we are on a
+                  ;; backslash, it must start the escape for the next
+                  ;; character, so delete the backslash before deleting
+                  ;; the next character.
+                  (delete-char 1)))
+           (delete-char 1))
+          ((eq (1- (point)) (car start+end))
+           ;; If it is the close-quote, delete only if we're also right
+           ;; past the open-quote (i.e. it's empty), and then delete
+           ;; both quotes.  Otherwise we refuse to delete it.
+           (backward-delete-char 1)
+           (delete-char 1)))))
+
+(defun paredit-backward-delete (&optional argument)
+  "Delete a character backward or move backward over a delimiter.
+If on a closing S-expression delimiter, move backward into the
+  S-expression.
+If on an opening S-expression delimiter, refuse to delete unless the
+  S-expression is empty, in which case delete the whole S-expression.
+With a numeric prefix argument N, delete N characters
