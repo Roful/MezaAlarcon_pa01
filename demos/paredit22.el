@@ -1188,4 +1188,27 @@ With a `C-u' prefix argument, simply delete a character forward,
              (while (> argument 0)
                (paredit-forward-delete)
                (setq argument (- argument 1)))))
-        ((paredit-in-
+        ((paredit-in-string-p)
+         (paredit-forward-delete-in-string))
+        ((paredit-in-comment-p)
+         ;++ What to do here?  This could move a partial S-expression
+         ;++ into a comment and thereby invalidate the file's form,
+         ;++ or move random text out of a comment.
+         (delete-char 1))
+        ((paredit-in-char-p)            ; Escape -- delete both chars.
+         (backward-delete-char 1)
+         (delete-char 1))
+        ((eq (char-after) ?\\ )         ; ditto
+         (delete-char 2))
+        ((let ((syn (char-syntax (char-after))))
+           (or (eq syn ?\( )
+               (eq syn ?\" )))
+         (if (save-excursion
+               (paredit-handle-sexp-errors (progn (forward-sexp) t)
+                 nil))
+             (forward-char)
+           (message "Deleting spurious opening delimiter.")
+           (delete-char 1)))
+        ((and (not (paredit-in-char-p (1- (point))))
+              (eq (char-syntax (char-after)) ?\) )
+         
