@@ -1273,4 +1273,45 @@ With a `C-u' prefix argument, simply delete a character backward,
          (backward-delete-char 2))      ; ditto
         ((let ((syn (char-syntax (char-before))))
            (or (eq syn ?\) )
-               (eq
+               (eq syn ?\" )))
+         (if (save-excursion
+               (paredit-handle-sexp-errors (progn (backward-sexp) t)
+                 nil))
+             (backward-char)
+           (message "Deleting spurious closing delimiter.")
+           (backward-delete-char 1)))
+        ((and (eq (char-syntax (char-before)) ?\( )
+              (eq (char-after) (matching-paren (char-before))))
+         (backward-delete-char 1)       ; Empty list -- delete both
+         (delete-char 1))               ;   delimiters.
+        ;; Delete it, unless it's an opening delimiter.  The case of
+        ;; character literals is already handled by now.
+        ((not (eq (char-syntax (char-before)) ?\( ))
+         (backward-delete-char-untabify 1))))
+
+(defun paredit-backward-delete-in-string ()
+  (let ((start+end (paredit-string-start+end-points)))
+    (cond ((not (eq (1- (point)) (car start+end)))
+           ;; If it's not the open-quote, it's safe to delete.
+           (if (paredit-in-string-escape-p)
+               ;; If we're on a string escape, since we're about to
+               ;; delete the backslash, we must first delete the
+               ;; escaped char.
+               (delete-char 1))
+           (backward-delete-char 1)
+           (if (paredit-in-string-escape-p)
+               ;; If, after deleting a character, we find ourselves in
+               ;; a string escape, we must have deleted the escaped
+               ;; character, and the backslash is behind the point, so
+               ;; backward delete it.
+               (backward-delete-char 1)))
+          ((eq (point) (cdr start+end))
+           ;; If it is the open-quote, delete only if we're also right
+           ;; past the close-quote (i.e. it's empty), and then delete
+           ;; both quotes.  Otherwise we refuse to delete it.
+           (backward-delete-char 1)
+           (delete-char 1)))))
+
+;;;; Killing
+
+(defun paredit-kill (&optional a
