@@ -1314,4 +1314,25 @@ With a `C-u' prefix argument, simply delete a character backward,
 
 ;;;; Killing
 
-(defun paredit-kill (&optional a
+(defun paredit-kill (&optional argument)
+  "Kill a line as if with `kill-line', but respecting delimiters.
+In a string, act exactly as `kill-line' but do not kill past the
+  closing string delimiter.
+On a line with no S-expressions on it starting after the point or
+  within a comment, act exactly as `kill-line'.
+Otherwise, kill all S-expressions that start after the point.
+With a `C-u' prefix argument, just do the standard `kill-line'.
+With a numeric prefix argument N, do `kill-line' that many times."
+  (interactive "P")
+  (cond (argument
+         (kill-line (if (integerp argument) argument 1)))
+        ((paredit-in-string-p)
+         (paredit-kill-line-in-string))
+        ((paredit-in-comment-p)
+         (kill-line))
+        ((save-excursion (paredit-skip-whitespace t (point-at-eol))
+                         (or (eolp) (eq (char-after) ?\; )))
+         ;** Be careful about trailing backslashes.
+         (if (paredit-in-char-p)
+             (backward-char))
+     
