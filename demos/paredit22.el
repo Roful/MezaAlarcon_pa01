@@ -1335,4 +1335,28 @@ With a numeric prefix argument N, do `kill-line' that many times."
          ;** Be careful about trailing backslashes.
          (if (paredit-in-char-p)
              (backward-char))
-     
+         (kill-line))
+        (t (paredit-kill-sexps-on-line))))
+
+(defun paredit-kill-line-in-string ()
+  (if (save-excursion (paredit-skip-whitespace t (point-at-eol))
+                      (eolp))
+      (kill-line)
+    (save-excursion
+      ;; Be careful not to split an escape sequence.
+      (if (paredit-in-string-escape-p)
+          (backward-char))
+      (kill-region (point)
+                   (min (point-at-eol)
+                        (cdr (paredit-string-start+end-points)))))))
+
+(defun paredit-kill-sexps-on-line ()
+  (if (paredit-in-char-p)               ; Move past the \ and prefix.
+      (backward-char 2))                ; (# in Scheme/CL, ? in elisp)
+  (let ((beginning (point))
+        (eol (point-at-eol)))
+    (let ((end-of-list-p (paredit-forward-sexps-to-kill beginning eol)))
+      ;; If we got to the end of the list and it's on the same line,
+      ;; move backward past the closing delimiter before killing.  (This
+      ;; allows something like killing the whitespace in (    ).)
+  
