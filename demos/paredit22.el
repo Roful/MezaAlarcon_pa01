@@ -1359,4 +1359,23 @@ With a numeric prefix argument N, do `kill-line' that many times."
       ;; If we got to the end of the list and it's on the same line,
       ;; move backward past the closing delimiter before killing.  (This
       ;; allows something like killing the whitespace in (    ).)
-  
+      (if end-of-list-p (progn (up-list) (backward-char)))
+      (if kill-whole-line
+          (paredit-kill-sexps-on-whole-line beginning)
+        (kill-region beginning
+                     ;; If all of the S-expressions were on one line,
+                     ;; i.e. we're still on that line after moving past
+                     ;; the last one, kill the whole line, including
+                     ;; any comments; otherwise just kill to the end of
+                     ;; the last S-expression we found.  Be sure,
+                     ;; though, not to kill any closing parentheses.
+                     (if (and (not end-of-list-p)
+                              (eq (point-at-eol) eol))
+                         eol
+                         (point)))))))
+
+;;; Please do not try to understand this code unless you have a VERY
+;;; good reason to do so.  I gave up trying to figure it out well
+;;; enough to explain it, long ago.
+
+(defun pared
