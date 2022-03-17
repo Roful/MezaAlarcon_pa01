@@ -1378,4 +1378,26 @@ With a numeric prefix argument N, do `kill-line' that many times."
 ;;; good reason to do so.  I gave up trying to figure it out well
 ;;; enough to explain it, long ago.
 
-(defun pared
+(defun paredit-forward-sexps-to-kill (beginning eol)
+  (let ((end-of-list-p nil)
+        (firstp t))
+    ;; Move to the end of the last S-expression that started on this
+    ;; line, or to the closing delimiter if the last S-expression in
+    ;; this list is on the line.
+    (catch 'return
+      (while t
+        ;; This and the `kill-whole-line' business below fix a bug that
+        ;; inhibited any S-expression at the very end of the buffer
+        ;; (with no trailing newline) from being deleted.  It's a
+        ;; bizarre fix that I ought to document at some point, but I am
+        ;; too busy at the moment to do so.
+        (if (and kill-whole-line (eobp)) (throw 'return nil))
+        (save-excursion
+          (paredit-handle-sexp-errors (forward-sexp)
+            (up-list)
+            (setq end-of-list-p (eq (point-at-eol) eol))
+            (throw 'return nil))
+          (if (or (and (not firstp)
+                       (not kill-whole-line)
+                       (eobp))
+     
