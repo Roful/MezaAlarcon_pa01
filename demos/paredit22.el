@@ -1400,4 +1400,28 @@ With a numeric prefix argument N, do `kill-line' that many times."
           (if (or (and (not firstp)
                        (not kill-whole-line)
                        (eobp))
-     
+                  (paredit-handle-sexp-errors
+                      (progn (backward-sexp) nil)
+                    t)
+                  (not (eq (point-at-eol) eol)))
+              (throw 'return nil)))
+        (forward-sexp)
+        (if (and firstp
+                 (not kill-whole-line)
+                 (eobp))
+            (throw 'return nil))
+        (setq firstp nil)))
+    end-of-list-p))
+
+(defun paredit-kill-sexps-on-whole-line (beginning)
+  (kill-region beginning
+               (or (save-excursion     ; Delete trailing indentation...
+                     (paredit-skip-whitespace t)
+                     (and (not (eq (char-after) ?\; ))
+                          (point)))
+                   ;; ...or just use the point past the newline, if
+                   ;; we encounter a comment.
+                   (point-at-eol)))
+  (cond ((save-excursion (paredit-skip-whitespace nil (point-at-bol))
+                         (bolp))
+         ;; Nothing but indentation before
