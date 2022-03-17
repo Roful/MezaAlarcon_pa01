@@ -1424,4 +1424,24 @@ With a numeric prefix argument N, do `kill-line' that many times."
                    (point-at-eol)))
   (cond ((save-excursion (paredit-skip-whitespace nil (point-at-bol))
                          (bolp))
-         ;; Nothing but indentation before
+         ;; Nothing but indentation before the point, so indent it.
+         (lisp-indent-line))
+        ((eobp) nil)       ; Protect the CHAR-SYNTAX below against NIL.
+        ;; Insert a space to avoid invalid joining if necessary.
+        ((let ((syn-before (char-syntax (char-before)))
+               (syn-after  (char-syntax (char-after))))
+           (or (and (eq syn-before ?\) )            ; Separate opposing
+                    (eq syn-after  ?\( ))           ;   parentheses,
+               (and (eq syn-before ?\" )            ; string delimiter
+                    (eq syn-after  ?\" ))           ;   pairs,
+               (and (memq syn-before '(?_ ?w))      ; or word or symbol
+                    (memq syn-after  '(?_ ?w)))))   ;   constituents.
+         (insert " "))))
+
+;;;;; Killing Words
+
+;;; This is tricky and asymmetrical because backward parsing is
+;;; extraordinarily difficult or impossible, so we have to implement
+;;; killing in both directions by parsing forward.
+
+(defun pare
