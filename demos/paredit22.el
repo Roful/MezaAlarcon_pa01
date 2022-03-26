@@ -1444,4 +1444,26 @@ With a numeric prefix argument N, do `kill-line' that many times."
 ;;; extraordinarily difficult or impossible, so we have to implement
 ;;; killing in both directions by parsing forward.
 
-(defun pare
+(defun paredit-forward-kill-word ()
+  "Kill a word forward, skipping over intervening delimiters."
+  (interactive)
+  (let ((beginning (point)))
+    (skip-syntax-forward " -")
+    (let* ((parse-state (paredit-current-parse-state))
+           (state (paredit-kill-word-state parse-state 'char-after)))
+      (while (not (or (eobp)
+                      (eq ?w (char-syntax (char-after)))))
+        (setq parse-state
+              (progn (forward-char 1) (paredit-current-parse-state))
+;;               (parse-partial-sexp (point) (1+ (point))
+;;                                   nil nil parse-state)
+              )
+        (let* ((old-state state)
+               (new-state
+                (paredit-kill-word-state parse-state 'char-after)))
+          (cond ((not (eq old-state new-state))
+                 (setq parse-state
+                       (paredit-kill-word-hack old-state
+                                               new-state
+                                               parse-state))
+                
