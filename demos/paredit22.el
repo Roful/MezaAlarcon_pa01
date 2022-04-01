@@ -1490,4 +1490,26 @@ With a numeric prefix argument N, do `kill-line' that many times."
                         (setq parse-state
                               (parse-partial-sexp (point) (1+ (point))
                                                   nil nil parse-state))
-                        (or (eq s
+                        (or (eq state
+                                (paredit-kill-word-state parse-state
+                                                         'char-before))
+                            (progn (backward-char 1) nil)))))
+          (if (and (eq state 'comment)
+                   (eq ?\# (char-after (point)))
+                   (eq ?\| (char-before (point))))
+              (backward-char 1)))))
+  (backward-kill-word 1))
+
+;;;;;; Word-Killing Auxiliaries
+
+(defun paredit-kill-word-state (parse-state adjacent-char-fn)
+  (cond ((paredit-in-comment-p parse-state) 'comment)
+        ((paredit-in-string-p  parse-state) 'string)
+        ((memq (char-syntax (funcall adjacent-char-fn))
+               '(?\( ?\) ))
+         'delimiter)
+        (t 'other)))
+
+;;; This optionally advances the point past any comment delimiters that
+;;; should probably not be touched, based on the last state change and
+;;; the characters around the point.  It returns a new parse stat
