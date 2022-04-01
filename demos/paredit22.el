@@ -1466,4 +1466,28 @@ With a numeric prefix argument N, do `kill-line' that many times."
                        (paredit-kill-word-hack old-state
                                                new-state
                                                parse-state))
-                
+                 (setq state
+                       (paredit-kill-word-state parse-state
+                                                'char-after))
+                 (setq beginning (point)))))))
+    (goto-char beginning)
+    (kill-word 1)))
+
+(defun paredit-backward-kill-word ()
+  "Kill a word backward, skipping over any intervening delimiters."
+  (interactive)
+  (if (not (or (bobp)
+               (eq (char-syntax (char-before)) ?w)))
+      (let ((end (point)))
+        (backward-word 1)
+        (forward-word 1)
+        (goto-char (min end (point)))
+        (let* ((parse-state (paredit-current-parse-state))
+               (state
+                (paredit-kill-word-state parse-state 'char-before)))
+          (while (and (< (point) end)
+                      (progn
+                        (setq parse-state
+                              (parse-partial-sexp (point) (1+ (point))
+                                                  nil nil parse-state))
+                        (or (eq s
