@@ -1512,4 +1512,30 @@ With a numeric prefix argument N, do `kill-line' that many times."
 
 ;;; This optionally advances the point past any comment delimiters that
 ;;; should probably not be touched, based on the last state change and
-;;; the characters around the point.  It returns a new parse stat
+;;; the characters around the point.  It returns a new parse state,
+;;; starting from the PARSE-STATE parameter.
+
+(defun paredit-kill-word-hack (old-state new-state parse-state)
+  (cond ((and (not (eq old-state 'comment))
+              (not (eq new-state 'comment))
+              (not (paredit-in-string-escape-p))
+              (eq ?\# (char-before))
+              (eq ?\| (char-after)))
+         (forward-char 1)
+         (paredit-current-parse-state)
+;;          (parse-partial-sexp (point) (1+ (point))
+;;                              nil nil parse-state)
+         )
+        ((and (not (eq old-state 'comment))
+              (eq new-state 'comment)
+              (eq ?\; (char-before)))
+         (skip-chars-forward ";")
+         (paredit-current-parse-state)
+;;          (parse-partial-sexp (point) (save-excursion
+;;                                        (skip-chars-forward ";"))
+;;                              nil nil parse-state)
+         )
+        (t parse-state)))
+
+(defun paredit-copy-as-kill ()
+  "Save in 
