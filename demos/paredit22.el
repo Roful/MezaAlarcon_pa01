@@ -1562,4 +1562,24 @@ With a numeric prefix argument N, do `kill-line' that many times."
                               (cdr (paredit-string-start+end-points))))))
 
 (defun paredit-copy-sexps-as-kill ()
- 
+  (save-excursion
+    (if (paredit-in-char-p)
+        (backward-char 2))
+    (let ((beginning (point))
+          (eol (point-at-eol)))
+      (let ((end-of-list-p (paredit-forward-sexps-to-kill beginning eol)))
+        (if end-of-list-p (progn (up-list) (backward-char)))
+        (copy-region-as-kill beginning
+                             (cond (kill-whole-line
+                                    (or (save-excursion
+                                          (paredit-skip-whitespace t)
+                                          (and (not (eq (char-after) ?\; ))
+                                               (point)))
+                                        (point-at-eol)))
+                                   ((and (not end-of-list-p)
+                                         (eq (point-at-eol) eol))
+                                    eol)
+                                   (t
+                                    (point))))))))
+
+;;;;
