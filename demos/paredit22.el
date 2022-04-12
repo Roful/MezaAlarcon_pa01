@@ -1582,4 +1582,21 @@ With a numeric prefix argument N, do `kill-line' that many times."
                                    (t
                                     (point))))))))
 
-;;;;
+;;;; Safe Region Killing/Copying
+
+;;; This is an experiment.  It's not enough: `paredit-kill-ring-save'
+;;; is always safe; it's `yank' that's not safe, but even trickier to
+;;; implement than `paredit-kill-region'.  Also, the heuristics for
+;;; `paredit-kill-region' are slightly too conservative -- they will
+;;; sometimes reject killing regions that would be safe to kill.
+;;; (Consider, e,g., a region that starts in a comment and ends in the
+;;; middle of a symbol at the end of a line: that's safe to kill, but
+;;; `paredit-kill-region' won't allow it.)  I don't know whether they
+;;; are too liberal: I haven't constructed a region that is unsafe to
+;;; kill but which `paredit-kill-region' will kill, but I haven't ruled
+;;; out the possibility either.
+
+(defun paredit-kill-ring-save (beginning end)
+  "Save the balanced region, but don't kill it, like `kill-ring-save'.
+If the text of the region is imbalanced, signal an error instead.
+With a p
