@@ -1623,4 +1623,24 @@ If that text is imbalanced, signal an error instead."
 
 (defun paredit-check-region-state (beginning-state end-state)
   (paredit-check-region-state-depth beginning-state end-state)
-  (paredit-c
+  (paredit-check-region-state-string beginning-state end-state)
+  (paredit-check-region-state-comment beginning-state end-state)
+  (paredit-check-region-state-char-quote beginning-state end-state))
+
+(defun paredit-check-region-state-depth (beginning-state end-state)
+  (let ((beginning-depth (nth 0 beginning-state))
+        (end-depth (nth 0 end-state)))
+    (if (not (= beginning-depth end-depth))
+        (error "Mismatched parenthesis depth: %S at start, %S at end."
+               beginning-depth
+               end-depth))))
+
+(defun paredit-check-region-state-string (beginning-state end-state)
+  (let ((beginning-string-p (nth 3 beginning-state))
+        (end-string-p (nth 3 end-state)))
+    (if (not (eq beginning-string-p end-string-p))
+        (error "Mismatched string state: start %sin string, end %sin string."
+               (if beginning-string-p "" "not ")
+               (if end-string-p "" "not ")))))
+
+(defun paredit-check-region-state-comment (beginning-sta
