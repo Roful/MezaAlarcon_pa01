@@ -1599,4 +1599,28 @@ With a numeric prefix argument N, do `kill-line' that many times."
 (defun paredit-kill-ring-save (beginning end)
   "Save the balanced region, but don't kill it, like `kill-ring-save'.
 If the text of the region is imbalanced, signal an error instead.
-With a p
+With a prefix argument, disregard any imbalance."
+  (interactive "r")
+  (if (not current-prefix-arg)
+      (paredit-check-region beginning end))
+  (setq this-command 'kill-ring-save)
+  (kill-ring-save beginning end))
+
+(defun paredit-kill-region (beginning end &optional yank-handler)
+  "Kill balanced text between point and mark, like `kill-region'.
+If that text is imbalanced, signal an error instead."
+  (interactive "r")
+  (if (and beginning end)
+      ;; Check that region begins and ends in a sufficiently similar
+      ;; state, so that deleting it will leave the buffer balanced.
+      (save-excursion
+        (goto-char beginning)
+        (let* ((state (paredit-current-parse-state))
+               (state* (parse-partial-sexp beginning end nil nil state)))
+          (paredit-check-region-state state state*))))
+  (setq this-command 'kill-region)
+  (kill-region beginning end yank-handler))
+
+(defun paredit-check-region-state (beginning-state end-state)
+  (paredit-check-region-state-depth beginning-state end-state)
+  (paredit-c
