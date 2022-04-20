@@ -1662,4 +1662,30 @@ If that text is imbalanced, signal an error instead."
                       "end in nested comment, start otherwise.")
                      (beginning-comment-state
                       "start in comment, end not in comment.")
-                     (end-commen
+                     (end-comment-state
+                      "end in comment, start not in comment.")
+                     (t
+                      (format "start %S, end %S."
+                              beginning-comment-state
+                              end-comment-state)))))))
+
+(defun paredit-check-region-state-char-quote (beginning-state end-state)
+  (let ((beginning-char-quote (nth 5 beginning-state))
+        (end-char-quote (nth 5 end-state)))
+    (if (not (eq beginning-char-quote end-char-quote))
+        (let ((phrase "character quotation"))
+          (error "Mismatched %s: start %sin %s, end %sin %s."
+                 phrase
+                 (if beginning-char-quote "" "not ")
+                 phrase
+                 (if end-char-quote "" "not ")
+                 phrase)))))
+
+;;;; Cursor and Screen Movement
+
+(eval-and-compile
+  (defmacro defun-saving-mark (name bvl doc &rest body)
+    `(defun ,name ,bvl
+       ,doc
+       ,(xcond ((paredit-xemacs-p)
+        
