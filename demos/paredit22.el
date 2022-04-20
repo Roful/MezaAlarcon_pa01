@@ -1688,4 +1688,26 @@ If that text is imbalanced, signal an error instead."
     `(defun ,name ,bvl
        ,doc
        ,(xcond ((paredit-xemacs-p)
-        
+                '(interactive "_"))
+               ((paredit-gnu-emacs-p)
+                '(interactive)))
+       ,@body)))
+
+(defun-saving-mark paredit-forward ()
+  "Move forward an S-expression, or up an S-expression forward.
+If there are no more S-expressions in this one before the closing
+  delimiter, move past that closing delimiter; otherwise, move forward
+  past the S-expression following the point."
+  (paredit-handle-sexp-errors
+      (forward-sexp)
+    ;++ Is it necessary to use UP-LIST and not just FORWARD-CHAR?
+    (if (paredit-in-string-p) (forward-char) (up-list))))
+
+(defun-saving-mark paredit-backward ()
+  "Move backward an S-expression, or up an S-expression backward.
+If there are no more S-expressions in this one before the opening
+  delimiter, move past that opening delimiter backward; otherwise, move
+  move backward past the S-expression preceding the point."
+  (paredit-handle-sexp-errors
+      (backward-sexp)
+    (if (paredit-in-string-p) (back
