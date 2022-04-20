@@ -1710,4 +1710,32 @@ If there are no more S-expressions in this one before the opening
   move backward past the S-expression preceding the point."
   (paredit-handle-sexp-errors
       (backward-sexp)
-    (if (paredit-in-string-p) (back
+    (if (paredit-in-string-p) (backward-char) (backward-up-list))))
+
+;;; Why is this not in lisp.el?
+
+(defun backward-down-list (&optional arg)
+  "Move backward and descend into one level of parentheses.
+With ARG, do this that many times.
+A negative argument means move forward but still descend a level."
+  (interactive "p")
+  (down-list (- (or arg 1))))
+
+;;; Thanks to Marco Baringer for suggesting & writing this function.
+
+(defun paredit-recentre-on-sexp (&optional n)
+  "Recentre the screen on the S-expression following the point.
+With a prefix argument N, encompass all N S-expressions forward."
+  (interactive "P")
+  (save-excursion
+    (forward-sexp n)
+    (let ((end-point (point)))
+      (backward-sexp n)
+      (let* ((start-point (point))
+             (start-line (count-lines (point-min) (point)))
+             (lines-on-sexps (count-lines start-point end-point)))
+        (goto-line (+ start-line (/ lines-on-sexps 2)))
+        (recenter)))))
+
+(defun paredit-focus-on-defun ()
+  "Moves displ
