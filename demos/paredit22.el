@@ -1643,4 +1643,23 @@ If that text is imbalanced, signal an error instead."
                (if beginning-string-p "" "not ")
                (if end-string-p "" "not ")))))
 
-(defun paredit-check-region-state-comment (beginning-sta
+(defun paredit-check-region-state-comment (beginning-state end-state)
+  (let ((beginning-comment-state (nth 4 beginning-state))
+        (end-comment-state (nth 4 end-state)))
+    (if (not (or (eq beginning-comment-state end-comment-state)
+                 (and (eq beginning-comment-state nil)
+                      (eq end-comment-state t)
+                      (eolp))))
+        (error "Mismatched comment state: %s"
+               (cond ((and (integerp beginning-comment-state)
+                           (integerp end-comment-state))
+                      (format "depth %S at start, depth %S at end."
+                              beginning-comment-state
+                              end-comment-state))
+                     ((integerp beginning-comment-state)
+                      "start in nested comment, end otherwise.")
+                     ((integerp end-comment-state)
+                      "end in nested comment, start otherwise.")
+                     (beginning-comment-state
+                      "start in comment, end not in comment.")
+                     (end-commen
