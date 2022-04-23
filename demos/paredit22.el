@@ -1738,4 +1738,30 @@ With a prefix argument N, encompass all N S-expressions forward."
         (recenter)))))
 
 (defun paredit-focus-on-defun ()
-  "Moves displ
+  "Moves display to the top of the definition at point."
+  (interactive)
+  (beginning-of-defun)
+  (recenter 0))
+
+;;;; Generalized Upward/Downward Motion
+
+(defun paredit-up/down (n vertical-direction)
+  (let ((horizontal-direction (if (< 0 n) +1 -1)))
+    (while (/= n 0)
+      (goto-char
+       (paredit-next-up/down-point horizontal-direction vertical-direction))
+      (setq n (- n horizontal-direction)))))
+
+(defun paredit-next-up/down-point (horizontal-direction vertical-direction)
+  (let ((state (paredit-current-parse-state))
+        (scan-lists
+         (lambda ()
+           (scan-lists (point) horizontal-direction vertical-direction))))
+    (cond ((paredit-in-string-p state)
+           (let ((start+end (paredit-string-start+end-points state)))
+             (if (< 0 vertical-direction)
+                 (if (< 0 horizontal-direction)
+                     (+ 1 (cdr start+end))
+                     (car start+end))
+                 ;; We could let the user try to descend into lists
+    
