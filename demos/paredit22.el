@@ -1803,4 +1803,27 @@ With a prefix argument N, encompass all N S-expressions forward."
             (while t
               (if (and limit (funcall pastp (point) limit))
                   (throw 'exit nil))
-     
+              (forward-sexp horizontal-direction)
+              (save-excursion
+                (backward-sexp horizontal-direction)
+                (if (eq ?\" (char-syntax (funcall next-char)))
+                    (throw 'exit (+ (point) horizontal-direction)))))))
+      nil)))
+
+(defun paredit-forward-down (&optional argument)
+  "Move forward down into a list.
+With a positive argument, move forward down that many levels.
+With a negative argument, move backward down that many levels."
+  (interactive "p")
+  (paredit-up/down (or argument +1) -1))
+
+(defun paredit-backward-up (&optional argument)
+  "Move backward up out of the enclosing list.
+With a positive argument, move backward up that many levels.
+With a negative argument, move forward up that many levels.
+If in a string initially, that counts as one level."
+  (interactive "p")
+  (paredit-up/down (- 0 (or argument +1)) +1))
+
+(defun paredit-forward-up (&optional argument)
+  "Move forward up 
