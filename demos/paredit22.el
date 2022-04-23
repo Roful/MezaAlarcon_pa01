@@ -1764,4 +1764,21 @@ With a prefix argument N, encompass all N S-expressions forward."
                      (+ 1 (cdr start+end))
                      (car start+end))
                  ;; We could let the user try to descend into lists
-    
+                 ;; within the string, but that would be asymmetric
+                 ;; with the up case, which rises out of the whole
+                 ;; string and not just out of a list within the
+                 ;; string, so this case will just be an error.
+                 (error "Can't descend further into string."))))
+          ((< 0 vertical-direction)
+           ;; When moving up, just try to rise up out of the list.
+           (or (funcall scan-lists)
+               (buffer-end horizontal-direction)))
+          ((< vertical-direction 0)
+           ;; When moving down, look for a string closer than a list,
+           ;; and use that if we find it.
+           (let* ((list-start
+                   (paredit-handle-sexp-errors (funcall scan-lists) nil))
+                  (string-start
+                   (paredit-find-next-string-start horizontal-direction
+                                                   list-start)))
+             (i
