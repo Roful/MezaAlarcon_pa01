@@ -1781,4 +1781,26 @@ With a prefix argument N, encompass all N S-expressions forward."
                   (string-start
                    (paredit-find-next-string-start horizontal-direction
                                                    list-start)))
-             (i
+             (if (and string-start list-start)
+                 (if (< 0 horizontal-direction)
+                     (min string-start list-start)
+                     (max string-start list-start))
+                 (or string-start
+                     ;; Scan again: this is a kludgey way to report the
+                     ;; error if there really was one.
+                     (funcall scan-lists)
+                     (buffer-end horizontal-direction)))))
+          (t
+           (error "Vertical direction must be nonzero in `%s'."
+                  'paredit-up/down)))))
+
+(defun paredit-find-next-string-start (horizontal-direction limit)
+  (let ((next-char (if (< 0 horizontal-direction) 'char-after 'char-before))
+        (pastp (if (< 0 horizontal-direction) '< '>)))
+    (paredit-handle-sexp-errors
+        (save-excursion
+          (catch 'exit
+            (while t
+              (if (and limit (funcall pastp (point) limit))
+                  (throw 'exit nil))
+     
