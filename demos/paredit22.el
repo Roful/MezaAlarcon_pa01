@@ -1826,4 +1826,27 @@ If in a string initially, that counts as one level."
   (paredit-up/down (- 0 (or argument +1)) +1))
 
 (defun paredit-forward-up (&optional argument)
-  "Move forward up 
+  "Move forward up out of the enclosing list.
+With a positive argument, move forward up that many levels.
+With a negative argument, move backward up that many levels.
+If in a string initially, that counts as one level."
+  (interactive "p")
+  (paredit-up/down (or argument +1) +1))
+
+(defun paredit-backward-down (&optional argument)
+  "Move backward down into a list.
+With a positive argument, move backward down that many levels.
+With a negative argument, move forward down that many levels."
+  (interactive "p")
+  (paredit-up/down (- 0 (or argument +1)) -1))
+
+;;;; Depth-Changing Commands:  Wrapping, Splicing, & Raising
+
+(defun paredit-wrap-sexp (&optional argument open close)
+  "Wrap the following S-expression.
+If a `C-u' prefix argument is given, wrap all S-expressions following
+  the point until the end of the buffer or of the enclosing list.
+If a numeric prefix argument N is given, wrap N S-expressions.
+Automatically indent the newly wrapped S-expression.
+As a special case, if the point is at the end of a list, simply insert
+  a parenthesis 
