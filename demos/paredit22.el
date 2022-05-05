@@ -1877,4 +1877,25 @@ By default OPEN and CLOSE are round delimiters."
       n)))
 
 (defun paredit-yank-pop (&optional argument)
-  "Replace just-ya
+  "Replace just-yanked text with the next item in the kill ring.
+If this command follows a `yank', just run `yank-pop'.
+If this command follows a `paredit-wrap-sexp', or any other paredit
+  wrapping command (see `paredit-wrap-commands'), run `yank' and
+  reindent the enclosing S-expression.
+If this command is repeated, run `yank-pop' and reindent the enclosing
+  S-expression.
+
+The argument is passed on to `yank' or `yank-pop'; see their
+  documentation for details."
+  (interactive "*p")
+  (cond ((eq last-command 'yank)
+         (yank-pop argument))
+        ((memq last-command paredit-wrap-commands)
+         (yank argument)
+         ;; `yank' futzes with `this-command'.
+         (setq this-command 'paredit-yank-pop)
+         (save-excursion (backward-up-list) (indent-sexp)))
+        ((eq last-command 'paredit-yank-pop)
+         ;; Pretend we just did a `yank', so that we can use
+         ;; `yank-pop' without duplicating its definition.
+         (setq
