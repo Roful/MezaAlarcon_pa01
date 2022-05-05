@@ -1849,4 +1849,32 @@ If a `C-u' prefix argument is given, wrap all S-expressions following
 If a numeric prefix argument N is given, wrap N S-expressions.
 Automatically indent the newly wrapped S-expression.
 As a special case, if the point is at the end of a list, simply insert
-  a parenthesis 
+  a parenthesis pair, rather than inserting a lone opening delimiter
+  and then signalling an error, in the interest of preserving
+  structure.
+By default OPEN and CLOSE are round delimiters."
+  (interactive "P")
+  (paredit-lose-if-not-in-sexp 'paredit-wrap-sexp)
+  (let ((open (or open ?\( ))
+        (close (or close ?\) )))
+    (paredit-handle-sexp-errors
+        ((lambda (n) (paredit-insert-pair n open close 'goto-char))
+         (cond ((integerp argument) argument)
+               ((consp argument) (paredit-count-sexps-forward))
+               ((paredit-region-active-p) nil)
+               (t 1)))
+      (insert close)
+      (backward-char)))
+  (save-excursion (backward-up-list) (indent-sexp)))
+
+(defun paredit-count-sexps-forward ()
+  (save-excursion
+    (let ((n 0))
+      (paredit-ignore-sexp-errors
+        (while (not (eobp))
+          (forward-sexp)
+          (setq n (+ n 1))))
+      n)))
+
+(defun paredit-yank-pop (&optional argument)
+  "Replace just-ya
