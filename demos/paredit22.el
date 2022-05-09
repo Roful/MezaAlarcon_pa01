@@ -1898,4 +1898,23 @@ The argument is passed on to `yank' or `yank-pop'; see their
         ((eq last-command 'paredit-yank-pop)
          ;; Pretend we just did a `yank', so that we can use
          ;; `yank-pop' without duplicating its definition.
-         (setq
+         (setq last-command 'yank)
+         (yank-pop argument)
+         ;; Return to our original state.
+         (setq last-command 'paredit-yank-pop)
+         (setq this-command 'paredit-yank-pop)
+         (save-excursion (backward-up-list) (indent-sexp)))
+        (t (error "Last command was not a yank or a wrap: %s" last-command))))
+
+;;; Thanks to Marco Baringer for the suggestion of a prefix argument
+;;; for PAREDIT-SPLICE-SEXP.  (I, Taylor R. Campbell, however, still
+;;; implemented it, in case any of you lawyer-folk get confused by the
+;;; remark in the top of the file about explicitly noting code written
+;;; by other people.)
+
+(defun paredit-splice-sexp (&optional argument)
+  "Splice the list that the point is on by removing its delimiters.
+With a prefix argument as in `C-u', kill all S-expressions backward in
+  the current list before splicing all S-expressions forward into the
+  enclosing list.
+With t
