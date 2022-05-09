@@ -1917,4 +1917,22 @@ The argument is passed on to `yank' or `yank-pop'; see their
 With a prefix argument as in `C-u', kill all S-expressions backward in
   the current list before splicing all S-expressions forward into the
   enclosing list.
-With t
+With two prefix arguments as in `C-u C-u', kill all S-expressions
+  forward in the current list before splicing all S-expressions
+  backward into the enclosing list.
+With a numerical prefix argument N, kill N S-expressions backward in
+  the current list before splicing the remaining S-expressions into the
+  enclosing list.  If N is negative, kill forward.
+Inside a string, unescape all backslashes, or signal an error if doing
+  so would invalidate the buffer's structure."
+  (interactive "P")
+  (if (paredit-in-string-p)
+      (paredit-splice-string argument)
+      (save-excursion
+        (paredit-kill-surrounding-sexps-for-splice argument)
+        (let ((end (point)))
+          (backward-up-list)            ; Go up to the beginning...
+          (save-excursion
+            (forward-char 1)            ; (Skip over leading whitespace
+            (paredit-skip-whitespace t end)
+            (setq end (point)))      
