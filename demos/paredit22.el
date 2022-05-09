@@ -1935,4 +1935,23 @@ Inside a string, unescape all backslashes, or signal an error if doing
           (save-excursion
             (forward-char 1)            ; (Skip over leading whitespace
             (paredit-skip-whitespace t end)
-            (setq end (point)))      
+            (setq end (point)))         ;   for the `delete-region'.)
+          (let ((indent-start nil) (indent-end nil))
+            (save-excursion
+              (setq indent-start (point))
+              (forward-sexp)            ; Go forward an expression, to
+              (backward-delete-char 1)  ;   delete the end delimiter.
+              (setq indent-end (point)))
+            (delete-region (point) end) ; ...to delete the open char.
+            ;; Reindent only the region we preserved.
+            (indent-region indent-start indent-end))))))
+
+(defun paredit-kill-surrounding-sexps-for-splice (argument)
+  (cond ((or (paredit-in-string-p)
+             (paredit-in-comment-p))
+         (error "Invalid context for splicing S-expressions."))
+        ((or (not argument) (eq argument 0)) nil)
+        ((or (numberp argument) (eq argument '-))
+         ;; Kill S-expressions before/after the point by saving the
+         ;; point, moving across them, and killing the region.
+         (let* ((argument (if (eq argument '-) 
