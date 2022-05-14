@@ -1954,4 +1954,25 @@ Inside a string, unescape all backslashes, or signal an error if doing
         ((or (numberp argument) (eq argument '-))
          ;; Kill S-expressions before/after the point by saving the
          ;; point, moving across them, and killing the region.
-         (let* ((argument (if (eq argument '-) 
+         (let* ((argument (if (eq argument '-) -1 argument))
+                (saved (paredit-point-at-sexp-boundary (- argument))))
+           (goto-char saved)
+           (paredit-ignore-sexp-errors (backward-sexp argument))
+           (paredit-hack-kill-region saved (point))))
+        ((consp argument)
+         (let ((v (car argument)))
+           (if (= v 4)                  ;One `C-u'.
+               ;; Move backward until we hit the open paren; then
+               ;; kill that selected region.
+               (let ((end (point)))
+                 (paredit-ignore-sexp-errors
+                   (while (not (bobp))
+                     (backward-sexp)))
+                 (paredit-hack-kill-region (point) end))
+               ;; Move forward until we hit the close paren; then
+               ;; kill that selected region.
+               (let ((beginning (point)))
+                 (paredit-ignore-sexp-errors
+                   (while (not (eobp))
+                     (forward-sexp)))
+                 (paredit-hack-kill-regio
