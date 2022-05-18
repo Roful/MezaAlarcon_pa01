@@ -2039,4 +2039,26 @@ With a prefix argument N, move up N lists before wrapping."
              (paredit-ignore-sexp-errors
                (while (not (bobp)) (backward-sexp)))
              (prog1 (buffer-substring (point) end)
-               (backward-up-
+               (backward-up-list)
+               (save-excursion (forward-sexp)
+                               (setq close (char-before))
+                               (backward-delete-char 1))
+               (setq open (char-after))
+               (delete-region (point) end)))))
+      (backward-up-list n)
+      (paredit-insert-pair 1 open close 'goto-char)
+      (insert prefix)
+      (backward-up-list)
+      (paredit-ignore-sexp-errors (indent-sexp)))))
+
+(defun paredit-splice-string (argument)
+  (let ((original-point (point))
+        (start+end (paredit-string-start+end-points)))
+    (let ((start (car start+end))
+          (end (cdr start+end)))
+      ;; START and END both lie before the respective quote
+      ;; characters, which we want to delete; thus we increment START
+      ;; by one to extract the string, and we increment END by one to
+      ;; delete the string.
+      (let* ((escaped-string
+              (cond ((not (consp argume
