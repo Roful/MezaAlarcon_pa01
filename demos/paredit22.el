@@ -1975,4 +1975,26 @@ Inside a string, unescape all backslashes, or signal an error if doing
                  (paredit-ignore-sexp-errors
                    (while (not (eobp))
                      (forward-sexp)))
-                 (paredit-hack-kill-regio
+                 (paredit-hack-kill-region beginning (point))))))
+        (t (error "Bizarre prefix argument `%s'." argument))))
+
+(defun paredit-splice-sexp-killing-backward (&optional n)
+  "Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions before the point in the current list.
+With a prefix argument N, kill only the preceding N S-expressions."
+  (interactive "P")
+  (paredit-splice-sexp (if n
+                           (prefix-numeric-value n)
+                           '(4))))
+
+(defun paredit-splice-sexp-killing-forward (&optional n)
+  "Splice the list the point is on by removing its delimiters, and
+  also kill all S-expressions after the point in the current list.
+With a prefix argument N, kill only the following N S-expressions."
+  (interactive "P")
+  (paredit-splice-sexp (if n
+                           (- (prefix-numeric-value n))
+                           '(16))))
+
+(defun paredit-raise-sexp (&optional argument)
+  "Raise the following S-expression in a tree, d
