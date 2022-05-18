@@ -2017,4 +2017,26 @@ If the point is on an S-expression, such as a string or a symbol, not
             (if (< n 0)
                 (buffer-substring bound (paredit-point-at-sexp-end))
                 (buffer-substring (paredit-point-at-sexp-start) bound))))
-      ;; Move up to the list we're raisi
+      ;; Move up to the list we're raising those S-expressions out of and
+      ;; delete it.
+      (backward-up-list)
+      (delete-region (point) (scan-sexps (point) 1))
+      (let* ((indent-start (point))
+             (indent-end (save-excursion (insert sexps) (point))))
+        (indent-region indent-start indent-end)))))
+
+(defun paredit-convolute-sexp (&optional n)
+  "Convolute S-expressions.
+Save the S-expressions preceding point and delete them.
+Splice the S-expressions following point.
+Wrap the enclosing list in a new list prefixed by the saved text.
+With a prefix argument N, move up N lists before wrapping."
+  (interactive "p")
+  (paredit-lose-if-not-in-sexp 'paredit-convolute-sexp)
+  (let (open close)                     ;++ Is this a good idea?
+    (let ((prefix
+           (let ((end (point)))
+             (paredit-ignore-sexp-errors
+               (while (not (bobp)) (backward-sexp)))
+             (prog1 (buffer-substring (point) end)
+               (backward-up-
