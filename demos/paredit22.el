@@ -2061,4 +2061,30 @@ With a prefix argument N, move up N lists before wrapping."
       ;; by one to extract the string, and we increment END by one to
       ;; delete the string.
       (let* ((escaped-string
-              (cond ((not (consp argume
+              (cond ((not (consp argument))
+                     (buffer-substring (1+ start) end))
+                    ((= 4 (car argument))
+                     (buffer-substring original-point end))
+                    (t
+                     (buffer-substring (1+ start) original-point))))
+             (unescaped-string
+              (paredit-unescape-string escaped-string)))
+        (if (not unescaped-string)
+            (error "Unspliceable string.")
+          (save-excursion
+            (goto-char start)
+            (delete-region start (1+ end))
+            (insert unescaped-string))
+          (if (not (and (consp argument)
+                        (= 4 (car argument))))
+              (goto-char (- original-point 1))))))))
+
+(defun paredit-unescape-string (string)
+  (with-temp-buffer
+    (insert string)
+    (goto-char (point-min))
+    (while (and (not (eobp))
+                ;; nil -> no bound; t -> no errors.
+                (search-forward "\\" nil t))
+      (delete-char -1)
+      (forward-c
