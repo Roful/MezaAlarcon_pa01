@@ -2113,4 +2113,22 @@ If in a string, move the opening double-quote forward by one
            (paredit-forward-slurp-into-list)))))
 
 (defun paredit-forward-slurp-into-list ()
-  (up-list)                             ; Up to the
+  (up-list)                             ; Up to the end of the list to
+  (let ((close (char-before)))          ;   save and delete the closing
+    (backward-delete-char 1)            ;   delimiter.
+    (catch 'return                      ; Go to the end of the desired
+      (while t                          ;   S-expression, going up a
+        (paredit-handle-sexp-errors     ;   list if it's not in this,
+            (progn (paredit-forward-and-indent)
+                   (throw 'return nil))
+          (up-list)
+          (setq close                   ; adjusting for mixed
+                (prog1 (char-before)    ;   delimiters as necessary,
+                  (backward-delete-char 1)
+                  (insert close))))))
+    (insert close)))                    ; to insert that delimiter.
+
+(defun paredit-forward-slurp-into-string ()
+  (goto-char (1+ (cdr (paredit-string-start+end-points))))
+  ;; Signal any errors that we might get first, before mucking with the
+  ;; buffer's conten
