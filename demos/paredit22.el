@@ -2087,4 +2087,30 @@ With a prefix argument N, move up N lists before wrapping."
                 ;; nil -> no bound; t -> no errors.
                 (search-forward "\\" nil t))
       (delete-char -1)
-      (forward-c
+      (forward-char))
+    (condition-case condition
+        (progn (check-parens) (buffer-string))
+      (error nil))))
+
+;;;; Slurpage & Barfage
+
+(defun paredit-forward-slurp-sexp ()
+  "Add the S-expression following the current list into that list
+  by moving the closing delimiter.
+Automatically reindent the newly slurped S-expression with respect to
+  its new enclosing form.
+If in a string, move the opening double-quote forward by one
+  S-expression and escape any intervening characters as necessary,
+  without altering any indentation or formatting."
+  (interactive)
+  (save-excursion
+    (cond ((or (paredit-in-comment-p)
+               (paredit-in-char-p))
+           (error "Invalid context for slurping S-expressions."))
+          ((paredit-in-string-p)
+           (paredit-forward-slurp-into-string))
+          (t
+           (paredit-forward-slurp-into-list)))))
+
+(defun paredit-forward-slurp-into-list ()
+  (up-list)                             ; Up to the
