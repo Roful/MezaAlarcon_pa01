@@ -2131,4 +2131,26 @@ If in a string, move the opening double-quote forward by one
 (defun paredit-forward-slurp-into-string ()
   (goto-char (1+ (cdr (paredit-string-start+end-points))))
   ;; Signal any errors that we might get first, before mucking with the
-  ;; buffer's conten
+  ;; buffer's contents.
+  (save-excursion (forward-sexp))
+  (let ((close (char-before)))
+    (backward-delete-char 1)
+    (paredit-forward-for-quote (save-excursion (forward-sexp) (point)))
+    (insert close)))
+
+(defun paredit-forward-barf-sexp ()
+  "Remove the last S-expression in the current list from that list
+  by moving the closing delimiter.
+Automatically reindent the newly barfed S-expression with respect to
+  its new enclosing form."
+  (interactive)
+  (paredit-lose-if-not-in-sexp 'paredit-forward-barf-sexp)
+  (save-excursion
+    (up-list)                           ; Up to the end of the list to
+    (let ((close (char-before)))        ;   save and delete the closing
+      (backward-delete-char 1)          ;   delimiter.
+      (paredit-ignore-sexp-errors       ; Go back to where we want to
+        (backward-sexp))                ;   insert the delimiter.
+      (paredit-skip-whitespace nil)     ; Skip leading whitespace.
+      (cond ((bobp)
+             (error "Barfing 
