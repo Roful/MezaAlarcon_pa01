@@ -2153,4 +2153,27 @@ Automatically reindent the newly barfed S-expression with respect to
         (backward-sexp))                ;   insert the delimiter.
       (paredit-skip-whitespace nil)     ; Skip leading whitespace.
       (cond ((bobp)
-             (error "Barfing 
+             (error "Barfing all subexpressions with no open-paren?"))
+            ((paredit-in-comment-p)     ; Don't put the close-paren in
+             (newline-and-indent)))     ;   a comment.
+      (insert close))
+    ;; Reindent all of the newly barfed S-expressions.
+    (paredit-forward-and-indent)))
+
+(defun paredit-backward-slurp-sexp ()
+  "Add the S-expression preceding the current list into that list
+  by moving the closing delimiter.
+Automatically reindent the whole form into which new S-expression was
+  slurped.
+If in a string, move the opening double-quote backward by one
+  S-expression and escape any intervening characters as necessary,
+  without altering any indentation or formatting."
+  (interactive)
+  (save-excursion
+    (cond ((or (paredit-in-comment-p)
+               (paredit-in-char-p))
+           (error "Invalid context for slurping S-expressions."))
+          ((paredit-in-string-p)
+           (paredit-backward-slurp-into-string))
+          (t
+           (paredit-backward
