@@ -2176,4 +2176,34 @@ If in a string, move the opening double-quote backward by one
           ((paredit-in-string-p)
            (paredit-backward-slurp-into-string))
           (t
-           (paredit-backward
+           (paredit-backward-slurp-into-list)))))
+
+(defun paredit-backward-slurp-into-list ()
+  (backward-up-list)
+  (let ((open (char-after)))
+    (delete-char 1)
+    (catch 'return
+      (while t
+        (paredit-handle-sexp-errors
+            (progn (backward-sexp) (throw 'return nil))
+          (backward-up-list)
+          (setq open
+                (prog1 (char-after)
+                  (save-excursion (insert open) (delete-char 1)))))))
+    (insert open))
+  ;; Reindent the line at the beginning of wherever we inserted the
+  ;; opening delimiter, and then indent the whole S-expression.
+  (backward-up-list)
+  (lisp-indent-line)
+  (indent-sexp))
+
+(defun paredit-backward-slurp-into-string ()
+  (goto-char (car (paredit-string-start+end-points)))
+  ;; Signal any errors that we might get first, before mucking with the
+  ;; buffer's contents.
+  (save-excursion (backward-sexp))
+  (let ((open (char-after))
+        (target (point)))
+    (delete-char 1)
+    (backward-sexp)
+ 
