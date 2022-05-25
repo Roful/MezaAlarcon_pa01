@@ -2206,4 +2206,35 @@ If in a string, move the opening double-quote backward by one
         (target (point)))
     (delete-char 1)
     (backward-sexp)
- 
+    (insert open)
+    (paredit-forward-for-quote target)))
+
+(defun paredit-backward-barf-sexp ()
+  "Remove the first S-expression in the current list from that list
+  by moving the closing delimiter.
+Automatically reindent the barfed S-expression and the form from which
+  it was barfed."
+  (interactive)
+  (paredit-lose-if-not-in-sexp 'paredit-backward-barf-sexp)
+  (save-excursion
+    (backward-up-list)
+    (let ((open (char-after)))
+      (delete-char 1)
+      (paredit-ignore-sexp-errors
+        (paredit-forward-and-indent))
+      (while (progn (paredit-skip-whitespace t)
+                    (eq (char-after) ?\; ))
+        (forward-line 1))
+      (if (eobp)
+          (error "Barfing all subexpressions with no close-paren?"))
+      ;** Don't use `insert' here.  Consider, e.g., barfing from
+      ;**   (foo|)
+      ;** and how `save-excursion' works.
+      (insert-before-markers open))
+    (backward-up-list)
+    (lisp-indent-line)
+    (indent-sexp)))
+
+;;;; Splitting & Joining
+
+(defun paredit-spl
