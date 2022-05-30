@@ -2261,4 +2261,23 @@ Automatically reindent the barfed S-expression and the form from which
   "Join the S-expressions adjacent on either side of the point.
 Both must be lists, strings, or atoms; error if there is a mismatch."
   (interactive)
-  ;
+  ;++ How ought this to handle comments intervening symbols or strings?
+  (save-excursion
+    (if (or (paredit-in-comment-p)
+            (paredit-in-string-p)
+            (paredit-in-char-p))
+        (error "Invalid context for joining S-expressions.")
+      (let ((left-point  (paredit-point-at-sexp-end))
+            (right-point (paredit-point-at-sexp-start)))
+        (let ((left-char (char-before left-point))
+              (right-char (char-after right-point)))
+          (let ((left-syntax (char-syntax left-char))
+                (right-syntax (char-syntax right-char)))
+            (cond ((>= left-point right-point)
+                   (error "Can't join a datum with itself."))
+                  ((and (eq left-syntax  ?\) )
+                        (eq right-syntax ?\( )
+                        (eq left-char (matching-paren right-char))
+                        (eq right-char (matching-paren left-char)))
+                   ;; Leave intermediate formatting alone.
+               
