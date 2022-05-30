@@ -2303,4 +2303,32 @@ Both must be lists, strings, or atoms; error if there is a mismatch."
 
 (defun paredit-add-to-previous-list ()
   "Add the S-expression following point to the list preceding point."
-  (int
+  (interactive)
+  (paredit-lose-if-not-in-sexp 'paredit-add-to-previous-list)
+  (save-excursion
+    (backward-down-list)
+    (paredit-forward-slurp-sexp)))
+
+(defun paredit-add-to-next-list ()
+  "Add the S-expression preceding point to the list following point.
+If no S-expression precedes point, move up the tree until one does."
+  (interactive)
+  (paredit-lose-if-not-in-sexp 'paredit-add-to-next-list)
+  (save-excursion
+    (down-list)
+    (paredit-backward-slurp-sexp)))
+
+(defun paredit-join-with-previous-list ()
+  "Join the list the point is on with the previous list in the buffer."
+  (interactive)
+  (paredit-lose-if-not-in-sexp 'paredit-join-with-previous-list)
+  (save-excursion
+    (while (paredit-handle-sexp-errors (save-excursion (backward-sexp) nil)
+             (backward-up-list)
+             t))
+    (paredit-join-sexps)))
+
+(defun paredit-join-with-next-list ()
+  "Join the list the point is on with the next list in the buffer."
+  (interactive)
+  (paredit-lose-if-not-in-sexp '
