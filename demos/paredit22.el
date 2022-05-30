@@ -2280,4 +2280,27 @@ Both must be lists, strings, or atoms; error if there is a mismatch."
                         (eq left-char (matching-paren right-char))
                         (eq right-char (matching-paren left-char)))
                    ;; Leave intermediate formatting alone.
-               
+                   (goto-char right-point)
+                   (delete-char 1)
+                   (goto-char left-point)
+                   (backward-delete-char 1)
+                   (backward-up-list)
+                   (indent-sexp))
+                  ((and (eq left-syntax  ?\" )
+                        (eq right-syntax ?\" ))
+                   ;; Delete any intermediate formatting.
+                   (delete-region (1- left-point)
+                                  (1+ right-point)))
+                  ((and (memq left-syntax  '(?w ?_)) ; Word or symbol
+                        (memq right-syntax '(?w ?_)))
+                   (delete-region left-point right-point))
+                  (t
+                   (error "Mismatched S-expressions to join.")))))))))
+
+;;;; Variations on the Lurid Theme
+
+;;; I haven't the imagination to concoct clever names for these.
+
+(defun paredit-add-to-previous-list ()
+  "Add the S-expression following point to the list preceding point."
+  (int
