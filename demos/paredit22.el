@@ -2331,4 +2331,31 @@ If no S-expression precedes point, move up the tree until one does."
 (defun paredit-join-with-next-list ()
   "Join the list the point is on with the next list in the buffer."
   (interactive)
-  (paredit-lose-if-not-in-sexp '
+  (paredit-lose-if-not-in-sexp 'paredit-join-with-next-list)
+  (save-excursion
+    (while (paredit-handle-sexp-errors (save-excursion (forward-sexp) nil)
+             (up-list)
+             t))
+    (paredit-join-sexps)))
+
+;;;; Utilities
+
+(defun paredit-in-string-escape-p ()
+  "True if the point is on a character escape of a string.
+This is true only if the character is preceded by an odd number of
+  backslashes.
+This assumes that `paredit-in-string-p' has already returned true."
+  (let ((oddp nil))
+    (save-excursion
+      (while (eq (char-before) ?\\ )
+        (setq oddp (not oddp))
+        (backward-char)))
+    oddp))
+
+(defun paredit-in-char-p (&optional argument)
+  "True if the point is immediately after a character literal.
+A preceding escape character, not preceded by another escape character,
+  is considered a character literal prefix.  (This works for elisp,
+  Common Lisp, and Scheme.)
+Assumes that `paredit-in-string-p' is false, so that it need not handle
+  long sequences of preceding b
