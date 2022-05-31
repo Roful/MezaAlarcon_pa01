@@ -2358,4 +2358,28 @@ A preceding escape character, not preceded by another escape character,
   is considered a character literal prefix.  (This works for elisp,
   Common Lisp, and Scheme.)
 Assumes that `paredit-in-string-p' is false, so that it need not handle
-  long sequences of preceding b
+  long sequences of preceding backslashes in string escapes.  (This
+  assumes some other leading character token -- ? in elisp, # in Scheme
+  and Common Lisp.)"
+  (let ((argument (or argument (point))))
+    (and (eq (char-before argument) ?\\ )
+         (not (eq (char-before (1- argument)) ?\\ )))))
+
+(defun paredit-indent-sexps ()
+  "If in a list, indent all following S-expressions in the list."
+  (let ((start (point))
+        (end (paredit-handle-sexp-errors (progn (up-list) (point)) nil)))
+    (if end
+        (indent-region start end))))
+
+(defun paredit-forward-and-indent ()
+  "Move forward an S-expression, indenting it with `indent-region'."
+  (let ((start (point)))
+    (forward-sexp)
+    (indent-region start (point))))
+
+(defun paredit-skip-whitespace (trailing-p &optional limit)
+  "Skip past any whitespace, or until the point LIMIT is reached.
+If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
+  whitespace."
+  (funcall (if trailing-p 'skip-ch
