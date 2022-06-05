@@ -2382,4 +2382,25 @@ Assumes that `paredit-in-string-p' is false, so that it need not handle
   "Skip past any whitespace, or until the point LIMIT is reached.
 If TRAILING-P is nil, skip leading whitespace; otherwise, skip trailing
   whitespace."
-  (funcall (if trailing-p 'skip-ch
+  (funcall (if trailing-p 'skip-chars-forward 'skip-chars-backward)
+           " \t\n"  ; This should skip using the syntax table, but LF
+           limit))    ; is a comment end, not newline, in Lisp mode.
+
+(defalias 'paredit-region-active-p
+  (xcond ((paredit-xemacs-p) 'region-active-p)
+         ((paredit-gnu-emacs-p)
+          (lambda ()
+            (and mark-active transient-mark-mode)))))
+
+(defun paredit-hack-kill-region (start end)
+  "Kill the region between START and END.
+Do not append to any current kill, and
+ do not let the next kill append to this one."
+  (interactive "r")                     ;Eh, why not?
+  ;; KILL-REGION sets THIS-COMMAND to tell the next kill that the last
+  ;; command was a kill.  It also checks LAST-COMMAND to see whether it
+  ;; should append.  If we bind these locally, any modifications to
+  ;; THIS-COMMAND will be masked, and it will not see LAST-COMMAND to
+  ;; indicate that it should append.
+  (let ((this-command nil)
+        
