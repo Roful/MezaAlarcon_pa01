@@ -2403,4 +2403,28 @@ Do not append to any current kill, and
   ;; THIS-COMMAND will be masked, and it will not see LAST-COMMAND to
   ;; indicate that it should append.
   (let ((this-command nil)
-        
+        (last-command nil))
+    (kill-region start end)))
+
+;;;;; S-expression Parsing Utilities
+
+;++ These routines redundantly traverse S-expressions a great deal.
+;++ If performance issues arise, this whole section will probably have
+;++ to be refactored to preserve the state longer, like paredit.scm
+;++ does, rather than to traverse the definition N times for every key
+;++ stroke as it presently does.
+
+(defun paredit-current-parse-state ()
+  "Return parse state of point from beginning of defun."
+  (let ((point (point)))
+    (beginning-of-defun)
+    ;; Calling PARSE-PARTIAL-SEXP will advance the point to its second
+    ;; argument (unless parsing stops due to an error, but we assume it
+    ;; won't in paredit-mode).
+    (parse-partial-sexp (point) point)))
+
+(defun paredit-in-string-p (&optional state)
+  "True if the parse state is within a double-quote-delimited string.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point."
+  ;; 3. non-
