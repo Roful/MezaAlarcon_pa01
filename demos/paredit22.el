@@ -2427,4 +2427,25 @@ Do not append to any current kill, and
   "True if the parse state is within a double-quote-delimited string.
 If no parse state is supplied, compute one from the beginning of the
   defun to the point."
-  ;; 3. non-
+  ;; 3. non-nil if inside a string (the terminator character, really)
+  (and (nth 3 (or state (paredit-current-parse-state)))
+       t))
+
+(defun paredit-string-start+end-points (&optional state)
+  "Return a cons of the points of open and close quotes of the string.
+The string is determined from the parse state STATE, or the parse state
+  from the beginning of the defun to the point.
+This assumes that `paredit-in-string-p' has already returned true, i.e.
+  that the point is already within a string."
+  (save-excursion
+    ;; 8. character address of start of comment or string; nil if not
+    ;;    in one
+    (let ((start (nth 8 (or state (paredit-current-parse-state)))))
+      (goto-char start)
+      (forward-sexp 1)
+      (cons start (1- (point))))))
+
+(defun paredit-in-comment-p (&optional state)
+  "True if parse state STATE is within a comment.
+If no parse state is supplied, compute one from the beginning of the
+  defun to the point."
