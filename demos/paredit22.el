@@ -2449,3 +2449,39 @@ This assumes that `paredit-in-string-p' has already returned true, i.e.
   "True if parse state STATE is within a comment.
 If no parse state is supplied, compute one from the beginning of the
   defun to the point."
+  ;; 4. nil if outside a comment, t if inside a non-nestable comment,
+  ;;    else an integer (the current comment nesting)
+  (and (nth 4 (or state (paredit-current-parse-state)))
+       t))
+
+(defun paredit-point-at-sexp-boundary (n)
+  (cond ((< n 0) (paredit-point-at-sexp-start))
+        ((= n 0) (point))
+        ((> n 0) (paredit-point-at-sexp-end))))
+
+(defun paredit-point-at-sexp-start ()
+  (save-excursion
+    (forward-sexp)
+    (backward-sexp)
+    (point)))
+
+(defun paredit-point-at-sexp-end ()
+  (save-excursion
+    (backward-sexp)
+    (forward-sexp)
+    (point)))
+
+(defun paredit-lose-if-not-in-sexp (command)
+  (if (or (paredit-in-string-p)
+          (paredit-in-comment-p)
+          (paredit-in-char-p))
+      (error "Invalid context for command `%s'." command)))
+
+(defun paredit-check-region (start end)
+  (save-restriction
+    (narrow-to-region start end)
+    (if (fboundp 'check-parens)
+        (check-parens)
+        (save-excursion
+          (goto-char (point-min))
+  
