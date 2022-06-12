@@ -2484,4 +2484,33 @@ If no parse state is supplied, compute one from the beginning of the
         (check-parens)
         (save-excursion
           (goto-char (point-min))
-  
+          (while (not (eobp))
+            (forward-sexp))))))
+
+(defun paredit-region-ok-p (start end)
+  (paredit-handle-sexp-errors
+      (progn
+        (save-restriction
+          (narrow-to-region start end)
+          ;; Can't use `check-parens' here -- it signals the wrong kind
+          ;; of errors.
+          (save-excursion
+            (goto-char (point-min))
+            (while (not (eobp))
+              (forward-sexp))))
+        t)
+    nil))
+
+;;;; Initialization
+
+(paredit-define-keys)
+(paredit-annotate-mode-with-examples)
+(paredit-annotate-functions-with-examples)
+
+(provide 'paredit)
+
+;;; Local Variables:
+;;; outline-regexp: "\n;;;;+"
+;;; End:
+
+;;; paredit.el ends here
