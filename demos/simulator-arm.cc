@@ -833,3 +833,920 @@ class Redirection {
   }
 
  private:
+  void* external_function_;
+  uint32_t swi_instruction_;
+  ExternalReference::Type type_;
+  Redirection* next_;
+};
+
+
+void* Simulator::RedirectExternalReference(void* external_function,
+                                           ExternalReference::Type type) {
+  Redirection* redirection = Redirection::Get(external_function, type);
+  return redirection->address_of_swi_instruction();
+}
+
+
+// Get the active Simulator for the current thread.
+Simulator* Simulator::current(Isolate* isolate) {
+  v8::internal::Isolate::PerIsolateThreadData* isolate_data =
+      isolate->FindOrAllocatePerThreadDataForThisThread();
+  ASSERT(isolate_data != NULL);
+
+  Simulator* sim = isolate_data->simulator();
+  if (sim == NULL) {
+    // TODO(146): delete the simulator object when a thread/isolate goes away.
+    sim = new Simulator(isolate);
+    isolate_data->set_simulator(sim);
+  }
+  return sim;
+}
+
+
+// Sets the register in the architecture state. It will also deal with updating
+// Simulator internal state for special registers such as PC.
+void Simulator::set_register(int reg, int32_t value) {
+  ASSERT((reg >= 0) && (reg < num_registers));
+  if (reg == pc) {
+    pc_modified_ = true;
+  }
+  registers_[reg] = value;
+}
+
+
+// Get the register from the architecture state. This function does handle
+// the special case of accessing the PC register.
+int32_t Simulator::get_register(int reg) const {
+  ASSERT((reg >= 0) && (reg < num_registers));
+  // Stupid code added to avoid bug in GCC.
+  // See: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=43949
+  if (reg >= num_registers) return 0;
+  // End stupid code.
+  return registers_[reg] + ((reg == pc) ? Instruction::kPCReadOffset : 0);
+}
+
+
+double Simulator::get_double_from_register_pair(int reg) {
+  ASSERT((reg >= 0) && (reg < num_registers) && ((reg % 2) == 0));
+
+  double dm_val = 0.0;
+  // Read the bits from the unsigned integer register_[] array
+  // into the double precision floating point value and return it.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &registers_[reg], 2 * sizeof(registers_[0]));
+  memcpy(&dm_val, buffer, 2 * sizeof(registers_[0]));
+  return(dm_val);
+}
+
+
+void Simulator::set_dw_register(int dreg, const int* dbl) {
+  ASSERT((dreg >= 0) && (dreg < num_d_registers));
+  registers_[dreg] = dbl[0];
+  registers_[dreg + 1] = dbl[1];
+}
+
+
+// Raw access to the PC register.
+void Simulator::set_pc(int32_t value) {
+  pc_modified_ = true;
+  registers_[pc] = value;
+}
+
+
+bool Simulator::has_bad_pc() const {
+  return ((registers_[pc] == bad_lr) || (registers_[pc] == end_sim_pc));
+}
+
+
+// Raw access to the PC register without the special adjustment when reading.
+int32_t Simulator::get_pc() const {
+  return registers_[pc];
+}
+
+
+// Getting from and setting into VFP registers.
+void Simulator::set_s_register(int sreg, unsigned int value) {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+  vfp_register[sreg] = value;
+}
+
+
+unsigned int Simulator::get_s_register(int sreg) const {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+  return vfp_register[sreg];
+}
+
+
+void Simulator::set_s_register_from_float(int sreg, const float flt) {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+  // Read the bits from the single precision floating point value
+  // into the unsigned integer element of vfp_register[] given by index=sreg.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &flt, sizeof(vfp_register[0]));
+  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
+}
+
+
+void Simulator::set_s_register_from_sinteger(int sreg, const int sint) {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+  // Read the bits from the integer value into the unsigned integer element of
+  // vfp_register[] given by index=sreg.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &sint, sizeof(vfp_register[0]));
+  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
+}
+
+
+void Simulator::set_d_register_from_double(int dreg, const double& dbl) {
+  ASSERT((dreg >= 0) && (dreg < num_d_registers));
+  // Read the bits from the double precision floating point value into the two
+  // consecutive unsigned integer elements of vfp_register[] given by index
+  // 2*sreg and 2*sreg+1.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &dbl, 2 * sizeof(vfp_register[0]));
+  memcpy(&vfp_register[dreg * 2], buffer, 2 * sizeof(vfp_register[0]));
+}
+
+
+float Simulator::get_float_from_s_register(int sreg) {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+
+  float sm_val = 0.0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the single precision floating point value and return it.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
+  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
+  return(sm_val);
+}
+
+
+int Simulator::get_sinteger_from_s_register(int sreg) {
+  ASSERT((sreg >= 0) && (sreg < num_s_registers));
+
+  int sm_val = 0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the single precision floating point value and return it.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
+  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
+  return(sm_val);
+}
+
+
+double Simulator::get_double_from_d_register(int dreg) {
+  ASSERT((dreg >= 0) && (dreg < num_d_registers));
+
+  double dm_val = 0.0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the double precision floating point value and return it.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[2 * dreg], 2 * sizeof(vfp_register[0]));
+  memcpy(&dm_val, buffer, 2 * sizeof(vfp_register[0]));
+  return(dm_val);
+}
+
+
+// For use in calls that take two double values, constructed either
+// from r0-r3 or d0 and d1.
+void Simulator::GetFpArgs(double* x, double* y) {
+  if (use_eabi_hardfloat()) {
+    *x = vfp_register[0];
+    *y = vfp_register[1];
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    // Registers 0 and 1 -> x.
+    memcpy(buffer, registers_, sizeof(*x));
+    memcpy(x, buffer, sizeof(*x));
+    // Registers 2 and 3 -> y.
+    memcpy(buffer, registers_ + 2, sizeof(*y));
+    memcpy(y, buffer, sizeof(*y));
+  }
+}
+
+// For use in calls that take one double value, constructed either
+// from r0 and r1 or d0.
+void Simulator::GetFpArgs(double* x) {
+  if (use_eabi_hardfloat()) {
+    *x = vfp_register[0];
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    // Registers 0 and 1 -> x.
+    memcpy(buffer, registers_, sizeof(*x));
+    memcpy(x, buffer, sizeof(*x));
+  }
+}
+
+
+// For use in calls that take one double value constructed either
+// from r0 and r1 or d0 and one integer value.
+void Simulator::GetFpArgs(double* x, int32_t* y) {
+  if (use_eabi_hardfloat()) {
+    *x = vfp_register[0];
+    *y = registers_[1];
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    // Registers 0 and 1 -> x.
+    memcpy(buffer, registers_, sizeof(*x));
+    memcpy(x, buffer, sizeof(*x));
+    // Register 2 -> y.
+    memcpy(buffer, registers_ + 2, sizeof(*y));
+    memcpy(y, buffer, sizeof(*y));
+  }
+}
+
+
+// The return value is either in r0/r1 or d0.
+void Simulator::SetFpResult(const double& result) {
+  if (use_eabi_hardfloat()) {
+    char buffer[2 * sizeof(vfp_register[0])];
+    memcpy(buffer, &result, sizeof(buffer));
+    // Copy result to d0.
+    memcpy(vfp_register, buffer, sizeof(buffer));
+  } else {
+    char buffer[2 * sizeof(registers_[0])];
+    memcpy(buffer, &result, sizeof(buffer));
+    // Copy result to r0 and r1.
+    memcpy(registers_, buffer, sizeof(buffer));
+  }
+}
+
+
+void Simulator::TrashCallerSaveRegisters() {
+  // We don't trash the registers with the return value.
+  registers_[2] = 0x50Bad4U;
+  registers_[3] = 0x50Bad4U;
+  registers_[12] = 0x50Bad4U;
+}
+
+// Some Operating Systems allow unaligned access on ARMv7 targets. We
+// assume that unaligned accesses are not allowed unless the v8 build system
+// defines the CAN_USE_UNALIGNED_ACCESSES macro to be non-zero.
+// The following statements below describes the behavior of the ARM CPUs
+// that don't support unaligned access.
+// Some ARM platforms raise an interrupt on detecting unaligned access.
+// On others it does a funky rotation thing.  For now we
+// simply disallow unaligned reads.  Note that simulator runs have the runtime
+// system running directly on the host system and only generated code is
+// executed in the simulator.  Since the host is typically IA32 we will not
+// get the correct ARM-like behaviour on unaligned accesses for those ARM
+// targets that don't support unaligned loads and stores.
+
+
+int Simulator::ReadW(int32_t addr, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+  return *ptr;
+#else
+  if ((addr & 3) == 0) {
+    intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  UNIMPLEMENTED();
+  return 0;
+#endif
+}
+
+
+void Simulator::WriteW(int32_t addr, int value, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+  *ptr = value;
+  return;
+#else
+  if ((addr & 3) == 0) {
+    intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+    *ptr = value;
+    return;
+  }
+  PrintF("Unaligned write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  UNIMPLEMENTED();
+#endif
+}
+
+
+uint16_t Simulator::ReadHU(int32_t addr, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
+  return *ptr;
+#else
+  if ((addr & 1) == 0) {
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned unsigned halfword read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  UNIMPLEMENTED();
+  return 0;
+#endif
+}
+
+
+int16_t Simulator::ReadH(int32_t addr, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int16_t* ptr = reinterpret_cast<int16_t*>(addr);
+  return *ptr;
+#else
+  if ((addr & 1) == 0) {
+    int16_t* ptr = reinterpret_cast<int16_t*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned signed halfword read at 0x%08x\n", addr);
+  UNIMPLEMENTED();
+  return 0;
+#endif
+}
+
+
+void Simulator::WriteH(int32_t addr, uint16_t value, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
+  *ptr = value;
+  return;
+#else
+  if ((addr & 1) == 0) {
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
+    *ptr = value;
+    return;
+  }
+  PrintF("Unaligned unsigned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  UNIMPLEMENTED();
+#endif
+}
+
+
+void Simulator::WriteH(int32_t addr, int16_t value, Instruction* instr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int16_t* ptr = reinterpret_cast<int16_t*>(addr);
+  *ptr = value;
+  return;
+#else
+  if ((addr & 1) == 0) {
+    int16_t* ptr = reinterpret_cast<int16_t*>(addr);
+    *ptr = value;
+    return;
+  }
+  PrintF("Unaligned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  UNIMPLEMENTED();
+#endif
+}
+
+
+uint8_t Simulator::ReadBU(int32_t addr) {
+  uint8_t* ptr = reinterpret_cast<uint8_t*>(addr);
+  return *ptr;
+}
+
+
+int8_t Simulator::ReadB(int32_t addr) {
+  int8_t* ptr = reinterpret_cast<int8_t*>(addr);
+  return *ptr;
+}
+
+
+void Simulator::WriteB(int32_t addr, uint8_t value) {
+  uint8_t* ptr = reinterpret_cast<uint8_t*>(addr);
+  *ptr = value;
+}
+
+
+void Simulator::WriteB(int32_t addr, int8_t value) {
+  int8_t* ptr = reinterpret_cast<int8_t*>(addr);
+  *ptr = value;
+}
+
+
+int32_t* Simulator::ReadDW(int32_t addr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int32_t* ptr = reinterpret_cast<int32_t*>(addr);
+  return ptr;
+#else
+  if ((addr & 3) == 0) {
+    int32_t* ptr = reinterpret_cast<int32_t*>(addr);
+    return ptr;
+  }
+  PrintF("Unaligned read at 0x%08x\n", addr);
+  UNIMPLEMENTED();
+  return 0;
+#endif
+}
+
+
+void Simulator::WriteDW(int32_t addr, int32_t value1, int32_t value2) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int32_t* ptr = reinterpret_cast<int32_t*>(addr);
+  *ptr++ = value1;
+  *ptr = value2;
+  return;
+#else
+  if ((addr & 3) == 0) {
+    int32_t* ptr = reinterpret_cast<int32_t*>(addr);
+    *ptr++ = value1;
+    *ptr = value2;
+    return;
+  }
+  PrintF("Unaligned write at 0x%08x\n", addr);
+  UNIMPLEMENTED();
+#endif
+}
+
+
+// Returns the limit of the stack area to enable checking for stack overflows.
+uintptr_t Simulator::StackLimit() const {
+  // Leave a safety margin of 256 bytes to prevent overrunning the stack when
+  // pushing values.
+  return reinterpret_cast<uintptr_t>(stack_) + 256;
+}
+
+
+// Unsupported instructions use Format to print an error and stop execution.
+void Simulator::Format(Instruction* instr, const char* format) {
+  PrintF("Simulator found unsupported instruction:\n 0x%08x: %s\n",
+         reinterpret_cast<intptr_t>(instr), format);
+  UNIMPLEMENTED();
+}
+
+
+// Checks if the current instruction should be executed based on its
+// condition bits.
+bool Simulator::ConditionallyExecute(Instruction* instr) {
+  switch (instr->ConditionField()) {
+    case eq: return z_flag_;
+    case ne: return !z_flag_;
+    case cs: return c_flag_;
+    case cc: return !c_flag_;
+    case mi: return n_flag_;
+    case pl: return !n_flag_;
+    case vs: return v_flag_;
+    case vc: return !v_flag_;
+    case hi: return c_flag_ && !z_flag_;
+    case ls: return !c_flag_ || z_flag_;
+    case ge: return n_flag_ == v_flag_;
+    case lt: return n_flag_ != v_flag_;
+    case gt: return !z_flag_ && (n_flag_ == v_flag_);
+    case le: return z_flag_ || (n_flag_ != v_flag_);
+    case al: return true;
+    default: UNREACHABLE();
+  }
+  return false;
+}
+
+
+// Calculate and set the Negative and Zero flags.
+void Simulator::SetNZFlags(int32_t val) {
+  n_flag_ = (val < 0);
+  z_flag_ = (val == 0);
+}
+
+
+// Set the Carry flag.
+void Simulator::SetCFlag(bool val) {
+  c_flag_ = val;
+}
+
+
+// Set the oVerflow flag.
+void Simulator::SetVFlag(bool val) {
+  v_flag_ = val;
+}
+
+
+// Calculate C flag value for additions.
+bool Simulator::CarryFrom(int32_t left, int32_t right, int32_t carry) {
+  uint32_t uleft = static_cast<uint32_t>(left);
+  uint32_t uright = static_cast<uint32_t>(right);
+  uint32_t urest  = 0xffffffffU - uleft;
+
+  return (uright > urest) ||
+         (carry && (((uright + 1) > urest) || (uright > (urest - 1))));
+}
+
+
+// Calculate C flag value for subtractions.
+bool Simulator::BorrowFrom(int32_t left, int32_t right) {
+  uint32_t uleft = static_cast<uint32_t>(left);
+  uint32_t uright = static_cast<uint32_t>(right);
+
+  return (uright > uleft);
+}
+
+
+// Calculate V flag value for additions and subtractions.
+bool Simulator::OverflowFrom(int32_t alu_out,
+                             int32_t left, int32_t right, bool addition) {
+  bool overflow;
+  if (addition) {
+               // operands have the same sign
+    overflow = ((left >= 0 && right >= 0) || (left < 0 && right < 0))
+               // and operands and result have different sign
+               && ((left < 0 && alu_out >= 0) || (left >= 0 && alu_out < 0));
+  } else {
+               // operands have different signs
+    overflow = ((left < 0 && right >= 0) || (left >= 0 && right < 0))
+               // and first operand and result have different signs
+               && ((left < 0 && alu_out >= 0) || (left >= 0 && alu_out < 0));
+  }
+  return overflow;
+}
+
+
+// Support for VFP comparisons.
+void Simulator::Compute_FPSCR_Flags(double val1, double val2) {
+  if (isnan(val1) || isnan(val2)) {
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = true;
+  // All non-NaN cases.
+  } else if (val1 == val2) {
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = true;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = false;
+  } else if (val1 < val2) {
+    n_flag_FPSCR_ = true;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = false;
+    v_flag_FPSCR_ = false;
+  } else {
+    // Case when (val1 > val2).
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = false;
+  }
+}
+
+
+void Simulator::Copy_FPSCR_to_APSR() {
+  n_flag_ = n_flag_FPSCR_;
+  z_flag_ = z_flag_FPSCR_;
+  c_flag_ = c_flag_FPSCR_;
+  v_flag_ = v_flag_FPSCR_;
+}
+
+
+// Addressing Mode 1 - Data-processing operands:
+// Get the value based on the shifter_operand with register.
+int32_t Simulator::GetShiftRm(Instruction* instr, bool* carry_out) {
+  ShiftOp shift = instr->ShiftField();
+  int shift_amount = instr->ShiftAmountValue();
+  int32_t result = get_register(instr->RmValue());
+  if (instr->Bit(4) == 0) {
+    // by immediate
+    if ((shift == ROR) && (shift_amount == 0)) {
+      UNIMPLEMENTED();
+      return result;
+    } else if (((shift == LSR) || (shift == ASR)) && (shift_amount == 0)) {
+      shift_amount = 32;
+    }
+    switch (shift) {
+      case ASR: {
+        if (shift_amount == 0) {
+          if (result < 0) {
+            result = 0xffffffff;
+            *carry_out = true;
+          } else {
+            result = 0;
+            *carry_out = false;
+          }
+        } else {
+          result >>= (shift_amount - 1);
+          *carry_out = (result & 1) == 1;
+          result >>= 1;
+        }
+        break;
+      }
+
+      case LSL: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else {
+          result <<= (shift_amount - 1);
+          *carry_out = (result < 0);
+          result <<= 1;
+        }
+        break;
+      }
+
+      case LSR: {
+        if (shift_amount == 0) {
+          result = 0;
+          *carry_out = c_flag_;
+        } else {
+          uint32_t uresult = static_cast<uint32_t>(result);
+          uresult >>= (shift_amount - 1);
+          *carry_out = (uresult & 1) == 1;
+          uresult >>= 1;
+          result = static_cast<int32_t>(uresult);
+        }
+        break;
+      }
+
+      case ROR: {
+        UNIMPLEMENTED();
+        break;
+      }
+
+      default: {
+        UNREACHABLE();
+        break;
+      }
+    }
+  } else {
+    // by register
+    int rs = instr->RsValue();
+    shift_amount = get_register(rs) &0xff;
+    switch (shift) {
+      case ASR: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount < 32) {
+          result >>= (shift_amount - 1);
+          *carry_out = (result & 1) == 1;
+          result >>= 1;
+        } else {
+          ASSERT(shift_amount >= 32);
+          if (result < 0) {
+            *carry_out = true;
+            result = 0xffffffff;
+          } else {
+            *carry_out = false;
+            result = 0;
+          }
+        }
+        break;
+      }
+
+      case LSL: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount < 32) {
+          result <<= (shift_amount - 1);
+          *carry_out = (result < 0);
+          result <<= 1;
+        } else if (shift_amount == 32) {
+          *carry_out = (result & 1) == 1;
+          result = 0;
+        } else {
+          ASSERT(shift_amount > 32);
+          *carry_out = false;
+          result = 0;
+        }
+        break;
+      }
+
+      case LSR: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount < 32) {
+          uint32_t uresult = static_cast<uint32_t>(result);
+          uresult >>= (shift_amount - 1);
+          *carry_out = (uresult & 1) == 1;
+          uresult >>= 1;
+          result = static_cast<int32_t>(uresult);
+        } else if (shift_amount == 32) {
+          *carry_out = (result < 0);
+          result = 0;
+        } else {
+          *carry_out = false;
+          result = 0;
+        }
+        break;
+      }
+
+      case ROR: {
+        UNIMPLEMENTED();
+        break;
+      }
+
+      default: {
+        UNREACHABLE();
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+
+// Addressing Mode 1 - Data-processing operands:
+// Get the value based on the shifter_operand with immediate.
+int32_t Simulator::GetImm(Instruction* instr, bool* carry_out) {
+  int rotate = instr->RotateValue() * 2;
+  int immed8 = instr->Immed8Value();
+  int imm = (immed8 >> rotate) | (immed8 << (32 - rotate));
+  *carry_out = (rotate == 0) ? c_flag_ : (imm < 0);
+  return imm;
+}
+
+
+static int count_bits(int bit_vector) {
+  int count = 0;
+  while (bit_vector != 0) {
+    if ((bit_vector & 1) != 0) {
+      count++;
+    }
+    bit_vector >>= 1;
+  }
+  return count;
+}
+
+
+void Simulator::ProcessPUW(Instruction* instr,
+                           int num_regs,
+                           int reg_size,
+                           intptr_t* start_address,
+                           intptr_t* end_address) {
+  int rn = instr->RnValue();
+  int32_t rn_val = get_register(rn);
+  switch (instr->PUField()) {
+    case da_x: {
+      UNIMPLEMENTED();
+      break;
+    }
+    case ia_x: {
+      *start_address = rn_val;
+      *end_address = rn_val + (num_regs * reg_size) - reg_size;
+      rn_val = rn_val + (num_regs * reg_size);
+      break;
+    }
+    case db_x: {
+      *start_address = rn_val - (num_regs * reg_size);
+      *end_address = rn_val - reg_size;
+      rn_val = *start_address;
+      break;
+    }
+    case ib_x: {
+      *start_address = rn_val + reg_size;
+      *end_address = rn_val + (num_regs * reg_size);
+      rn_val = *end_address;
+      break;
+    }
+    default: {
+      UNREACHABLE();
+      break;
+    }
+  }
+  if (instr->HasW()) {
+    set_register(rn, rn_val);
+  }
+}
+
+// Addressing Mode 4 - Load and Store Multiple
+void Simulator::HandleRList(Instruction* instr, bool load) {
+  int rlist = instr->RlistValue();
+  int num_regs = count_bits(rlist);
+
+  intptr_t start_address = 0;
+  intptr_t end_address = 0;
+  ProcessPUW(instr, num_regs, kPointerSize, &start_address, &end_address);
+
+  intptr_t* address = reinterpret_cast<intptr_t*>(start_address);
+  int reg = 0;
+  while (rlist != 0) {
+    if ((rlist & 1) != 0) {
+      if (load) {
+        set_register(reg, *address);
+      } else {
+        *address = get_register(reg);
+      }
+      address += 1;
+    }
+    reg++;
+    rlist >>= 1;
+  }
+  ASSERT(end_address == ((intptr_t)address) - 4);
+}
+
+
+// Addressing Mode 6 - Load and Store Multiple Coprocessor registers.
+void Simulator::HandleVList(Instruction* instr) {
+  VFPRegPrecision precision =
+      (instr->SzValue() == 0) ? kSinglePrecision : kDoublePrecision;
+  int operand_size = (precision == kSinglePrecision) ? 4 : 8;
+
+  bool load = (instr->VLValue() == 0x1);
+
+  int vd;
+  int num_regs;
+  vd = instr->VFPDRegValue(precision);
+  if (precision == kSinglePrecision) {
+    num_regs = instr->Immed8Value();
+  } else {
+    num_regs = instr->Immed8Value() / 2;
+  }
+
+  intptr_t start_address = 0;
+  intptr_t end_address = 0;
+  ProcessPUW(instr, num_regs, operand_size, &start_address, &end_address);
+
+  intptr_t* address = reinterpret_cast<intptr_t*>(start_address);
+  for (int reg = vd; reg < vd + num_regs; reg++) {
+    if (precision == kSinglePrecision) {
+      if (load) {
+        set_s_register_from_sinteger(
+            reg, ReadW(reinterpret_cast<int32_t>(address), instr));
+      } else {
+        WriteW(reinterpret_cast<int32_t>(address),
+               get_sinteger_from_s_register(reg), instr);
+      }
+      address += 1;
+    } else {
+      if (load) {
+        set_s_register_from_sinteger(
+            2 * reg, ReadW(reinterpret_cast<int32_t>(address), instr));
+        set_s_register_from_sinteger(
+            2 * reg + 1, ReadW(reinterpret_cast<int32_t>(address + 1), instr));
+      } else {
+        WriteW(reinterpret_cast<int32_t>(address),
+               get_sinteger_from_s_register(2 * reg), instr);
+        WriteW(reinterpret_cast<int32_t>(address + 1),
+               get_sinteger_from_s_register(2 * reg + 1), instr);
+      }
+      address += 2;
+    }
+  }
+  ASSERT(reinterpret_cast<intptr_t>(address) - operand_size == end_address);
+}
+
+
+// Calls into the V8 runtime are based on this very simple interface.
+// Note: To be able to return two values from some calls the code in runtime.cc
+// uses the ObjectPair which is essentially two 32-bit values stuffed into a
+// 64-bit value. With the code below we assume that all runtime calls return
+// 64 bits of result. If they don't, the r1 result register contains a bogus
+// value, which is fine because it is caller-saved.
+typedef int64_t (*SimulatorRuntimeCall)(int32_t arg0,
+                                        int32_t arg1,
+                                        int32_t arg2,
+                                        int32_t arg3,
+                                        int32_t arg4,
+                                        int32_t arg5);
+typedef double (*SimulatorRuntimeFPCall)(int32_t arg0,
+                                         int32_t arg1,
+                                         int32_t arg2,
+                                         int32_t arg3);
+
+// This signature supports direct call in to API function native callback
+// (refer to InvocationCallback in v8.h).
+typedef v8::Handle<v8::Value> (*SimulatorRuntimeDirectApiCall)(int32_t arg0);
+
+// This signature supports direct call to accessor getter callback.
+typedef v8::Handle<v8::Value> (*SimulatorRuntimeDirectGetterCall)(int32_t arg0,
+                                                                  int32_t arg1);
+
+// Software interrupt instructions are used by the simulator to call into the
+// C-based V8 runtime.
+void Simulator::SoftwareInterrupt(Instruction* instr) {
+  int svc = instr->SvcValue();
+  switch (svc) {
+    case kCallRtRedirected: {
+      // Check if stack is aligned. Error if not aligned is reported below to
+      // include information on the function called.
+      bool stack_aligned =
+          (get_register(sp)
+           & (::v8::internal::FLAG_sim_stack_alignment - 1)) == 0;
+      Redirection* redirection = Redirection::FromSwiInstruction(instr);
+      int32_t arg0 = get_register(r0);
+      int32_t arg1 = get_register(r1);
+      int32_t arg2 = get_register(r2);
+      int32_t arg3 = get_register(r3);
+      int32_t* stack_pointer = reinterpret_cast<int32_t*>(get_register(sp));
+      int32_t arg4 = stack_pointer[0];
+      int32_t arg5 = stack_pointer[1];
+      bool fp_call =
+         (redirection->type() == ExternalReference::BUILTIN_FP_FP_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_COMPARE_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_FP_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_FP_INT_CALL);
+      if (use_eabi_hardfloat()) {
+        // With the hard floating point calling convention, double
+        // arguments are passed in VFP registers. Fetch the arguments
+        // from there and call the builtin using soft floating point
+        // convention.
+        switch (redirection->type()) {
+        case ExternalReference::BUILTIN_FP_FP_CALL:
+        case ExternalReference::BUILTIN_COMPARE_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          arg2 = vfp_register[2];
+          arg3 = vfp_register[3];
+          break;
+        case ExternalReference::BUILTIN_FP_CALL:
