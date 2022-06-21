@@ -1750,3 +1750,976 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
           arg3 = vfp_register[3];
           break;
         case ExternalReference::BUILTIN_FP_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          break;
+        case ExternalReference::BUILTIN_FP_INT_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          arg2 = get_register(0);
+          break;
+        default:
+          break;
+        }
+      }
+      // This is dodgy but it works because the C entry stubs are never moved.
+      // See comment in codegen-arm.cc and bug 1242173.
+      int32_t saved_lr = get_register(lr);
+      intptr_t external =
+          reinterpret_cast<intptr_t>(redirection->external_function());
+      if (fp_call) {
+        if (::v8::internal::FLAG_trace_sim || !stack_aligned) {
+          SimulatorRuntimeFPCall target =
+              reinterpret_cast<SimulatorRuntimeFPCall>(external);
+          double dval0, dval1;
+          int32_t ival;
+          switch (redirection->type()) {
+          case ExternalReference::BUILTIN_FP_FP_CALL:
+          case ExternalReference::BUILTIN_COMPARE_CALL:
+            GetFpArgs(&dval0, &dval1);
+            PrintF("Call to host function at %p with args %f, %f",
+                FUNCTION_ADDR(target), dval0, dval1);
+            break;
+          case ExternalReference::BUILTIN_FP_CALL:
+            GetFpArgs(&dval0);
+            PrintF("Call to host function at %p with arg %f",
+                FUNCTION_ADDR(target), dval0);
+            break;
+          case ExternalReference::BUILTIN_FP_INT_CALL:
+            GetFpArgs(&dval0, &ival);
+            PrintF("Call to host function at %p with args %f, %d",
+                FUNCTION_ADDR(target), dval0, ival);
+            break;
+          default:
+            UNREACHABLE();
+            break;
+          }
+          if (!stack_aligned) {
+            PrintF(" with unaligned stack %08x\n", get_register(sp));
+          }
+          PrintF("\n");
+        }
+        CHECK(stack_aligned);
+        if (redirection->type() != ExternalReference::BUILTIN_COMPARE_CALL) {
+          SimulatorRuntimeFPCall target =
+              reinterpret_cast<SimulatorRuntimeFPCall>(external);
+          double result = target(arg0, arg1, arg2, arg3);
+          SetFpResult(result);
+        } else {
+          SimulatorRuntimeCall target =
+              reinterpret_cast<SimulatorRuntimeCall>(external);
+          int64_t result = target(arg0, arg1, arg2, arg3, arg4, arg5);
+          int32_t lo_res = static_cast<int32_t>(result);
+          int32_t hi_res = static_cast<int32_t>(result >> 32);
+          if (::v8::internal::FLAG_trace_sim) {
+            PrintF("Returned %08x\n", lo_res);
+          }
+          set_register(r0, lo_res);
+          set_register(r1, hi_res);
+        }
+      } else if (redirection->type() == ExternalReference::DIRECT_API_CALL) {
+        SimulatorRuntimeDirectApiCall target =
+            reinterpret_cast<SimulatorRuntimeDirectApiCall>(external);
+        if (::v8::internal::FLAG_trace_sim || !stack_aligned) {
+          PrintF("Call to host function at %p args %08x",
+              FUNCTION_ADDR(target), arg0);
+          if (!stack_aligned) {
+            PrintF(" with unaligned stack %08x\n", get_register(sp));
+          }
+          PrintF("\n");
+        }
+        CHECK(stack_aligned);
+        v8::Handle<v8::Value> result = target(arg0);
+        if (::v8::internal::FLAG_trace_sim) {
+          PrintF("Returned %p\n", reinterpret_cast<void *>(*result));
+        }
+        set_register(r0, (int32_t) *result);
+      } else if (redirection->type() == ExternalReference::DIRECT_GETTER_CALL) {
+        SimulatorRuntimeDirectGetterCall target =
+            reinterpret_cast<SimulatorRuntimeDirectGetterCall>(external);
+        if (::v8::internal::FLAG_trace_sim || !stack_aligned) {
+          PrintF("Call to host function at %p args %08x %08x",
+              FUNCTION_ADDR(target), arg0, arg1);
+          if (!stack_aligned) {
+            PrintF(" with unaligned stack %08x\n", get_register(sp));
+          }
+          PrintF("\n");
+        }
+        CHECK(stack_aligned);
+        v8::Handle<v8::Value> result = target(arg0, arg1);
+        if (::v8::internal::FLAG_trace_sim) {
+          PrintF("Returned %p\n", reinterpret_cast<void *>(*result));
+        }
+        set_register(r0, (int32_t) *result);
+      } else {
+        // builtin call.
+        ASSERT(redirection->type() == ExternalReference::BUILTIN_CALL);
+        SimulatorRuntimeCall target =
+            reinterpret_cast<SimulatorRuntimeCall>(external);
+        if (::v8::internal::FLAG_trace_sim || !stack_aligned) {
+          PrintF(
+              "Call to host function at %p"
+              "args %08x, %08x, %08x, %08x, %08x, %08x",
+              FUNCTION_ADDR(target),
+              arg0,
+              arg1,
+              arg2,
+              arg3,
+              arg4,
+              arg5);
+          if (!stack_aligned) {
+            PrintF(" with unaligned stack %08x\n", get_register(sp));
+          }
+          PrintF("\n");
+        }
+        CHECK(stack_aligned);
+        int64_t result = target(arg0, arg1, arg2, arg3, arg4, arg5);
+        int32_t lo_res = static_cast<int32_t>(result);
+        int32_t hi_res = static_cast<int32_t>(result >> 32);
+        if (::v8::internal::FLAG_trace_sim) {
+          PrintF("Returned %08x\n", lo_res);
+        }
+        set_register(r0, lo_res);
+        set_register(r1, hi_res);
+      }
+      set_register(lr, saved_lr);
+      set_pc(get_register(lr));
+      break;
+    }
+    case kBreakpoint: {
+      ArmDebugger dbg(this);
+      dbg.Debug();
+      break;
+    }
+    // stop uses all codes greater than 1 << 23.
+    default: {
+      if (svc >= (1 << 23)) {
+        uint32_t code = svc & kStopCodeMask;
+        if (isWatchedStop(code)) {
+          IncreaseStopCounter(code);
+        }
+        // Stop if it is enabled, otherwise go on jumping over the stop
+        // and the message address.
+        if (isEnabledStop(code)) {
+          ArmDebugger dbg(this);
+          dbg.Stop(instr);
+        } else {
+          set_pc(get_pc() + 2 * Instruction::kInstrSize);
+        }
+      } else {
+        // This is not a valid svc code.
+        UNREACHABLE();
+        break;
+      }
+    }
+  }
+}
+
+
+// Stop helper functions.
+bool Simulator::isStopInstruction(Instruction* instr) {
+  return (instr->Bits(27, 24) == 0xF) && (instr->SvcValue() >= kStopCode);
+}
+
+
+bool Simulator::isWatchedStop(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  return code < kNumOfWatchedStops;
+}
+
+
+bool Simulator::isEnabledStop(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  // Unwatched stops are always enabled.
+  return !isWatchedStop(code) ||
+    !(watched_stops[code].count & kStopDisabledBit);
+}
+
+
+void Simulator::EnableStop(uint32_t code) {
+  ASSERT(isWatchedStop(code));
+  if (!isEnabledStop(code)) {
+    watched_stops[code].count &= ~kStopDisabledBit;
+  }
+}
+
+
+void Simulator::DisableStop(uint32_t code) {
+  ASSERT(isWatchedStop(code));
+  if (isEnabledStop(code)) {
+    watched_stops[code].count |= kStopDisabledBit;
+  }
+}
+
+
+void Simulator::IncreaseStopCounter(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  ASSERT(isWatchedStop(code));
+  if ((watched_stops[code].count & ~(1 << 31)) == 0x7fffffff) {
+    PrintF("Stop counter for code %i has overflowed.\n"
+           "Enabling this code and reseting the counter to 0.\n", code);
+    watched_stops[code].count = 0;
+    EnableStop(code);
+  } else {
+    watched_stops[code].count++;
+  }
+}
+
+
+// Print a stop status.
+void Simulator::PrintStopInfo(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  if (!isWatchedStop(code)) {
+    PrintF("Stop not watched.");
+  } else {
+    const char* state = isEnabledStop(code) ? "Enabled" : "Disabled";
+    int32_t count = watched_stops[code].count & ~kStopDisabledBit;
+    // Don't print the state of unused breakpoints.
+    if (count != 0) {
+      if (watched_stops[code].desc) {
+        PrintF("stop %i - 0x%x: \t%s, \tcounter = %i, \t%s\n",
+               code, code, state, count, watched_stops[code].desc);
+      } else {
+        PrintF("stop %i - 0x%x: \t%s, \tcounter = %i\n",
+               code, code, state, count);
+      }
+    }
+  }
+}
+
+
+// Handle execution based on instruction types.
+
+// Instruction types 0 and 1 are both rolled into one function because they
+// only differ in the handling of the shifter_operand.
+void Simulator::DecodeType01(Instruction* instr) {
+  int type = instr->TypeValue();
+  if ((type == 0) && instr->IsSpecialType0()) {
+    // multiply instruction or extra loads and stores
+    if (instr->Bits(7, 4) == 9) {
+      if (instr->Bit(24) == 0) {
+        // Raw field decoding here. Multiply instructions have their Rd in
+        // funny places.
+        int rn = instr->RnValue();
+        int rm = instr->RmValue();
+        int rs = instr->RsValue();
+        int32_t rs_val = get_register(rs);
+        int32_t rm_val = get_register(rm);
+        if (instr->Bit(23) == 0) {
+          if (instr->Bit(21) == 0) {
+            // The MUL instruction description (A 4.1.33) refers to Rd as being
+            // the destination for the operation, but it confusingly uses the
+            // Rn field to encode it.
+            // Format(instr, "mul'cond's 'rn, 'rm, 'rs");
+            int rd = rn;  // Remap the rn field to the Rd register.
+            int32_t alu_out = rm_val * rs_val;
+            set_register(rd, alu_out);
+            if (instr->HasS()) {
+              SetNZFlags(alu_out);
+            }
+          } else {
+            // The MLA instruction description (A 4.1.28) refers to the order
+            // of registers as "Rd, Rm, Rs, Rn". But confusingly it uses the
+            // Rn field to encode the Rd register and the Rd field to encode
+            // the Rn register.
+            Format(instr, "mla'cond's 'rn, 'rm, 'rs, 'rd");
+          }
+        } else {
+          // The signed/long multiply instructions use the terms RdHi and RdLo
+          // when referring to the target registers. They are mapped to the Rn
+          // and Rd fields as follows:
+          // RdLo == Rd
+          // RdHi == Rn (This is confusingly stored in variable rd here
+          //             because the mul instruction from above uses the
+          //             Rn field to encode the Rd register. Good luck figuring
+          //             this out without reading the ARM instruction manual
+          //             at a very detailed level.)
+          // Format(instr, "'um'al'cond's 'rd, 'rn, 'rs, 'rm");
+          int rd_hi = rn;  // Remap the rn field to the RdHi register.
+          int rd_lo = instr->RdValue();
+          int32_t hi_res = 0;
+          int32_t lo_res = 0;
+          if (instr->Bit(22) == 1) {
+            int64_t left_op  = static_cast<int32_t>(rm_val);
+            int64_t right_op = static_cast<int32_t>(rs_val);
+            uint64_t result = left_op * right_op;
+            hi_res = static_cast<int32_t>(result >> 32);
+            lo_res = static_cast<int32_t>(result & 0xffffffff);
+          } else {
+            // unsigned multiply
+            uint64_t left_op  = static_cast<uint32_t>(rm_val);
+            uint64_t right_op = static_cast<uint32_t>(rs_val);
+            uint64_t result = left_op * right_op;
+            hi_res = static_cast<int32_t>(result >> 32);
+            lo_res = static_cast<int32_t>(result & 0xffffffff);
+          }
+          set_register(rd_lo, lo_res);
+          set_register(rd_hi, hi_res);
+          if (instr->HasS()) {
+            UNIMPLEMENTED();
+          }
+        }
+      } else {
+        UNIMPLEMENTED();  // Not used by V8.
+      }
+    } else {
+      // extra load/store instructions
+      int rd = instr->RdValue();
+      int rn = instr->RnValue();
+      int32_t rn_val = get_register(rn);
+      int32_t addr = 0;
+      if (instr->Bit(22) == 0) {
+        int rm = instr->RmValue();
+        int32_t rm_val = get_register(rm);
+        switch (instr->PUField()) {
+          case da_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn], -'rm");
+            ASSERT(!instr->HasW());
+            addr = rn_val;
+            rn_val -= rm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case ia_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn], +'rm");
+            ASSERT(!instr->HasW());
+            addr = rn_val;
+            rn_val += rm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case db_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn, -'rm]'w");
+            rn_val -= rm_val;
+            addr = rn_val;
+            if (instr->HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          case ib_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn, +'rm]'w");
+            rn_val += rm_val;
+            addr = rn_val;
+            if (instr->HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          default: {
+            // The PU field is a 2-bit field.
+            UNREACHABLE();
+            break;
+          }
+        }
+      } else {
+        int32_t imm_val = (instr->ImmedHValue() << 4) | instr->ImmedLValue();
+        switch (instr->PUField()) {
+          case da_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn], #-'off8");
+            ASSERT(!instr->HasW());
+            addr = rn_val;
+            rn_val -= imm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case ia_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn], #+'off8");
+            ASSERT(!instr->HasW());
+            addr = rn_val;
+            rn_val += imm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case db_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn, #-'off8]'w");
+            rn_val -= imm_val;
+            addr = rn_val;
+            if (instr->HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          case ib_x: {
+            // Format(instr, "'memop'cond'sign'h 'rd, ['rn, #+'off8]'w");
+            rn_val += imm_val;
+            addr = rn_val;
+            if (instr->HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          default: {
+            // The PU field is a 2-bit field.
+            UNREACHABLE();
+            break;
+          }
+        }
+      }
+      if (((instr->Bits(7, 4) & 0xd) == 0xd) && (instr->Bit(20) == 0)) {
+        ASSERT((rd % 2) == 0);
+        if (instr->HasH()) {
+          // The strd instruction.
+          int32_t value1 = get_register(rd);
+          int32_t value2 = get_register(rd+1);
+          WriteDW(addr, value1, value2);
+        } else {
+          // The ldrd instruction.
+          int* rn_data = ReadDW(addr);
+          set_dw_register(rd, rn_data);
+        }
+      } else if (instr->HasH()) {
+        if (instr->HasSign()) {
+          if (instr->HasL()) {
+            int16_t val = ReadH(addr, instr);
+            set_register(rd, val);
+          } else {
+            int16_t val = get_register(rd);
+            WriteH(addr, val, instr);
+          }
+        } else {
+          if (instr->HasL()) {
+            uint16_t val = ReadHU(addr, instr);
+            set_register(rd, val);
+          } else {
+            uint16_t val = get_register(rd);
+            WriteH(addr, val, instr);
+          }
+        }
+      } else {
+        // signed byte loads
+        ASSERT(instr->HasSign());
+        ASSERT(instr->HasL());
+        int8_t val = ReadB(addr);
+        set_register(rd, val);
+      }
+      return;
+    }
+  } else if ((type == 0) && instr->IsMiscType0()) {
+    if (instr->Bits(22, 21) == 1) {
+      int rm = instr->RmValue();
+      switch (instr->BitField(7, 4)) {
+        case BX:
+          set_pc(get_register(rm));
+          break;
+        case BLX: {
+          uint32_t old_pc = get_pc();
+          set_pc(get_register(rm));
+          set_register(lr, old_pc + Instruction::kInstrSize);
+          break;
+        }
+        case BKPT: {
+          ArmDebugger dbg(this);
+          PrintF("Simulator hit BKPT.\n");
+          dbg.Debug();
+          break;
+        }
+        default:
+          UNIMPLEMENTED();
+      }
+    } else if (instr->Bits(22, 21) == 3) {
+      int rm = instr->RmValue();
+      int rd = instr->RdValue();
+      switch (instr->BitField(7, 4)) {
+        case CLZ: {
+          uint32_t bits = get_register(rm);
+          int leading_zeros = 0;
+          if (bits == 0) {
+            leading_zeros = 32;
+          } else {
+            while ((bits & 0x80000000u) == 0) {
+              bits <<= 1;
+              leading_zeros++;
+            }
+          }
+          set_register(rd, leading_zeros);
+          break;
+        }
+        default:
+          UNIMPLEMENTED();
+      }
+    } else {
+      PrintF("%08x\n", instr->InstructionBits());
+      UNIMPLEMENTED();
+    }
+  } else {
+    int rd = instr->RdValue();
+    int rn = instr->RnValue();
+    int32_t rn_val = get_register(rn);
+    int32_t shifter_operand = 0;
+    bool shifter_carry_out = 0;
+    if (type == 0) {
+      shifter_operand = GetShiftRm(instr, &shifter_carry_out);
+    } else {
+      ASSERT(instr->TypeValue() == 1);
+      shifter_operand = GetImm(instr, &shifter_carry_out);
+    }
+    int32_t alu_out;
+
+    switch (instr->OpcodeField()) {
+      case AND: {
+        // Format(instr, "and'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "and'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val & shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case EOR: {
+        // Format(instr, "eor'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "eor'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val ^ shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case SUB: {
+        // Format(instr, "sub'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "sub'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val - shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(!BorrowFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, false));
+        }
+        break;
+      }
+
+      case RSB: {
+        // Format(instr, "rsb'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "rsb'cond's 'rd, 'rn, 'imm");
+        alu_out = shifter_operand - rn_val;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(!BorrowFrom(shifter_operand, rn_val));
+          SetVFlag(OverflowFrom(alu_out, shifter_operand, rn_val, false));
+        }
+        break;
+      }
+
+      case ADD: {
+        // Format(instr, "add'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "add'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val + shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(CarryFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
+        }
+        break;
+      }
+
+      case ADC: {
+        // Format(instr, "adc'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "adc'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val + shifter_operand + GetCarry();
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(CarryFrom(rn_val, shifter_operand, GetCarry()));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
+        }
+        break;
+      }
+
+      case SBC: {
+        Format(instr, "sbc'cond's 'rd, 'rn, 'shift_rm");
+        Format(instr, "sbc'cond's 'rd, 'rn, 'imm");
+        break;
+      }
+
+      case RSC: {
+        Format(instr, "rsc'cond's 'rd, 'rn, 'shift_rm");
+        Format(instr, "rsc'cond's 'rd, 'rn, 'imm");
+        break;
+      }
+
+      case TST: {
+        if (instr->HasS()) {
+          // Format(instr, "tst'cond 'rn, 'shift_rm");
+          // Format(instr, "tst'cond 'rn, 'imm");
+          alu_out = rn_val & shifter_operand;
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        } else {
+          // Format(instr, "movw'cond 'rd, 'imm").
+          alu_out = instr->ImmedMovwMovtValue();
+          set_register(rd, alu_out);
+        }
+        break;
+      }
+
+      case TEQ: {
+        if (instr->HasS()) {
+          // Format(instr, "teq'cond 'rn, 'shift_rm");
+          // Format(instr, "teq'cond 'rn, 'imm");
+          alu_out = rn_val ^ shifter_operand;
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        } else {
+          // Other instructions matching this pattern are handled in the
+          // miscellaneous instructions part above.
+          UNREACHABLE();
+        }
+        break;
+      }
+
+      case CMP: {
+        if (instr->HasS()) {
+          // Format(instr, "cmp'cond 'rn, 'shift_rm");
+          // Format(instr, "cmp'cond 'rn, 'imm");
+          alu_out = rn_val - shifter_operand;
+          SetNZFlags(alu_out);
+          SetCFlag(!BorrowFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, false));
+        } else {
+          // Format(instr, "movt'cond 'rd, 'imm").
+          alu_out = (get_register(rd) & 0xffff) |
+              (instr->ImmedMovwMovtValue() << 16);
+          set_register(rd, alu_out);
+        }
+        break;
+      }
+
+      case CMN: {
+        if (instr->HasS()) {
+          // Format(instr, "cmn'cond 'rn, 'shift_rm");
+          // Format(instr, "cmn'cond 'rn, 'imm");
+          alu_out = rn_val + shifter_operand;
+          SetNZFlags(alu_out);
+          SetCFlag(!CarryFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
+        } else {
+          // Other instructions matching this pattern are handled in the
+          // miscellaneous instructions part above.
+          UNREACHABLE();
+        }
+        break;
+      }
+
+      case ORR: {
+        // Format(instr, "orr'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "orr'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val | shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case MOV: {
+        // Format(instr, "mov'cond's 'rd, 'shift_rm");
+        // Format(instr, "mov'cond's 'rd, 'imm");
+        alu_out = shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case BIC: {
+        // Format(instr, "bic'cond's 'rd, 'rn, 'shift_rm");
+        // Format(instr, "bic'cond's 'rd, 'rn, 'imm");
+        alu_out = rn_val & ~shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case MVN: {
+        // Format(instr, "mvn'cond's 'rd, 'shift_rm");
+        // Format(instr, "mvn'cond's 'rd, 'imm");
+        alu_out = ~shifter_operand;
+        set_register(rd, alu_out);
+        if (instr->HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      default: {
+        UNREACHABLE();
+        break;
+      }
+    }
+  }
+}
+
+
+void Simulator::DecodeType2(Instruction* instr) {
+  int rd = instr->RdValue();
+  int rn = instr->RnValue();
+  int32_t rn_val = get_register(rn);
+  int32_t im_val = instr->Offset12Value();
+  int32_t addr = 0;
+  switch (instr->PUField()) {
+    case da_x: {
+      // Format(instr, "'memop'cond'b 'rd, ['rn], #-'off12");
+      ASSERT(!instr->HasW());
+      addr = rn_val;
+      rn_val -= im_val;
+      set_register(rn, rn_val);
+      break;
+    }
+    case ia_x: {
+      // Format(instr, "'memop'cond'b 'rd, ['rn], #+'off12");
+      ASSERT(!instr->HasW());
+      addr = rn_val;
+      rn_val += im_val;
+      set_register(rn, rn_val);
+      break;
+    }
+    case db_x: {
+      // Format(instr, "'memop'cond'b 'rd, ['rn, #-'off12]'w");
+      rn_val -= im_val;
+      addr = rn_val;
+      if (instr->HasW()) {
+        set_register(rn, rn_val);
+      }
+      break;
+    }
+    case ib_x: {
+      // Format(instr, "'memop'cond'b 'rd, ['rn, #+'off12]'w");
+      rn_val += im_val;
+      addr = rn_val;
+      if (instr->HasW()) {
+        set_register(rn, rn_val);
+      }
+      break;
+    }
+    default: {
+      UNREACHABLE();
+      break;
+    }
+  }
+  if (instr->HasB()) {
+    if (instr->HasL()) {
+      byte val = ReadBU(addr);
+      set_register(rd, val);
+    } else {
+      byte val = get_register(rd);
+      WriteB(addr, val);
+    }
+  } else {
+    if (instr->HasL()) {
+      set_register(rd, ReadW(addr, instr));
+    } else {
+      WriteW(addr, get_register(rd), instr);
+    }
+  }
+}
+
+
+void Simulator::DecodeType3(Instruction* instr) {
+  int rd = instr->RdValue();
+  int rn = instr->RnValue();
+  int32_t rn_val = get_register(rn);
+  bool shifter_carry_out = 0;
+  int32_t shifter_operand = GetShiftRm(instr, &shifter_carry_out);
+  int32_t addr = 0;
+  switch (instr->PUField()) {
+    case da_x: {
+      ASSERT(!instr->HasW());
+      Format(instr, "'memop'cond'b 'rd, ['rn], -'shift_rm");
+      UNIMPLEMENTED();
+      break;
+    }
+    case ia_x: {
+      if (instr->HasW()) {
+        ASSERT(instr->Bits(5, 4) == 0x1);
+
+        if (instr->Bit(22) == 0x1) {  // USAT.
+          int32_t sat_pos = instr->Bits(20, 16);
+          int32_t sat_val = (1 << sat_pos) - 1;
+          int32_t shift = instr->Bits(11, 7);
+          int32_t shift_type = instr->Bit(6);
+          int32_t rm_val = get_register(instr->RmValue());
+          if (shift_type == 0) {  // LSL
+            rm_val <<= shift;
+          } else {  // ASR
+            rm_val >>= shift;
+          }
+          // If saturation occurs, the Q flag should be set in the CPSR.
+          // There is no Q flag yet, and no instruction (MRS) to read the
+          // CPSR directly.
+          if (rm_val > sat_val) {
+            rm_val = sat_val;
+          } else if (rm_val < 0) {
+            rm_val = 0;
+          }
+          set_register(rd, rm_val);
+        } else {  // SSAT.
+          UNIMPLEMENTED();
+        }
+        return;
+      } else {
+        Format(instr, "'memop'cond'b 'rd, ['rn], +'shift_rm");
+        UNIMPLEMENTED();
+      }
+      break;
+    }
+    case db_x: {
+      // Format(instr, "'memop'cond'b 'rd, ['rn, -'shift_rm]'w");
+      addr = rn_val - shifter_operand;
+      if (instr->HasW()) {
+        set_register(rn, addr);
+      }
+      break;
+    }
+    case ib_x: {
+      if (instr->HasW() && (instr->Bits(6, 4) == 0x5)) {
+        uint32_t widthminus1 = static_cast<uint32_t>(instr->Bits(20, 16));
+        uint32_t lsbit = static_cast<uint32_t>(instr->Bits(11, 7));
+        uint32_t msbit = widthminus1 + lsbit;
+        if (msbit <= 31) {
+          if (instr->Bit(22)) {
+            // ubfx - unsigned bitfield extract.
+            uint32_t rm_val =
+                static_cast<uint32_t>(get_register(instr->RmValue()));
+            uint32_t extr_val = rm_val << (31 - msbit);
+            extr_val = extr_val >> (31 - widthminus1);
+            set_register(instr->RdValue(), extr_val);
+          } else {
+            // sbfx - signed bitfield extract.
+            int32_t rm_val = get_register(instr->RmValue());
+            int32_t extr_val = rm_val << (31 - msbit);
+            extr_val = extr_val >> (31 - widthminus1);
+            set_register(instr->RdValue(), extr_val);
+          }
+        } else {
+          UNREACHABLE();
+        }
+        return;
+      } else if (!instr->HasW() && (instr->Bits(6, 4) == 0x1)) {
+        uint32_t lsbit = static_cast<uint32_t>(instr->Bits(11, 7));
+        uint32_t msbit = static_cast<uint32_t>(instr->Bits(20, 16));
+        if (msbit >= lsbit) {
+          // bfc or bfi - bitfield clear/insert.
+          uint32_t rd_val =
+              static_cast<uint32_t>(get_register(instr->RdValue()));
+          uint32_t bitcount = msbit - lsbit + 1;
+          uint32_t mask = (1 << bitcount) - 1;
+          rd_val &= ~(mask << lsbit);
+          if (instr->RmValue() != 15) {
+            // bfi - bitfield insert.
+            uint32_t rm_val =
+                static_cast<uint32_t>(get_register(instr->RmValue()));
+            rm_val &= mask;
+            rd_val |= rm_val << lsbit;
+          }
+          set_register(instr->RdValue(), rd_val);
+        } else {
+          UNREACHABLE();
+        }
+        return;
+      } else {
+        // Format(instr, "'memop'cond'b 'rd, ['rn, +'shift_rm]'w");
+        addr = rn_val + shifter_operand;
+        if (instr->HasW()) {
+          set_register(rn, addr);
+        }
+      }
+      break;
+    }
+    default: {
+      UNREACHABLE();
+      break;
+    }
+  }
+  if (instr->HasB()) {
+    if (instr->HasL()) {
+      uint8_t byte = ReadB(addr);
+      set_register(rd, byte);
+    } else {
+      uint8_t byte = get_register(rd);
+      WriteB(addr, byte);
+    }
+  } else {
+    if (instr->HasL()) {
+      set_register(rd, ReadW(addr, instr));
+    } else {
+      WriteW(addr, get_register(rd), instr);
+    }
+  }
+}
+
+
+void Simulator::DecodeType4(Instruction* instr) {
+  ASSERT(instr->Bit(22) == 0);  // only allowed to be set in privileged mode
+  if (instr->HasL()) {
+    // Format(instr, "ldm'cond'pu 'rn'w, 'rlist");
+    HandleRList(instr, true);
+  } else {
+    // Format(instr, "stm'cond'pu 'rn'w, 'rlist");
+    HandleRList(instr, false);
+  }
+}
+
+
+void Simulator::DecodeType5(Instruction* instr) {
+  // Format(instr, "b'l'cond 'target");
+  int off = (instr->SImmed24Value() << 2);
+  intptr_t pc_address = get_pc();
+  if (instr->HasLink()) {
+    set_register(lr, pc_address + Instruction::kInstrSize);
+  }
+  int pc_reg = get_register(pc);
+  set_pc(pc_reg + off);
+}
+
+
+void Simulator::DecodeType6(Instruction* instr) {
+  DecodeType6CoprocessorIns(instr);
+}
+
+
+void Simulator::DecodeType7(Instruction* instr) {
+  if (instr->Bit(24) == 1) {
+    SoftwareInterrupt(instr);
+  } else {
+    DecodeTypeVFP(instr);
+  }
+}
+
+
+// void Simulator::DecodeTypeVFP(Instruction* instr)
+// The Following ARMv7 VFPv instructions are currently supported.
+// vmov :Sn = Rt
+// vmov :Rt = Sn
+// vcvt: Dd = Sm
+// vcvt: Sd = Dm
+// Dd = vabs(Dm)
+// Dd = vneg(Dm)
+// Dd = vadd(Dn, Dm)
+// Dd = vsub(Dn, Dm)
+// Dd = vmul(Dn, Dm)
+// Dd = vdiv(Dn, Dm)
+// vcmp(Dd, Dm)
+// vmrs
+// Dd = vsqrt(Dm)
+void Simulator::DecodeTypeVFP(Instruction* instr) {
+  ASSERT((instr->TypeValue() == 7) && (instr->Bit(24) == 0x0) );
+  ASSERT(instr->Bits(11, 9) == 0x5);
+
+  // Obtain double precision register codes.
+  int vm = instr->VFPMRegValue(kDoublePrecision);
+  int vd = instr->VFPDRegValue(kDoublePrecision);
