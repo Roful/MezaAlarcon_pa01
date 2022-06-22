@@ -2275,3 +2275,1000 @@ namespace <span class="d">internal</span> {
       break;</span>
     <span class="d">case SPECIAL3:
       switch (instr-&gt;FunctionFieldRaw()) {
+        case INS:
+          // Ins instr leaves result in Rt, rather than Rd.
+          set_register(rt_reg, alu_out);
+          break;
+        case EXT:
+          // Ext instr leaves result in Rt, rather than Rd.
+          set_register(rt_reg, alu_out);
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    // Unimplemented opcodes raised an error in the configuration step before,
+    // so we can use the default here to set the destination register in common
+    // cases.
+    default:
+      set_register(rd_reg, alu_out);</span>
+  };
+}
+
+
+// Type 2: instructions using a 16 bytes immediate. (eg: addi, beq).
+<span class="d">void</span> <span class="d">Simulator::DecodeTypeImmediate</span><span class="d">(Instruction* instr)</span> {
+  // Instruction fields.
+  <span class="d">Opcode   op     = instr-&gt;OpcodeFieldRaw();</span>
+  <span class="d">int32_t  rs     = get_register(instr-&gt;RsValue());</span>
+  <span class="d">uint32_t rs_u   = static_cast&lt;uint32_t&gt;(rs);</span>
+  <span class="d">int32_t  rt_reg = instr-&gt;RtValue();</span>  // Destination register.
+  <span class="d">int32_t  rt     = get_register(rt_reg);</span>
+  <span class="d">int16_t  imm16  = instr-&gt;Imm16Value();</span>
+
+  <span class="d">int32_t  ft_reg = instr-&gt;FtValue();</span>  // Destination register.
+
+  // Zero extended immediate.
+  <span class="d">uint32_t  oe_imm16 = 0xffff & imm16;</span>
+  // Sign extended immediate.
+  <span class="d">int32_t   se_imm16 = imm16;</span>
+
+  // Get current pc.
+  <span class="d">int32_t current_pc = get_pc();</span>
+  // Next pc.
+  <span class="d">int32_t next_pc = bad_ra;</span>
+
+  // Used for conditional branch instructions.
+  <span class="d">bool do_branch = false;</span>
+  <span class="d">bool execute_branch_delay_instruction = false;</span>
+
+  // Used for arithmetic instructions.
+  <span class="d">int32_t alu_out = 0;</span>
+  // Floating point.
+  <span class="d">double fp_out = 0.0;</span>
+  <span class="d">uint32_t cc, cc_value, fcsr_cc;</span>
+
+  // Used for memory instructions.
+  <span class="d">int32_t addr = 0x0;</span>
+  // Value to be written in memory.
+  <span class="d">uint32_t mem_value = 0x0;</span>
+
+  // ---------- Configuration (and execution for REGIMM).
+  <span class="d">switch (op) {
+    // ------------- COP1. Coprocessor instructions.
+    case COP1:
+      switch (instr-&gt;RsFieldRaw()) {
+        case BC1:   // Branch on coprocessor condition.
+          cc = instr-&gt;FBccValue();
+          fcsr_cc = get_fcsr_condition_bit(cc);
+          cc_value = test_fcsr_bit(fcsr_cc);
+          do_branch = (instr-&gt;FBtrueValue()) ? cc_value : !cc_value;
+          execute_branch_delay_instruction = true;
+          // Set next_pc.
+          if (do_branch) {
+            next_pc = current_pc + (imm16 &lt;&lt; 2) + Instruction::kInstrSize;
+          } else {
+            next_pc = current_pc + kBranchReturnOffset;
+          }
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    // ------------- REGIMM class.
+    case REGIMM:
+      switch (instr-&gt;RtFieldRaw()) {
+        case BLTZ:
+          do_branch = (rs  &lt; 0);
+          break;
+        case BLTZAL:
+          do_branch = rs  &lt; 0;
+          break;
+        case BGEZ:
+          do_branch = rs &gt;= 0;
+          break;
+        case BGEZAL:
+          do_branch = rs &gt;= 0;
+          break;
+        default:
+          UNREACHABLE();
+      };
+      switch (instr-&gt;RtFieldRaw()) {
+        case BLTZ:
+        case BLTZAL:
+        case BGEZ:
+        case BGEZAL:
+          // Branch instructions common part.
+          execute_branch_delay_instruction = true;
+          // Set next_pc.
+          if (do_branch) {
+            next_pc = current_pc + (imm16 &lt;&lt; 2) + Instruction::kInstrSize;
+            if (instr-&gt;IsLinkingInstruction()) {
+              set_register(31, current_pc + kBranchReturnOffset);
+            }
+          } else {
+            next_pc = current_pc + kBranchReturnOffset;
+          }
+        default:
+          break;
+        };
+    break;  // case REGIMM.
+    // ------------- Branch instructions.
+    // When comparing to zero, the encoding of rt field is always 0, so we don&#39;t
+    // need to replace rt with zero.
+    case BEQ:
+      do_branch = (rs == rt);
+      break;
+    case BNE:
+      do_branch = rs != rt;
+      break;
+    case BLEZ:
+      do_branch = rs &lt;= 0;
+      break;
+    case BGTZ:
+      do_branch = rs  &gt; 0;
+      break;
+    // ------------- Arithmetic instructions.
+    case ADDI:
+      if (HaveSameSign(rs, se_imm16)) {
+        if (rs &gt; 0) {
+          exceptions[kIntegerOverflow] = rs &gt; (Registers::kMaxValue - se_imm16);
+        } else if (rs &lt; 0) {
+          exceptions[kIntegerUnderflow] =
+              rs &lt; (Registers::kMinValue - se_imm16);
+        }
+      }
+      alu_out = rs + se_imm16;
+      break;
+    case ADDIU:
+      alu_out = rs + se_imm16;
+      break;
+    case SLTI:
+      alu_out = (rs &lt; se_imm16) ? 1 : 0;
+      break;
+    case SLTIU:
+      alu_out = (rs_u &lt; static_cast&lt;uint32_t&gt;(se_imm16)) ? 1 : 0;
+      break;
+    case ANDI:
+        alu_out = rs & oe_imm16;
+      break;
+    case ORI:
+        alu_out = rs | oe_imm16;
+      break;
+    case XORI:
+        alu_out = rs ^ oe_imm16;
+      break;
+    case LUI:
+        alu_out = (oe_imm16 &lt;&lt; 16);
+      break;
+    // ------------- Memory instructions.
+    case LB:
+      addr = rs + se_imm16;
+      alu_out = ReadB(addr);
+      break;
+    case LH:
+      addr = rs + se_imm16;
+      alu_out = ReadH(addr, instr);
+      break;
+    case LWL: {
+      // al_offset is offset of the effective address within an aligned word.
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint8_t byte_shift = kPointerAlignmentMask - al_offset;
+      uint32_t mask = (1 &lt;&lt; byte_shift * 8) - 1;
+      addr = rs + se_imm16 - al_offset;
+      alu_out = ReadW(addr, instr);
+      alu_out &lt;&lt;= byte_shift * 8;
+      alu_out |= rt & mask;
+      break;
+    }
+    case LW:
+      addr = rs + se_imm16;
+      alu_out = ReadW(addr, instr);
+      break;
+    case LBU:
+      addr = rs + se_imm16;
+      alu_out = ReadBU(addr);
+      break;
+    case LHU:
+      addr = rs + se_imm16;
+      alu_out = ReadHU(addr, instr);
+      break;
+    case LWR: {
+      // al_offset is offset of the effective address within an aligned word.
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint8_t byte_shift = kPointerAlignmentMask - al_offset;
+      uint32_t mask = al_offset ? (~0 &lt;&lt; (byte_shift + 1) * 8) : 0;
+      addr = rs + se_imm16 - al_offset;
+      alu_out = ReadW(addr, instr);
+      alu_out = static_cast&lt;uint32_t&gt; (alu_out) &gt;&gt; al_offset * 8;
+      alu_out |= rt & mask;
+      break;
+    }
+    case SB:
+      addr = rs + se_imm16;
+      break;
+    case SH:
+      addr = rs + se_imm16;
+      break;
+    case SWL: {
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint8_t byte_shift = kPointerAlignmentMask - al_offset;
+      uint32_t mask = byte_shift ? (~0 &lt;&lt; (al_offset + 1) * 8) : 0;
+      addr = rs + se_imm16 - al_offset;
+      mem_value = ReadW(addr, instr) & mask;
+      mem_value |= static_cast&lt;uint32_t&gt;(rt) &gt;&gt; byte_shift * 8;
+      break;
+    }
+    case SW:
+      addr = rs + se_imm16;
+      break;
+    case SWR: {
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint32_t mask = (1 &lt;&lt; al_offset * 8) - 1;
+      addr = rs + se_imm16 - al_offset;
+      mem_value = ReadW(addr, instr);
+      mem_value = (rt &lt;&lt; al_offset * 8) | (mem_value & mask);
+      break;
+    }
+    case LWC1:
+      addr = rs + se_imm16;
+      alu_out = ReadW(addr, instr);
+      break;
+    case LDC1:
+      addr = rs + se_imm16;
+      fp_out = ReadD(addr, instr);
+      break;
+    case SWC1:
+    case SDC1:
+      addr = rs + se_imm16;
+      break;
+    default:
+      UNREACHABLE();
+  }</span>;
+
+  // ---------- Raise exceptions triggered.
+  <span class="d">SignalExceptions();</span>
+
+  // ---------- Execution.
+  <span class="d">switch</span> (<span class="d">op</span>) {
+    // ------------- Branch instructions.
+    <span class="d">case BEQ</span>:
+    <span class="d">case BNE</span>:
+    <span class="d">case</span> <span class="d">BLEZ</span>:
+    <span class="d">case BGTZ:
+      // Branch instructions common part.
+      execute_branch_delay_instruction = true;</span>
+      // Set next_pc.
+      <span class="d">if</span> <span class="d">(do_branch)</span> {
+        <span class="d">next_pc = current_pc + (imm16 &lt;&lt; 2) + Instruction::kInstrSize;</span>
+        <span class="d">if</span> <span class="d">(instr-&gt;IsLinkingInstruction())</span> {
+          <span class="d">set_register</span>(<span class="d">31</span>, <span class="d">current_pc</span> <span class="d">+</span> <a id='4415' tid='4416', class="m">2</a><a id='4417' tid='4418', class="m">*</a> <a id='4419' tid='4420', class="m">Instruction</a><a id='4421' tid='4422', class="m">::</a><a id='4423' tid='4424', class="m">kInstrSize</a>);
+        }
+      } <span class="d">else {
+        next_pc = current_pc + 2 * Instruction::kInstrSize;
+      }</span>
+      <span class="d">break;</span>
+    // ------------- Arithmetic instructions.
+    <span class="d">case ADDI</span>:
+    <span class="d">case ADDIU</span>:
+    <span class="d">case SLTI</span>:
+    <span class="d">case SLTIU</span>:
+    <span class="d">case ANDI</span>:
+    <span class="d">case ORI</span>:
+    <span class="d">case XORI:
+    case LUI:
+      set_register(rt_reg, alu_out);
+      break;</span>
+    // ------------- Memory instructions.
+    <span class="d">case LB</span>:
+    <span class="d">case LH</span>:
+    <span class="d">case LWL</span>:
+    <span class="d">case LW</span>:
+    <span class="d">case LBU</span>:
+    <span class="d">case LHU:
+    case LWR:
+      set_register(rt_reg, alu_out);
+      break;
+    case SB:
+      WriteB(addr, static_cast&lt;int8_t&gt;(rt));
+      break;
+    case SH:
+      WriteH(addr, static_cast&lt;uint16_t&gt;(rt), instr);
+      break;
+    case SWL:
+      WriteW(addr, mem_value, instr);
+      break;
+    case SW:
+      WriteW(addr, rt, instr);
+      break;
+    case SWR:
+      WriteW(addr, mem_value, instr);
+      break;
+    case LWC1:
+      set_fpu_register(ft_reg, alu_out);
+      break;
+    case LDC1:
+      set_fpu_register_double(ft_reg, fp_out);
+      break;
+    case SWC1:
+      addr = rs + se_imm16;
+      WriteW(addr, get_fpu_register(ft_reg), instr);
+      break;
+    case SDC1:
+      addr = rs + se_imm16;
+      WriteD(addr, get_fpu_register_double(ft_reg), instr);
+      break;
+    default:
+      break;</span>
+  };
+
+
+  <span class="d">if (execute_branch_delay_instruction) {
+    // Execute branch delay slot
+    // We don&#39;t check for end_sim_pc. First it should not be met as the current
+    // pc is valid. Secondly a jump should always execute its branch delay slot.
+    Instruction* branch_delay_instr =
+      reinterpret_cast&lt;Instruction*&gt;(current_pc+Instruction::kInstrSize);
+    BranchDelayInstructionDecode(branch_delay_instr);
+  }</span>
+
+  // If needed update pc after the branch delay execution.
+  <span class="d">if (next_pc != bad_ra) {
+    set_pc(next_pc);
+  }</span>
+}
+
+
+// Type 3: instructions using a 26 bytes immediate. (eg: j, jal).
+<span class="d">void Simulator::DecodeTypeJump(Instruction* instr) {
+  // Get current pc.
+  int32_t current_pc = get_pc();
+  // Get unchanged bits of pc.
+  int32_t pc_high_bits = current_pc & 0xf0000000;
+  // Next pc.
+  int32_t next_pc = pc_high_bits | (instr-&gt;Imm26Value() &lt;&lt; 2);
+
+  // Execute branch delay slot.
+  // We don&#39;t check for end_sim_pc. First it should not be met as the current pc
+  // is valid. Secondly a jump should always execute its branch delay slot.
+  Instruction* branch_delay_instr =
+      reinterpret_cast&lt;Instruction*&gt;(current_pc + Instruction::kInstrSize);
+  BranchDelayInstructionDecode(branch_delay_instr);
+
+  // Update pc and ra if necessary.
+  // Do this after the branch delay execution.
+  if (instr-&gt;IsLinkingInstruction()) {
+    set_register(31, current_pc + 2 * Instruction::kInstrSize);
+  }
+  set_pc(next_pc);
+  pc_modified_ = true;
+}</span>
+
+
+// Executes the current instruction.
+<a id='4401' tid='4402', class="m">void</a> <a id='4403' tid='4404', class="m">Simulator</a><a id='4405' tid='4406', class="m">::</a><a id='4407' tid='4408', class="m">InstructionDecode</a>(<a id='4409' tid='4410', class="m">Instruction</a><a id='4411' tid='4412', class="m">*</a> <a id='4413' tid='4414', class="m">instr</a>) {
+  <a id='4425' tid='4426', class="m">if</a> (<a id='4427' tid='4428', class="m">v8</a><a id='4429' tid='4430', class="m">::</a><a id='4431' tid='4432', class="m">internal</a><a id='4433' tid='4434', class="m">::</a><a id='4435' tid='4436', class="m">FLAG_check_icache</a>) {
+    <a id='4437' tid='4438', class="m">CheckICache</a>(<a id='4439' tid='4440', class="m">isolate_</a>-&gt;<a id='4441' tid='4442', class="m">simulator_i_cache</a>(), <a id='4443' tid='4444', class="m">instr</a>);
+  }
+  <span class="d">pc_modified_ = false;</span>
+  <span class="d">if</span> (<a id='4459' tid='4460', class="m">::</a><a id='4461' tid='4462', class="m">v8</a><a id='4463' tid='4464', class="m">::</a><a id='4465' tid='4466', class="m">internal</a><a id='4467' tid='4468', class="m">::</a><a id='4469' tid='4470', class="m">FLAG_trace_sim</a>) {
+    <span class="d">disasm::NameConverter converter;</span>
+    <span class="d">disasm::Disassembler dasm(converter)</span>;
+    // Use a reasonably large buffer.
+    <span class="d">v8::internal::EmbeddedVector&lt;char, 256&gt; buffer;</span>
+    <a id='4445' tid='4446', class="m">dasm</a>.<a id='4447' tid='4448', class="m">InstructionDecode</a>(<a id='4449' tid='4450', class="m">buffer</a>, <a id='4451' tid='4452', class="m">reinterpret_cast</a>&lt;<a id='4453' tid='4454', class="m">byte</a><a id='4455' tid='4456', class="m">*</a>&gt;(<a id='4457' tid='4458', class="m">instr</a>));
+    <a id='4387' tid='4388', class="m">PrintF</a>(<a id='4389' tid='4390', class="m">&quot;  0x%08x  %s\n&quot;</a>, <a id='4391' tid='4392', class="m">reinterpret_cast</a>&lt;<a id='4393' tid='4394', class="m">intptr_t</a>&gt;(<a id='4395' tid='4396', class="m">instr</a>),
+        <a id='4397' tid='4398', class="m">buffer</a>.<a id='4399' tid='4400', class="m">start</a>());
+  }
+
+  <span class="d">switch (instr-&gt;InstructionType()) {
+    case Instruction::kRegisterType:
+      DecodeTypeRegister(instr);
+      break;
+    case Instruction::kImmediateType:
+      DecodeTypeImmediate(instr);
+      break;
+    case Instruction::kJumpType:
+      DecodeTypeJump(instr);
+      break;
+    default:
+      UNSUPPORTED();
+  }</span>
+  <a id='4363' tid='4364', class="m">if</a> (<a id='4365' tid='4366', class="m">!</a><a id='4367' tid='4368', class="m">pc_modified_</a>) {
+    <a id='4369' tid='4370', class="m">set_register</a>(<a id='4371' tid='4372', class="m">pc</a>, <a id='4373' tid='4374', class="m">reinterpret_cast</a>&lt;<a id='4375' tid='4376', class="m">int32_t</a>&gt;(<a id='4377' tid='4378', class="m">instr</a>) <a id='4379' tid='4380', class="m">+</a>
+                 <a id='4381' tid='4382', class="m">Instruction</a><a id='4383' tid='4384', class="m">::</a><a id='4385' tid='4386', class="m">kInstrSize</a>);
+  }
+}
+
+
+
+<a id='4727' tid='4728', class="m">void</a> <a id='4729' tid='4730', class="m">Simulator</a><a id='4731' tid='4732', class="m">::</a><a id='4733' tid='4734', class="m">Execute</a>() {
+  // Get the PC to simulate. Cannot use the accessor here as we need the
+  // raw PC value and not the one used as input to arithmetic instructions.
+  <a id='4735' tid='4736', class="m">int</a> <a id='4737' tid='4738', class="m">program_counter</a> = <a id='4739' tid='4740', class="m">get_pc</a>();
+  <a id='4741' tid='4742', class="m">if</a> (<a id='4743' tid='4744', class="m">::</a><a id='4745' tid='4746', class="m">v8</a><a id='4747' tid='4748', class="m">::</a><a id='4749' tid='4750', class="m">internal</a><a id='4751' tid='4752', class="m">::</a><a id='4753' tid='4754', class="m">FLAG_stop_sim_at</a> <a id='4755' tid='4756', class="m">==</a> <a id='4757' tid='4758', class="m">0</a>) {
+    // Fast version of the dispatch loop without checking whether the simulator
+    // should be stopping at a particular executed instruction.
+    <a id='4759' tid='4760', class="m">while</a> (<a id='4761' tid='4762', class="m">program_counter</a> <a id='4763' tid='4764', class="m">!=</a> <a id='4765' tid='4766', class="m">end_sim_pc</a>) {
+      <a id='4767' tid='4768', class="m">Instruction</a><a id='4769' tid='4770', class="m">*</a> <a id='4771' tid='4772', class="m">instr</a> = <a id='4773' tid='4774', class="m">reinterpret_cast</a>&lt;<a id='4775' tid='4776', class="m">Instruction</a><a id='4777' tid='4778', class="m">*</a>&gt;(<a id='4779' tid='4780', class="m">program_counter</a>);
+      <a id='4781' tid='4782', class="m">icount_</a><a id='4783' tid='4784', class="m">++</a>;
+      <a id='4785' tid='4786', class="m">InstructionDecode</a>(<a id='4787' tid='4788', class="m">instr</a>);
+      <a id='4789' tid='4790', class="m">program_counter</a> <a id='4791' tid='4792', class="m">=</a> <a id='4793' tid='4794', class="m">get_pc</a>();
+    }
+  } <a id='4795' tid='4796', class="m">else</a> {
+    // FLAG_stop_sim_at is at the non-default value. Stop in the debugger when
+    // we reach the particular instuction count.
+    <a id='4797' tid='4798', class="m">while</a> (<a id='4799' tid='4800', class="m">program_counter</a> <a id='4801' tid='4802', class="m">!=</a> <a id='4803' tid='4804', class="m">end_sim_pc</a>) {
+      <a id='4805' tid='4806', class="m">Instruction</a><a id='4807' tid='4808', class="m">*</a> <a id='4809' tid='4810', class="m">instr</a> = <a id='4811' tid='4812', class="m">reinterpret_cast</a>&lt;<a id='4813' tid='4814', class="m">Instruction</a><a id='4815' tid='4816', class="m">*</a>&gt;(<a id='4817' tid='4818', class="m">program_counter</a>);
+      <a id='4819' tid='4820', class="m">icount_</a><a id='4821' tid='4822', class="m">++</a>;
+      <span class="d">if</span> (<a id='4823' tid='4824', class="m">icount_</a> <a id='4825' tid='4826', class="m">==</a> <a id='4827' tid='4828', class="m">::</a><a id='4829' tid='4830', class="m">v8</a><a id='4831' tid='4832', class="m">::</a><a id='4833' tid='4834', class="m">internal</a><a id='4835' tid='4836', class="m">::</a><a id='4837' tid='4838', class="m">FLAG_stop_sim_at</a>) <span class="d">{
+        MipsDebugger dbg(this);
+        dbg.Debug();
+      }</span> <span class="d">else {
+        InstructionDecode(instr);
+      }</span>
+      <a id='4839' tid='4840', class="m">program_counter</a> <a id='4841' tid='4842', class="m">=</a> <a id='4843' tid='4844', class="m">get_pc</a>();
+    }
+  }
+}
+
+
+<a id='4667' tid='4668', class="m">int32_t</a> <a id='4669' tid='4670', class="m">Simulator</a><a id='4671' tid='4672', class="m">::</a><a id='4673' tid='4674', class="m">Call</a>(<a id='4675' tid='4676', class="m">byte</a><a id='4677' tid='4678', class="m">*</a> <a id='4679' tid='4680', class="m">entry</a>, <a id='4681' tid='4682', class="m">int</a> <a id='4683' tid='4684', class="m">argument_count</a>, <a id='4685' tid='4686', class="m">...</a>) {
+  <span class="d">va_list parameters;</span>
+  <span class="d">va_start(parameters, argument_count);</span>
+  // Setup arguments.
+
+  // First four arguments passed in registers.
+  <span class="d">ASSERT(argument_count &gt;= 4);</span>
+  <span class="d">set_register(a0, va_arg(parameters, int32_t));</span>
+  <span class="d">set_register(a1, va_arg(parameters, int32_t));</span>
+  <span class="d">set_register(a2, va_arg(parameters, int32_t));</span>
+  <span class="d">set_register(a3, va_arg(parameters, int32_t));</span>
+
+  // Remaining arguments passed on stack.
+  <span class="d">int original_stack = get_register(sp);</span>
+  // Compute position of stack on entry to generated code.
+  <span class="d">int entry_stack = (original_stack - (argument_count - 4) * sizeof(int32_t)
+                                    - kCArgsSlotsSize);</span>
+  <a id='4687' tid='4688', class="m">if</a> (<a id='4689' tid='4690', class="m">OS</a><a id='4691' tid='4692', class="m">::</a><a id='4693' tid='4694', class="m">ActivationFrameAlignment</a>() <a id='4695' tid='4696', class="m">!=</a> <a id='4697' tid='4698', class="m">0</a>) {
+    <a id='4699' tid='4700', class="m">entry_stack</a> <a id='4701' tid='4702', class="m">&=</a> <a id='4703' tid='4704', class="m">-</a><a id='4705' tid='4706', class="m">OS</a><a id='4707' tid='4708', class="m">::</a><a id='4709' tid='4710', class="m">ActivationFrameAlignment</a>();
+  }
+  // Store remaining arguments on stack, from low to high memory.
+  <a id='4653' tid='4654', class="m">intptr_t</a><a id='4655' tid='4656', class="m">*</a> <a id='4657' tid='4658', class="m">stack_argument</a> = <a id='4659' tid='4660', class="m">reinterpret_cast</a>&lt;<a id='4661' tid='4662', class="m">intptr_t</a><a id='4663' tid='4664', class="m">*</a>&gt;(<a id='4665' tid='4666', class="m">entry_stack</a>);
+  <span class="d">for</span> (<a id='4545' tid='4546', class="m">int</a> <a id='4547' tid='4548', class="m">i</a> = <a id='4549' tid='4550', class="m">4</a>; <a id='4551' tid='4552', class="m">i</a> <a id='4553' tid='4554', class="m">&lt;</a> <a id='4555' tid='4556', class="m">argument_count</a>; <a id='4557' tid='4558', class="m">i</a><a id='4559' tid='4560', class="m">++</a>) <span class="d">{
+    stack_argument[i - 4 + kArgsSlotsNum] = va_arg(parameters, int32_t);
+  }</span>
+  <span class="d">va_end(parameters);</span>
+  <span class="d">set_register(sp, entry_stack);</span>
+
+  // Prepare to execute the code at entry.
+  <a id='4481' tid='4482', class="m">set_register</a>(<a id='4483' tid='4484', class="m">pc</a>, <a id='4485' tid='4486', class="m">reinterpret_cast</a>&lt;<a id='4487' tid='4488', class="m">int32_t</a>&gt;(<a id='4489' tid='4490', class="m">entry</a>));
+  // Put down marker for end of simulation. The simulator will stop simulation
+  // when the PC reaches this value. By saving the &quot;end simulation&quot; value into
+  // the LR the simulation stops when returning to this call point.
+  <span class="d">set_register(ra, end_sim_pc);</span>
+
+  // Remember the values of callee-saved registers.
+  // The code below assumes that r9 is not used as sb (static base) in
+  // simulator code and therefore is regarded as a callee-saved register.
+  <span class="d">int32_t s0_val = get_register(s0);</span>
+  <span class="d">int32_t s1_val = get_register(s1);</span>
+  <span class="d">int32_t s2_val = get_register(s2);</span>
+  <span class="d">int32_t s3_val = get_register(s3);</span>
+  <span class="d">int32_t s4_val = get_register(s4);</span>
+  <span class="d">int32_t s5_val = get_register(s5);</span>
+  <span class="d">int32_t s6_val = get_register(s6);</span>
+  <span class="d">int32_t s7_val = get_register(s7);</span>
+  <span class="d">int32_t gp_val = get_register(gp);</span>
+  <span class="d">int32_t sp_val = get_register(sp);</span>
+  <span class="d">int32_t fp_val = get_register(fp);</span>
+
+  // Setup the callee-saved registers with a known value. To be able to check
+  // that they are preserved properly across JS execution.
+  <span class="d">int32_t callee_saved_value = icount_;</span>
+  <span class="d">set_register(s0, callee_saved_value);</span>
+  <span class="d">set_register(s1, callee_saved_value);</span>
+  <span class="d">set_register(s2, callee_saved_value);</span>
+  <span class="d">set_register(s3, callee_saved_value);</span>
+  <span class="d">set_register(s4, callee_saved_value);</span>
+  <span class="d">set_register(s5, callee_saved_value);</span>
+  <span class="d">set_register(s6, callee_saved_value);</span>
+  <span class="d">set_register(s7, callee_saved_value);</span>
+  <span class="d">set_register(gp, callee_saved_value);</span>
+  <span class="d">set_register(fp, callee_saved_value);</span>
+
+  // Start the simulation.
+  <span class="d">Execute();</span>
+
+  // Check that the callee-saved registers have been preserved.
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s0));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s1));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s2));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s3));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s4));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s5));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s6));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(s7));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(gp));</span>
+  <span class="d">CHECK_EQ(callee_saved_value, get_register(fp));</span>
+
+  // Restore callee-saved registers with the original value.
+  <span class="d">set_register(s0, s0_val);</span>
+  <span class="d">set_register(s1, s1_val);</span>
+  <span class="d">set_register(s2, s2_val);</span>
+  <span class="d">set_register(s3, s3_val);</span>
+  <span class="d">set_register(s4, s4_val);</span>
+  <span class="d">set_register(s5, s5_val);</span>
+  <span class="d">set_register(s6, s6_val);</span>
+  <span class="d">set_register(s7, s7_val);</span>
+  <span class="d">set_register(gp, gp_val);</span>
+  <span class="d">set_register(sp, sp_val);</span>
+  <span class="d">set_register(fp, fp_val);</span>
+
+  // Pop stack passed arguments.
+  <span class="d">CHECK_EQ(entry_stack, get_register(sp));</span>
+  <span class="d">set_register(sp, original_stack);</span>
+
+  <span class="d">int32_t result = get_register(v0);</span>
+  <span class="d">return result;</span>
+}
+
+
+<a id='4561' tid='4562', class="m">uintptr_t</a> <a id='4563' tid='4564', class="m">Simulator</a><a id='4565' tid='4566', class="m">::</a><a id='4567' tid='4568', class="m">PushAddress</a>(<a id='4569' tid='4570', class="m">uintptr_t</a> <a id='4571' tid='4572', class="m">address</a>) {
+  <a id='4573' tid='4574', class="m">int</a> <a id='4575' tid='4576', class="m">new_sp</a> = <a id='4577' tid='4578', class="m">get_register</a>(<a id='4579' tid='4580', class="m">sp</a>) <a id='4581' tid='4582', class="m">-</a> <a id='4583' tid='4584', class="m">sizeof</a>(<a id='4585' tid='4586', class="m">uintptr_t</a>);
+  <a id='4587' tid='4588', class="m">uintptr_t</a><a id='4589' tid='4590', class="m">*</a> <a id='4591' tid='4592', class="m">stack_slot</a> = <a id='4593' tid='4594', class="m">reinterpret_cast</a>&lt;<a id='4595' tid='4596', class="m">uintptr_t</a><a id='4597' tid='4598', class="m">*</a>&gt;(<a id='4599' tid='4600', class="m">new_sp</a>);
+  <a id='4601' tid='4602', class="m">*</a><a id='4603' tid='4604', class="m">stack_slot</a> <a id='4605' tid='4606', class="m">=</a> <a id='4607' tid='4608', class="m">address</a>;
+  <a id='4609' tid='4610', class="m">set_register</a>(<a id='4611' tid='4612', class="m">sp</a>, <a id='4613' tid='4614', class="m">new_sp</a>);
+  <a id='4615' tid='4616', class="m">return</a> <a id='4617' tid='4618', class="m">new_sp</a>;
+}
+
+
+<a id='4491' tid='4492', class="m">uintptr_t</a> <a id='4493' tid='4494', class="m">Simulator</a><a id='4495' tid='4496', class="m">::</a><a id='4497' tid='4498', class="m">PopAddress</a>() {
+  <a id='4499' tid='4500', class="m">int</a> <a id='4501' tid='4502', class="m">current_sp</a> = <a id='4503' tid='4504', class="m">get_register</a>(<a id='4505' tid='4506', class="m">sp</a>);
+  <a id='4507' tid='4508', class="m">uintptr_t</a><a id='4509' tid='4510', class="m">*</a> <a id='4511' tid='4512', class="m">stack_slot</a> = <a id='4513' tid='4514', class="m">reinterpret_cast</a>&lt;<a id='4515' tid='4516', class="m">uintptr_t</a><a id='4517' tid='4518', class="m">*</a>&gt;(<a id='4519' tid='4520', class="m">current_sp</a>);
+  <a id='4521' tid='4522', class="m">uintptr_t</a> <a id='4523' tid='4524', class="m">address</a> = <a id='4525' tid='4526', class="m">*</a><a id='4527' tid='4528', class="m">stack_slot</a>;
+  <a id='4529' tid='4530', class="m">set_register</a>(<a id='4531' tid='4532', class="m">sp</a>, <a id='4533' tid='4534', class="m">current_sp</a> <a id='4535' tid='4536', class="m">+</a> <a id='4537' tid='4538', class="m">sizeof</a>(<a id='4539' tid='4540', class="m">uintptr_t</a>));
+  <a id='4541' tid='4542', class="m">return</a> <a id='4543' tid='4544', class="m">address</a>;
+}
+
+
+<span class="d">#undef UNSUPPORTED</span>
+
+} }  // namespace v8::internal
+
+<span class="d">#endif</span>  // USE_SIMULATOR
+
+<span class="d">#endif</span>  // V8_TARGET_ARCH_MIPS
+
+
+</pre>
+</div>
+<div id="right" class="src">
+<pre>
+<a id='rightstart' tid='leftstart'></a>
+// Copyright 2011 the V8 project authors. All rights reserved.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+//       copyright notice, this list of conditions and the following
+//       disclaimer in the documentation and/or other materials provided
+//       with the distribution.
+//     * Neither the name of Google Inc. nor the names of its
+//       contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#<a id='9614' tid='9613', class="m">include</a> <a id='9616' tid='9615', class="m">&lt;</a><a id='9618' tid='9617', class="m">stdlib</a><a id='9620' tid='9619', class="m">.</a><a id='9622' tid='9621', class="m">h</a><a id='9624' tid='9623', class="m">&gt;</a>
+#<a id='9602' tid='9601', class="m">include</a> <a id='9604' tid='9603', class="m">&lt;</a><a id='9606' tid='9605', class="m">math</a><a id='9608' tid='9607', class="m">.</a><a id='9610' tid='9609', class="m">h</a><a id='9612' tid='9611', class="m">&gt;</a>
+<span class="i">#include &lt;cstdarg&gt;</span>
+<span class="i">#include &quot;v8.h&quot;</span>
+
+<span class="i">#if defined(V8_TARGET_ARCH_ARM)</span>
+
+<span class="i">#include &quot;disasm.h&quot;</span>
+<span class="i">#include &quot;assembler.h&quot;</span>
+<span class="i">#include &quot;arm/constants-arm.h&quot;</span>
+<span class="i">#include &quot;arm/simulator-arm.h&quot;</span>
+
+#<a id='9592' tid='9591', class="m">if</a> <a id='9594' tid='9593', class="m">defined</a><a id='9596' tid='9595', class="m">(</a><a id='9598' tid='9597', class="m">USE_SIMULATOR</a><a id='9600' tid='9599', class="m">)</a>
+
+// Only build the simulator if not compiling for real ARM hardware.
+namespace <span class="i">v8</span> {
+namespace <span class="i">internal</span> {
+
+// This macro provides a platform independent use of sscanf. The reason for
+// SScanF not being implemented in a platform independent way through
+// ::v8::internal::OS in the same way as SNPrintF is that the
+// Windows C Run-Time Library does not provide vsscanf.
+<span class="i">#define SScanF sscanf</span>  // NOLINT
+
+// The ArmDebugger class is used by the simulator while debugging simulated ARM
+// code.
+<span class="i">class</span> <span class="i">ArmDebugger</span> {
+ <span class="i">public:</span>
+  <span class="i">explicit ArmDebugger(Simulator* sim)</span>;
+  <span class="i">~ArmDebugger();</span>
+
+  <a id='9582' tid='9581', class="m">void</a> <a id='9584' tid='9583', class="m">Stop</a>(<a id='9586' tid='9585', class="m">Instruction</a><a id='9588' tid='9587', class="m">*</a> <a id='9590' tid='9589', class="m">instr</a>);
+  <span class="i">void Debug()</span>;
+
+ <span class="i">private:</span>
+  <span class="i">static const Instr kBreakpointInstr =
+      (al | (7*B25) | (1*B24) | kBreakpoint);</span>
+  <span class="i">static const Instr kNopInstr = (al | (13*B21));</span>
+
+  <span class="i">Simulator* sim_;</span>
+
+  <span class="i">int32_t GetRegisterValue(int regnum)</span>;
+  <span class="i">double GetRegisterPairDoubleValue(int regnum)</span>;
+  <span class="i">double GetVFPDoubleRegisterValue(int regnum)</span>;
+  <a id='9564' tid='9563', class="m">bool</a> <a id='9566' tid='9565', class="m">GetValue</a>(<a id='9568' tid='9567', class="m">const</a> <a id='9570' tid='9569', class="m">char</a><a id='9572' tid='9571', class="m">*</a> <a id='9574' tid='9573', class="m">desc</a>, <a id='9576' tid='9575', class="m">int32_t</a><a id='9578' tid='9577', class="m">*</a> <a id='9580' tid='9579', class="m">value</a>);
+  <span class="i">bool GetVFPSingleValue(const char* desc, float* value)</span>;
+  <span class="i">bool GetVFPDoubleValue(const char* desc, double* value)</span>;
+
+  // Set or delete a breakpoint. Returns true if successful.
+  <a id='9544' tid='9543', class="m">bool</a> <a id='9546' tid='9545', class="m">SetBreakpoint</a>(<a id='9548' tid='9547', class="m">Instruction</a><a id='9550' tid='9549', class="m">*</a> <a id='9552' tid='9551', class="m">breakpc</a>);
+  <a id='9500' tid='9499', class="m">bool</a> <a id='9502' tid='9501', class="m">DeleteBreakpoint</a>(<a id='9504' tid='9503', class="m">Instruction</a><a id='9506' tid='9505', class="m">*</a> <a id='9508' tid='9507', class="m">breakpc</a>);
+
+  // Undo and redo all breakpoints. This is needed to bracket disassembly and
+  // execution to skip past breakpoints when run from the debugger.
+  <span class="i">void UndoBreakpoints()</span>;
+  <span class="i">void RedoBreakpoints()</span>;
+};
+
+
+<span class="i">ArmDebugger::ArmDebugger(Simulator* sim) {
+  sim_ = sim;
+}</span>
+
+
+<span class="i">ArmDebugger::~ArmDebugger() {
+}</span>
+
+
+
+<span class="i">#ifdef GENERATED_CODE_COVERAGE</span>
+<a id='9554' tid='9553', class="m">static</a> <a id='9556' tid='9555', class="m">FILE</a><a id='9558' tid='9557', class="m">*</a> <a id='9560' tid='9559', class="m">coverage_log</a> = <a id='9562' tid='9561', class="m">NULL</a>;
+
+
+<a id='9510' tid='9509', class="m">static</a> <a id='9512' tid='9511', class="m">void</a> <a id='9514' tid='9513', class="m">InitializeCoverage</a>() {
+  <a id='9516' tid='9515', class="m">char</a><a id='9518' tid='9517', class="m">*</a> <a id='9520' tid='9519', class="m">file_name</a> = <a id='9522' tid='9521', class="m">getenv</a>(<a id='9524' tid='9523', class="m">&quot;V8_GENERATED_CODE_COVERAGE_LOG&quot;</a>);
+  <a id='9526' tid='9525', class="m">if</a> (<a id='9528' tid='9527', class="m">file_name</a> <a id='9530' tid='9529', class="m">!=</a> <a id='9532' tid='9531', class="m">NULL</a>) {
+    <a id='9534' tid='9533', class="m">coverage_log</a> <a id='9536' tid='9535', class="m">=</a> <a id='9538' tid='9537', class="m">fopen</a>(<a id='9540' tid='9539', class="m">file_name</a>, <a id='9542' tid='9541', class="m">&quot;aw+&quot;</a>);
+  }
+}
+
+
+<a id='9444' tid='9443', class="m">void</a> <span class="i">ArmDebugger::Stop</span>(<a id='9446' tid='9445', class="m">Instruction</a><a id='9448' tid='9447', class="m">*</a> <a id='9450' tid='9449', class="m">instr</a>) {
+  // Get the stop code.
+  <span class="i">uint32_t code = instr-&gt;SvcValue() & kStopCodeMask;</span>
+  // Retrieve the encoded address, which comes just after this stop.
+  <span class="i">char**</span> <span class="i">msg_address</span> =
+    <span class="i">reinterpret_cast&lt;char**&gt;</span>(<a id='8038' tid='8037', class="m">sim_</a>-&gt;<a id='8040' tid='8039', class="m">get_pc</a>() <a id='8042' tid='8041', class="m">+</a> <a id='8044' tid='8043', class="m">Instruction</a><a id='8046' tid='8045', class="m">::</a><a id='8048' tid='8047', class="m">kInstrSize</a>);
+  <a id='9490' tid='9489', class="m">char</a><a id='9492' tid='9491', class="m">*</a> <a id='9494' tid='9493', class="m">msg</a> = <a id='9496' tid='9495', class="m">*</a><a id='9498' tid='9497', class="m">msg_address</a>;
+  <span class="i">ASSERT(msg != NULL);</span>
+
+  // Update this stop description.
+  <span class="i">if</span> <span class="i">(isWatchedStop(code) && !watched_stops[code].desc)</span> {
+    <a id='9480' tid='9479', class="m">watched_stops</a>[<a id='9482' tid='9481', class="m">code</a>].<a id='9484' tid='9483', class="m">desc</a> <a id='9486' tid='9485', class="m">=</a> <a id='9488' tid='9487', class="m">msg</a>;
+  }
+
+  <span class="i">if (strlen(msg) &gt; 0) {
+    if (coverage_log != NULL) {
+      fprintf(coverage_log, &quot;%s\n&quot;, msg);
+      fflush(coverage_log);
+    }
+    // Overwrite the instruction and address with nops.
+    instr-&gt;SetInstructionBits(kNopInstr);
+    reinterpret_cast&lt;Instruction*&gt;(msg_address)-&gt;SetInstructionBits(kNopInstr);
+  }</span>
+  <a id='9424' tid='9423', class="m">sim_</a>-&gt;<a id='9426' tid='9425', class="m">set_pc</a>(<a id='9428' tid='9427', class="m">sim_</a>-&gt;<a id='9430' tid='9429', class="m">get_pc</a>() <a id='9432' tid='9431', class="m">+</a> <a id='9434' tid='9433', class="m">2</a> <a id='9436' tid='9435', class="m">*</a> <a id='9438' tid='9437', class="m">Instruction</a><a id='9440' tid='9439', class="m">::</a><a id='9442' tid='9441', class="m">kInstrSize</a>);
+}
+
+<span class="i">#else</span>  // ndef GENERATED_CODE_COVERAGE
+
+<span class="i">static void InitializeCoverage() {
+}</span>
+
+
+<a id='9406' tid='9405', class="m">void</a> <span class="i">ArmDebugger::Stop</span>(<a id='9408' tid='9407', class="m">Instruction</a><a id='9410' tid='9409', class="m">*</a> <a id='9412' tid='9411', class="m">instr</a>) {
+  // Get the stop code.
+  <span class="i">uint32_t code = instr-&gt;SvcValue() & kStopCodeMask;</span>
+  // Retrieve the encoded address, which comes just after this stop.
+  <a id='9452' tid='9451', class="m">char</a><a id='9454' tid='9453', class="m">*</a> <a id='9456' tid='9455', class="m">msg</a> = <a id='9458' tid='9457', class="m">*</a><a id='9460' tid='9459', class="m">reinterpret_cast</a>&lt;<a id='9462' tid='9461', class="m">char</a><a id='9464' tid='9463', class="m">*</a><a id='9466' tid='9465', class="m">*</a>&gt;(<a id='9468' tid='9467', class="m">sim_</a>-&gt;<a id='9470' tid='9469', class="m">get_pc</a>()
+                                        <a id='9472' tid='9471', class="m">+</a> <a id='9474' tid='9473', class="m">Instruction</a><a id='9476' tid='9475', class="m">::</a><a id='9478' tid='9477', class="m">kInstrSize</a>);
+  // Update this stop description.
+  <a id='9382' tid='9381', class="m">if</a> (<span class="i">sim_-&gt;isWatchedStop(code)</span> <span class="i">&&</span> <a id='9384' tid='9383', class="m">!</a><a id='9386' tid='9385', class="m">sim_</a>-&gt;<a id='9388' tid='9387', class="m">watched_stops</a>[<a id='9390' tid='9389', class="m">code</a>].<a id='9392' tid='9391', class="m">desc</a>) {
+    <a id='9394' tid='9393', class="m">sim_</a>-&gt;<a id='9396' tid='9395', class="m">watched_stops</a>[<a id='9398' tid='9397', class="m">code</a>].<a id='9400' tid='9399', class="m">desc</a> <a id='9402' tid='9401', class="m">=</a> <a id='9404' tid='9403', class="m">msg</a>;
+  }
+  // Print the stop message and code if it is not the default code.
+  <span class="i">if (code != kMaxStopCode) {
+    PrintF(&quot;Simulator hit stop %u: %s\n&quot;, code, msg);
+  } else {
+    PrintF(&quot;Simulator hit %s\n&quot;, msg);
+  }</span>
+  <span class="i">sim_-&gt;set_pc</span>(<span class="i">sim_-&gt;get_pc()</span> <span class="i">+</span> <a id='4416' tid='4415', class="m">2</a> <a id='4418' tid='4417', class="m">*</a> <a id='4420' tid='4419', class="m">Instruction</a><a id='4422' tid='4421', class="m">::</a><a id='4424' tid='4423', class="m">kInstrSize</a>);
+  <span class="i">Debug();</span>
+}
+<span class="i">#endif</span>
+
+
+<a id='9362' tid='9361', class="m">int32_t</a> <span class="i">ArmDebugger::GetRegisterValue</span>(<a id='9364' tid='9363', class="m">int</a> <a id='9366' tid='9365', class="m">regnum</a>) {
+  <span class="i">if</span> <span class="i">(regnum == kPCRegister)</span> <span class="i">{
+    return sim_-&gt;get_pc();
+  }</span> <a id='9414' tid='9413', class="m">else</a> {
+    <a id='9416' tid='9415', class="m">return</a> <a id='9418' tid='9417', class="m">sim_</a>-&gt;<a id='9420' tid='9419', class="m">get_register</a>(<a id='9422' tid='9421', class="m">regnum</a>);
+  }
+}
+
+
+<span class="i">double ArmDebugger::GetRegisterPairDoubleValue(int regnum) {
+  return sim_-&gt;get_double_from_register_pair(regnum);
+}</span>
+
+
+<span class="i">double ArmDebugger::GetVFPDoubleRegisterValue(int regnum) {
+  return sim_-&gt;get_double_from_d_register(regnum);
+}</span>
+
+
+<span class="i">bool</span> <span class="i">ArmDebugger::GetValue</span>(<a id='9368' tid='9367', class="m">const</a> <a id='9370' tid='9369', class="m">char</a><a id='9372' tid='9371', class="m">*</a> <a id='9374' tid='9373', class="m">desc</a>, <a id='9376' tid='9375', class="m">int32_t</a><a id='9378' tid='9377', class="m">*</a> <a id='9380' tid='9379', class="m">value</a>) {
+  <a id='9314' tid='9313', class="m">int</a> <a id='9316' tid='9315', class="m">regnum</a> = <a id='9318' tid='9317', class="m">Registers</a><a id='9320' tid='9319', class="m">::</a><a id='9322' tid='9321', class="m">Number</a>(<a id='9324' tid='9323', class="m">desc</a>);
+  <span class="i">if</span> <span class="i">(regnum != kNoRegister)</span> {
+    <a id='9300' tid='9299', class="m">*</a><a id='9302' tid='9301', class="m">value</a> <a id='9304' tid='9303', class="m">=</a> <a id='9306' tid='9305', class="m">GetRegisterValue</a>(<a id='9308' tid='9307', class="m">regnum</a>);
+    <a id='9310' tid='9309', class="m">return</a> <a id='9312' tid='9311', class="m">true</a>;
+  } <a id='9238' tid='9237', class="m">else</a> {
+    <span class="i">if</span> (<a id='9240' tid='9239', class="m">strncmp</a>(<a id='9242' tid='9241', class="m">desc</a>, <a id='9244' tid='9243', class="m">&quot;0x&quot;</a>, <a id='9246' tid='9245', class="m">2</a>) <a id='9248' tid='9247', class="m">==</a> <a id='9250' tid='9249', class="m">0</a>) <span class="i">{
+      return SScanF(desc + 2, &quot;%x&quot;, reinterpret_cast&lt;uint32_t*&gt;(value)) == 1;
+    }</span> <span class="i">else {
+      return SScanF(desc, &quot;%u&quot;, reinterpret_cast&lt;uint32_t*&gt;(value)) == 1;
+    }</span>
+  }
+  <span class="i">return false;</span>
+}
+
+
+<span class="i">bool ArmDebugger::GetVFPSingleValue(const char* desc, float* value) {
+  bool is_double;
+  int regnum = VFPRegisters::Number(desc, &is_double);
+  if (regnum != kNoRegister && !is_double) {
+    *value = sim_-&gt;get_float_from_s_register(regnum);
+    return true;
+  }
+  return false;
+}</span>
+
+
+<span class="i">bool ArmDebugger::GetVFPDoubleValue(const char* desc, double* value) {
+  bool is_double;
+  int regnum = VFPRegisters::Number(desc, &is_double);
+  if (regnum != kNoRegister && is_double) {
+    *value = sim_-&gt;get_double_from_d_register(regnum);
+    return true;
+  }
+  return false;
+}</span>
+
+
+<a id='9252' tid='9251', class="m">bool</a> <span class="i">ArmDebugger::SetBreakpoint</span>(<a id='9254' tid='9253', class="m">Instruction</a><a id='9256' tid='9255', class="m">*</a> <a id='9258' tid='9257', class="m">breakpc</a>) {
+  // Check if a breakpoint can be set. If not return without any side-effects.
+  <a id='9326' tid='9325', class="m">if</a> (<a id='9328' tid='9327', class="m">sim_</a>-&gt;<a id='9330' tid='9329', class="m">break_pc_</a> <a id='9332' tid='9331', class="m">!=</a> <a id='9334' tid='9333', class="m">NULL</a>) {
+    <a id='9336' tid='9335', class="m">return</a> <a id='9338' tid='9337', class="m">false</a>;
+  }
+
+  // Set the breakpoint.
+  <a id='9340' tid='9339', class="m">sim_</a>-&gt;<a id='9342' tid='9341', class="m">break_pc_</a> <a id='9344' tid='9343', class="m">=</a> <a id='9346' tid='9345', class="m">breakpc</a>;
+  <a id='9348' tid='9347', class="m">sim_</a>-&gt;<a id='9350' tid='9349', class="m">break_instr_</a> <a id='9352' tid='9351', class="m">=</a> <a id='9354' tid='9353', class="m">breakpc</a>-&gt;<a id='9356' tid='9355', class="m">InstructionBits</a>();
+  // Not setting the breakpoint instruction in the code itself. It will be set
+  // when the debugger shell continues.
+  <a id='9358' tid='9357', class="m">return</a> <a id='9360' tid='9359', class="m">true</a>;
+}
+
+
+<a id='9210' tid='9209', class="m">bool</a> <span class="i">ArmDebugger::DeleteBreakpoint</span>(<a id='9212' tid='9211', class="m">Instruction</a><a id='9214' tid='9213', class="m">*</a> <a id='9216' tid='9215', class="m">breakpc</a>) {
+  <a id='9260' tid='9259', class="m">if</a> (<a id='9262' tid='9261', class="m">sim_</a>-&gt;<a id='9264' tid='9263', class="m">break_pc_</a> <a id='9266' tid='9265', class="m">!=</a> <a id='9268' tid='9267', class="m">NULL</a>) {
+    <a id='9270' tid='9269', class="m">sim_</a>-&gt;<a id='9272' tid='9271', class="m">break_pc_</a>-&gt;<a id='9274' tid='9273', class="m">SetInstructionBits</a>(<a id='9276' tid='9275', class="m">sim_</a>-&gt;<a id='9278' tid='9277', class="m">break_instr_</a>);
+  }
+
+  <a id='9280' tid='9279', class="m">sim_</a>-&gt;<a id='9282' tid='9281', class="m">break_pc_</a> <a id='9284' tid='9283', class="m">=</a> <a id='9286' tid='9285', class="m">NULL</a>;
+  <a id='9288' tid='9287', class="m">sim_</a>-&gt;<a id='9290' tid='9289', class="m">break_instr_</a> <a id='9292' tid='9291', class="m">=</a> <a id='9294' tid='9293', class="m">0</a>;
+  <a id='9296' tid='9295', class="m">return</a> <a id='9298' tid='9297', class="m">true</a>;
+}
+
+
+<span class="i">void</span> <span class="i">ArmDebugger::UndoBreakpoints</span><span class="i">()</span> {
+  <a id='9218' tid='9217', class="m">if</a> (<a id='9220' tid='9219', class="m">sim_</a>-&gt;<a id='9222' tid='9221', class="m">break_pc_</a> <a id='9224' tid='9223', class="m">!=</a> <a id='9226' tid='9225', class="m">NULL</a>) {
+    <a id='9228' tid='9227', class="m">sim_</a>-&gt;<a id='9230' tid='9229', class="m">break_pc_</a>-&gt;<a id='9232' tid='9231', class="m">SetInstructionBits</a>(<a id='9234' tid='9233', class="m">sim_</a>-&gt;<a id='9236' tid='9235', class="m">break_instr_</a>);
+  }
+}
+
+
+<span class="i">void</span> <span class="i">ArmDebugger::RedoBreakpoints</span><span class="i">()</span> {
+  <a id='9192' tid='9191', class="m">if</a> (<a id='9194' tid='9193', class="m">sim_</a>-&gt;<a id='9196' tid='9195', class="m">break_pc_</a> <a id='9198' tid='9197', class="m">!=</a> <a id='9200' tid='9199', class="m">NULL</a>) {
+    <a id='9202' tid='9201', class="m">sim_</a>-&gt;<a id='9204' tid='9203', class="m">break_pc_</a>-&gt;<a id='9206' tid='9205', class="m">SetInstructionBits</a>(<a id='9208' tid='9207', class="m">kBreakpointInstr</a>);
+  }
+}
+
+
+<span class="i">void</span> <span class="i">ArmDebugger::Debug</span><span class="i">()</span> {
+  <a id='8966' tid='8965', class="m">intptr_t</a> <a id='8968' tid='8967', class="m">last_pc</a> = <a id='8970' tid='8969', class="m">-</a><a id='8972' tid='8971', class="m">1</a>;
+  <a id='8974' tid='8973', class="m">bool</a> <a id='8976' tid='8975', class="m">done</a> = <a id='8978' tid='8977', class="m">false</a>;
+
+#<a id='8980' tid='8979', class="m">define</a> <a id='8982' tid='8981', class="m">COMMAND_SIZE</a> <a id='8984' tid='8983', class="m">63</a>
+#<a id='8986' tid='8985', class="m">define</a> <a id='8988' tid='8987', class="m">ARG_SIZE</a> <a id='8990' tid='8989', class="m">255</a>
+
+#<a id='9178' tid='9177', class="m">define</a> <a id='9180' tid='9179', class="m">STR</a><a id='9182' tid='9181', class="m">(</a><a id='9184' tid='9183', class="m">a</a><a id='9186' tid='9185', class="m">)</a> <a id='9188' tid='9187', class="m">#</a><a id='9190' tid='9189', class="m">a</a>
+#<a id='8992' tid='8991', class="m">define</a> <a id='8994' tid='8993', class="m">XSTR</a><a id='8996' tid='8995', class="m">(</a><a id='8998' tid='8997', class="m">a</a><a id='9000' tid='8999', class="m">)</a> <a id='9002' tid='9001', class="m">STR</a><a id='9004' tid='9003', class="m">(</a><a id='9006' tid='9005', class="m">a</a><a id='9008' tid='9007', class="m">)</a>
+
+  <a id='9010' tid='9009', class="m">char</a> <a id='9012' tid='9011', class="m">cmd</a>[<a id='9014' tid='9013', class="m">COMMAND_SIZE</a> <a id='9016' tid='9015', class="m">+</a> <a id='9018' tid='9017', class="m">1</a>];
+  <a id='9020' tid='9019', class="m">char</a> <a id='9022' tid='9021', class="m">arg1</a>[<a id='9024' tid='9023', class="m">ARG_SIZE</a> <a id='9026' tid='9025', class="m">+</a> <a id='9028' tid='9027', class="m">1</a>];
+  <a id='9030' tid='9029', class="m">char</a> <a id='9032' tid='9031', class="m">arg2</a>[<a id='9034' tid='9033', class="m">ARG_SIZE</a> <a id='9036' tid='9035', class="m">+</a> <a id='9038' tid='9037', class="m">1</a>];
+  <a id='9040' tid='9039', class="m">char</a><a id='9042' tid='9041', class="m">*</a> <a id='9044' tid='9043', class="m">argv</a>[<a id='9046' tid='9045', class="m">3</a>] = { <a id='9048' tid='9047', class="m">cmd</a>, <a id='9050' tid='9049', class="m">arg1</a>, <a id='9052' tid='9051', class="m">arg2</a> };
+
+  // make sure to have a proper terminating character if reaching the limit
+  <a id='9054' tid='9053', class="m">cmd</a>[<a id='9056' tid='9055', class="m">COMMAND_SIZE</a>] <a id='9058' tid='9057', class="m">=</a> <a id='9060' tid='9059', class="m">0</a>;
+  <a id='9062' tid='9061', class="m">arg1</a>[<a id='9064' tid='9063', class="m">ARG_SIZE</a>] <a id='9066' tid='9065', class="m">=</a> <a id='9068' tid='9067', class="m">0</a>;
+  <a id='9070' tid='9069', class="m">arg2</a>[<a id='9072' tid='9071', class="m">ARG_SIZE</a>] <a id='9074' tid='9073', class="m">=</a> <a id='9076' tid='9075', class="m">0</a>;
+
+  // Undo all set breakpoints while running in the debugger shell. This will
+  // make them invisible to all commands.
+  <a id='9078' tid='9077', class="m">UndoBreakpoints</a>();
+
+  <span class="i">while</span> <span class="i">(!done)</span> {
+    <a id='9080' tid='9079', class="m">if</a> (<a id='9082' tid='9081', class="m">last_pc</a> <a id='9084' tid='9083', class="m">!=</a> <a id='9086' tid='9085', class="m">sim_</a>-&gt;<a id='9088' tid='9087', class="m">get_pc</a>()) {
+      <a id='9100' tid='9099', class="m">disasm</a><a id='9102' tid='9101', class="m">::</a><a id='9104' tid='9103', class="m">NameConverter</a> <a id='9106' tid='9105', class="m">converter</a>;
+      <a id='9090' tid='9089', class="m">disasm</a><a id='9092' tid='9091', class="m">::</a><a id='9094' tid='9093', class="m">Disassembler</a> <a id='9096' tid='9095', class="m">dasm</a>(<a id='9098' tid='9097', class="m">converter</a>);
+      // use a reasonably large buffer
+      <a id='9108' tid='9107', class="m">v8</a><a id='9110' tid='9109', class="m">::</a><a id='9112' tid='9111', class="m">internal</a><a id='9114' tid='9113', class="m">::</a><a id='9116' tid='9115', class="m">EmbeddedVector</a>&lt;<a id='9118' tid='9117', class="m">char</a>, <a id='9120' tid='9119', class="m">256</a>&gt; <a id='9122' tid='9121', class="m">buffer</a>;
+      <a id='9124' tid='9123', class="m">dasm</a>.<a id='9126' tid='9125', class="m">InstructionDecode</a>(<a id='9128' tid='9127', class="m">buffer</a>,
+                             <a id='9130' tid='9129', class="m">reinterpret_cast</a>&lt;<a id='9132' tid='9131', class="m">byte</a><a id='9134' tid='9133', class="m">*</a>&gt;(<a id='9136' tid='9135', class="m">sim_</a>-&gt;<a id='9138' tid='9137', class="m">get_pc</a>()));
+      <a id='9140' tid='9139', class="m">PrintF</a>(<a id='9142' tid='9141', class="m">&quot;  0x%08x  %s\n&quot;</a>, <a id='9144' tid='9143', class="m">sim_</a>-&gt;<a id='9146' tid='9145', class="m">get_pc</a>(), <a id='9148' tid='9147', class="m">buffer</a>.<a id='9150' tid='9149', class="m">start</a>());
+      <a id='9152' tid='9151', class="m">last_pc</a> <a id='9154' tid='9153', class="m">=</a> <a id='9156' tid='9155', class="m">sim_</a>-&gt;<a id='9158' tid='9157', class="m">get_pc</a>();
+    }
+    <a id='8116' tid='8115', class="m">char</a><a id='8118' tid='8117', class="m">*</a> <a id='8120' tid='8119', class="m">line</a> = <a id='8122' tid='8121', class="m">ReadLine</a>(<a id='8124' tid='8123', class="m">&quot;sim&gt; &quot;</a>);
+    <a id='8126' tid='8125', class="m">if</a> (<a id='8128' tid='8127', class="m">line</a> <a id='8130' tid='8129', class="m">==</a> <a id='8132' tid='8131', class="m">NULL</a>) {
+      <a id='8134' tid='8133', class="m">break</a>;
+    } <a id='8136' tid='8135', class="m">else</a> {
+      // Use sscanf to parse the individual parts of the command line. At the
+      // moment no command expects more than two parameters.
+      <a id='8138' tid='8137', class="m">int</a> <a id='8140' tid='8139', class="m">argc</a> = <a id='8142' tid='8141', class="m">SScanF</a>(<a id='8144' tid='8143', class="m">line</a>,
+                        <a id='8146' tid='8145', class="m">&quot;%&quot;</a> <a id='8148' tid='8147', class="m">XSTR</a>(<a id='8150' tid='8149', class="m">COMMAND_SIZE</a>) <a id='8152' tid='8151', class="m">&quot;s &quot;</a>
+                        <a id='8154' tid='8153', class="m">&quot;%&quot;</a> <a id='8156' tid='8155', class="m">XSTR</a>(<a id='8158' tid='8157', class="m">ARG_SIZE</a>) <a id='8160' tid='8159', class="m">&quot;s &quot;</a>
+                        <a id='8162' tid='8161', class="m">&quot;%&quot;</a> <a id='8164' tid='8163', class="m">XSTR</a>(<a id='8166' tid='8165', class="m">ARG_SIZE</a>) <a id='8168' tid='8167', class="m">&quot;s&quot;</a>,
+                        <a id='8170' tid='8169', class="m">cmd</a>, <a id='8172' tid='8171', class="m">arg1</a>, <a id='8174' tid='8173', class="m">arg2</a>);
+      <a id='8176' tid='8175', class="m">if</a> ((<a id='8178' tid='8177', class="m">strcmp</a>(<a id='8180' tid='8179', class="m">cmd</a>, <a id='8182' tid='8181', class="m">&quot;si&quot;</a>) <a id='8184' tid='8183', class="m">==</a> <a id='8186' tid='8185', class="m">0</a>) <a id='8188' tid='8187', class="m">||</a> (<a id='8190' tid='8189', class="m">strcmp</a>(<a id='8192' tid='8191', class="m">cmd</a>, <a id='8194' tid='8193', class="m">&quot;stepi&quot;</a>) <a id='8196' tid='8195', class="m">==</a> <a id='8198' tid='8197', class="m">0</a>)) {
+        <a id='8200' tid='8199', class="m">sim_</a>-&gt;<a id='8202' tid='8201', class="m">InstructionDecode</a>(<a id='8204' tid='8203', class="m">reinterpret_cast</a>&lt;<a id='8206' tid='8205', class="m">Instruction</a><a id='8208' tid='8207', class="m">*</a>&gt;(<a id='8210' tid='8209', class="m">sim_</a>-&gt;<a id='8212' tid='8211', class="m">get_pc</a>()));
+      } <a id='8214' tid='8213', class="m">else</a> <a id='8216' tid='8215', class="m">if</a> ((<a id='8218' tid='8217', class="m">strcmp</a>(<a id='8220' tid='8219', class="m">cmd</a>, <a id='8222' tid='8221', class="m">&quot;c&quot;</a>) <a id='8224' tid='8223', class="m">==</a> <a id='8226' tid='8225', class="m">0</a>) <a id='8228' tid='8227', class="m">||</a> (<a id='8230' tid='8229', class="m">strcmp</a>(<a id='8232' tid='8231', class="m">cmd</a>, <a id='8234' tid='8233', class="m">&quot;cont&quot;</a>) <a id='8236' tid='8235', class="m">==</a> <a id='8238' tid='8237', class="m">0</a>)) {
+        // Execute the one instruction we broke at with breakpoints disabled.
+        <a id='8240' tid='8239', class="m">sim_</a>-&gt;<a id='8242' tid='8241', class="m">InstructionDecode</a>(<a id='8244' tid='8243', class="m">reinterpret_cast</a>&lt;<a id='8246' tid='8245', class="m">Instruction</a><a id='8248' tid='8247', class="m">*</a>&gt;(<a id='8250' tid='8249', class="m">sim_</a>-&gt;<a id='8252' tid='8251', class="m">get_pc</a>()));
+        // Leave the debugger shell.
+        <a id='8254' tid='8253', class="m">done</a> <a id='8256' tid='8255', class="m">=</a> <a id='8258' tid='8257', class="m">true</a>;
+      } <a id='8260' tid='8259', class="m">else</a> <a id='8262' tid='8261', class="m">if</a> ((<a id='8264' tid='8263', class="m">strcmp</a>(<a id='8266' tid='8265', class="m">cmd</a>, <a id='8268' tid='8267', class="m">&quot;p&quot;</a>) <a id='8270' tid='8269', class="m">==</a> <a id='8272' tid='8271', class="m">0</a>) <a id='8274' tid='8273', class="m">||</a> (<a id='8276' tid='8275', class="m">strcmp</a>(<a id='8278' tid='8277', class="m">cmd</a>, <a id='8280' tid='8279', class="m">&quot;print&quot;</a>) <a id='8282' tid='8281', class="m">==</a> <a id='8284' tid='8283', class="m">0</a>)) {
+        <span class="i">if</span> <span class="i">(argc == 2 || (argc == 3 && strcmp(arg2, &quot;fp&quot;) == 0))</span> {
+          <span class="i">int32_t value;</span>
+          <span class="i">float svalue;</span>
+          <span class="i">double dvalue;</span>
+          <span class="i">if</span> (<a id='8286' tid='8285', class="m">strcmp</a>(<a id='8288' tid='8287', class="m">arg1</a>, <a id='8290' tid='8289', class="m">&quot;all&quot;</a>) <a id='8292' tid='8291', class="m">==</a> <a id='8294' tid='8293', class="m">0</a>) <span class="i">{
+            for (int i = 0; i &lt; kNumRegisters; i++) {
+              value = GetRegisterValue(i);
+              PrintF(&quot;%3s: 0x%08x %10d&quot;, Registers::Name(i), value, value);
+              if ((argc == 3 && strcmp(arg2, &quot;fp&quot;) == 0) &&
+                  i &lt; 8 &&
+                  (i % 2) == 0) {
+                dvalue = GetRegisterPairDoubleValue(i);
+                PrintF(&quot; (%f)\n&quot;, dvalue);
+              } else {
+                PrintF(&quot;\n&quot;);
+              }
+            }
+            for (int i = 0; i &lt; kNumVFPDoubleRegisters; i++) {
+              dvalue = GetVFPDoubleRegisterValue(i);
+              uint64_t as_words = BitCast&lt;uint64_t&gt;(dvalue);
+              PrintF(&quot;%3s: %f 0x%08x %08x\n&quot;,
+                     VFPRegisters::Name(i, true),
+                     dvalue,
+                     static_cast&lt;uint32_t&gt;(as_words &gt;&gt; 32),
+                     static_cast&lt;uint32_t&gt;(as_words & 0xffffffff));
+            }
+          }</span> <a id='8050' tid='8049', class="m">else</a> {
+            <span class="i">if</span> <span class="i">(GetValue(arg1, &value))</span> {
+              <a id='8052' tid='8051', class="m">PrintF</a>(<a id='8054' tid='8053', class="m">&quot;%s: 0x%08x %d \n&quot;</a>, <a id='8056' tid='8055', class="m">arg1</a>, <a id='8058' tid='8057', class="m">value</a>, <a id='8060' tid='8059', class="m">value</a>);
+            } <span class="i">else if (GetVFPSingleValue(arg1, &svalue)) {
+              uint32_t as_word = BitCast&lt;uint32_t&gt;(svalue);
+              PrintF(&quot;%s: %f 0x%08x\n&quot;, arg1, svalue, as_word);
+            } else if (GetVFPDoubleValue(arg1, &dvalue)) {
+              uint64_t as_words = BitCast&lt;uint64_t&gt;(dvalue);
+              PrintF(&quot;%s: %f 0x%08x %08x\n&quot;,
+                     arg1,
+                     dvalue,
+                     static_cast&lt;uint32_t&gt;(as_words &gt;&gt; 32),
+                     static_cast&lt;uint32_t&gt;(as_words & 0xffffffff));
+            } else {
+              PrintF(&quot;%s unrecognized\n&quot;, arg1);
+            }</span>
+          }
+        } <span class="i">else {
+          PrintF(&quot;print &lt;register&gt;\n&quot;);
+        }</span>
+      } <a id='8296' tid='8295', class="m">else</a> <a id='8298' tid='8297', class="m">if</a> ((<a id='8300' tid='8299', class="m">strcmp</a>(<a id='8302' tid='8301', class="m">cmd</a>, <a id='8304' tid='8303', class="m">&quot;po&quot;</a>) <a id='8306' tid='8305', class="m">==</a> <a id='8308' tid='8307', class="m">0</a>)
+                 <a id='8310' tid='8309', class="m">||</a> (<a id='8312' tid='8311', class="m">strcmp</a>(<a id='8314' tid='8313', class="m">cmd</a>, <a id='8316' tid='8315', class="m">&quot;printobject&quot;</a>) <a id='8318' tid='8317', class="m">==</a> <a id='8320' tid='8319', class="m">0</a>)) {
+        <a id='8322' tid='8321', class="m">if</a> (<a id='8324' tid='8323', class="m">argc</a> <a id='8326' tid='8325', class="m">==</a> <a id='8328' tid='8327', class="m">2</a>) {
+          <a id='8330' tid='8329', class="m">int32_t</a> <a id='8332' tid='8331', class="m">value</a>;
+          <a id='8334' tid='8333', class="m">if</a> (<a id='8336' tid='8335', class="m">GetValue</a>(<a id='8338' tid='8337', class="m">arg1</a>, <a id='8340' tid='8339', class="m">&</a><a id='8342' tid='8341', class="m">value</a>)) {
+            <a id='8344' tid='8343', class="m">Object</a><a id='8346' tid='8345', class="m">*</a> <a id='8348' tid='8347', class="m">obj</a> = <a id='8350' tid='8349', class="m">reinterpret_cast</a>&lt;<a id='8352' tid='8351', class="m">Object</a><a id='8354' tid='8353', class="m">*</a>&gt;(<a id='8356' tid='8355', class="m">value</a>);
+            <a id='8358' tid='8357', class="m">PrintF</a>(<a id='8360' tid='8359', class="m">&quot;%s: \n&quot;</a>, <a id='8362' tid='8361', class="m">arg1</a>);
+#<a id='8364' tid='8363', class="m">ifdef</a> <a id='8366' tid='8365', class="m">DEBUG</a>
+            <a id='8368' tid='8367', class="m">obj</a>-&gt;<a id='8370' tid='8369', class="m">PrintLn</a>();
+#<a id='8372' tid='8371', class="m">else</a>
+            <a id='8374' tid='8373', class="m">obj</a>-&gt;<a id='8376' tid='8375', class="m">ShortPrint</a>();
+            <a id='8378' tid='8377', class="m">PrintF</a>(<a id='8380' tid='8379', class="m">&quot;\n&quot;</a>);
+#<a id='8382' tid='8381', class="m">endif</a>
+          } <a id='8384' tid='8383', class="m">else</a> {
+            <a id='8386' tid='8385', class="m">PrintF</a>(<a id='8388' tid='8387', class="m">&quot;%s unrecognized\n&quot;</a>, <a id='8390' tid='8389', class="m">arg1</a>);
+          }
+        } <a id='8392' tid='8391', class="m">else</a> {
+          <a id='8394' tid='8393', class="m">PrintF</a>(<a id='8396' tid='8395', class="m">&quot;printobject &lt;value&gt;\n&quot;</a>);
+        }
+      } <a id='8398' tid='8397', class="m">else</a> <a id='8400' tid='8399', class="m">if</a> (<a id='8402' tid='8401', class="m">strcmp</a>(<a id='8404' tid='8403', class="m">cmd</a>, <a id='8406' tid='8405', class="m">&quot;stack&quot;</a>) <a id='8408' tid='8407', class="m">==</a> <a id='8410' tid='8409', class="m">0</a> <a id='8412' tid='8411', class="m">||</a> <a id='8414' tid='8413', class="m">strcmp</a>(<a id='8416' tid='8415', class="m">cmd</a>, <a id='8418' tid='8417', class="m">&quot;mem&quot;</a>) <a id='8420' tid='8419', class="m">==</a> <a id='8422' tid='8421', class="m">0</a>) {
+        <a id='8424' tid='8423', class="m">int32_t</a><a id='8426' tid='8425', class="m">*</a> <a id='8428' tid='8427', class="m">cur</a> = <a id='8430' tid='8429', class="m">NULL</a>;
+        <a id='8432' tid='8431', class="m">int32_t</a><a id='8434' tid='8433', class="m">*</a> <a id='8436' tid='8435', class="m">end</a> = <a id='8438' tid='8437', class="m">NULL</a>;
+        <a id='8440' tid='8439', class="m">int</a> <a id='8442' tid='8441', class="m">next_arg</a> = <a id='8444' tid='8443', class="m">1</a>;
+
+        <a id='8446' tid='8445', class="m">if</a> (<a id='8448' tid='8447', class="m">strcmp</a>(<a id='8450' tid='8449', class="m">cmd</a>, <a id='8452' tid='8451', class="m">&quot;stack&quot;</a>) <a id='8454' tid='8453', class="m">==</a> <a id='8456' tid='8455', class="m">0</a>) {
+          <a id='8458' tid='8457', class="m">cur</a> <a id='8460' tid='8459', class="m">=</a> <a id='8462' tid='8461', class="m">reinterpret_cast</a>&lt;<a id='8464' tid='8463', class="m">int32_t</a><a id='8466' tid='8465', class="m">*</a>&gt;(<a id='8468' tid='8467', class="m">sim_</a>-&gt;<a id='8470' tid='8469', class="m">get_register</a>(<a id='8472' tid='8471', class="m">Simulator</a><a id='8474' tid='8473', class="m">::</a><a id='8476' tid='8475', class="m">sp</a>));
+        } <a id='8478' tid='8477', class="m">else</a> {  // &quot;mem&quot;
+          <a id='8480' tid='8479', class="m">int32_t</a> <a id='8482' tid='8481', class="m">value</a>;
+          <a id='8484' tid='8483', class="m">if</a> (<a id='8486' tid='8485', class="m">!</a><a id='8488' tid='8487', class="m">GetValue</a>(<a id='8490' tid='8489', class="m">arg1</a>, <a id='8492' tid='8491', class="m">&</a><a id='8494' tid='8493', class="m">value</a>)) {
+            <a id='8496' tid='8495', class="m">PrintF</a>(<a id='8498' tid='8497', class="m">&quot;%s unrecognized\n&quot;</a>, <a id='8500' tid='8499', class="m">arg1</a>);
+            <a id='8502' tid='8501', class="m">continue</a>;
+          }
+          <a id='8504' tid='8503', class="m">cur</a> <a id='8506' tid='8505', class="m">=</a> <a id='8508' tid='8507', class="m">reinterpret_cast</a>&lt;<a id='8510' tid='8509', class="m">int32_t</a><a id='8512' tid='8511', class="m">*</a>&gt;(<a id='8514' tid='8513', class="m">value</a>);
+          <a id='8516' tid='8515', class="m">next_arg</a><a id='8518' tid='8517', class="m">++</a>;
+        }
+
+        <a id='8520' tid='8519', class="m">int32_t</a> <a id='8522' tid='8521', class="m">words</a>;
+        <a id='8524' tid='8523', class="m">if</a> (<a id='8526' tid='8525', class="m">argc</a> <a id='8528' tid='8527', class="m">==</a> <a id='8530' tid='8529', class="m">next_arg</a>) {
+          <a id='8532' tid='8531', class="m">words</a> <a id='8534' tid='8533', class="m">=</a> <a id='8536' tid='8535', class="m">10</a>;
+        } <a id='8538' tid='8537', class="m">else</a> <a id='8540' tid='8539', class="m">if</a> (<a id='8542' tid='8541', class="m">argc</a> <a id='8544' tid='8543', class="m">==</a> <a id='8546' tid='8545', class="m">next_arg</a> <a id='8548' tid='8547', class="m">+</a> <a id='8550' tid='8549', class="m">1</a>) {
+          <a id='8552' tid='8551', class="m">if</a> (<a id='8554' tid='8553', class="m">!</a><a id='8556' tid='8555', class="m">GetValue</a>(<a id='8558' tid='8557', class="m">argv</a>[<a id='8560' tid='8559', class="m">next_arg</a>], <a id='8562' tid='8561', class="m">&</a><a id='8564' tid='8563', class="m">words</a>)) {
+            <a id='8566' tid='8565', class="m">words</a> <a id='8568' tid='8567', class="m">=</a> <a id='8570' tid='8569', class="m">10</a>;
+          }
+        }
+        <a id='8572' tid='8571', class="m">end</a> <a id='8574' tid='8573', class="m">=</a> <a id='8576' tid='8575', class="m">cur</a> <a id='8578' tid='8577', class="m">+</a> <a id='8580' tid='8579', class="m">words</a>;
+
+        <a id='8582' tid='8581', class="m">while</a> (<a id='8584' tid='8583', class="m">cur</a> <a id='8586' tid='8585', class="m">&lt;</a> <a id='8588' tid='8587', class="m">end</a>) {
+          <a id='8590' tid='8589', class="m">PrintF</a>(<a id='8592' tid='8591', class="m">&quot;  0x%08x:  0x%08x %10d&quot;</a>,
+                 <a id='8594' tid='8593', class="m">reinterpret_cast</a>&lt;<a id='8596' tid='8595', class="m">intptr_t</a>&gt;(<a id='8598' tid='8597', class="m">cur</a>), <a id='8600' tid='8599', class="m">*</a><a id='8602' tid='8601', class="m">cur</a>, <a id='8604' tid='8603', class="m">*</a><a id='8606' tid='8605', class="m">cur</a>);
+          <a id='8608' tid='8607', class="m">HeapObject</a><a id='8610' tid='8609', class="m">*</a> <a id='8612' tid='8611', class="m">obj</a> = <a id='8614' tid='8613', class="m">reinterpret_cast</a>&lt;<a id='8616' tid='8615', class="m">HeapObject</a><a id='8618' tid='8617', class="m">*</a>&gt;(<a id='8620' tid='8619', class="m">*</a><a id='8622' tid='8621', class="m">cur</a>);
+          <a id='8624' tid='8623', class="m">int</a> <a id='8626' tid='8625', class="m">value</a> = <a id='8628' tid='8627', class="m">*</a><a id='8630' tid='8629', class="m">cur</a>;
+          <a id='8632' tid='8631', class="m">Heap</a><a id='8634' tid='8633', class="m">*</a> <a id='8636' tid='8635', class="m">current_heap</a> = <a id='8638' tid='8637', class="m">v8</a><a id='8640' tid='8639', class="m">::</a><a id='8642' tid='8641', class="m">internal</a><a id='8644' tid='8643', class="m">::</a><a id='8646' tid='8645', class="m">Isolate</a><a id='8648' tid='8647', class="m">::</a><a id='8650' tid='8649', class="m">Current</a>()-&gt;<a id='8652' tid='8651', class="m">heap</a>();
+          <a id='8654' tid='8653', class="m">if</a> (<a id='8656' tid='8655', class="m">current_heap</a>-&gt;<a id='8658' tid='8657', class="m">Contains</a>(<a id='8660' tid='8659', class="m">obj</a>) <a id='8662' tid='8661', class="m">||</a> ((<a id='8664' tid='8663', class="m">value</a> <a id='8666' tid='8665', class="m">&</a> <a id='8668' tid='8667', class="m">1</a>) <a id='8670' tid='8669', class="m">==</a> <a id='8672' tid='8671', class="m">0</a>)) {
+            <a id='8674' tid='8673', class="m">PrintF</a>(<a id='8676' tid='8675', class="m">&quot; (&quot;</a>);
+            <a id='8678' tid='8677', class="m">if</a> ((<a id='8680' tid='8679', class="m">value</a> <a id='8682' tid='8681', class="m">&</a> <a id='8684' tid='8683', class="m">1</a>) <a id='8686' tid='8685', class="m">==</a> <a id='8688' tid='8687', class="m">0</a>) {
+              <a id='8690' tid='8689', class="m">PrintF</a>(<a id='8692' tid='8691', class="m">&quot;smi %d&quot;</a>, <a id='8694' tid='8693', class="m">value</a> <a id='8696' tid='8695', class="m">/</a> <a id='8698' tid='8697', class="m">2</a>);
+            } <a id='8700' tid='8699', class="m">else</a> {
+              <a id='8702' tid='8701', class="m">obj</a>-&gt;<a id='8704' tid='8703', class="m">ShortPrint</a>();
+            }
+            <a id='8706' tid='8705', class="m">PrintF</a>(<a id='8708' tid='8707', class="m">&quot;)&quot;</a>);
+          }
+          <a id='8710' tid='8709', class="m">PrintF</a>(<a id='8712' tid='8711', class="m">&quot;\n&quot;</a>);
+          <a id='8714' tid='8713', class="m">cur</a><a id='8716' tid='8715', class="m">++</a>;
+        }
+      } <a id='8718' tid='8717', class="m">else</a> <a id='8720' tid='8719', class="m">if</a> (<a id='8722' tid='8721', class="m">strcmp</a>(<a id='8724' tid='8723', class="m">cmd</a>, <a id='8726' tid='8725', class="m">&quot;disasm&quot;</a>) <a id='8728' tid='8727', class="m">==</a> <a id='8730' tid='8729', class="m">0</a> <a id='8732' tid='8731', class="m">||</a> <a id='8734' tid='8733', class="m">strcmp</a>(<a id='8736' tid='8735', class="m">cmd</a>, <a id='8738' tid='8737', class="m">&quot;di&quot;</a>) <a id='8740' tid='8739', class="m">==</a> <a id='8742' tid='8741', class="m">0</a>) {
+        <span class="i">disasm::NameConverter converter;</span>
+        <a id='8744' tid='8743', class="m">disasm</a><a id='8746' tid='8745', class="m">::</a><a id='8748' tid='8747', class="m">Disassembler</a> <a id='8750' tid='8749', class="m">dasm</a>(<a id='8752' tid='8751', class="m">converter</a>);
