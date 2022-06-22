@@ -4246,3 +4246,951 @@ namespace <span class="i">internal</span> {
   z_flag_ = z_flag_FPSCR_;
   c_flag_ = c_flag_FPSCR_;
   v_flag_ = v_flag_FPSCR_;
+}</span>
+
+
+// Addressing Mode 1 - Data-processing operands:
+// Get the value based on the shifter_operand with register.
+<span class="i">int32_t Simulator::GetShiftRm(Instruction* instr, bool* carry_out) {
+  ShiftOp shift = instr-&gt;ShiftField();
+  int shift_amount = instr-&gt;ShiftAmountValue();
+  int32_t result = get_register(instr-&gt;RmValue());
+  if (instr-&gt;Bit(4) == 0) {
+    // by immediate
+    if ((shift == ROR) && (shift_amount == 0)) {
+      UNIMPLEMENTED();
+      return result;
+    } else if (((shift == LSR) || (shift == ASR)) && (shift_amount == 0)) {
+      shift_amount = 32;
+    }
+    switch (shift) {
+      case ASR: {
+        if (shift_amount == 0) {
+          if (result &lt; 0) {
+            result = 0xffffffff;
+            *carry_out = true;
+          } else {
+            result = 0;
+            *carry_out = false;
+          }
+        } else {
+          result &gt;&gt;= (shift_amount - 1);
+          *carry_out = (result & 1) == 1;
+          result &gt;&gt;= 1;
+        }
+        break;
+      }
+
+      case LSL: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else {
+          result &lt;&lt;= (shift_amount - 1);
+          *carry_out = (result &lt; 0);
+          result &lt;&lt;= 1;
+        }
+        break;
+      }
+
+      case LSR: {
+        if (shift_amount == 0) {
+          result = 0;
+          *carry_out = c_flag_;
+        } else {
+          uint32_t uresult = static_cast&lt;uint32_t&gt;(result);
+          uresult &gt;&gt;= (shift_amount - 1);
+          *carry_out = (uresult & 1) == 1;
+          uresult &gt;&gt;= 1;
+          result = static_cast&lt;int32_t&gt;(uresult);
+        }
+        break;
+      }
+
+      case ROR: {
+        UNIMPLEMENTED();
+        break;
+      }
+
+      default: {
+        UNREACHABLE();
+        break;
+      }
+    }
+  } else {
+    // by register
+    int rs = instr-&gt;RsValue();
+    shift_amount = get_register(rs) &0xff;
+    switch (shift) {
+      case ASR: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount &lt; 32) {
+          result &gt;&gt;= (shift_amount - 1);
+          *carry_out = (result & 1) == 1;
+          result &gt;&gt;= 1;
+        } else {
+          ASSERT(shift_amount &gt;= 32);
+          if (result &lt; 0) {
+            *carry_out = true;
+            result = 0xffffffff;
+          } else {
+            *carry_out = false;
+            result = 0;
+          }
+        }
+        break;
+      }
+
+      case LSL: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount &lt; 32) {
+          result &lt;&lt;= (shift_amount - 1);
+          *carry_out = (result &lt; 0);
+          result &lt;&lt;= 1;
+        } else if (shift_amount == 32) {
+          *carry_out = (result & 1) == 1;
+          result = 0;
+        } else {
+          ASSERT(shift_amount &gt; 32);
+          *carry_out = false;
+          result = 0;
+        }
+        break;
+      }
+
+      case LSR: {
+        if (shift_amount == 0) {
+          *carry_out = c_flag_;
+        } else if (shift_amount &lt; 32) {
+          uint32_t uresult = static_cast&lt;uint32_t&gt;(result);
+          uresult &gt;&gt;= (shift_amount - 1);
+          *carry_out = (uresult & 1) == 1;
+          uresult &gt;&gt;= 1;
+          result = static_cast&lt;int32_t&gt;(uresult);
+        } else if (shift_amount == 32) {
+          *carry_out = (result &lt; 0);
+          result = 0;
+        } else {
+          *carry_out = false;
+          result = 0;
+        }
+        break;
+      }
+
+      case ROR: {
+        UNIMPLEMENTED();
+        break;
+      }
+
+      default: {
+        UNREACHABLE();
+        break;
+      }
+    }
+  }
+  return result;
+}</span>
+
+
+// Addressing Mode 1 - Data-processing operands:
+// Get the value based on the shifter_operand with immediate.
+<span class="i">int32_t Simulator::GetImm(Instruction* instr, bool* carry_out) {
+  int rotate = instr-&gt;RotateValue() * 2;
+  int immed8 = instr-&gt;Immed8Value();
+  int imm = (immed8 &gt;&gt; rotate) | (immed8 &lt;&lt; (32 - rotate));
+  *carry_out = (rotate == 0) ? c_flag_ : (imm &lt; 0);
+  return imm;
+}</span>
+
+
+<span class="i">static int count_bits(int bit_vector) {
+  int count = 0;
+  while (bit_vector != 0) {
+    if ((bit_vector & 1) != 0) {
+      count++;
+    }
+    bit_vector &gt;&gt;= 1;
+  }
+  return count;
+}</span>
+
+
+<span class="i">void Simulator::ProcessPUW(Instruction* instr,
+                           int num_regs,
+                           int reg_size,
+                           intptr_t* start_address,
+                           intptr_t* end_address) {
+  int rn = instr-&gt;RnValue();
+  int32_t rn_val = get_register(rn);
+  switch (instr-&gt;PUField()) {
+    case da_x: {
+      UNIMPLEMENTED();
+      break;
+    }
+    case ia_x: {
+      *start_address = rn_val;
+      *end_address = rn_val + (num_regs * reg_size) - reg_size;
+      rn_val = rn_val + (num_regs * reg_size);
+      break;
+    }
+    case db_x: {
+      *start_address = rn_val - (num_regs * reg_size);
+      *end_address = rn_val - reg_size;
+      rn_val = *start_address;
+      break;
+    }
+    case ib_x: {
+      *start_address = rn_val + reg_size;
+      *end_address = rn_val + (num_regs * reg_size);
+      rn_val = *end_address;
+      break;
+    }
+    default: {
+      UNREACHABLE();
+      break;
+    }
+  }
+  if (instr-&gt;HasW()) {
+    set_register(rn, rn_val);
+  }
+}</span>
+
+// Addressing Mode 4 - Load and Store Multiple
+<span class="i">void Simulator::HandleRList(Instruction* instr, bool load) {
+  int rlist = instr-&gt;RlistValue();
+  int num_regs = count_bits(rlist);
+
+  intptr_t start_address = 0;
+  intptr_t end_address = 0;
+  ProcessPUW(instr, num_regs, kPointerSize, &start_address, &end_address);
+
+  intptr_t* address = reinterpret_cast&lt;intptr_t*&gt;(start_address);
+  int reg = 0;
+  while (rlist != 0) {
+    if ((rlist & 1) != 0) {
+      if (load) {
+        set_register(reg, *address);
+      } else {
+        *address = get_register(reg);
+      }
+      address += 1;
+    }
+    reg++;
+    rlist &gt;&gt;= 1;
+  }
+  ASSERT(end_address == ((intptr_t)address) - 4);
+}</span>
+
+
+// Addressing Mode 6 - Load and Store Multiple Coprocessor registers.
+<span class="i">void Simulator::HandleVList(Instruction* instr) {
+  VFPRegPrecision precision =
+      (instr-&gt;SzValue() == 0) ? kSinglePrecision : kDoublePrecision;
+  int operand_size = (precision == kSinglePrecision) ? 4 : 8;
+
+  bool load = (instr-&gt;VLValue() == 0x1);
+
+  int vd;
+  int num_regs;
+  vd = instr-&gt;VFPDRegValue(precision);
+  if (precision == kSinglePrecision) {
+    num_regs = instr-&gt;Immed8Value();
+  } else {
+    num_regs = instr-&gt;Immed8Value() / 2;
+  }
+
+  intptr_t start_address = 0;
+  intptr_t end_address = 0;
+  ProcessPUW(instr, num_regs, operand_size, &start_address, &end_address);
+
+  intptr_t* address = reinterpret_cast&lt;intptr_t*&gt;(start_address);
+  for (int reg = vd; reg &lt; vd + num_regs; reg++) {
+    if (precision == kSinglePrecision) {
+      if (load) {
+        set_s_register_from_sinteger(
+            reg, ReadW(reinterpret_cast&lt;int32_t&gt;(address), instr));
+      } else {
+        WriteW(reinterpret_cast&lt;int32_t&gt;(address),
+               get_sinteger_from_s_register(reg), instr);
+      }
+      address += 1;
+    } else {
+      if (load) {
+        set_s_register_from_sinteger(
+            2 * reg, ReadW(reinterpret_cast&lt;int32_t&gt;(address), instr));
+        set_s_register_from_sinteger(
+            2 * reg + 1, ReadW(reinterpret_cast&lt;int32_t&gt;(address + 1), instr));
+      } else {
+        WriteW(reinterpret_cast&lt;int32_t&gt;(address),
+               get_sinteger_from_s_register(2 * reg), instr);
+        WriteW(reinterpret_cast&lt;int32_t&gt;(address + 1),
+               get_sinteger_from_s_register(2 * reg + 1), instr);
+      }
+      address += 2;
+    }
+  }
+  ASSERT(reinterpret_cast&lt;intptr_t&gt;(address) - operand_size == end_address);
+}</span>
+
+
+// Calls into the V8 runtime are based on this very simple interface.
+// Note: To be able to return two values from some calls the code in runtime.cc
+// uses the ObjectPair which is essentially two 32-bit values stuffed into a
+// 64-bit value. With the code below we assume that all runtime calls return
+// 64 bits of result. If they don&#39;t, the r1 result register contains a bogus
+// value, which is fine because it is caller-saved.
+<a id='5552' tid='5551', class="m">typedef</a> <a id='5554' tid='5553', class="m">int64_t</a> (<a id='5556' tid='5555', class="m">*</a><a id='5558' tid='5557', class="m">SimulatorRuntimeCall</a>)(<a id='5560' tid='5559', class="m">int32_t</a> <a id='5562' tid='5561', class="m">arg0</a>,
+                                        <a id='5564' tid='5563', class="m">int32_t</a> <a id='5566' tid='5565', class="m">arg1</a>,
+                                        <a id='5568' tid='5567', class="m">int32_t</a> <a id='5570' tid='5569', class="m">arg2</a>,
+                                        <a id='5572' tid='5571', class="m">int32_t</a> <a id='5574' tid='5573', class="m">arg3</a>,
+                                        <a id='5576' tid='5575', class="m">int32_t</a> <a id='5578' tid='5577', class="m">arg4</a>,
+                                        <a id='5580' tid='5579', class="m">int32_t</a> <a id='5582' tid='5581', class="m">arg5</a>);
+<a id='5528' tid='5527', class="m">typedef</a> <a id='5530' tid='5529', class="m">double</a> (<a id='5532' tid='5531', class="m">*</a><a id='5534' tid='5533', class="m">SimulatorRuntimeFPCall</a>)(<a id='5536' tid='5535', class="m">int32_t</a> <a id='5538' tid='5537', class="m">arg0</a>,
+                                         <a id='5540' tid='5539', class="m">int32_t</a> <a id='5542' tid='5541', class="m">arg1</a>,
+                                         <a id='5544' tid='5543', class="m">int32_t</a> <a id='5546' tid='5545', class="m">arg2</a>,
+                                         <a id='5548' tid='5547', class="m">int32_t</a> <a id='5550' tid='5549', class="m">arg3</a>);
+
+// This signature supports direct call in to API function native callback
+// (refer to InvocationCallback in v8.h).
+<a id='5506' tid='5505', class="m">typedef</a> <a id='5508' tid='5507', class="m">v8</a><a id='5510' tid='5509', class="m">::</a><a id='5512' tid='5511', class="m">Handle</a>&lt;<a id='5514' tid='5513', class="m">v8</a><a id='5516' tid='5515', class="m">::</a><a id='5518' tid='5517', class="m">Value</a>&gt; (<a id='5520' tid='5519', class="m">*</a><a id='5522' tid='5521', class="m">SimulatorRuntimeDirectApiCall</a>)(<a id='5524' tid='5523', class="m">int32_t</a> <a id='5526' tid='5525', class="m">arg0</a>);
+
+// This signature supports direct call to accessor getter callback.
+<a id='5480' tid='5479', class="m">typedef</a> <a id='5482' tid='5481', class="m">v8</a><a id='5484' tid='5483', class="m">::</a><a id='5486' tid='5485', class="m">Handle</a>&lt;<a id='5488' tid='5487', class="m">v8</a><a id='5490' tid='5489', class="m">::</a><a id='5492' tid='5491', class="m">Value</a>&gt; (<a id='5494' tid='5493', class="m">*</a><a id='5496' tid='5495', class="m">SimulatorRuntimeDirectGetterCall</a>)(<a id='5498' tid='5497', class="m">int32_t</a> <a id='5500' tid='5499', class="m">arg0</a>,
+                                                                  <a id='5502' tid='5501', class="m">int32_t</a> <a id='5504' tid='5503', class="m">arg1</a>);
+
+// Software interrupt instructions are used by the simulator to call into the
+// C-based V8 runtime.
+<a id='5452' tid='5451', class="m">void</a> <a id='5454' tid='5453', class="m">Simulator</a><a id='5456' tid='5455', class="m">::</a><a id='5458' tid='5457', class="m">SoftwareInterrupt</a>(<a id='5460' tid='5459', class="m">Instruction</a><a id='5462' tid='5461', class="m">*</a> <a id='5464' tid='5463', class="m">instr</a>) {
+  <span class="i">int svc = instr-&gt;SvcValue();</span>
+  <span class="i">switch</span> (<span class="i">svc</span>) {
+    <span class="i">case</span> <span class="i">kCallRtRedirected</span>: {
+      // Check if stack is aligned. Error if not aligned is reported below to
+      // include information on the function called.
+      <span class="i">bool stack_aligned =
+          (get_register(sp)
+           & (::v8::internal::FLAG_sim_stack_alignment - 1)) == 0;</span>
+      <a id='5466' tid='5465', class="m">Redirection</a><a id='5468' tid='5467', class="m">*</a> <a id='5470' tid='5469', class="m">redirection</a> = <a id='5472' tid='5471', class="m">Redirection</a><a id='5474' tid='5473', class="m">::</a><a id='5476' tid='5475', class="m">FromSwiInstruction</a>(<a id='5478' tid='5477', class="m">instr</a>);
+      <span class="i">int32_t arg0 = get_register(r0);</span>
+      <span class="i">int32_t arg1 = get_register(r1);</span>
+      <span class="i">int32_t arg2 = get_register(r2);</span>
+      <span class="i">int32_t arg3 = get_register(r3);</span>
+      <a id='5436' tid='5435', class="m">int32_t</a><a id='5438' tid='5437', class="m">*</a> <a id='5440' tid='5439', class="m">stack_pointer</a> = <a id='5442' tid='5441', class="m">reinterpret_cast</a>&lt;<a id='5444' tid='5443', class="m">int32_t</a><a id='5446' tid='5445', class="m">*</a>&gt;(<a id='5448' tid='5447', class="m">get_register</a>(<a id='5450' tid='5449', class="m">sp</a>));
+      <span class="i">int32_t arg4 = stack_pointer[0];</span>
+      <span class="i">int32_t arg5 = stack_pointer[1];</span>
+      <a id='5364' tid='5363', class="m">bool</a> <a id='5366' tid='5365', class="m">fp_call</a> =
+         (<a id='5368' tid='5367', class="m">redirection</a>-&gt;<a id='5370' tid='5369', class="m">type</a>() <a id='5372' tid='5371', class="m">==</a> <a id='5374' tid='5373', class="m">ExternalReference</a><a id='5376' tid='5375', class="m">::</a><a id='5378' tid='5377', class="m">BUILTIN_FP_FP_CALL</a>) <a id='5380' tid='5379', class="m">||</a>
+         (<a id='5382' tid='5381', class="m">redirection</a>-&gt;<a id='5384' tid='5383', class="m">type</a>() <a id='5386' tid='5385', class="m">==</a> <a id='5388' tid='5387', class="m">ExternalReference</a><a id='5390' tid='5389', class="m">::</a><a id='5392' tid='5391', class="m">BUILTIN_COMPARE_CALL</a>) <a id='5394' tid='5393', class="m">||</a>
+         (<a id='5396' tid='5395', class="m">redirection</a>-&gt;<a id='5398' tid='5397', class="m">type</a>() <a id='5400' tid='5399', class="m">==</a> <a id='5402' tid='5401', class="m">ExternalReference</a><a id='5404' tid='5403', class="m">::</a><a id='5406' tid='5405', class="m">BUILTIN_FP_CALL</a>) <a id='5408' tid='5407', class="m">||</a>
+         (<a id='5410' tid='5409', class="m">redirection</a>-&gt;<a id='5412' tid='5411', class="m">type</a>() <a id='5414' tid='5413', class="m">==</a> <a id='5416' tid='5415', class="m">ExternalReference</a><a id='5418' tid='5417', class="m">::</a><a id='5420' tid='5419', class="m">BUILTIN_FP_INT_CALL</a>);
+      <span class="i">if (use_eabi_hardfloat()) {
+        // With the hard floating point calling convention, double
+        // arguments are passed in VFP registers. Fetch the arguments
+        // from there and call the builtin using soft floating point
+        // convention.
+        switch (redirection-&gt;type()) {
+        case ExternalReference::BUILTIN_FP_FP_CALL:
+        case ExternalReference::BUILTIN_COMPARE_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          arg2 = vfp_register[2];
+          arg3 = vfp_register[3];
+          break;
+        case ExternalReference::BUILTIN_FP_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          break;
+        case ExternalReference::BUILTIN_FP_INT_CALL:
+          arg0 = vfp_register[0];
+          arg1 = vfp_register[1];
+          arg2 = get_register(0);
+          break;
+        default:
+          break;
+        }
+      }</span>
+      // This is dodgy but it works because the C entry stubs are never moved.
+      // See comment in codegen-arm.cc and bug 1242173.
+      <span class="i">int32_t saved_lr = get_register(lr);</span>
+      <a id='5328' tid='5327', class="m">intptr_t</a> <a id='5330' tid='5329', class="m">external</a> =
+          <a id='5332' tid='5331', class="m">reinterpret_cast</a>&lt;<a id='5334' tid='5333', class="m">intptr_t</a>&gt;(<a id='5336' tid='5335', class="m">redirection</a>-&gt;<a id='5338' tid='5337', class="m">external_function</a>());
+      <a id='5228' tid='5227', class="m">if</a> (<a id='5230' tid='5229', class="m">fp_call</a>) {
+        <span class="i">if</span> (<a id='5004' tid='5003', class="m">::</a><a id='5006' tid='5005', class="m">v8</a><a id='5008' tid='5007', class="m">::</a><a id='5010' tid='5009', class="m">internal</a><a id='5012' tid='5011', class="m">::</a><a id='5014' tid='5013', class="m">FLAG_trace_sim</a> <span class="i">||</span> <span class="i">!stack_aligned</span>) {
+          <a id='5232' tid='5231', class="m">SimulatorRuntimeFPCall</a> <a id='5234' tid='5233', class="m">target</a> =
+              <a id='5236' tid='5235', class="m">reinterpret_cast</a>&lt;<a id='5238' tid='5237', class="m">SimulatorRuntimeFPCall</a>&gt;(<a id='5240' tid='5239', class="m">external</a>);
+          <span class="i">double dval0, dval1;</span>
+          <span class="i">int32_t ival;</span>
+          <a id='5016' tid='5015', class="m">switch</a> (<a id='5018' tid='5017', class="m">redirection</a>-&gt;<a id='5020' tid='5019', class="m">type</a>()) {
+          <a id='5022' tid='5021', class="m">case</a> <a id='5024' tid='5023', class="m">ExternalReference</a><a id='5026' tid='5025', class="m">::</a><a id='5028' tid='5027', class="m">BUILTIN_FP_FP_CALL</a>:
+          <a id='5030' tid='5029', class="m">case</a> <a id='5032' tid='5031', class="m">ExternalReference</a><a id='5034' tid='5033', class="m">::</a><a id='5036' tid='5035', class="m">BUILTIN_COMPARE_CALL</a>:
+            <a id='5038' tid='5037', class="m">GetFpArgs</a>(<a id='5040' tid='5039', class="m">&</a><a id='5042' tid='5041', class="m">dval0</a>, <a id='5044' tid='5043', class="m">&</a><a id='5046' tid='5045', class="m">dval1</a>);
+            <a id='5048' tid='5047', class="m">PrintF</a>(<a id='5050' tid='5049', class="m">&quot;Call to host function at %p with args %f, %f&quot;</a>,
+                <a id='5052' tid='5051', class="m">FUNCTION_ADDR</a>(<a id='5054' tid='5053', class="m">target</a>), <a id='5056' tid='5055', class="m">dval0</a>, <a id='5058' tid='5057', class="m">dval1</a>);
+            <a id='5060' tid='5059', class="m">break</a>;
+          <a id='5062' tid='5061', class="m">case</a> <a id='5064' tid='5063', class="m">ExternalReference</a><a id='5066' tid='5065', class="m">::</a><a id='5068' tid='5067', class="m">BUILTIN_FP_CALL</a>:
+            <a id='5070' tid='5069', class="m">GetFpArgs</a>(<a id='5072' tid='5071', class="m">&</a><a id='5074' tid='5073', class="m">dval0</a>);
+            <a id='5076' tid='5075', class="m">PrintF</a>(<a id='5078' tid='5077', class="m">&quot;Call to host function at %p with arg %f&quot;</a>,
+                <a id='5080' tid='5079', class="m">FUNCTION_ADDR</a>(<a id='5082' tid='5081', class="m">target</a>), <a id='5084' tid='5083', class="m">dval0</a>);
+            <a id='5086' tid='5085', class="m">break</a>;
+          <a id='5088' tid='5087', class="m">case</a> <a id='5090' tid='5089', class="m">ExternalReference</a><a id='5092' tid='5091', class="m">::</a><a id='5094' tid='5093', class="m">BUILTIN_FP_INT_CALL</a>:
+            <a id='5096' tid='5095', class="m">GetFpArgs</a>(<a id='5098' tid='5097', class="m">&</a><a id='5100' tid='5099', class="m">dval0</a>, <a id='5102' tid='5101', class="m">&</a><a id='5104' tid='5103', class="m">ival</a>);
+            <a id='5106' tid='5105', class="m">PrintF</a>(<a id='5108' tid='5107', class="m">&quot;Call to host function at %p with args %f, %d&quot;</a>,
+                <a id='5110' tid='5109', class="m">FUNCTION_ADDR</a>(<a id='5112' tid='5111', class="m">target</a>), <a id='5114' tid='5113', class="m">dval0</a>, <a id='5116' tid='5115', class="m">ival</a>);
+            <a id='5118' tid='5117', class="m">break</a>;
+          <a id='5120' tid='5119', class="m">default</a>:
+            <a id='5122' tid='5121', class="m">UNREACHABLE</a>();
+            <a id='5124' tid='5123', class="m">break</a>;
+          }
+          <span class="i">if (!stack_aligned) {
+            PrintF(&quot; with unaligned stack %08x\n&quot;, get_register(sp));
+          }</span>
+          <span class="i">PrintF(&quot;\n&quot;);</span>
+        }
+        <span class="i">CHECK(stack_aligned);</span>
+        <span class="i">if</span> (<a id='4874' tid='4873', class="m">redirection</a>-&gt;<a id='4876' tid='4875', class="m">type</a>() <a id='4878' tid='4877', class="m">!=</a> <a id='4880' tid='4879', class="m">ExternalReference</a><a id='4882' tid='4881', class="m">::</a><a id='4884' tid='4883', class="m">BUILTIN_COMPARE_CALL</a>) {
+          <span class="i">SimulatorRuntimeFPCall target =
+              reinterpret_cast&lt;SimulatorRuntimeFPCall&gt;(external);</span>
+          <span class="i">double</span> <a id='4620' tid='4619', class="m">result</a> = <a id='4622' tid='4621', class="m">target</a>(<a id='4624' tid='4623', class="m">arg0</a>, <a id='4626' tid='4625', class="m">arg1</a>, <a id='4628' tid='4627', class="m">arg2</a>, <a id='4630' tid='4629', class="m">arg3</a>);
+          <span class="i">SetFpResult(result);</span>
+        } <span class="i">else</span> {
+          <span class="i">SimulatorRuntimeCall target =
+              reinterpret_cast&lt;SimulatorRuntimeCall&gt;(external);</span>
+          <span class="i">int64_t result = target(arg0, arg1, arg2, arg3, arg4, arg5);</span>
+          <span class="i">int32_t lo_res = static_cast&lt;int32_t&gt;(result);</span>
+          <span class="i">int32_t hi_res = static_cast&lt;int32_t&gt;(result &gt;&gt; 32);</span>
+          <span class="i">if</span> (<a id='4460' tid='4459', class="m">::</a><a id='4462' tid='4461', class="m">v8</a><a id='4464' tid='4463', class="m">::</a><a id='4466' tid='4465', class="m">internal</a><a id='4468' tid='4467', class="m">::</a><a id='4470' tid='4469', class="m">FLAG_trace_sim</a>) <span class="i">{
+            PrintF(&quot;Returned %08x\n&quot;, lo_res);
+          }</span>
+          <span class="i">set_register(r0, lo_res);</span>
+          <span class="i">set_register(r1, hi_res);</span>
+        }
+      } <a id='5242' tid='5241', class="m">else</a> <a id='5244' tid='5243', class="m">if</a> (<a id='5246' tid='5245', class="m">redirection</a>-&gt;<a id='5248' tid='5247', class="m">type</a>() <a id='5250' tid='5249', class="m">==</a> <a id='5252' tid='5251', class="m">ExternalReference</a><a id='5254' tid='5253', class="m">::</a><a id='5256' tid='5255', class="m">DIRECT_API_CALL</a>) {
+        <a id='5258' tid='5257', class="m">SimulatorRuntimeDirectApiCall</a> <a id='5260' tid='5259', class="m">target</a> =
+            <a id='5262' tid='5261', class="m">reinterpret_cast</a>&lt;<a id='5264' tid='5263', class="m">SimulatorRuntimeDirectApiCall</a>&gt;(<a id='5266' tid='5265', class="m">external</a>);
+        <span class="i">if</span> (<a id='5126' tid='5125', class="m">::</a><a id='5128' tid='5127', class="m">v8</a><a id='5130' tid='5129', class="m">::</a><a id='5132' tid='5131', class="m">internal</a><a id='5134' tid='5133', class="m">::</a><a id='5136' tid='5135', class="m">FLAG_trace_sim</a> <span class="i">||</span> <span class="i">!stack_aligned</span>) <span class="i">{
+          PrintF(&quot;Call to host function at %p args %08x&quot;,
+              FUNCTION_ADDR(target), arg0);
+          if (!stack_aligned) {
+            PrintF(&quot; with unaligned stack %08x\n&quot;, get_register(sp));
+          }
+          PrintF(&quot;\n&quot;);
+        }</span>
+        <span class="i">CHECK(stack_aligned);</span>
+        <a id='4886' tid='4885', class="m">v8</a><a id='4888' tid='4887', class="m">::</a><a id='4890' tid='4889', class="m">Handle</a>&lt;<a id='4892' tid='4891', class="m">v8</a><a id='4894' tid='4893', class="m">::</a><a id='4896' tid='4895', class="m">Value</a>&gt; <span class="i">result = target(arg0)</span>;
+        <span class="i">if</span> (<a id='4632' tid='4631', class="m">::</a><a id='4634' tid='4633', class="m">v8</a><a id='4636' tid='4635', class="m">::</a><a id='4638' tid='4637', class="m">internal</a><a id='4640' tid='4639', class="m">::</a><a id='4642' tid='4641', class="m">FLAG_trace_sim</a>) <span class="i">{
+          PrintF(&quot;Returned %p\n&quot;, reinterpret_cast&lt;void *&gt;(*result));
+        }</span>
+        <span class="i">set_register(r0, (int32_t) *result);</span>
+      } <a id='5268' tid='5267', class="m">else</a> <a id='5270' tid='5269', class="m">if</a> (<a id='5272' tid='5271', class="m">redirection</a>-&gt;<a id='5274' tid='5273', class="m">type</a>() <a id='5276' tid='5275', class="m">==</a> <a id='5278' tid='5277', class="m">ExternalReference</a><a id='5280' tid='5279', class="m">::</a><a id='5282' tid='5281', class="m">DIRECT_GETTER_CALL</a>) {
+        <a id='5284' tid='5283', class="m">SimulatorRuntimeDirectGetterCall</a> <a id='5286' tid='5285', class="m">target</a> =
+            <a id='5288' tid='5287', class="m">reinterpret_cast</a>&lt;<a id='5290' tid='5289', class="m">SimulatorRuntimeDirectGetterCall</a>&gt;(<a id='5292' tid='5291', class="m">external</a>);
+        <span class="i">if</span> (<a id='5138' tid='5137', class="m">::</a><a id='5140' tid='5139', class="m">v8</a><a id='5142' tid='5141', class="m">::</a><a id='5144' tid='5143', class="m">internal</a><a id='5146' tid='5145', class="m">::</a><a id='5148' tid='5147', class="m">FLAG_trace_sim</a> <span class="i">||</span> <span class="i">!stack_aligned</span>) <span class="i">{
+          PrintF(&quot;Call to host function at %p args %08x %08x&quot;,
+              FUNCTION_ADDR(target), arg0, arg1);
+          if (!stack_aligned) {
+            PrintF(&quot; with unaligned stack %08x\n&quot;, get_register(sp));
+          }
+          PrintF(&quot;\n&quot;);
+        }</span>
+        <span class="i">CHECK(stack_aligned);</span>
+        <a id='4898' tid='4897', class="m">v8</a><a id='4900' tid='4899', class="m">::</a><a id='4902' tid='4901', class="m">Handle</a>&lt;<a id='4904' tid='4903', class="m">v8</a><a id='4906' tid='4905', class="m">::</a><a id='4908' tid='4907', class="m">Value</a>&gt; <span class="i">result = target(arg0, arg1)</span>;
+        <span class="i">if (::v8::internal::FLAG_trace_sim) {
+          PrintF(&quot;Returned %p\n&quot;, reinterpret_cast&lt;void *&gt;(*result));
+        }</span>
+        <span class="i">set_register(r0, (int32_t) *result);</span>
+      } <a id='5294' tid='5293', class="m">else</a> {
+        // builtin call.
+        <span class="i">ASSERT(redirection-&gt;type() == ExternalReference::BUILTIN_CALL);</span>
+        <a id='5296' tid='5295', class="m">SimulatorRuntimeCall</a> <a id='5298' tid='5297', class="m">target</a> =
+            <a id='5300' tid='5299', class="m">reinterpret_cast</a>&lt;<a id='5302' tid='5301', class="m">SimulatorRuntimeCall</a>&gt;(<a id='5304' tid='5303', class="m">external</a>);
+        <span class="i">if</span> (<a id='5150' tid='5149', class="m">::</a><a id='5152' tid='5151', class="m">v8</a><a id='5154' tid='5153', class="m">::</a><a id='5156' tid='5155', class="m">internal</a><a id='5158' tid='5157', class="m">::</a><a id='5160' tid='5159', class="m">FLAG_trace_sim</a> <span class="i">||</span> <span class="i">!stack_aligned</span>) <span class="i">{
+          PrintF(
+              &quot;Call to host function at %p&quot;
+              &quot;args %08x, %08x, %08x, %08x, %08x, %08x&quot;,
+              FUNCTION_ADDR(target),
+              arg0,
+              arg1,
+              arg2,
+              arg3,
+              arg4,
+              arg5);
+          if (!stack_aligned) {
+            PrintF(&quot; with unaligned stack %08x\n&quot;, get_register(sp));
+          }
+          PrintF(&quot;\n&quot;);
+        }</span>
+        <span class="i">CHECK(stack_aligned);</span>
+        <a id='4910' tid='4909', class="m">int64_t</a> <a id='4912' tid='4911', class="m">result</a> = <a id='4914' tid='4913', class="m">target</a>(<a id='4916' tid='4915', class="m">arg0</a>, <a id='4918' tid='4917', class="m">arg1</a>, <a id='4920' tid='4919', class="m">arg2</a>, <a id='4922' tid='4921', class="m">arg3</a>, <a id='4924' tid='4923', class="m">arg4</a>, <a id='4926' tid='4925', class="m">arg5</a>);
+        <span class="i">int32_t lo_res = static_cast&lt;int32_t&gt;(result);</span>
+        <span class="i">int32_t</span> <span class="i">hi_res</span> = <a id='4644' tid='4643', class="m">static_cast</a>&lt;<a id='4646' tid='4645', class="m">int32_t</a>&gt;(<a id='4648' tid='4647', class="m">result</a> <a id='4650' tid='4649', class="m">&gt;&gt;</a> <a id='4652' tid='4651', class="m">32</a>);
+        <span class="i">if (::v8::internal::FLAG_trace_sim) {
+          PrintF(&quot;Returned %08x\n&quot;, lo_res);
+        }</span>
+        <span class="i">set_register(r0, lo_res);</span>
+        <span class="i">set_register(r1, hi_res);</span>
+      }
+      <span class="i">set_register(lr, saved_lr);</span>
+      <span class="i">set_pc(get_register(lr));</span>
+      <span class="i">break;</span>
+    }
+    <span class="i">case</span> <span class="i">kBreakpoint</span>: <span class="i">{
+      ArmDebugger dbg(this);
+      dbg.Debug();
+      break;
+    }</span>
+    // stop uses all codes greater than 1 &lt;&lt; 23.
+    <span class="i">default</span>: {
+      <span class="i">if</span> <span class="i">(svc &gt;= (1 &lt;&lt; 23))</span> {
+        <span class="i">uint32_t code = svc & kStopCodeMask;</span>
+        <span class="i">if (isWatchedStop(code)) {
+          IncreaseStopCounter(code);
+        }</span>
+        // Stop if it is enabled, otherwise go on jumping over the stop
+        // and the message address.
+        <span class="i">if</span> <span class="i">(isEnabledStop(code))</span> <span class="i">{
+          ArmDebugger dbg(this);
+          dbg.Stop(instr);
+        }</span> <span class="i">else</span> {
+          <span class="i">set_pc</span>(<span class="i">get_pc()</span> <span class="i">+</span> <a id='4472' tid='4471', class="m">2</a> <a id='4474' tid='4473', class="m">*</a> <a id='4476' tid='4475', class="m">Instruction</a><a id='4478' tid='4477', class="m">::</a><a id='4480' tid='4479', class="m">kInstrSize</a>);
+        }
+      } <span class="i">else {
+        // This is not a valid svc code.
+        UNREACHABLE();
+        break;
+      }</span>
+    }
+  }
+}
+
+
+// Stop helper functions.
+<span class="i">bool Simulator::isStopInstruction(Instruction* instr) {
+  return (instr-&gt;Bits(27, 24) == 0xF) && (instr-&gt;SvcValue() &gt;= kStopCode);
+}</span>
+
+
+<span class="i">bool Simulator::isWatchedStop(uint32_t code) {
+  ASSERT(code &lt;= kMaxStopCode);
+  return code &lt; kNumOfWatchedStops;
+}</span>
+
+
+<span class="i">bool</span> <span class="i">Simulator::isEnabledStop</span><span class="i">(uint32_t code)</span> {
+  <span class="i">ASSERT(code &lt;= kMaxStopCode);</span>
+  // Unwatched stops are always enabled.
+  <a id='5422' tid='5421', class="m">return</a> <span class="i">!isWatchedStop(code)</span> <span class="i">||</span>
+    <a id='5424' tid='5423', class="m">!</a>(<a id='5426' tid='5425', class="m">watched_stops</a>[<a id='5428' tid='5427', class="m">code</a>].<a id='5430' tid='5429', class="m">count</a> <a id='5432' tid='5431', class="m">&</a> <a id='5434' tid='5433', class="m">kStopDisabledBit</a>);
+}
+
+
+<a id='5340' tid='5339', class="m">void</a> <a id='5342' tid='5341', class="m">Simulator</a><a id='5344' tid='5343', class="m">::</a><a id='5346' tid='5345', class="m">EnableStop</a>(<a id='5348' tid='5347', class="m">uint32_t</a> <a id='5350' tid='5349', class="m">code</a>) {
+  <span class="i">ASSERT(isWatchedStop(code));</span>
+  <span class="i">if</span> <span class="i">(!isEnabledStop(code))</span> {
+    <a id='5352' tid='5351', class="m">watched_stops</a>[<a id='5354' tid='5353', class="m">code</a>].<a id='5356' tid='5355', class="m">count</a> <a id='5358' tid='5357', class="m">&=</a> <a id='5360' tid='5359', class="m">~</a><a id='5362' tid='5361', class="m">kStopDisabledBit</a>;
+  }
+}
+
+
+<a id='5306' tid='5305', class="m">void</a> <a id='5308' tid='5307', class="m">Simulator</a><a id='5310' tid='5309', class="m">::</a><a id='5312' tid='5311', class="m">DisableStop</a>(<a id='5314' tid='5313', class="m">uint32_t</a> <a id='5316' tid='5315', class="m">code</a>) {
+  <span class="i">ASSERT(isWatchedStop(code));</span>
+  <span class="i">if</span> <span class="i">(isEnabledStop(code))</span> {
+    <a id='5318' tid='5317', class="m">watched_stops</a>[<a id='5320' tid='5319', class="m">code</a>].<a id='5322' tid='5321', class="m">count</a> <a id='5324' tid='5323', class="m">|=</a> <a id='5326' tid='5325', class="m">kStopDisabledBit</a>;
+  }
+}
+
+
+<a id='5162' tid='5161', class="m">void</a> <a id='5164' tid='5163', class="m">Simulator</a><a id='5166' tid='5165', class="m">::</a><a id='5168' tid='5167', class="m">IncreaseStopCounter</a>(<a id='5170' tid='5169', class="m">uint32_t</a> <a id='5172' tid='5171', class="m">code</a>) {
+  <span class="i">ASSERT(code &lt;= kMaxStopCode);</span>
+  <span class="i">ASSERT(isWatchedStop(code));</span>
+  <a id='5174' tid='5173', class="m">if</a> ((<a id='5176' tid='5175', class="m">watched_stops</a>[<a id='5178' tid='5177', class="m">code</a>].<a id='5180' tid='5179', class="m">count</a> <a id='5182' tid='5181', class="m">&</a> <a id='5184' tid='5183', class="m">~</a>(<a id='5186' tid='5185', class="m">1</a> <a id='5188' tid='5187', class="m">&lt;&lt;</a> <a id='5190' tid='5189', class="m">31</a>)) <a id='5192' tid='5191', class="m">==</a> <a id='5194' tid='5193', class="m">0x7fffffff</a>) {
+    <a id='5196' tid='5195', class="m">PrintF</a>(<a id='5198' tid='5197', class="m">&quot;Stop counter for code %i has overflowed.\n&quot;</a>
+           <a id='5200' tid='5199', class="m">&quot;Enabling this code and reseting the counter to 0.\n&quot;</a>, <a id='5202' tid='5201', class="m">code</a>);
+    <a id='5204' tid='5203', class="m">watched_stops</a>[<a id='5206' tid='5205', class="m">code</a>].<a id='5208' tid='5207', class="m">count</a> <a id='5210' tid='5209', class="m">=</a> <a id='5212' tid='5211', class="m">0</a>;
+    <a id='5214' tid='5213', class="m">EnableStop</a>(<a id='5216' tid='5215', class="m">code</a>);
+  } <a id='5218' tid='5217', class="m">else</a> {
+    <a id='5220' tid='5219', class="m">watched_stops</a>[<a id='5222' tid='5221', class="m">code</a>].<a id='5224' tid='5223', class="m">count</a><a id='5226' tid='5225', class="m">++</a>;
+  }
+}
+
+
+// Print a stop status.
+<a id='4976' tid='4975', class="m">void</a> <a id='4978' tid='4977', class="m">Simulator</a><a id='4980' tid='4979', class="m">::</a><a id='4982' tid='4981', class="m">PrintStopInfo</a>(<a id='4984' tid='4983', class="m">uint32_t</a> <a id='4986' tid='4985', class="m">code</a>) {
+  <span class="i">ASSERT(code &lt;= kMaxStopCode);</span>
+  <span class="i">if</span> <span class="i">(!isWatchedStop(code))</span> <span class="i">{
+    PrintF(&quot;Stop not watched.&quot;);
+  }</span> <span class="i">else</span> {
+    <span class="i">const char* state = isEnabledStop(code) ? &quot;Enabled&quot; : &quot;Disabled&quot;;</span>
+    <a id='4988' tid='4987', class="m">int32_t</a> <a id='4990' tid='4989', class="m">count</a> = <a id='4992' tid='4991', class="m">watched_stops</a>[<a id='4994' tid='4993', class="m">code</a>].<a id='4996' tid='4995', class="m">count</a> <a id='4998' tid='4997', class="m">&</a> <a id='5000' tid='4999', class="m">~</a><a id='5002' tid='5001', class="m">kStopDisabledBit</a>;
+    // Don&#39;t print the state of unused breakpoints.
+    <a id='4928' tid='4927', class="m">if</a> (<a id='4930' tid='4929', class="m">count</a> <a id='4932' tid='4931', class="m">!=</a> <a id='4934' tid='4933', class="m">0</a>) {
+      <a id='4936' tid='4935', class="m">if</a> (<a id='4938' tid='4937', class="m">watched_stops</a>[<a id='4940' tid='4939', class="m">code</a>].<a id='4942' tid='4941', class="m">desc</a>) {
+        <a id='4944' tid='4943', class="m">PrintF</a>(<a id='4946' tid='4945', class="m">&quot;stop %i - 0x%x: \t%s, \tcounter = %i, \t%s\n&quot;</a>,
+               <a id='4948' tid='4947', class="m">code</a>, <a id='4950' tid='4949', class="m">code</a>, <a id='4952' tid='4951', class="m">state</a>, <a id='4954' tid='4953', class="m">count</a>, <a id='4956' tid='4955', class="m">watched_stops</a>[<a id='4958' tid='4957', class="m">code</a>].<a id='4960' tid='4959', class="m">desc</a>);
+      } <a id='4962' tid='4961', class="m">else</a> {
+        <a id='4964' tid='4963', class="m">PrintF</a>(<a id='4966' tid='4965', class="m">&quot;stop %i - 0x%x: \t%s, \tcounter = %i\n&quot;</a>,
+               <a id='4968' tid='4967', class="m">code</a>, <a id='4970' tid='4969', class="m">code</a>, <a id='4972' tid='4971', class="m">state</a>, <a id='4974' tid='4973', class="m">count</a>);
+      }
+    }
+  }
+}
+
+
+// Handle execution based on instruction types.
+
+// Instruction types 0 and 1 are both rolled into one function because they
+// only differ in the handling of the shifter_operand.
+<span class="i">void Simulator::DecodeType01(Instruction* instr) {
+  int type = instr-&gt;TypeValue();
+  if ((type == 0) && instr-&gt;IsSpecialType0()) {
+    // multiply instruction or extra loads and stores
+    if (instr-&gt;Bits(7, 4) == 9) {
+      if (instr-&gt;Bit(24) == 0) {
+        // Raw field decoding here. Multiply instructions have their Rd in
+        // funny places.
+        int rn = instr-&gt;RnValue();
+        int rm = instr-&gt;RmValue();
+        int rs = instr-&gt;RsValue();
+        int32_t rs_val = get_register(rs);
+        int32_t rm_val = get_register(rm);
+        if (instr-&gt;Bit(23) == 0) {
+          if (instr-&gt;Bit(21) == 0) {
+            // The MUL instruction description (A 4.1.33) refers to Rd as being
+            // the destination for the operation, but it confusingly uses the
+            // Rn field to encode it.
+            // Format(instr, &quot;mul&#39;cond&#39;s &#39;rn, &#39;rm, &#39;rs&quot;);
+            int rd = rn;  // Remap the rn field to the Rd register.
+            int32_t alu_out = rm_val * rs_val;
+            set_register(rd, alu_out);
+            if (instr-&gt;HasS()) {
+              SetNZFlags(alu_out);
+            }
+          } else {
+            // The MLA instruction description (A 4.1.28) refers to the order
+            // of registers as &quot;Rd, Rm, Rs, Rn&quot;. But confusingly it uses the
+            // Rn field to encode the Rd register and the Rd field to encode
+            // the Rn register.
+            Format(instr, &quot;mla&#39;cond&#39;s &#39;rn, &#39;rm, &#39;rs, &#39;rd&quot;);
+          }
+        } else {
+          // The signed/long multiply instructions use the terms RdHi and RdLo
+          // when referring to the target registers. They are mapped to the Rn
+          // and Rd fields as follows:
+          // RdLo == Rd
+          // RdHi == Rn (This is confusingly stored in variable rd here
+          //             because the mul instruction from above uses the
+          //             Rn field to encode the Rd register. Good luck figuring
+          //             this out without reading the ARM instruction manual
+          //             at a very detailed level.)
+          // Format(instr, &quot;&#39;um&#39;al&#39;cond&#39;s &#39;rd, &#39;rn, &#39;rs, &#39;rm&quot;);
+          int rd_hi = rn;  // Remap the rn field to the RdHi register.
+          int rd_lo = instr-&gt;RdValue();
+          int32_t hi_res = 0;
+          int32_t lo_res = 0;
+          if (instr-&gt;Bit(22) == 1) {
+            int64_t left_op  = static_cast&lt;int32_t&gt;(rm_val);
+            int64_t right_op = static_cast&lt;int32_t&gt;(rs_val);
+            uint64_t result = left_op * right_op;
+            hi_res = static_cast&lt;int32_t&gt;(result &gt;&gt; 32);
+            lo_res = static_cast&lt;int32_t&gt;(result & 0xffffffff);
+          } else {
+            // unsigned multiply
+            uint64_t left_op  = static_cast&lt;uint32_t&gt;(rm_val);
+            uint64_t right_op = static_cast&lt;uint32_t&gt;(rs_val);
+            uint64_t result = left_op * right_op;
+            hi_res = static_cast&lt;int32_t&gt;(result &gt;&gt; 32);
+            lo_res = static_cast&lt;int32_t&gt;(result & 0xffffffff);
+          }
+          set_register(rd_lo, lo_res);
+          set_register(rd_hi, hi_res);
+          if (instr-&gt;HasS()) {
+            UNIMPLEMENTED();
+          }
+        }
+      } else {
+        UNIMPLEMENTED();  // Not used by V8.
+      }
+    } else {
+      // extra load/store instructions
+      int rd = instr-&gt;RdValue();
+      int rn = instr-&gt;RnValue();
+      int32_t rn_val = get_register(rn);
+      int32_t addr = 0;
+      if (instr-&gt;Bit(22) == 0) {
+        int rm = instr-&gt;RmValue();
+        int32_t rm_val = get_register(rm);
+        switch (instr-&gt;PUField()) {
+          case da_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn], -&#39;rm&quot;);
+            ASSERT(!instr-&gt;HasW());
+            addr = rn_val;
+            rn_val -= rm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case ia_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn], +&#39;rm&quot;);
+            ASSERT(!instr-&gt;HasW());
+            addr = rn_val;
+            rn_val += rm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case db_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn, -&#39;rm]&#39;w&quot;);
+            rn_val -= rm_val;
+            addr = rn_val;
+            if (instr-&gt;HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          case ib_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn, +&#39;rm]&#39;w&quot;);
+            rn_val += rm_val;
+            addr = rn_val;
+            if (instr-&gt;HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          default: {
+            // The PU field is a 2-bit field.
+            UNREACHABLE();
+            break;
+          }
+        }
+      } else {
+        int32_t imm_val = (instr-&gt;ImmedHValue() &lt;&lt; 4) | instr-&gt;ImmedLValue();
+        switch (instr-&gt;PUField()) {
+          case da_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn], #-&#39;off8&quot;);
+            ASSERT(!instr-&gt;HasW());
+            addr = rn_val;
+            rn_val -= imm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case ia_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn], #+&#39;off8&quot;);
+            ASSERT(!instr-&gt;HasW());
+            addr = rn_val;
+            rn_val += imm_val;
+            set_register(rn, rn_val);
+            break;
+          }
+          case db_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn, #-&#39;off8]&#39;w&quot;);
+            rn_val -= imm_val;
+            addr = rn_val;
+            if (instr-&gt;HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          case ib_x: {
+            // Format(instr, &quot;&#39;memop&#39;cond&#39;sign&#39;h &#39;rd, [&#39;rn, #+&#39;off8]&#39;w&quot;);
+            rn_val += imm_val;
+            addr = rn_val;
+            if (instr-&gt;HasW()) {
+              set_register(rn, rn_val);
+            }
+            break;
+          }
+          default: {
+            // The PU field is a 2-bit field.
+            UNREACHABLE();
+            break;
+          }
+        }
+      }
+      if (((instr-&gt;Bits(7, 4) & 0xd) == 0xd) && (instr-&gt;Bit(20) == 0)) {
+        ASSERT((rd % 2) == 0);
+        if (instr-&gt;HasH()) {
+          // The strd instruction.
+          int32_t value1 = get_register(rd);
+          int32_t value2 = get_register(rd+1);
+          WriteDW(addr, value1, value2);
+        } else {
+          // The ldrd instruction.
+          int* rn_data = ReadDW(addr);
+          set_dw_register(rd, rn_data);
+        }
+      } else if (instr-&gt;HasH()) {
+        if (instr-&gt;HasSign()) {
+          if (instr-&gt;HasL()) {
+            int16_t val = ReadH(addr, instr);
+            set_register(rd, val);
+          } else {
+            int16_t val = get_register(rd);
+            WriteH(addr, val, instr);
+          }
+        } else {
+          if (instr-&gt;HasL()) {
+            uint16_t val = ReadHU(addr, instr);
+            set_register(rd, val);
+          } else {
+            uint16_t val = get_register(rd);
+            WriteH(addr, val, instr);
+          }
+        }
+      } else {
+        // signed byte loads
+        ASSERT(instr-&gt;HasSign());
+        ASSERT(instr-&gt;HasL());
+        int8_t val = ReadB(addr);
+        set_register(rd, val);
+      }
+      return;
+    }
+  } else if ((type == 0) && instr-&gt;IsMiscType0()) {
+    if (instr-&gt;Bits(22, 21) == 1) {
+      int rm = instr-&gt;RmValue();
+      switch (instr-&gt;BitField(7, 4)) {
+        case BX:
+          set_pc(get_register(rm));
+          break;
+        case BLX: {
+          uint32_t old_pc = get_pc();
+          set_pc(get_register(rm));
+          set_register(lr, old_pc + Instruction::kInstrSize);
+          break;
+        }
+        case BKPT: {
+          ArmDebugger dbg(this);
+          PrintF(&quot;Simulator hit BKPT.\n&quot;);
+          dbg.Debug();
+          break;
+        }
+        default:
+          UNIMPLEMENTED();
+      }
+    } else if (instr-&gt;Bits(22, 21) == 3) {
+      int rm = instr-&gt;RmValue();
+      int rd = instr-&gt;RdValue();
+      switch (instr-&gt;BitField(7, 4)) {
+        case CLZ: {
+          uint32_t bits = get_register(rm);
+          int leading_zeros = 0;
+          if (bits == 0) {
+            leading_zeros = 32;
+          } else {
+            while ((bits & 0x80000000u) == 0) {
+              bits &lt;&lt;= 1;
+              leading_zeros++;
+            }
+          }
+          set_register(rd, leading_zeros);
+          break;
+        }
+        default:
+          UNIMPLEMENTED();
+      }
+    } else {
+      PrintF(&quot;%08x\n&quot;, instr-&gt;InstructionBits());
+      UNIMPLEMENTED();
+    }
+  } else {
+    int rd = instr-&gt;RdValue();
+    int rn = instr-&gt;RnValue();
+    int32_t rn_val = get_register(rn);
+    int32_t shifter_operand = 0;
+    bool shifter_carry_out = 0;
+    if (type == 0) {
+      shifter_operand = GetShiftRm(instr, &shifter_carry_out);
+    } else {
+      ASSERT(instr-&gt;TypeValue() == 1);
+      shifter_operand = GetImm(instr, &shifter_carry_out);
+    }
+    int32_t alu_out;
+
+    switch (instr-&gt;OpcodeField()) {
+      case AND: {
+        // Format(instr, &quot;and&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;and&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = rn_val & shifter_operand;
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case EOR: {
+        // Format(instr, &quot;eor&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;eor&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = rn_val ^ shifter_operand;
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(shifter_carry_out);
+        }
+        break;
+      }
+
+      case SUB: {
+        // Format(instr, &quot;sub&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;sub&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = rn_val - shifter_operand;
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(!BorrowFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, false));
+        }
+        break;
+      }
+
+      case RSB: {
+        // Format(instr, &quot;rsb&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;rsb&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = shifter_operand - rn_val;
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(!BorrowFrom(shifter_operand, rn_val));
+          SetVFlag(OverflowFrom(alu_out, shifter_operand, rn_val, false));
+        }
+        break;
+      }
+
+      case ADD: {
+        // Format(instr, &quot;add&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;add&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = rn_val + shifter_operand;
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(CarryFrom(rn_val, shifter_operand));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
+        }
+        break;
+      }
+
+      case ADC: {
+        // Format(instr, &quot;adc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        // Format(instr, &quot;adc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        alu_out = rn_val + shifter_operand + GetCarry();
+        set_register(rd, alu_out);
+        if (instr-&gt;HasS()) {
+          SetNZFlags(alu_out);
+          SetCFlag(CarryFrom(rn_val, shifter_operand, GetCarry()));
+          SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
+        }
+        break;
+      }
+
+      case SBC: {
+        Format(instr, &quot;sbc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        Format(instr, &quot;sbc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        break;
+      }
+
+      case RSC: {
+        Format(instr, &quot;rsc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;shift_rm&quot;);
+        Format(instr, &quot;rsc&#39;cond&#39;s &#39;rd, &#39;rn, &#39;imm&quot;);
+        break;
+      }
+
+      case TST: {
+        if (instr-&gt;HasS()) {
