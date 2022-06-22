@@ -3272,3 +3272,977 @@ namespace <span class="i">internal</span> {
       } <a id='8718' tid='8717', class="m">else</a> <a id='8720' tid='8719', class="m">if</a> (<a id='8722' tid='8721', class="m">strcmp</a>(<a id='8724' tid='8723', class="m">cmd</a>, <a id='8726' tid='8725', class="m">&quot;disasm&quot;</a>) <a id='8728' tid='8727', class="m">==</a> <a id='8730' tid='8729', class="m">0</a> <a id='8732' tid='8731', class="m">||</a> <a id='8734' tid='8733', class="m">strcmp</a>(<a id='8736' tid='8735', class="m">cmd</a>, <a id='8738' tid='8737', class="m">&quot;di&quot;</a>) <a id='8740' tid='8739', class="m">==</a> <a id='8742' tid='8741', class="m">0</a>) {
         <span class="i">disasm::NameConverter converter;</span>
         <a id='8744' tid='8743', class="m">disasm</a><a id='8746' tid='8745', class="m">::</a><a id='8748' tid='8747', class="m">Disassembler</a> <a id='8750' tid='8749', class="m">dasm</a>(<a id='8752' tid='8751', class="m">converter</a>);
+        // use a reasonably large buffer
+        <a id='8062' tid='8061', class="m">v8</a><a id='8064' tid='8063', class="m">::</a><a id='8066' tid='8065', class="m">internal</a><a id='8068' tid='8067', class="m">::</a><a id='8070' tid='8069', class="m">EmbeddedVector</a>&lt;<a id='8072' tid='8071', class="m">char</a>, <a id='8074' tid='8073', class="m">256</a>&gt; <a id='8076' tid='8075', class="m">buffer</a>;
+
+        <span class="i">byte* prev = NULL;</span>
+        <span class="i">byte* cur = NULL;</span>
+        <span class="i">byte* end = NULL;</span>
+
+        <a id='7546' tid='7545', class="m">if</a> (<a id='7548' tid='7547', class="m">argc</a> <a id='7550' tid='7549', class="m">==</a> <a id='7552' tid='7551', class="m">1</a>) {
+          <a id='7554' tid='7553', class="m">cur</a> <a id='7556' tid='7555', class="m">=</a> <a id='7558' tid='7557', class="m">reinterpret_cast</a>&lt;<a id='7560' tid='7559', class="m">byte</a><a id='7562' tid='7561', class="m">*</a>&gt;(<a id='7564' tid='7563', class="m">sim_</a>-&gt;<a id='7566' tid='7565', class="m">get_pc</a>());
+          <a id='7568' tid='7567', class="m">end</a> <a id='7570' tid='7569', class="m">=</a> <a id='7572' tid='7571', class="m">cur</a> <a id='7574' tid='7573', class="m">+</a> (<a id='7576' tid='7575', class="m">10</a> <a id='7578' tid='7577', class="m">*</a> <a id='7580' tid='7579', class="m">Instruction</a><a id='7582' tid='7581', class="m">::</a><a id='7584' tid='7583', class="m">kInstrSize</a>);
+        } <a id='7586' tid='7585', class="m">else</a> <a id='7588' tid='7587', class="m">if</a> (<a id='7590' tid='7589', class="m">argc</a> <a id='7592' tid='7591', class="m">==</a> <a id='7594' tid='7593', class="m">2</a>) {
+          <a id='7596' tid='7595', class="m">int</a> <a id='7598' tid='7597', class="m">regnum</a> = <a id='7600' tid='7599', class="m">Registers</a><a id='7602' tid='7601', class="m">::</a><a id='7604' tid='7603', class="m">Number</a>(<a id='7606' tid='7605', class="m">arg1</a>);
+          <a id='7608' tid='7607', class="m">if</a> (<span class="i">regnum != kNoRegister</span> <span class="i">||</span> <a id='7610' tid='7609', class="m">strncmp</a>(<a id='7612' tid='7611', class="m">arg1</a>, <a id='7614' tid='7613', class="m">&quot;0x&quot;</a>, <a id='7616' tid='7615', class="m">2</a>) <a id='7618' tid='7617', class="m">==</a> <a id='7620' tid='7619', class="m">0</a>) {
+            // The argument is an address or a register name.
+            <a id='7622' tid='7621', class="m">int32_t</a> <a id='7624' tid='7623', class="m">value</a>;
+            <a id='7626' tid='7625', class="m">if</a> (<a id='7628' tid='7627', class="m">GetValue</a>(<a id='7630' tid='7629', class="m">arg1</a>, <a id='7632' tid='7631', class="m">&</a><a id='7634' tid='7633', class="m">value</a>)) {
+              <a id='7636' tid='7635', class="m">cur</a> <a id='7638' tid='7637', class="m">=</a> <a id='7640' tid='7639', class="m">reinterpret_cast</a>&lt;<a id='7642' tid='7641', class="m">byte</a><a id='7644' tid='7643', class="m">*</a>&gt;(<a id='7646' tid='7645', class="m">value</a>);
+              // Disassemble 10 instructions at &lt;arg1&gt;.
+              <a id='7648' tid='7647', class="m">end</a> <a id='7650' tid='7649', class="m">=</a> <a id='7652' tid='7651', class="m">cur</a> <a id='7654' tid='7653', class="m">+</a> (<a id='7656' tid='7655', class="m">10</a> <a id='7658' tid='7657', class="m">*</a> <a id='7660' tid='7659', class="m">Instruction</a><a id='7662' tid='7661', class="m">::</a><a id='7664' tid='7663', class="m">kInstrSize</a>);
+            }
+          } <a id='7666' tid='7665', class="m">else</a> {
+            // The argument is the number of instructions.
+            <a id='7668' tid='7667', class="m">int32_t</a> <a id='7670' tid='7669', class="m">value</a>;
+            <a id='7672' tid='7671', class="m">if</a> (<a id='7674' tid='7673', class="m">GetValue</a>(<a id='7676' tid='7675', class="m">arg1</a>, <a id='7678' tid='7677', class="m">&</a><a id='7680' tid='7679', class="m">value</a>)) {
+              <a id='7682' tid='7681', class="m">cur</a> <a id='7684' tid='7683', class="m">=</a> <a id='7686' tid='7685', class="m">reinterpret_cast</a>&lt;<a id='7688' tid='7687', class="m">byte</a><a id='7690' tid='7689', class="m">*</a>&gt;(<a id='7692' tid='7691', class="m">sim_</a>-&gt;<a id='7694' tid='7693', class="m">get_pc</a>());
+              // Disassemble &lt;arg1&gt; instructions.
+              <a id='7696' tid='7695', class="m">end</a> <a id='7698' tid='7697', class="m">=</a> <a id='7700' tid='7699', class="m">cur</a> <a id='7702' tid='7701', class="m">+</a> (<a id='7704' tid='7703', class="m">value</a> <a id='7706' tid='7705', class="m">*</a> <a id='7708' tid='7707', class="m">Instruction</a><a id='7710' tid='7709', class="m">::</a><a id='7712' tid='7711', class="m">kInstrSize</a>);
+            }
+          }
+        } <a id='7714' tid='7713', class="m">else</a> {
+          <a id='7716' tid='7715', class="m">int32_t</a> <a id='7718' tid='7717', class="m">value1</a>;
+          <a id='7720' tid='7719', class="m">int32_t</a> <a id='7722' tid='7721', class="m">value2</a>;
+          <a id='7724' tid='7723', class="m">if</a> (<a id='7726' tid='7725', class="m">GetValue</a>(<a id='7728' tid='7727', class="m">arg1</a>, <a id='7730' tid='7729', class="m">&</a><a id='7732' tid='7731', class="m">value1</a>) <a id='7734' tid='7733', class="m">&&</a> <a id='7736' tid='7735', class="m">GetValue</a>(<a id='7738' tid='7737', class="m">arg2</a>, <a id='7740' tid='7739', class="m">&</a><a id='7742' tid='7741', class="m">value2</a>)) {
+            <a id='7744' tid='7743', class="m">cur</a> <a id='7746' tid='7745', class="m">=</a> <a id='7748' tid='7747', class="m">reinterpret_cast</a>&lt;<a id='7750' tid='7749', class="m">byte</a><a id='7752' tid='7751', class="m">*</a>&gt;(<a id='7754' tid='7753', class="m">value1</a>);
+            <a id='7756' tid='7755', class="m">end</a> <a id='7758' tid='7757', class="m">=</a> <a id='7760' tid='7759', class="m">cur</a> <a id='7762' tid='7761', class="m">+</a> (<a id='7764' tid='7763', class="m">value2</a> <a id='7766' tid='7765', class="m">*</a> <a id='7768' tid='7767', class="m">Instruction</a><a id='7770' tid='7769', class="m">::</a><a id='7772' tid='7771', class="m">kInstrSize</a>);
+          }
+        }
+
+        <span class="i">while (cur &lt; end) {
+          prev = cur;
+          cur += dasm.InstructionDecode(buffer, cur);
+          PrintF(&quot;  0x%08x  %s\n&quot;,
+                 reinterpret_cast&lt;intptr_t&gt;(prev), buffer.start());
+        }</span>
+      } <a id='8754' tid='8753', class="m">else</a> <a id='8756' tid='8755', class="m">if</a> (<a id='8758' tid='8757', class="m">strcmp</a>(<a id='8760' tid='8759', class="m">cmd</a>, <a id='8762' tid='8761', class="m">&quot;gdb&quot;</a>) <a id='8764' tid='8763', class="m">==</a> <a id='8766' tid='8765', class="m">0</a>) {
+        <a id='8768' tid='8767', class="m">PrintF</a>(<a id='8770' tid='8769', class="m">&quot;relinquishing control to gdb\n&quot;</a>);
+        <a id='8772' tid='8771', class="m">v8</a><a id='8774' tid='8773', class="m">::</a><a id='8776' tid='8775', class="m">internal</a><a id='8778' tid='8777', class="m">::</a><a id='8780' tid='8779', class="m">OS</a><a id='8782' tid='8781', class="m">::</a><a id='8784' tid='8783', class="m">DebugBreak</a>();
+        <a id='8786' tid='8785', class="m">PrintF</a>(<a id='8788' tid='8787', class="m">&quot;regaining control from gdb\n&quot;</a>);
+      } <a id='8790' tid='8789', class="m">else</a> <a id='8792' tid='8791', class="m">if</a> (<a id='8794' tid='8793', class="m">strcmp</a>(<a id='8796' tid='8795', class="m">cmd</a>, <a id='8798' tid='8797', class="m">&quot;break&quot;</a>) <a id='8800' tid='8799', class="m">==</a> <a id='8802' tid='8801', class="m">0</a>) {
+        <a id='8804' tid='8803', class="m">if</a> (<a id='8806' tid='8805', class="m">argc</a> <a id='8808' tid='8807', class="m">==</a> <a id='8810' tid='8809', class="m">2</a>) {
+          <a id='8812' tid='8811', class="m">int32_t</a> <a id='8814' tid='8813', class="m">value</a>;
+          <a id='8816' tid='8815', class="m">if</a> (<a id='8818' tid='8817', class="m">GetValue</a>(<a id='8820' tid='8819', class="m">arg1</a>, <a id='8822' tid='8821', class="m">&</a><a id='8824' tid='8823', class="m">value</a>)) {
+            <a id='8826' tid='8825', class="m">if</a> (<a id='8828' tid='8827', class="m">!</a><a id='8830' tid='8829', class="m">SetBreakpoint</a>(<a id='8832' tid='8831', class="m">reinterpret_cast</a>&lt;<a id='8834' tid='8833', class="m">Instruction</a><a id='8836' tid='8835', class="m">*</a>&gt;(<a id='8838' tid='8837', class="m">value</a>))) {
+              <a id='8840' tid='8839', class="m">PrintF</a>(<a id='8842' tid='8841', class="m">&quot;setting breakpoint failed\n&quot;</a>);
+            }
+          } <a id='8844' tid='8843', class="m">else</a> {
+            <a id='8846' tid='8845', class="m">PrintF</a>(<a id='8848' tid='8847', class="m">&quot;%s unrecognized\n&quot;</a>, <a id='8850' tid='8849', class="m">arg1</a>);
+          }
+        } <a id='8852' tid='8851', class="m">else</a> {
+          <a id='8854' tid='8853', class="m">PrintF</a>(<a id='8856' tid='8855', class="m">&quot;break &lt;address&gt;\n&quot;</a>);
+        }
+      } <a id='8858' tid='8857', class="m">else</a> <a id='8860' tid='8859', class="m">if</a> (<a id='8862' tid='8861', class="m">strcmp</a>(<a id='8864' tid='8863', class="m">cmd</a>, <a id='8866' tid='8865', class="m">&quot;del&quot;</a>) <a id='8868' tid='8867', class="m">==</a> <a id='8870' tid='8869', class="m">0</a>) {
+        <a id='8872' tid='8871', class="m">if</a> (<a id='8874' tid='8873', class="m">!</a><a id='8876' tid='8875', class="m">DeleteBreakpoint</a>(<a id='8878' tid='8877', class="m">NULL</a>)) {
+          <a id='8880' tid='8879', class="m">PrintF</a>(<a id='8882' tid='8881', class="m">&quot;deleting breakpoint failed\n&quot;</a>);
+        }
+      } <a id='8884' tid='8883', class="m">else</a> <span class="i">if</span> (<a id='8886' tid='8885', class="m">strcmp</a>(<a id='8888' tid='8887', class="m">cmd</a>, <a id='8890' tid='8889', class="m">&quot;flags&quot;</a>) <a id='8892' tid='8891', class="m">==</a> <a id='8894' tid='8893', class="m">0</a>) <span class="i">{
+        PrintF(&quot;N flag: %d; &quot;, sim_-&gt;n_flag_);
+        PrintF(&quot;Z flag: %d; &quot;, sim_-&gt;z_flag_);
+        PrintF(&quot;C flag: %d; &quot;, sim_-&gt;c_flag_);
+        PrintF(&quot;V flag: %d\n&quot;, sim_-&gt;v_flag_);
+        PrintF(&quot;INVALID OP flag: %d; &quot;, sim_-&gt;inv_op_vfp_flag_);
+        PrintF(&quot;DIV BY ZERO flag: %d; &quot;, sim_-&gt;div_zero_vfp_flag_);
+        PrintF(&quot;OVERFLOW flag: %d; &quot;, sim_-&gt;overflow_vfp_flag_);
+        PrintF(&quot;UNDERFLOW flag: %d; &quot;, sim_-&gt;underflow_vfp_flag_);
+        PrintF(&quot;INEXACT flag: %d;\n&quot;, sim_-&gt;inexact_vfp_flag_);
+      }</span> <span class="i">else</span> <a id='7774' tid='7773', class="m">if</a> (<a id='8078' tid='8077', class="m">strcmp</a>(<a id='8080' tid='8079', class="m">cmd</a>, <a id='8082' tid='8081', class="m">&quot;stop&quot;</a>) <a id='8084' tid='8083', class="m">==</a> <a id='8086' tid='8085', class="m">0</a>) {
+        <a id='7776' tid='7775', class="m">int32_t</a> <a id='7778' tid='7777', class="m">value</a>;
+        <a id='7780' tid='7779', class="m">intptr_t</a> <a id='7782' tid='7781', class="m">stop_pc</a> = <a id='7784' tid='7783', class="m">sim_</a>-&gt;<a id='7786' tid='7785', class="m">get_pc</a>() <a id='7788' tid='7787', class="m">-</a> <a id='7790' tid='7789', class="m">2</a> <a id='7792' tid='7791', class="m">*</a> <a id='7794' tid='7793', class="m">Instruction</a><a id='7796' tid='7795', class="m">::</a><a id='7798' tid='7797', class="m">kInstrSize</a>;
+        <a id='7800' tid='7799', class="m">Instruction</a><a id='7802' tid='7801', class="m">*</a> <a id='7804' tid='7803', class="m">stop_instr</a> = <a id='7806' tid='7805', class="m">reinterpret_cast</a>&lt;<a id='7808' tid='7807', class="m">Instruction</a><a id='7810' tid='7809', class="m">*</a>&gt;(<a id='7812' tid='7811', class="m">stop_pc</a>);
+        <a id='7814' tid='7813', class="m">Instruction</a><a id='7816' tid='7815', class="m">*</a> <a id='7818' tid='7817', class="m">msg_address</a> =
+          <a id='7820' tid='7819', class="m">reinterpret_cast</a>&lt;<a id='7822' tid='7821', class="m">Instruction</a><a id='7824' tid='7823', class="m">*</a>&gt;(<a id='7826' tid='7825', class="m">stop_pc</a> <a id='7828' tid='7827', class="m">+</a> <a id='7830' tid='7829', class="m">Instruction</a><a id='7832' tid='7831', class="m">::</a><a id='7834' tid='7833', class="m">kInstrSize</a>);
+        <a id='7836' tid='7835', class="m">if</a> ((<a id='7838' tid='7837', class="m">argc</a> <a id='7840' tid='7839', class="m">==</a> <a id='7842' tid='7841', class="m">2</a>) <a id='7844' tid='7843', class="m">&&</a> (<a id='7846' tid='7845', class="m">strcmp</a>(<a id='7848' tid='7847', class="m">arg1</a>, <a id='7850' tid='7849', class="m">&quot;unstop&quot;</a>) <a id='7852' tid='7851', class="m">==</a> <a id='7854' tid='7853', class="m">0</a>)) {
+          // Remove the current stop.
+          <span class="i">if</span> <span class="i">(sim_-&gt;isStopInstruction(stop_instr))</span> {
+            <a id='7856' tid='7855', class="m">stop_instr</a>-&gt;<a id='7858' tid='7857', class="m">SetInstructionBits</a>(<a id='7860' tid='7859', class="m">kNopInstr</a>);
+            <a id='7862' tid='7861', class="m">msg_address</a>-&gt;<a id='7864' tid='7863', class="m">SetInstructionBits</a>(<a id='7866' tid='7865', class="m">kNopInstr</a>);
+          } <span class="i">else {
+            PrintF(&quot;Not at debugger stop.\n&quot;);
+          }</span>
+        } <a id='7868' tid='7867', class="m">else</a> <a id='7870' tid='7869', class="m">if</a> (<a id='7872' tid='7871', class="m">argc</a> <a id='7874' tid='7873', class="m">==</a> <a id='7876' tid='7875', class="m">3</a>) {
+          // Print information about all/the specified breakpoint(s).
+          <a id='7878' tid='7877', class="m">if</a> (<a id='7880' tid='7879', class="m">strcmp</a>(<a id='7882' tid='7881', class="m">arg1</a>, <a id='7884' tid='7883', class="m">&quot;info&quot;</a>) <a id='7886' tid='7885', class="m">==</a> <a id='7888' tid='7887', class="m">0</a>) {
+            <span class="i">if</span> (<a id='7890' tid='7889', class="m">strcmp</a>(<a id='7892' tid='7891', class="m">arg2</a>, <a id='7894' tid='7893', class="m">&quot;all&quot;</a>) <a id='7896' tid='7895', class="m">==</a> <a id='7898' tid='7897', class="m">0</a>) <span class="i">{
+              PrintF(&quot;Stop information:\n&quot;);
+              for (uint32_t i = 0; i &lt; sim_-&gt;kNumOfWatchedStops; i++) {
+                sim_-&gt;PrintStopInfo(i);
+              }
+            }</span> <a id='7286' tid='7285', class="m">else</a> <a id='7288' tid='7287', class="m">if</a> (<a id='7290' tid='7289', class="m">GetValue</a>(<a id='7292' tid='7291', class="m">arg2</a>, <a id='7294' tid='7293', class="m">&</a><a id='7296' tid='7295', class="m">value</a>)) {
+              <a id='7298' tid='7297', class="m">sim_</a>-&gt;<a id='7300' tid='7299', class="m">PrintStopInfo</a>(<a id='7302' tid='7301', class="m">value</a>);
+            } <a id='7304' tid='7303', class="m">else</a> {
+              <a id='7306' tid='7305', class="m">PrintF</a>(<a id='7308' tid='7307', class="m">&quot;Unrecognized argument.\n&quot;</a>);
+            }
+          } <a id='7900' tid='7899', class="m">else</a> <a id='7902' tid='7901', class="m">if</a> (<a id='7904' tid='7903', class="m">strcmp</a>(<a id='7906' tid='7905', class="m">arg1</a>, <a id='7908' tid='7907', class="m">&quot;enable&quot;</a>) <a id='7910' tid='7909', class="m">==</a> <a id='7912' tid='7911', class="m">0</a>) {
+            // Enable all/the specified breakpoint(s).
+            <span class="i">if</span> (<a id='7914' tid='7913', class="m">strcmp</a>(<a id='7916' tid='7915', class="m">arg2</a>, <a id='7918' tid='7917', class="m">&quot;all&quot;</a>) <a id='7920' tid='7919', class="m">==</a> <a id='7922' tid='7921', class="m">0</a>) <span class="i">{
+              for (uint32_t i = 0; i &lt; sim_-&gt;kNumOfWatchedStops; i++) {
+                sim_-&gt;EnableStop(i);
+              }
+            }</span> <a id='7310' tid='7309', class="m">else</a> <a id='7312' tid='7311', class="m">if</a> (<a id='7314' tid='7313', class="m">GetValue</a>(<a id='7316' tid='7315', class="m">arg2</a>, <a id='7318' tid='7317', class="m">&</a><a id='7320' tid='7319', class="m">value</a>)) {
+              <a id='7322' tid='7321', class="m">sim_</a>-&gt;<a id='7324' tid='7323', class="m">EnableStop</a>(<a id='7326' tid='7325', class="m">value</a>);
+            } <a id='7328' tid='7327', class="m">else</a> {
+              <a id='7330' tid='7329', class="m">PrintF</a>(<a id='7332' tid='7331', class="m">&quot;Unrecognized argument.\n&quot;</a>);
+            }
+          } <a id='7924' tid='7923', class="m">else</a> <a id='7926' tid='7925', class="m">if</a> (<a id='7928' tid='7927', class="m">strcmp</a>(<a id='7930' tid='7929', class="m">arg1</a>, <a id='7932' tid='7931', class="m">&quot;disable&quot;</a>) <a id='7934' tid='7933', class="m">==</a> <a id='7936' tid='7935', class="m">0</a>) {
+            // Disable all/the specified breakpoint(s).
+            <span class="i">if</span> (<a id='7938' tid='7937', class="m">strcmp</a>(<a id='7940' tid='7939', class="m">arg2</a>, <a id='7942' tid='7941', class="m">&quot;all&quot;</a>) <a id='7944' tid='7943', class="m">==</a> <a id='7946' tid='7945', class="m">0</a>) <span class="i">{
+              for (uint32_t i = 0; i &lt; sim_-&gt;kNumOfWatchedStops; i++) {
+                sim_-&gt;DisableStop(i);
+              }
+            }</span> <a id='7334' tid='7333', class="m">else</a> <a id='7336' tid='7335', class="m">if</a> (<a id='7338' tid='7337', class="m">GetValue</a>(<a id='7340' tid='7339', class="m">arg2</a>, <a id='7342' tid='7341', class="m">&</a><a id='7344' tid='7343', class="m">value</a>)) {
+              <a id='7346' tid='7345', class="m">sim_</a>-&gt;<a id='7348' tid='7347', class="m">DisableStop</a>(<a id='7350' tid='7349', class="m">value</a>);
+            } <a id='7352' tid='7351', class="m">else</a> {
+              <a id='7354' tid='7353', class="m">PrintF</a>(<a id='7356' tid='7355', class="m">&quot;Unrecognized argument.\n&quot;</a>);
+            }
+          }
+        } <a id='7948' tid='7947', class="m">else</a> {
+          <a id='7950' tid='7949', class="m">PrintF</a>(<a id='7952' tid='7951', class="m">&quot;Wrong usage. Use help command for more information.\n&quot;</a>);
+        }
+      } <a id='7954' tid='7953', class="m">else</a> <span class="i">if</span> <span class="i">((strcmp(cmd, &quot;t&quot;) == 0) || strcmp(cmd, &quot;trace&quot;) == 0)</span> <span class="i">{
+        ::v8::internal::FLAG_trace_sim = !::v8::internal::FLAG_trace_sim;
+        PrintF(&quot;Trace of executed instructions is %s\n&quot;,
+               ::v8::internal::FLAG_trace_sim ? &quot;on&quot; : &quot;off&quot;);
+      }</span> <a id='7956' tid='7955', class="m">else</a> <span class="i">if</span> ((<a id='7958' tid='7957', class="m">strcmp</a>(<a id='7960' tid='7959', class="m">cmd</a>, <a id='7962' tid='7961', class="m">&quot;h&quot;</a>) <a id='7964' tid='7963', class="m">==</a> <a id='7966' tid='7965', class="m">0</a>) <a id='7968' tid='7967', class="m">||</a> (<a id='7970' tid='7969', class="m">strcmp</a>(<a id='7972' tid='7971', class="m">cmd</a>, <a id='7974' tid='7973', class="m">&quot;help&quot;</a>) <a id='7976' tid='7975', class="m">==</a> <a id='7978' tid='7977', class="m">0</a>)) <span class="i">{
+        PrintF(&quot;cont\n&quot;);
+        PrintF(&quot;  continue execution (alias &#39;c&#39;)\n&quot;);
+        PrintF(&quot;stepi\n&quot;);
+        PrintF(&quot;  step one instruction (alias &#39;si&#39;)\n&quot;);
+        PrintF(&quot;print &lt;register&gt;\n&quot;);
+        PrintF(&quot;  print register content (alias &#39;p&#39;)\n&quot;);
+        PrintF(&quot;  use register name &#39;all&#39; to print all registers\n&quot;);
+        PrintF(&quot;  add argument &#39;fp&#39; to print register pair double values\n&quot;);
+        PrintF(&quot;printobject &lt;register&gt;\n&quot;);
+        PrintF(&quot;  print an object from a register (alias &#39;po&#39;)\n&quot;);
+        PrintF(&quot;flags\n&quot;);
+        PrintF(&quot;  print flags\n&quot;);
+        PrintF(&quot;stack [&lt;words&gt;]\n&quot;);
+        PrintF(&quot;  dump stack content, default dump 10 words)\n&quot;);
+        PrintF(&quot;mem &lt;address&gt; [&lt;words&gt;]\n&quot;);
+        PrintF(&quot;  dump memory content, default dump 10 words)\n&quot;);
+        PrintF(&quot;disasm [&lt;instructions&gt;]\n&quot;);
+        PrintF(&quot;disasm [&lt;address/register&gt;]\n&quot;);
+        PrintF(&quot;disasm [[&lt;address/register&gt;] &lt;instructions&gt;]\n&quot;);
+        PrintF(&quot;  disassemble code, default is 10 instructions\n&quot;);
+        PrintF(&quot;  from pc (alias &#39;di&#39;)\n&quot;);
+        PrintF(&quot;gdb\n&quot;);
+        PrintF(&quot;  enter gdb\n&quot;);
+        PrintF(&quot;break &lt;address&gt;\n&quot;);
+        PrintF(&quot;  set a break point on the address\n&quot;);
+        PrintF(&quot;del\n&quot;);
+        PrintF(&quot;  delete the breakpoint\n&quot;);
+        PrintF(&quot;trace (alias &#39;t&#39;)\n&quot;);
+        PrintF(&quot;  toogle the tracing of all executed statements\n&quot;);
+        PrintF(&quot;stop feature:\n&quot;);
+        PrintF(&quot;  Description:\n&quot;);
+        PrintF(&quot;    Stops are debug instructions inserted by\n&quot;);
+        PrintF(&quot;    the Assembler::stop() function.\n&quot;);
+        PrintF(&quot;    When hitting a stop, the Simulator will\n&quot;);
+        PrintF(&quot;    stop and and give control to the ArmDebugger.\n&quot;);
+        PrintF(&quot;    The first %d stop codes are watched:\n&quot;,
+               Simulator::kNumOfWatchedStops);
+        PrintF(&quot;    - They can be enabled / disabled: the Simulator\n&quot;);
+        PrintF(&quot;      will / won&#39;t stop when hitting them.\n&quot;);
+        PrintF(&quot;    - The Simulator keeps track of how many times they \n&quot;);
+        PrintF(&quot;      are met. (See the info command.) Going over a\n&quot;);
+        PrintF(&quot;      disabled stop still increases its counter. \n&quot;);
+        PrintF(&quot;  Commands:\n&quot;);
+        PrintF(&quot;    stop info all/&lt;code&gt; : print infos about number &lt;code&gt;\n&quot;);
+        PrintF(&quot;      or all stop(s).\n&quot;);
+        PrintF(&quot;    stop enable/disable all/&lt;code&gt; : enables / disables\n&quot;);
+        PrintF(&quot;      all or number &lt;code&gt; stop(s)\n&quot;);
+        PrintF(&quot;    stop unstop\n&quot;);
+        PrintF(&quot;      ignore the stop instruction at the current location\n&quot;);
+        PrintF(&quot;      from now on\n&quot;);
+      }</span> <span class="i">else {
+        PrintF(&quot;Unknown command: %s\n&quot;, cmd);
+      }</span>
+    }
+    <a id='8896' tid='8895', class="m">DeleteArray</a>(<a id='8898' tid='8897', class="m">line</a>);
+  }
+
+  // Add all the breakpoints back to stop execution and enter the debugger
+  // shell when hit.
+  <a id='9160' tid='9159', class="m">RedoBreakpoints</a>();
+
+#<a id='9162' tid='9161', class="m">undef</a> <a id='9164' tid='9163', class="m">COMMAND_SIZE</a>
+#<a id='9166' tid='9165', class="m">undef</a> <a id='9168' tid='9167', class="m">ARG_SIZE</a>
+
+#<a id='9170' tid='9169', class="m">undef</a> <a id='9172' tid='9171', class="m">STR</a>
+#<a id='9174' tid='9173', class="m">undef</a> <a id='9176' tid='9175', class="m">XSTR</a>
+}
+
+
+<a id='8900' tid='8899', class="m">static</a> <a id='8902' tid='8901', class="m">bool</a> <a id='8904' tid='8903', class="m">ICacheMatch</a>(<a id='8906' tid='8905', class="m">void</a><a id='8908' tid='8907', class="m">*</a> <a id='8910' tid='8909', class="m">one</a>, <a id='8912' tid='8911', class="m">void</a><a id='8914' tid='8913', class="m">*</a> <a id='8916' tid='8915', class="m">two</a>) {
+  <a id='8918' tid='8917', class="m">ASSERT</a>((<a id='8920' tid='8919', class="m">reinterpret_cast</a>&lt;<a id='8922' tid='8921', class="m">intptr_t</a>&gt;(<a id='8924' tid='8923', class="m">one</a>) <a id='8926' tid='8925', class="m">&</a> <a id='8928' tid='8927', class="m">CachePage</a><a id='8930' tid='8929', class="m">::</a><a id='8932' tid='8931', class="m">kPageMask</a>) <a id='8934' tid='8933', class="m">==</a> <a id='8936' tid='8935', class="m">0</a>);
+  <a id='8938' tid='8937', class="m">ASSERT</a>((<a id='8940' tid='8939', class="m">reinterpret_cast</a>&lt;<a id='8942' tid='8941', class="m">intptr_t</a>&gt;(<a id='8944' tid='8943', class="m">two</a>) <a id='8946' tid='8945', class="m">&</a> <a id='8948' tid='8947', class="m">CachePage</a><a id='8950' tid='8949', class="m">::</a><a id='8952' tid='8951', class="m">kPageMask</a>) <a id='8954' tid='8953', class="m">==</a> <a id='8956' tid='8955', class="m">0</a>);
+  <a id='8958' tid='8957', class="m">return</a> <a id='8960' tid='8959', class="m">one</a> <a id='8962' tid='8961', class="m">==</a> <a id='8964' tid='8963', class="m">two</a>;
+}
+
+
+<a id='8088' tid='8087', class="m">static</a> <a id='8090' tid='8089', class="m">uint32_t</a> <a id='8092' tid='8091', class="m">ICacheHash</a>(<a id='8094' tid='8093', class="m">void</a><a id='8096' tid='8095', class="m">*</a> <a id='8098' tid='8097', class="m">key</a>) {
+  <a id='8100' tid='8099', class="m">return</a> <a id='8102' tid='8101', class="m">static_cast</a>&lt;<a id='8104' tid='8103', class="m">uint32_t</a>&gt;(<a id='8106' tid='8105', class="m">reinterpret_cast</a>&lt;<a id='8108' tid='8107', class="m">uintptr_t</a>&gt;(<a id='8110' tid='8109', class="m">key</a>)) <a id='8112' tid='8111', class="m">&gt;&gt;</a> <a id='8114' tid='8113', class="m">2</a>;
+}
+
+
+<a id='7980' tid='7979', class="m">static</a> <a id='7982' tid='7981', class="m">bool</a> <a id='7984' tid='7983', class="m">AllOnOnePage</a>(<a id='7986' tid='7985', class="m">uintptr_t</a> <a id='7988' tid='7987', class="m">start</a>, <a id='7990' tid='7989', class="m">int</a> <a id='7992' tid='7991', class="m">size</a>) {
+  <a id='7994' tid='7993', class="m">intptr_t</a> <a id='7996' tid='7995', class="m">start_page</a> = (<a id='7998' tid='7997', class="m">start</a> <a id='8000' tid='7999', class="m">&</a> <a id='8002' tid='8001', class="m">~</a><a id='8004' tid='8003', class="m">CachePage</a><a id='8006' tid='8005', class="m">::</a><a id='8008' tid='8007', class="m">kPageMask</a>);
+  <a id='8010' tid='8009', class="m">intptr_t</a> <a id='8012' tid='8011', class="m">end_page</a> = ((<a id='8014' tid='8013', class="m">start</a> <a id='8016' tid='8015', class="m">+</a> <a id='8018' tid='8017', class="m">size</a>) <a id='8020' tid='8019', class="m">&</a> <a id='8022' tid='8021', class="m">~</a><a id='8024' tid='8023', class="m">CachePage</a><a id='8026' tid='8025', class="m">::</a><a id='8028' tid='8027', class="m">kPageMask</a>);
+  <a id='8030' tid='8029', class="m">return</a> <a id='8032' tid='8031', class="m">start_page</a> <a id='8034' tid='8033', class="m">==</a> <a id='8036' tid='8035', class="m">end_page</a>;
+}
+
+
+<a id='7358' tid='7357', class="m">void</a> <a id='7360' tid='7359', class="m">Simulator</a><a id='7362' tid='7361', class="m">::</a><a id='7364' tid='7363', class="m">FlushICache</a>(<a id='7366' tid='7365', class="m">v8</a><a id='7368' tid='7367', class="m">::</a><a id='7370' tid='7369', class="m">internal</a><a id='7372' tid='7371', class="m">::</a><a id='7374' tid='7373', class="m">HashMap</a><a id='7376' tid='7375', class="m">*</a> <a id='7378' tid='7377', class="m">i_cache</a>,
+                            <a id='7380' tid='7379', class="m">void</a><a id='7382' tid='7381', class="m">*</a> <a id='7384' tid='7383', class="m">start_addr</a>,
+                            <a id='7386' tid='7385', class="m">size_t</a> <a id='7388' tid='7387', class="m">size</a>) {
+  <a id='7390' tid='7389', class="m">intptr_t</a> <a id='7392' tid='7391', class="m">start</a> = <a id='7394' tid='7393', class="m">reinterpret_cast</a>&lt;<a id='7396' tid='7395', class="m">intptr_t</a>&gt;(<a id='7398' tid='7397', class="m">start_addr</a>);
+  <a id='7400' tid='7399', class="m">int</a> <a id='7402' tid='7401', class="m">intra_line</a> = (<a id='7404' tid='7403', class="m">start</a> <a id='7406' tid='7405', class="m">&</a> <a id='7408' tid='7407', class="m">CachePage</a><a id='7410' tid='7409', class="m">::</a><a id='7412' tid='7411', class="m">kLineMask</a>);
+  <a id='7414' tid='7413', class="m">start</a> <a id='7416' tid='7415', class="m">-=</a> <a id='7418' tid='7417', class="m">intra_line</a>;
+  <a id='7420' tid='7419', class="m">size</a> <a id='7422' tid='7421', class="m">+=</a> <a id='7424' tid='7423', class="m">intra_line</a>;
+  <a id='7426' tid='7425', class="m">size</a> <a id='7428' tid='7427', class="m">=</a> ((<a id='7430' tid='7429', class="m">size</a> <a id='7432' tid='7431', class="m">-</a> <a id='7434' tid='7433', class="m">1</a>) <a id='7436' tid='7435', class="m">|</a> <a id='7438' tid='7437', class="m">CachePage</a><a id='7440' tid='7439', class="m">::</a><a id='7442' tid='7441', class="m">kLineMask</a>) <a id='7444' tid='7443', class="m">+</a> <a id='7446' tid='7445', class="m">1</a>;
+  <a id='7448' tid='7447', class="m">int</a> <a id='7450' tid='7449', class="m">offset</a> = (<a id='7452' tid='7451', class="m">start</a> <a id='7454' tid='7453', class="m">&</a> <a id='7456' tid='7455', class="m">CachePage</a><a id='7458' tid='7457', class="m">::</a><a id='7460' tid='7459', class="m">kPageMask</a>);
+  <a id='7462' tid='7461', class="m">while</a> (<a id='7464' tid='7463', class="m">!</a><a id='7466' tid='7465', class="m">AllOnOnePage</a>(<a id='7468' tid='7467', class="m">start</a>, <a id='7470' tid='7469', class="m">size</a> <a id='7472' tid='7471', class="m">-</a> <a id='7474' tid='7473', class="m">1</a>)) {
+    <a id='7476' tid='7475', class="m">int</a> <a id='7478' tid='7477', class="m">bytes_to_flush</a> = <a id='7480' tid='7479', class="m">CachePage</a><a id='7482' tid='7481', class="m">::</a><a id='7484' tid='7483', class="m">kPageSize</a> <a id='7486' tid='7485', class="m">-</a> <a id='7488' tid='7487', class="m">offset</a>;
+    <a id='7490' tid='7489', class="m">FlushOnePage</a>(<a id='7492' tid='7491', class="m">i_cache</a>, <a id='7494' tid='7493', class="m">start</a>, <a id='7496' tid='7495', class="m">bytes_to_flush</a>);
+    <a id='7498' tid='7497', class="m">start</a> <a id='7500' tid='7499', class="m">+=</a> <a id='7502' tid='7501', class="m">bytes_to_flush</a>;
+    <a id='7504' tid='7503', class="m">size</a> <a id='7506' tid='7505', class="m">-=</a> <a id='7508' tid='7507', class="m">bytes_to_flush</a>;
+    <a id='7510' tid='7509', class="m">ASSERT_EQ</a>(<a id='7512' tid='7511', class="m">0</a>, <a id='7514' tid='7513', class="m">start</a> <a id='7516' tid='7515', class="m">&</a> <a id='7518' tid='7517', class="m">CachePage</a><a id='7520' tid='7519', class="m">::</a><a id='7522' tid='7521', class="m">kPageMask</a>);
+    <a id='7524' tid='7523', class="m">offset</a> <a id='7526' tid='7525', class="m">=</a> <a id='7528' tid='7527', class="m">0</a>;
+  }
+  <a id='7530' tid='7529', class="m">if</a> (<a id='7532' tid='7531', class="m">size</a> <a id='7534' tid='7533', class="m">!=</a> <a id='7536' tid='7535', class="m">0</a>) {
+    <a id='7538' tid='7537', class="m">FlushOnePage</a>(<a id='7540' tid='7539', class="m">i_cache</a>, <a id='7542' tid='7541', class="m">start</a>, <a id='7544' tid='7543', class="m">size</a>);
+  }
+}
+
+
+<a id='7186' tid='7185', class="m">CachePage</a><a id='7188' tid='7187', class="m">*</a> <a id='7190' tid='7189', class="m">Simulator</a><a id='7192' tid='7191', class="m">::</a><a id='7194' tid='7193', class="m">GetCachePage</a>(<a id='7196' tid='7195', class="m">v8</a><a id='7198' tid='7197', class="m">::</a><a id='7200' tid='7199', class="m">internal</a><a id='7202' tid='7201', class="m">::</a><a id='7204' tid='7203', class="m">HashMap</a><a id='7206' tid='7205', class="m">*</a> <a id='7208' tid='7207', class="m">i_cache</a>, <a id='7210' tid='7209', class="m">void</a><a id='7212' tid='7211', class="m">*</a> <a id='7214' tid='7213', class="m">page</a>) {
+  <a id='7216' tid='7215', class="m">v8</a><a id='7218' tid='7217', class="m">::</a><a id='7220' tid='7219', class="m">internal</a><a id='7222' tid='7221', class="m">::</a><a id='7224' tid='7223', class="m">HashMap</a><a id='7226' tid='7225', class="m">::</a><a id='7228' tid='7227', class="m">Entry</a><a id='7230' tid='7229', class="m">*</a> <a id='7232' tid='7231', class="m">entry</a> = <a id='7234' tid='7233', class="m">i_cache</a>-&gt;<a id='7236' tid='7235', class="m">Lookup</a>(<a id='7238' tid='7237', class="m">page</a>,
+                                                        <a id='7240' tid='7239', class="m">ICacheHash</a>(<a id='7242' tid='7241', class="m">page</a>),
+                                                        <a id='7244' tid='7243', class="m">true</a>);
+  <a id='7246' tid='7245', class="m">if</a> (<a id='7248' tid='7247', class="m">entry</a>-&gt;<a id='7250' tid='7249', class="m">value</a> <a id='7252' tid='7251', class="m">==</a> <a id='7254' tid='7253', class="m">NULL</a>) {
+    <a id='7256' tid='7255', class="m">CachePage</a><a id='7258' tid='7257', class="m">*</a> <a id='7260' tid='7259', class="m">new_page</a> = <a id='7262' tid='7261', class="m">new</a> <a id='7264' tid='7263', class="m">CachePage</a>();
+    <a id='7266' tid='7265', class="m">entry</a>-&gt;<a id='7268' tid='7267', class="m">value</a> <a id='7270' tid='7269', class="m">=</a> <a id='7272' tid='7271', class="m">new_page</a>;
+  }
+  <a id='7274' tid='7273', class="m">return</a> <a id='7276' tid='7275', class="m">reinterpret_cast</a>&lt;<a id='7278' tid='7277', class="m">CachePage</a><a id='7280' tid='7279', class="m">*</a>&gt;(<a id='7282' tid='7281', class="m">entry</a>-&gt;<a id='7284' tid='7283', class="m">value</a>);
+}
+
+
+// Flush from start up to and not including start + size.
+<a id='7018' tid='7017', class="m">void</a> <a id='7020' tid='7019', class="m">Simulator</a><a id='7022' tid='7021', class="m">::</a><a id='7024' tid='7023', class="m">FlushOnePage</a>(<a id='7026' tid='7025', class="m">v8</a><a id='7028' tid='7027', class="m">::</a><a id='7030' tid='7029', class="m">internal</a><a id='7032' tid='7031', class="m">::</a><a id='7034' tid='7033', class="m">HashMap</a><a id='7036' tid='7035', class="m">*</a> <a id='7038' tid='7037', class="m">i_cache</a>,
+                             <a id='7040' tid='7039', class="m">intptr_t</a> <a id='7042' tid='7041', class="m">start</a>,
+                             <a id='7044' tid='7043', class="m">int</a> <a id='7046' tid='7045', class="m">size</a>) {
+  <a id='7048' tid='7047', class="m">ASSERT</a>(<a id='7050' tid='7049', class="m">size</a> <a id='7052' tid='7051', class="m">&lt;=</a> <a id='7054' tid='7053', class="m">CachePage</a><a id='7056' tid='7055', class="m">::</a><a id='7058' tid='7057', class="m">kPageSize</a>);
+  <a id='7060' tid='7059', class="m">ASSERT</a>(<a id='7062' tid='7061', class="m">AllOnOnePage</a>(<a id='7064' tid='7063', class="m">start</a>, <a id='7066' tid='7065', class="m">size</a> <a id='7068' tid='7067', class="m">-</a> <a id='7070' tid='7069', class="m">1</a>));
+  <a id='7072' tid='7071', class="m">ASSERT</a>((<a id='7074' tid='7073', class="m">start</a> <a id='7076' tid='7075', class="m">&</a> <a id='7078' tid='7077', class="m">CachePage</a><a id='7080' tid='7079', class="m">::</a><a id='7082' tid='7081', class="m">kLineMask</a>) <a id='7084' tid='7083', class="m">==</a> <a id='7086' tid='7085', class="m">0</a>);
+  <a id='7088' tid='7087', class="m">ASSERT</a>((<a id='7090' tid='7089', class="m">size</a> <a id='7092' tid='7091', class="m">&</a> <a id='7094' tid='7093', class="m">CachePage</a><a id='7096' tid='7095', class="m">::</a><a id='7098' tid='7097', class="m">kLineMask</a>) <a id='7100' tid='7099', class="m">==</a> <a id='7102' tid='7101', class="m">0</a>);
+  <a id='7104' tid='7103', class="m">void</a><a id='7106' tid='7105', class="m">*</a> <a id='7108' tid='7107', class="m">page</a> = <a id='7110' tid='7109', class="m">reinterpret_cast</a>&lt;<a id='7112' tid='7111', class="m">void</a><a id='7114' tid='7113', class="m">*</a>&gt;(<a id='7116' tid='7115', class="m">start</a> <a id='7118' tid='7117', class="m">&</a> (<a id='7120' tid='7119', class="m">~</a><a id='7122' tid='7121', class="m">CachePage</a><a id='7124' tid='7123', class="m">::</a><a id='7126' tid='7125', class="m">kPageMask</a>));
+  <a id='7128' tid='7127', class="m">int</a> <a id='7130' tid='7129', class="m">offset</a> = (<a id='7132' tid='7131', class="m">start</a> <a id='7134' tid='7133', class="m">&</a> <a id='7136' tid='7135', class="m">CachePage</a><a id='7138' tid='7137', class="m">::</a><a id='7140' tid='7139', class="m">kPageMask</a>);
+  <a id='7142' tid='7141', class="m">CachePage</a><a id='7144' tid='7143', class="m">*</a> <a id='7146' tid='7145', class="m">cache_page</a> = <a id='7148' tid='7147', class="m">GetCachePage</a>(<a id='7150' tid='7149', class="m">i_cache</a>, <a id='7152' tid='7151', class="m">page</a>);
+  <a id='7154' tid='7153', class="m">char</a><a id='7156' tid='7155', class="m">*</a> <a id='7158' tid='7157', class="m">valid_bytemap</a> = <a id='7160' tid='7159', class="m">cache_page</a>-&gt;<a id='7162' tid='7161', class="m">ValidityByte</a>(<a id='7164' tid='7163', class="m">offset</a>);
+  <a id='7166' tid='7165', class="m">memset</a>(<a id='7168' tid='7167', class="m">valid_bytemap</a>, <a id='7170' tid='7169', class="m">CachePage</a><a id='7172' tid='7171', class="m">::</a><a id='7174' tid='7173', class="m">LINE_INVALID</a>, <a id='7176' tid='7175', class="m">size</a> <a id='7178' tid='7177', class="m">&gt;&gt;</a> <a id='7180' tid='7179', class="m">CachePage</a><a id='7182' tid='7181', class="m">::</a><a id='7184' tid='7183', class="m">kLineShift</a>);
+}
+
+
+<a id='6798' tid='6797', class="m">void</a> <a id='6800' tid='6799', class="m">Simulator</a><a id='6802' tid='6801', class="m">::</a><a id='6804' tid='6803', class="m">CheckICache</a>(<a id='6806' tid='6805', class="m">v8</a><a id='6808' tid='6807', class="m">::</a><a id='6810' tid='6809', class="m">internal</a><a id='6812' tid='6811', class="m">::</a><a id='6814' tid='6813', class="m">HashMap</a><a id='6816' tid='6815', class="m">*</a> <a id='6818' tid='6817', class="m">i_cache</a>,
+                            <a id='6820' tid='6819', class="m">Instruction</a><a id='6822' tid='6821', class="m">*</a> <a id='6824' tid='6823', class="m">instr</a>) {
+  <a id='6826' tid='6825', class="m">intptr_t</a> <a id='6828' tid='6827', class="m">address</a> = <a id='6830' tid='6829', class="m">reinterpret_cast</a>&lt;<a id='6832' tid='6831', class="m">intptr_t</a>&gt;(<a id='6834' tid='6833', class="m">instr</a>);
+  <a id='6836' tid='6835', class="m">void</a><a id='6838' tid='6837', class="m">*</a> <a id='6840' tid='6839', class="m">page</a> = <a id='6842' tid='6841', class="m">reinterpret_cast</a>&lt;<a id='6844' tid='6843', class="m">void</a><a id='6846' tid='6845', class="m">*</a>&gt;(<a id='6848' tid='6847', class="m">address</a> <a id='6850' tid='6849', class="m">&</a> (<a id='6852' tid='6851', class="m">~</a><a id='6854' tid='6853', class="m">CachePage</a><a id='6856' tid='6855', class="m">::</a><a id='6858' tid='6857', class="m">kPageMask</a>));
+  <a id='6860' tid='6859', class="m">void</a><a id='6862' tid='6861', class="m">*</a> <a id='6864' tid='6863', class="m">line</a> = <a id='6866' tid='6865', class="m">reinterpret_cast</a>&lt;<a id='6868' tid='6867', class="m">void</a><a id='6870' tid='6869', class="m">*</a>&gt;(<a id='6872' tid='6871', class="m">address</a> <a id='6874' tid='6873', class="m">&</a> (<a id='6876' tid='6875', class="m">~</a><a id='6878' tid='6877', class="m">CachePage</a><a id='6880' tid='6879', class="m">::</a><a id='6882' tid='6881', class="m">kLineMask</a>));
+  <a id='6884' tid='6883', class="m">int</a> <a id='6886' tid='6885', class="m">offset</a> = (<a id='6888' tid='6887', class="m">address</a> <a id='6890' tid='6889', class="m">&</a> <a id='6892' tid='6891', class="m">CachePage</a><a id='6894' tid='6893', class="m">::</a><a id='6896' tid='6895', class="m">kPageMask</a>);
+  <a id='6898' tid='6897', class="m">CachePage</a><a id='6900' tid='6899', class="m">*</a> <a id='6902' tid='6901', class="m">cache_page</a> = <a id='6904' tid='6903', class="m">GetCachePage</a>(<a id='6906' tid='6905', class="m">i_cache</a>, <a id='6908' tid='6907', class="m">page</a>);
+  <a id='6910' tid='6909', class="m">char</a><a id='6912' tid='6911', class="m">*</a> <a id='6914' tid='6913', class="m">cache_valid_byte</a> = <a id='6916' tid='6915', class="m">cache_page</a>-&gt;<a id='6918' tid='6917', class="m">ValidityByte</a>(<a id='6920' tid='6919', class="m">offset</a>);
+  <a id='6922' tid='6921', class="m">bool</a> <a id='6924' tid='6923', class="m">cache_hit</a> = (<a id='6926' tid='6925', class="m">*</a><a id='6928' tid='6927', class="m">cache_valid_byte</a> <a id='6930' tid='6929', class="m">==</a> <a id='6932' tid='6931', class="m">CachePage</a><a id='6934' tid='6933', class="m">::</a><a id='6936' tid='6935', class="m">LINE_VALID</a>);
+  <a id='6938' tid='6937', class="m">char</a><a id='6940' tid='6939', class="m">*</a> <a id='6942' tid='6941', class="m">cached_line</a> = <a id='6944' tid='6943', class="m">cache_page</a>-&gt;<a id='6946' tid='6945', class="m">CachedData</a>(<a id='6948' tid='6947', class="m">offset</a> <a id='6950' tid='6949', class="m">&</a> <a id='6952' tid='6951', class="m">~</a><a id='6954' tid='6953', class="m">CachePage</a><a id='6956' tid='6955', class="m">::</a><a id='6958' tid='6957', class="m">kLineMask</a>);
+  <a id='6960' tid='6959', class="m">if</a> (<a id='6962' tid='6961', class="m">cache_hit</a>) {
+    // Check that the data in memory matches the contents of the I-cache.
+    <a id='6964' tid='6963', class="m">CHECK</a>(<a id='6966' tid='6965', class="m">memcmp</a>(<a id='6968' tid='6967', class="m">reinterpret_cast</a>&lt;<a id='6970' tid='6969', class="m">void</a><a id='6972' tid='6971', class="m">*</a>&gt;(<a id='6974' tid='6973', class="m">instr</a>),
+                 <a id='6976' tid='6975', class="m">cache_page</a>-&gt;<a id='6978' tid='6977', class="m">CachedData</a>(<a id='6980' tid='6979', class="m">offset</a>),
+                 <a id='6982' tid='6981', class="m">Instruction</a><a id='6984' tid='6983', class="m">::</a><a id='6986' tid='6985', class="m">kInstrSize</a>) <a id='6988' tid='6987', class="m">==</a> <a id='6990' tid='6989', class="m">0</a>);
+  } <a id='6992' tid='6991', class="m">else</a> {
+    // Cache miss.  Load memory into the cache.
+    <a id='6994' tid='6993', class="m">memcpy</a>(<a id='6996' tid='6995', class="m">cached_line</a>, <a id='6998' tid='6997', class="m">line</a>, <a id='7000' tid='6999', class="m">CachePage</a><a id='7002' tid='7001', class="m">::</a><a id='7004' tid='7003', class="m">kLineLength</a>);
+    <a id='7006' tid='7005', class="m">*</a><a id='7008' tid='7007', class="m">cache_valid_byte</a> <a id='7010' tid='7009', class="m">=</a> <a id='7012' tid='7011', class="m">CachePage</a><a id='7014' tid='7013', class="m">::</a><a id='7016' tid='7015', class="m">LINE_VALID</a>;
+  }
+}
+
+
+<a id='6748' tid='6747', class="m">void</a> <a id='6750' tid='6749', class="m">Simulator</a><a id='6752' tid='6751', class="m">::</a><a id='6754' tid='6753', class="m">Initialize</a>(<a id='6756' tid='6755', class="m">Isolate</a><a id='6758' tid='6757', class="m">*</a> <a id='6760' tid='6759', class="m">isolate</a>) {
+  <a id='6762' tid='6761', class="m">if</a> (<a id='6764' tid='6763', class="m">isolate</a>-&gt;<a id='6766' tid='6765', class="m">simulator_initialized</a>()) <a id='6768' tid='6767', class="m">return</a>;
+  <a id='6770' tid='6769', class="m">isolate</a>-&gt;<a id='6772' tid='6771', class="m">set_simulator_initialized</a>(<a id='6774' tid='6773', class="m">true</a>);
+  <a id='6776' tid='6775', class="m">::</a><a id='6778' tid='6777', class="m">v8</a><a id='6780' tid='6779', class="m">::</a><a id='6782' tid='6781', class="m">internal</a><a id='6784' tid='6783', class="m">::</a><a id='6786' tid='6785', class="m">ExternalReference</a><a id='6788' tid='6787', class="m">::</a><a id='6790' tid='6789', class="m">set_redirector</a>(<a id='6792' tid='6791', class="m">isolate</a>,
+                                                    <a id='6794' tid='6793', class="m">&</a><a id='6796' tid='6795', class="m">RedirectExternalReference</a>);
+}
+
+
+<a id='6698' tid='6697', class="m">Simulator</a><a id='6700' tid='6699', class="m">::</a><a id='6702' tid='6701', class="m">Simulator</a>(<a id='6704' tid='6703', class="m">Isolate</a><a id='6706' tid='6705', class="m">*</a> <a id='6708' tid='6707', class="m">isolate</a>) : <a id='6710' tid='6709', class="m">isolate_</a>(<a id='6712' tid='6711', class="m">isolate</a>) {
+  <span class="i">i_cache_ = isolate_-&gt;simulator_i_cache();</span>
+  <a id='6714' tid='6713', class="m">if</a> (<a id='6716' tid='6715', class="m">i_cache_</a> <a id='6718' tid='6717', class="m">==</a> <a id='6720' tid='6719', class="m">NULL</a>) {
+    <a id='6722' tid='6721', class="m">i_cache_</a> <a id='6724' tid='6723', class="m">=</a> <a id='6726' tid='6725', class="m">new</a> <a id='6728' tid='6727', class="m">v8</a><a id='6730' tid='6729', class="m">::</a><a id='6732' tid='6731', class="m">internal</a><a id='6734' tid='6733', class="m">::</a><a id='6736' tid='6735', class="m">HashMap</a>(<a id='6738' tid='6737', class="m">&</a><a id='6740' tid='6739', class="m">ICacheMatch</a>);
+    <a id='6742' tid='6741', class="m">isolate_</a>-&gt;<a id='6744' tid='6743', class="m">set_simulator_i_cache</a>(<a id='6746' tid='6745', class="m">i_cache_</a>);
+  }
+  <span class="i">Initialize(isolate);</span>
+  // Setup simulator support first. Some of this information is needed to
+  // setup the architecture state.
+  <span class="i">size_t stack_size = 1 * 1024*1024;</span>  // allocate 1MB for stack
+  <span class="i">stack_ = reinterpret_cast&lt;char*&gt;(malloc(stack_size));</span>
+  <span class="i">pc_modified_ = false;</span>
+  <span class="i">icount_ = 0;</span>
+  <span class="i">break_pc_ = NULL;</span>
+  <span class="i">break_instr_ = 0;</span>
+
+  // Setup architecture state.
+  // All registers are initialized to zero to start with.
+  <span class="i">for (int i = 0; i &lt; num_registers; i++) {
+    registers_[i] = 0;
+  }</span>
+  <span class="i">n_flag_ = false;</span>
+  <span class="i">z_flag_ = false;</span>
+  <span class="i">c_flag_ = false;</span>
+  <span class="i">v_flag_ = false;</span>
+
+  // Initializing VFP registers.
+  // All registers are initialized to zero to start with
+  // even though s_registers_ & d_registers_ share the same
+  // physical registers in the target.
+  <span class="i">for (int i = 0; i &lt; num_s_registers; i++) {
+    vfp_register[i] = 0;
+  }</span>
+  <span class="i">n_flag_FPSCR_ = false;</span>
+  <span class="i">z_flag_FPSCR_ = false;</span>
+  <span class="i">c_flag_FPSCR_ = false;</span>
+  <span class="i">v_flag_FPSCR_ = false;</span>
+  <span class="i">FPSCR_rounding_mode_ = RZ;</span>
+
+  <span class="i">inv_op_vfp_flag_ = false;</span>
+  <span class="i">div_zero_vfp_flag_ = false;</span>
+  <span class="i">overflow_vfp_flag_ = false;</span>
+  <span class="i">underflow_vfp_flag_ = false;</span>
+  <span class="i">inexact_vfp_flag_ = false;</span>
+
+  // The sp is initialized to point to the bottom (high address) of the
+  // allocated stack area. To be safe in potential stack underflows we leave
+  // some buffer below.
+  <span class="i">registers_[sp] = reinterpret_cast&lt;int32_t&gt;(stack_) + stack_size - 64;</span>
+  // The lr and pc are initialized to a known bad value that will cause an
+  // access violation if the simulator ever tries to execute it.
+  <span class="i">registers_[pc] = bad_lr;</span>
+  <span class="i">registers_[lr] = bad_lr;</span>
+  <span class="i">InitializeCoverage();</span>
+}
+
+
+// When the generated code calls an external reference we need to catch that in
+// the simulator.  The external reference will be a function compiled for the
+// host architecture.  We need to call that function instead of trying to
+// execute it with the simulator.  We do that by redirecting the external
+// reference to a svc (Supervisor Call) instruction that is handled by
+// the simulator.  We write the original destination of the jump just at a known
+// offset from the svc instruction so the simulator knows what to call.
+<a id='6474' tid='6473', class="m">class</a> <a id='6476' tid='6475', class="m">Redirection</a> {
+ <a id='6670' tid='6669', class="m">public</a>:
+  <a id='6332' tid='6331', class="m">Redirection</a>(<a id='6616' tid='6615', class="m">void</a><a id='6618' tid='6617', class="m">*</a> <a id='6620' tid='6619', class="m">external_function</a>, <a id='6622' tid='6621', class="m">ExternalReference</a><a id='6624' tid='6623', class="m">::</a><a id='6626' tid='6625', class="m">Type</a> <a id='6628' tid='6627', class="m">type</a>)
+      : <span class="i">external_function_(external_function),
+        swi_instruction_(al | (0xf*B24) | kCallRtRedirected),
+        type_(type),
+        next_(NULL)</span> {
+    <a id='6372' tid='6371', class="m">Isolate</a><a id='6374' tid='6373', class="m">*</a> <a id='6376' tid='6375', class="m">isolate</a> = <a id='6378' tid='6377', class="m">Isolate</a><a id='6380' tid='6379', class="m">::</a><a id='6382' tid='6381', class="m">Current</a>();
+    <a id='6384' tid='6383', class="m">next_</a> <a id='6386' tid='6385', class="m">=</a> <a id='6388' tid='6387', class="m">isolate</a>-&gt;<a id='6390' tid='6389', class="m">simulator_redirection</a>();
+    <a id='6392' tid='6391', class="m">Simulator</a><a id='6394' tid='6393', class="m">::</a><a id='6396' tid='6395', class="m">current</a>(<a id='6398' tid='6397', class="m">isolate</a>)-&gt;
+        <a id='6400' tid='6399', class="m">FlushICache</a>(<a id='6402' tid='6401', class="m">isolate</a>-&gt;<a id='6404' tid='6403', class="m">simulator_i_cache</a>(),
+                    <a id='6406' tid='6405', class="m">reinterpret_cast</a>&lt;<a id='6408' tid='6407', class="m">void</a><a id='6410' tid='6409', class="m">*</a>&gt;(<a id='6412' tid='6411', class="m">&</a><a id='6414' tid='6413', class="m">swi_instruction_</a>),
+                    <a id='6416' tid='6415', class="m">Instruction</a><a id='6418' tid='6417', class="m">::</a><a id='6420' tid='6419', class="m">kInstrSize</a>);
+    <a id='6422' tid='6421', class="m">isolate</a>-&gt;<a id='6424' tid='6423', class="m">set_simulator_redirection</a>(<a id='6426' tid='6425', class="m">this</a>);
+  }
+
+  <a id='6630' tid='6629', class="m">void</a><a id='6632' tid='6631', class="m">*</a> <a id='6634' tid='6633', class="m">address_of_swi_instruction</a>() {
+    <a id='6636' tid='6635', class="m">return</a> <a id='6638' tid='6637', class="m">reinterpret_cast</a>&lt;<a id='6640' tid='6639', class="m">void</a><a id='6642' tid='6641', class="m">*</a>&gt;(<a id='6644' tid='6643', class="m">&</a><a id='6646' tid='6645', class="m">swi_instruction_</a>);
+  }
+
+  <a id='6648' tid='6647', class="m">void</a><a id='6650' tid='6649', class="m">*</a> <a id='6652' tid='6651', class="m">external_function</a>() { <a id='6654' tid='6653', class="m">return</a> <a id='6656' tid='6655', class="m">external_function_</a>; }
+  <a id='6658' tid='6657', class="m">ExternalReference</a><a id='6660' tid='6659', class="m">::</a><a id='6662' tid='6661', class="m">Type</a> <a id='6664' tid='6663', class="m">type</a>() { <a id='6666' tid='6665', class="m">return</a> <a id='6668' tid='6667', class="m">type_</a>; }
+
+  <a id='6532' tid='6531', class="m">static</a> <a id='6534' tid='6533', class="m">Redirection</a><a id='6536' tid='6535', class="m">*</a> <a id='6538' tid='6537', class="m">Get</a>(<a id='6540' tid='6539', class="m">void</a><a id='6542' tid='6541', class="m">*</a> <a id='6544' tid='6543', class="m">external_function</a>,
+                          <a id='6546' tid='6545', class="m">ExternalReference</a><a id='6548' tid='6547', class="m">::</a><a id='6550' tid='6549', class="m">Type</a> <a id='6552' tid='6551', class="m">type</a>) {
+    <a id='6554' tid='6553', class="m">Isolate</a><a id='6556' tid='6555', class="m">*</a> <a id='6558' tid='6557', class="m">isolate</a> = <a id='6560' tid='6559', class="m">Isolate</a><a id='6562' tid='6561', class="m">::</a><a id='6564' tid='6563', class="m">Current</a>();
+    <a id='6566' tid='6565', class="m">Redirection</a><a id='6568' tid='6567', class="m">*</a> <a id='6570' tid='6569', class="m">current</a> = <a id='6572' tid='6571', class="m">isolate</a>-&gt;<a id='6574' tid='6573', class="m">simulator_redirection</a>();
+    <a id='6576' tid='6575', class="m">for</a> (; <a id='6578' tid='6577', class="m">current</a> <a id='6580' tid='6579', class="m">!=</a> <a id='6582' tid='6581', class="m">NULL</a>; <a id='6584' tid='6583', class="m">current</a> <a id='6586' tid='6585', class="m">=</a> <a id='6588' tid='6587', class="m">current</a>-&gt;<a id='6590' tid='6589', class="m">next_</a>) {
+      <a id='6592' tid='6591', class="m">if</a> (<a id='6594' tid='6593', class="m">current</a>-&gt;<a id='6596' tid='6595', class="m">external_function_</a> <a id='6598' tid='6597', class="m">==</a> <a id='6600' tid='6599', class="m">external_function</a>) <a id='6602' tid='6601', class="m">return</a> <a id='6604' tid='6603', class="m">current</a>;
+    }
+    <a id='6606' tid='6605', class="m">return</a> <a id='6608' tid='6607', class="m">new</a> <a id='6610' tid='6609', class="m">Redirection</a>(<a id='6612' tid='6611', class="m">external_function</a>, <a id='6614' tid='6613', class="m">type</a>);
+  }
+
+  <a id='6478' tid='6477', class="m">static</a> <a id='6480' tid='6479', class="m">Redirection</a><a id='6482' tid='6481', class="m">*</a> <a id='6484' tid='6483', class="m">FromSwiInstruction</a>(<a id='6486' tid='6485', class="m">Instruction</a><a id='6488' tid='6487', class="m">*</a> <a id='6490' tid='6489', class="m">swi_instruction</a>) {
+    <a id='6492' tid='6491', class="m">char</a><a id='6494' tid='6493', class="m">*</a> <a id='6496' tid='6495', class="m">addr_of_swi</a> = <a id='6498' tid='6497', class="m">reinterpret_cast</a>&lt;<a id='6500' tid='6499', class="m">char</a><a id='6502' tid='6501', class="m">*</a>&gt;(<a id='6504' tid='6503', class="m">swi_instruction</a>);
+    <a id='6506' tid='6505', class="m">char</a><a id='6508' tid='6507', class="m">*</a> <a id='6510' tid='6509', class="m">addr_of_redirection</a> =
+        <a id='6512' tid='6511', class="m">addr_of_swi</a> <a id='6514' tid='6513', class="m">-</a> <a id='6516' tid='6515', class="m">OFFSET_OF</a>(<a id='6518' tid='6517', class="m">Redirection</a>, <a id='6520' tid='6519', class="m">swi_instruction_</a>);
+    <a id='6522' tid='6521', class="m">return</a> <a id='6524' tid='6523', class="m">reinterpret_cast</a>&lt;<a id='6526' tid='6525', class="m">Redirection</a><a id='6528' tid='6527', class="m">*</a>&gt;(<a id='6530' tid='6529', class="m">addr_of_redirection</a>);
+  }
+
+ <a id='6672' tid='6671', class="m">private</a>:
+  <a id='6674' tid='6673', class="m">void</a><a id='6676' tid='6675', class="m">*</a> <a id='6678' tid='6677', class="m">external_function_</a>;
+  <a id='6680' tid='6679', class="m">uint32_t</a> <a id='6682' tid='6681', class="m">swi_instruction_</a>;
+  <a id='6684' tid='6683', class="m">ExternalReference</a><a id='6686' tid='6685', class="m">::</a><a id='6688' tid='6687', class="m">Type</a> <a id='6690' tid='6689', class="m">type_</a>;
+  <a id='6692' tid='6691', class="m">Redirection</a><a id='6694' tid='6693', class="m">*</a> <a id='6696' tid='6695', class="m">next_</a>;
+};
+
+
+<a id='6428' tid='6427', class="m">void</a><a id='6430' tid='6429', class="m">*</a> <a id='6432' tid='6431', class="m">Simulator</a><a id='6434' tid='6433', class="m">::</a><a id='6436' tid='6435', class="m">RedirectExternalReference</a>(<a id='6438' tid='6437', class="m">void</a><a id='6440' tid='6439', class="m">*</a> <a id='6442' tid='6441', class="m">external_function</a>,
+                                           <a id='6444' tid='6443', class="m">ExternalReference</a><a id='6446' tid='6445', class="m">::</a><a id='6448' tid='6447', class="m">Type</a> <a id='6450' tid='6449', class="m">type</a>) {
+  <a id='6452' tid='6451', class="m">Redirection</a><a id='6454' tid='6453', class="m">*</a> <a id='6456' tid='6455', class="m">redirection</a> = <a id='6458' tid='6457', class="m">Redirection</a><a id='6460' tid='6459', class="m">::</a><a id='6462' tid='6461', class="m">Get</a>(<a id='6464' tid='6463', class="m">external_function</a>, <a id='6466' tid='6465', class="m">type</a>);
+  <a id='6468' tid='6467', class="m">return</a> <a id='6470' tid='6469', class="m">redirection</a>-&gt;<a id='6472' tid='6471', class="m">address_of_swi_instruction</a>();
+}
+
+
+// Get the active Simulator for the current thread.
+<a id='6334' tid='6333', class="m">Simulator</a><a id='6336' tid='6335', class="m">*</a> <a id='6338' tid='6337', class="m">Simulator</a><a id='6340' tid='6339', class="m">::</a><a id='6342' tid='6341', class="m">current</a>(<a id='6344' tid='6343', class="m">Isolate</a><a id='6346' tid='6345', class="m">*</a> <a id='6348' tid='6347', class="m">isolate</a>) {
+  <a id='6350' tid='6349', class="m">v8</a><a id='6352' tid='6351', class="m">::</a><a id='6354' tid='6353', class="m">internal</a><a id='6356' tid='6355', class="m">::</a><a id='6358' tid='6357', class="m">Isolate</a><a id='6360' tid='6359', class="m">::</a><a id='6362' tid='6361', class="m">PerIsolateThreadData</a><a id='6364' tid='6363', class="m">*</a> <a id='6366' tid='6365', class="m">isolate_data</a> =
+      <a id='6368' tid='6367', class="m">isolate</a>-&gt;<a id='6370' tid='6369', class="m">FindOrAllocatePerThreadDataForThisThread</a>();
+  <span class="i">ASSERT(isolate_data != NULL);</span>
+
+  <a id='6322' tid='6321', class="m">Simulator</a><a id='6324' tid='6323', class="m">*</a> <a id='6326' tid='6325', class="m">sim</a> = <a id='6328' tid='6327', class="m">isolate_data</a>-&gt;<a id='6330' tid='6329', class="m">simulator</a>();
+  <a id='6268' tid='6267', class="m">if</a> (<a id='6270' tid='6269', class="m">sim</a> <a id='6272' tid='6271', class="m">==</a> <a id='6274' tid='6273', class="m">NULL</a>) {
+    // TODO(146): delete the simulator object when a thread/isolate goes away.
+    <a id='6276' tid='6275', class="m">sim</a> <a id='6278' tid='6277', class="m">=</a> <a id='6280' tid='6279', class="m">new</a> <a id='6282' tid='6281', class="m">Simulator</a>(<a id='6284' tid='6283', class="m">isolate</a>);
+    <a id='6286' tid='6285', class="m">isolate_data</a>-&gt;<a id='6288' tid='6287', class="m">set_simulator</a>(<a id='6290' tid='6289', class="m">sim</a>);
+  }
+  <span class="i">return sim;</span>
+}
+
+
+// Sets the register in the architecture state. It will also deal with updating
+// Simulator internal state for special registers such as PC.
+<a id='6292' tid='6291', class="m">void</a> <a id='6294' tid='6293', class="m">Simulator</a><a id='6296' tid='6295', class="m">::</a><a id='6298' tid='6297', class="m">set_register</a>(<a id='6300' tid='6299', class="m">int</a> <a id='6302' tid='6301', class="m">reg</a>, <a id='6304' tid='6303', class="m">int32_t</a> <a id='6306' tid='6305', class="m">value</a>) {
+  <span class="i">ASSERT((reg &gt;= 0) && (reg &lt; num_registers));</span>
+  <a id='6308' tid='6307', class="m">if</a> (<a id='6310' tid='6309', class="m">reg</a> <a id='6312' tid='6311', class="m">==</a> <a id='6314' tid='6313', class="m">pc</a>) {
+    <a id='6316' tid='6315', class="m">pc_modified_</a> <a id='6318' tid='6317', class="m">=</a> <a id='6320' tid='6319', class="m">true</a>;
+  }
+  <span class="i">registers_[reg] = value;</span>
+}
+
+
+// Get the register from the architecture state. This function does handle
+// the special case of accessing the PC register.
+<a id='6254' tid='6253', class="m">int32_t</a> <a id='6256' tid='6255', class="m">Simulator</a><a id='6258' tid='6257', class="m">::</a><a id='6260' tid='6259', class="m">get_register</a>(<a id='6262' tid='6261', class="m">int</a> <a id='6264' tid='6263', class="m">reg</a>) <a id='6266' tid='6265', class="m">const</a> {
+  <span class="i">ASSERT((reg &gt;= 0) && (reg &lt; num_registers));</span>
+  // Stupid code added to avoid bug in GCC.
+  // See: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=43949
+  <span class="i">if (reg &gt;= num_registers) return 0;</span>
+  // End stupid code.
+  <a id='6232' tid='6231', class="m">return</a> <a id='6234' tid='6233', class="m">registers_</a>[<a id='6236' tid='6235', class="m">reg</a>] <a id='6238' tid='6237', class="m">+</a> ((<a id='6240' tid='6239', class="m">reg</a> <a id='6242' tid='6241', class="m">==</a> <a id='6244' tid='6243', class="m">pc</a>) ? <a id='6246' tid='6245', class="m">Instruction</a><a id='6248' tid='6247', class="m">::</a><a id='6250' tid='6249', class="m">kPCReadOffset</a> : <a id='6252' tid='6251', class="m">0</a>);
+}
+
+
+<span class="i">double Simulator::get_double_from_register_pair(int reg) {
+  ASSERT((reg &gt;= 0) && (reg &lt; num_registers) && ((reg % 2) == 0));
+
+  double dm_val = 0.0;
+  // Read the bits from the unsigned integer register_[] array
+  // into the double precision floating point value and return it.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &registers_[reg], 2 * sizeof(registers_[0]));
+  memcpy(&dm_val, buffer, 2 * sizeof(registers_[0]));
+  return(dm_val);
+}</span>
+
+
+<span class="i">void Simulator::set_dw_register(int dreg, const int* dbl) {
+  ASSERT((dreg &gt;= 0) && (dreg &lt; num_d_registers));
+  registers_[dreg] = dbl[0];
+  registers_[dreg + 1] = dbl[1];
+}</span>
+
+
+// Raw access to the PC register.
+<a id='6206' tid='6205', class="m">void</a> <a id='6208' tid='6207', class="m">Simulator</a><a id='6210' tid='6209', class="m">::</a><a id='6212' tid='6211', class="m">set_pc</a>(<a id='6214' tid='6213', class="m">int32_t</a> <a id='6216' tid='6215', class="m">value</a>) {
+  <a id='6218' tid='6217', class="m">pc_modified_</a> <a id='6220' tid='6219', class="m">=</a> <a id='6222' tid='6221', class="m">true</a>;
+  <a id='6224' tid='6223', class="m">registers_</a>[<a id='6226' tid='6225', class="m">pc</a>] <a id='6228' tid='6227', class="m">=</a> <a id='6230' tid='6229', class="m">value</a>;
+}
+
+
+<a id='6196' tid='6195', class="m">bool</a> <a id='6198' tid='6197', class="m">Simulator</a><a id='6200' tid='6199', class="m">::</a><a id='6202' tid='6201', class="m">has_bad_pc</a>() <a id='6204' tid='6203', class="m">const</a> <span class="i">{
+  return ((registers_[pc] == bad_lr) || (registers_[pc] == end_sim_pc));
+}</span>
+
+
+// Raw access to the PC register without the special adjustment when reading.
+<a id='6186' tid='6185', class="m">int32_t</a> <a id='6188' tid='6187', class="m">Simulator</a><a id='6190' tid='6189', class="m">::</a><a id='6192' tid='6191', class="m">get_pc</a>() <a id='6194' tid='6193', class="m">const</a> <span class="i">{
+  return registers_[pc];
+}</span>
+
+
+// Getting from and setting into VFP registers.
+<span class="i">void Simulator::set_s_register(int sreg, unsigned int value) {
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+  vfp_register[sreg] = value;
+}</span>
+
+
+<span class="i">unsigned int Simulator::get_s_register(int sreg) const</span> <span class="i">{
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+  return vfp_register[sreg];
+}</span>
+
+
+<span class="i">void Simulator::set_s_register_from_float(int sreg, const float flt) {
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+  // Read the bits from the single precision floating point value
+  // into the unsigned integer element of vfp_register[] given by index=sreg.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &flt, sizeof(vfp_register[0]));
+  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
+}</span>
+
+
+<span class="i">void Simulator::set_s_register_from_sinteger(int sreg, const int sint) {
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+  // Read the bits from the integer value into the unsigned integer element of
+  // vfp_register[] given by index=sreg.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &sint, sizeof(vfp_register[0]));
+  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
+}</span>
+
+
+<span class="i">void Simulator::set_d_register_from_double(int dreg, const double& dbl) {
+  ASSERT((dreg &gt;= 0) && (dreg &lt; num_d_registers));
+  // Read the bits from the double precision floating point value into the two
+  // consecutive unsigned integer elements of vfp_register[] given by index
+  // 2*sreg and 2*sreg+1.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &dbl, 2 * sizeof(vfp_register[0]));
+  memcpy(&vfp_register[dreg * 2], buffer, 2 * sizeof(vfp_register[0]));
+}</span>
+
+
+<span class="i">float Simulator::get_float_from_s_register(int sreg) {
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+
+  float sm_val = 0.0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the single precision floating point value and return it.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
+  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
+  return(sm_val);
+}</span>
+
+
+<span class="i">int Simulator::get_sinteger_from_s_register(int sreg) {
+  ASSERT((sreg &gt;= 0) && (sreg &lt; num_s_registers));
+
+  int sm_val = 0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the single precision floating point value and return it.
+  char buffer[sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
+  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
+  return(sm_val);
+}</span>
+
+
+<span class="i">double Simulator::get_double_from_d_register(int dreg) {
+  ASSERT((dreg &gt;= 0) && (dreg &lt; num_d_registers));
+
+  double dm_val = 0.0;
+  // Read the bits from the unsigned integer vfp_register[] array
+  // into the double precision floating point value and return it.
+  char buffer[2 * sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[2 * dreg], 2 * sizeof(vfp_register[0]));
+  memcpy(&dm_val, buffer, 2 * sizeof(vfp_register[0]));
+  return(dm_val);
+}</span>
+
+
+// For use in calls that take two double values, constructed either
+// from r0-r3 or d0 and d1.
+<a id='6154' tid='6153', class="m">void</a> <a id='6156' tid='6155', class="m">Simulator</a><a id='6158' tid='6157', class="m">::</a><a id='6160' tid='6159', class="m">GetFpArgs</a>(<a id='6162' tid='6161', class="m">double</a><a id='6164' tid='6163', class="m">*</a> <a id='6166' tid='6165', class="m">x</a>, <a id='6168' tid='6167', class="m">double</a><a id='6170' tid='6169', class="m">*</a> <a id='6172' tid='6171', class="m">y</a>) {
+  <span class="i">if</span> <span class="i">(use_eabi_hardfloat())</span> <span class="i">{
+    *x = vfp_register[0];
+    *y = vfp_register[1];
+  }</span> <a id='6174' tid='6173', class="m">else</a> {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    <a id='6176' tid='6175', class="m">char</a> <a id='6178' tid='6177', class="m">buffer</a>[<a id='6180' tid='6179', class="m">sizeof</a>(<a id='6182' tid='6181', class="m">*</a><a id='6184' tid='6183', class="m">x</a>)];
+    // Registers 0 and 1 -&gt; x.
+    <span class="i">memcpy(buffer, registers_, sizeof(*x));</span>
+    <span class="i">memcpy(x, buffer, sizeof(*x));</span>
+    // Registers 2 and 3 -&gt; y.
+    <span class="i">memcpy(buffer, registers_ + 2, sizeof(*y));</span>
+    <a id='6086' tid='6085', class="m">memcpy</a>(<a id='6088' tid='6087', class="m">y</a>, <a id='6090' tid='6089', class="m">buffer</a>, <a id='6092' tid='6091', class="m">sizeof</a>(<a id='6094' tid='6093', class="m">*</a><a id='6096' tid='6095', class="m">y</a>));
+  }
+}
+
+// For use in calls that take one double value, constructed either
+// from r0 and r1 or d0.
+<a id='6130' tid='6129', class="m">void</a> <a id='6132' tid='6131', class="m">Simulator</a><a id='6134' tid='6133', class="m">::</a><a id='6136' tid='6135', class="m">GetFpArgs</a>(<a id='6138' tid='6137', class="m">double</a><a id='6140' tid='6139', class="m">*</a> <a id='6142' tid='6141', class="m">x</a>) {
+  <span class="i">if</span> <span class="i">(use_eabi_hardfloat())</span> <span class="i">{
+    *x = vfp_register[0];
+  }</span> <span class="i">else</span> {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    <a id='6144' tid='6143', class="m">char</a> <a id='6146' tid='6145', class="m">buffer</a>[<a id='6148' tid='6147', class="m">sizeof</a>(<a id='6150' tid='6149', class="m">*</a><a id='6152' tid='6151', class="m">x</a>)];
+    // Registers 0 and 1 -&gt; x.
+    <span class="i">memcpy(buffer, registers_, sizeof(*x));</span>
+    <span class="i">memcpy(x, buffer, sizeof(*x));</span>
+  }
+}
+
+
+// For use in calls that take one double value constructed either
+// from r0 and r1 or d0 and one integer value.
+<a id='6098' tid='6097', class="m">void</a> <a id='6100' tid='6099', class="m">Simulator</a><a id='6102' tid='6101', class="m">::</a><a id='6104' tid='6103', class="m">GetFpArgs</a>(<a id='6106' tid='6105', class="m">double</a><a id='6108' tid='6107', class="m">*</a> <a id='6110' tid='6109', class="m">x</a>, <a id='6112' tid='6111', class="m">int32_t</a><a id='6114' tid='6113', class="m">*</a> <a id='6116' tid='6115', class="m">y</a>) {
+  <span class="i">if</span> <span class="i">(use_eabi_hardfloat())</span> <span class="i">{
+    *x = vfp_register[0];
+    *y = registers_[1];
+  }</span> <a id='6118' tid='6117', class="m">else</a> {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    <a id='6120' tid='6119', class="m">char</a> <a id='6122' tid='6121', class="m">buffer</a>[<a id='6124' tid='6123', class="m">sizeof</a>(<a id='6126' tid='6125', class="m">*</a><a id='6128' tid='6127', class="m">x</a>)];
+    // Registers 0 and 1 -&gt; x.
+    <span class="i">memcpy(buffer, registers_, sizeof(*x));</span>
+    <span class="i">memcpy(x, buffer, sizeof(*x));</span>
+    // Register 2 -&gt; y.
+    <span class="i">memcpy(buffer, registers_ + 2, sizeof(*y));</span>
+    <span class="i">memcpy(y, buffer, sizeof(*y));</span>
+  }
+}
+
+
+// The return value is either in r0/r1 or d0.
+<a id='6058' tid='6057', class="m">void</a> <a id='6060' tid='6059', class="m">Simulator</a><a id='6062' tid='6061', class="m">::</a><a id='6064' tid='6063', class="m">SetFpResult</a>(<a id='6066' tid='6065', class="m">const</a> <a id='6068' tid='6067', class="m">double</a><a id='6070' tid='6069', class="m">&</a> <a id='6072' tid='6071', class="m">result</a>) {
+  <span class="i">if</span> <span class="i">(use_eabi_hardfloat())</span> {
+    <span class="i">char buffer[2 * sizeof(vfp_register[0])];</span>
+    <a id='6074' tid='6073', class="m">memcpy</a>(<a id='6076' tid='6075', class="m">buffer</a>, <a id='6078' tid='6077', class="m">&</a><a id='6080' tid='6079', class="m">result</a>, <a id='6082' tid='6081', class="m">sizeof</a>(<a id='6084' tid='6083', class="m">buffer</a>));
+    // Copy result to d0.
+    <span class="i">memcpy(vfp_register, buffer, sizeof(buffer));</span>
+  } <span class="i">else</span> {
+    <a id='6044' tid='6043', class="m">char</a> <a id='6046' tid='6045', class="m">buffer</a>[<a id='6048' tid='6047', class="m">2</a> <a id='6050' tid='6049', class="m">*</a> <a id='6052' tid='6051', class="m">sizeof</a>(<a id='6054' tid='6053', class="m">registers_</a>[<a id='6056' tid='6055', class="m">0</a>])];
+    <span class="i">memcpy(buffer, &result, sizeof(buffer));</span>
+    // Copy result to r0 and r1.
+    <span class="i">memcpy(registers_, buffer, sizeof(buffer));</span>
+  }
+}
+
+
+<span class="i">void Simulator::TrashCallerSaveRegisters() {
+  // We don&#39;t trash the registers with the return value.
+  registers_[2] = 0x50Bad4U;
+  registers_[3] = 0x50Bad4U;
+  registers_[12] = 0x50Bad4U;
+}</span>
+
+// Some Operating Systems allow unaligned access on ARMv7 targets. We
+// assume that unaligned accesses are not allowed unless the v8 build system
+// defines the CAN_USE_UNALIGNED_ACCESSES macro to be non-zero.
+// The following statements below describes the behavior of the ARM CPUs
+// that don&#39;t support unaligned access.
+// Some ARM platforms raise an interrupt on detecting unaligned access.
+// On others it does a funky rotation thing.  For now we
+// simply disallow unaligned reads.  Note that simulator runs have the runtime
+// system running directly on the host system and only generated code is
+// executed in the simulator.  Since the host is typically IA32 we will not
+// get the correct ARM-like behaviour on unaligned accesses for those ARM
+// targets that don&#39;t support unaligned loads and stores.
+
+
+<a id='6012' tid='6011', class="m">int</a> <a id='6014' tid='6013', class="m">Simulator</a><a id='6016' tid='6015', class="m">::</a><a id='6018' tid='6017', class="m">ReadW</a>(<a id='6020' tid='6019', class="m">int32_t</a> <a id='6022' tid='6021', class="m">addr</a>, <a id='6024' tid='6023', class="m">Instruction</a><a id='6026' tid='6025', class="m">*</a> <a id='6028' tid='6027', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <a id='6030' tid='6029', class="m">intptr_t</a><a id='6032' tid='6031', class="m">*</a> <a id='6034' tid='6033', class="m">ptr</a> = <a id='6036' tid='6035', class="m">reinterpret_cast</a>&lt;<a id='6038' tid='6037', class="m">intptr_t</a><a id='6040' tid='6039', class="m">*</a>&gt;(<a id='6042' tid='6041', class="m">addr</a>);
+  <span class="i">return *ptr;</span>
+<span class="i">#else</span>
+  <span class="i">if ((addr & 3) == 0) {
+    intptr_t* ptr = reinterpret_cast&lt;intptr_t*&gt;(addr);
+    return *ptr;
+  }</span>
+  <a id='5996' tid='5995', class="m">PrintF</a>(<a id='5998' tid='5997', class="m">&quot;Unaligned read at 0x%08x, pc=0x%08&quot;</a> <a id='6000' tid='5999', class="m">V8PRIxPTR</a> <a id='6002' tid='6001', class="m">&quot;\n&quot;</a>,
+         <a id='6004' tid='6003', class="m">addr</a>,
+         <a id='6006' tid='6005', class="m">reinterpret_cast</a>&lt;<a id='6008' tid='6007', class="m">intptr_t</a>&gt;(<a id='6010' tid='6009', class="m">instr</a>));
+  <span class="i">UNIMPLEMENTED();</span>
+  <span class="i">return 0;</span>
+<span class="i">#endif</span>
+}
+
+
+<a id='5960' tid='5959', class="m">void</a> <a id='5962' tid='5961', class="m">Simulator</a><a id='5964' tid='5963', class="m">::</a><a id='5966' tid='5965', class="m">WriteW</a>(<a id='5968' tid='5967', class="m">int32_t</a> <a id='5970' tid='5969', class="m">addr</a>, <a id='5972' tid='5971', class="m">int</a> <a id='5974' tid='5973', class="m">value</a>, <a id='5976' tid='5975', class="m">Instruction</a><a id='5978' tid='5977', class="m">*</a> <a id='5980' tid='5979', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <a id='5982' tid='5981', class="m">intptr_t</a><a id='5984' tid='5983', class="m">*</a> <a id='5986' tid='5985', class="m">ptr</a> = <a id='5988' tid='5987', class="m">reinterpret_cast</a>&lt;<a id='5990' tid='5989', class="m">intptr_t</a><a id='5992' tid='5991', class="m">*</a>&gt;(<a id='5994' tid='5993', class="m">addr</a>);
+  <span class="i">*ptr = value;</span>
+  <span class="i">return;</span>
+<span class="i">#else</span>
+  <span class="i">if ((addr & 3) == 0) {
+    intptr_t* ptr = reinterpret_cast&lt;intptr_t*&gt;(addr);
+    *ptr = value;
+    return;
+  }</span>
+  <a id='5944' tid='5943', class="m">PrintF</a>(<a id='5946' tid='5945', class="m">&quot;Unaligned write at 0x%08x, pc=0x%08&quot;</a> <a id='5948' tid='5947', class="m">V8PRIxPTR</a> <a id='5950' tid='5949', class="m">&quot;\n&quot;</a>,
+         <a id='5952' tid='5951', class="m">addr</a>,
+         <a id='5954' tid='5953', class="m">reinterpret_cast</a>&lt;<a id='5956' tid='5955', class="m">intptr_t</a>&gt;(<a id='5958' tid='5957', class="m">instr</a>));
+  <span class="i">UNIMPLEMENTED();</span>
+<span class="i">#endif</span>
+}
+
+
+<a id='5892' tid='5891', class="m">uint16_t</a> <a id='5894' tid='5893', class="m">Simulator</a><a id='5896' tid='5895', class="m">::</a><a id='5898' tid='5897', class="m">ReadHU</a>(<a id='5934' tid='5933', class="m">int32_t</a> <a id='5936' tid='5935', class="m">addr</a>, <a id='5938' tid='5937', class="m">Instruction</a><a id='5940' tid='5939', class="m">*</a> <a id='5942' tid='5941', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <a id='5900' tid='5899', class="m">uint16_t</a><a id='5902' tid='5901', class="m">*</a> <a id='5904' tid='5903', class="m">ptr</a> = <a id='5906' tid='5905', class="m">reinterpret_cast</a>&lt;<a id='5908' tid='5907', class="m">uint16_t</a><a id='5910' tid='5909', class="m">*</a>&gt;(<a id='5912' tid='5911', class="m">addr</a>);
+  <span class="i">return *ptr;</span>
+<span class="i">#else</span>
+  <span class="i">if</span> ((<a id='5792' tid='5791', class="m">addr</a> <a id='5794' tid='5793', class="m">&</a> <a id='5796' tid='5795', class="m">1</a>) <a id='5798' tid='5797', class="m">==</a> <a id='5800' tid='5799', class="m">0</a>) <span class="i">{
+    uint16_t* ptr = reinterpret_cast&lt;uint16_t*&gt;(addr);
+    return *ptr;
+  }</span>
+  <a id='5876' tid='5875', class="m">PrintF</a>(<a id='5878' tid='5877', class="m">&quot;Unaligned unsigned halfword read at 0x%08x, pc=0x%08&quot;</a> <a id='5880' tid='5879', class="m">V8PRIxPTR</a> <a id='5882' tid='5881', class="m">&quot;\n&quot;</a>,
+         <a id='5884' tid='5883', class="m">addr</a>,
+         <a id='5886' tid='5885', class="m">reinterpret_cast</a>&lt;<a id='5888' tid='5887', class="m">intptr_t</a>&gt;(<a id='5890' tid='5889', class="m">instr</a>));
+  <span class="i">UNIMPLEMENTED();</span>
+  <span class="i">return 0;</span>
+<span class="i">#endif</span>
+}
+
+
+<a id='5858' tid='5857', class="m">int16_t</a> <a id='5860' tid='5859', class="m">Simulator</a><a id='5862' tid='5861', class="m">::</a><a id='5864' tid='5863', class="m">ReadH</a>(<a id='5924' tid='5923', class="m">int32_t</a> <a id='5926' tid='5925', class="m">addr</a>, <a id='5928' tid='5927', class="m">Instruction</a><a id='5930' tid='5929', class="m">*</a> <a id='5932' tid='5931', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <a id='5802' tid='5801', class="m">int16_t</a><a id='5804' tid='5803', class="m">*</a> <a id='5806' tid='5805', class="m">ptr</a> = <a id='5808' tid='5807', class="m">reinterpret_cast</a>&lt;<a id='5810' tid='5809', class="m">int16_t</a><a id='5812' tid='5811', class="m">*</a>&gt;(<a id='5814' tid='5813', class="m">addr</a>);
+  <span class="i">return *ptr;</span>
+<span class="i">#else</span>
+  <a id='4338' tid='4337', class="m">if</a> ((<a id='4340' tid='4339', class="m">addr</a> <a id='4342' tid='4341', class="m">&</a> <a id='4344' tid='4343', class="m">1</a>) <a id='4346' tid='4345', class="m">==</a> <a id='4348' tid='4347', class="m">0</a>) {
+    <a id='4350' tid='4349', class="m">int16_t</a><a id='4352' tid='4351', class="m">*</a> <a id='4354' tid='4353', class="m">ptr</a> = <a id='4356' tid='4355', class="m">reinterpret_cast</a>&lt;<a id='4358' tid='4357', class="m">int16_t</a><a id='4360' tid='4359', class="m">*</a>&gt;(<a id='4362' tid='4361', class="m">addr</a>);
+    <span class="i">return *ptr;</span>
+  }
+  <span class="i">PrintF(&quot;Unaligned signed halfword read at 0x%08x\n&quot;, addr);</span>
+  <span class="i">UNIMPLEMENTED();</span>
+  <span class="i">return 0;</span>
+<span class="i">#endif</span>
+}
+
+
+<a id='5756' tid='5755', class="m">void</a> <a id='5758' tid='5757', class="m">Simulator</a><a id='5760' tid='5759', class="m">::</a><a id='5762' tid='5761', class="m">WriteH</a>(<a id='5764' tid='5763', class="m">int32_t</a> <a id='5766' tid='5765', class="m">addr</a>, <a id='5768' tid='5767', class="m">uint16_t</a> <a id='5770' tid='5769', class="m">value</a>, <a id='5772' tid='5771', class="m">Instruction</a><a id='5774' tid='5773', class="m">*</a> <a id='5776' tid='5775', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <span class="i">uint16_t* ptr = reinterpret_cast&lt;uint16_t*&gt;(addr);</span>
+  <span class="i">*ptr = value;</span>
+  <span class="i">return;</span>
+<span class="i">#else</span>
+  <a id='5832' tid='5831', class="m">if</a> ((<a id='5914' tid='5913', class="m">addr</a> <a id='5916' tid='5915', class="m">&</a> <a id='5918' tid='5917', class="m">1</a>) <a id='5920' tid='5919', class="m">==</a> <a id='5922' tid='5921', class="m">0</a>) {
+    <a id='5834' tid='5833', class="m">uint16_t</a><a id='5836' tid='5835', class="m">*</a> <a id='5838' tid='5837', class="m">ptr</a> = <a id='5840' tid='5839', class="m">reinterpret_cast</a>&lt;<a id='5842' tid='5841', class="m">uint16_t</a><a id='5844' tid='5843', class="m">*</a>&gt;(<a id='5846' tid='5845', class="m">addr</a>);
+    <a id='5848' tid='5847', class="m">*</a><a id='5850' tid='5849', class="m">ptr</a> <a id='5852' tid='5851', class="m">=</a> <a id='5854' tid='5853', class="m">value</a>;
+    <a id='5856' tid='5855', class="m">return</a>;
+  }
+  <a id='5816' tid='5815', class="m">PrintF</a>(<a id='5818' tid='5817', class="m">&quot;Unaligned unsigned halfword write at 0x%08x, pc=0x%08&quot;</a> <a id='5820' tid='5819', class="m">V8PRIxPTR</a> <a id='5822' tid='5821', class="m">&quot;\n&quot;</a>,
+         <a id='5824' tid='5823', class="m">addr</a>,
+         <a id='5826' tid='5825', class="m">reinterpret_cast</a>&lt;<a id='5828' tid='5827', class="m">intptr_t</a>&gt;(<a id='5830' tid='5829', class="m">instr</a>));
+  <span class="i">UNIMPLEMENTED();</span>
+<span class="i">#endif</span>
+}
+
+
+<a id='4300' tid='4299', class="m">void</a> <a id='4302' tid='4301', class="m">Simulator</a><a id='4304' tid='4303', class="m">::</a><a id='4306' tid='4305', class="m">WriteH</a>(<a id='4308' tid='4307', class="m">int32_t</a> <a id='4310' tid='4309', class="m">addr</a>, <a id='4312' tid='4311', class="m">int16_t</a> <a id='4314' tid='4313', class="m">value</a>, <a id='4316' tid='4315', class="m">Instruction</a><a id='4318' tid='4317', class="m">*</a> <a id='4320' tid='4319', class="m">instr</a>) {
+<span class="i">#if V8_TARGET_CAN_READ_UNALIGNED</span>
+  <span class="i">int16_t* ptr = reinterpret_cast&lt;int16_t*&gt;(addr);</span>
+  <span class="i">*ptr = value;</span>
+  <span class="i">return;</span>
+<span class="i">#else</span>
+  <span class="i">if</span> ((<a id='5866' tid='5865', class="m">addr</a> <a id='5868' tid='5867', class="m">&</a> <a id='5870' tid='5869', class="m">1</a>) <a id='5872' tid='5871', class="m">==</a> <a id='5874' tid='5873', class="m">0</a>) <span class="i">{
+    int16_t* ptr = reinterpret_cast&lt;int16_t*&gt;(addr);
+    *ptr = value;
+    return;
+  }</span>
+  <a id='4322' tid='4321', class="m">PrintF</a>(<a id='4324' tid='4323', class="m">&quot;Unaligned halfword write at 0x%08x, pc=0x%08&quot;</a> <a id='4326' tid='4325', class="m">V8PRIxPTR</a> <a id='4328' tid='4327', class="m">&quot;\n&quot;</a>,
+         <a id='4330' tid='4329', class="m">addr</a>,
+         <a id='4332' tid='4331', class="m">reinterpret_cast</a>&lt;<a id='4334' tid='4333', class="m">intptr_t</a>&gt;(<a id='4336' tid='4335', class="m">instr</a>));
+  <span class="i">UNIMPLEMENTED();</span>
+<span class="i">#endif</span>
+}
+
+
+<span class="i">uint8_t</span> <a id='5726' tid='5725', class="m">Simulator</a><a id='5728' tid='5727', class="m">::</a><a id='5730' tid='5729', class="m">ReadBU</a>(<a id='5732' tid='5731', class="m">int32_t</a> <a id='5734' tid='5733', class="m">addr</a>) {
+  <a id='5778' tid='5777', class="m">uint8_t</a><a id='5780' tid='5779', class="m">*</a> <a id='5782' tid='5781', class="m">ptr</a> = <a id='5784' tid='5783', class="m">reinterpret_cast</a>&lt;<a id='5786' tid='5785', class="m">uint8_t</a><a id='5788' tid='5787', class="m">*</a>&gt;(<a id='5790' tid='5789', class="m">addr</a>);
+  <span class="i">return *ptr;</span>
+}
+
+
+<span class="i">int8_t</span> <a id='5678' tid='5677', class="m">Simulator</a><a id='5680' tid='5679', class="m">::</a><a id='5682' tid='5681', class="m">ReadB</a>(<a id='5684' tid='5683', class="m">int32_t</a> <a id='5686' tid='5685', class="m">addr</a>) {
+  <a id='5736' tid='5735', class="m">int8_t</a><a id='5738' tid='5737', class="m">*</a> <a id='5740' tid='5739', class="m">ptr</a> = <a id='5742' tid='5741', class="m">reinterpret_cast</a>&lt;<a id='5744' tid='5743', class="m">int8_t</a><a id='5746' tid='5745', class="m">*</a>&gt;(<a id='5748' tid='5747', class="m">addr</a>);
+  <a id='5750' tid='5749', class="m">return</a> <a id='5752' tid='5751', class="m">*</a><a id='5754' tid='5753', class="m">ptr</a>;
+}
+
+
+<a id='5688' tid='5687', class="m">void</a> <a id='5690' tid='5689', class="m">Simulator</a><a id='5692' tid='5691', class="m">::</a><a id='5694' tid='5693', class="m">WriteB</a>(<a id='5696' tid='5695', class="m">int32_t</a> <a id='5698' tid='5697', class="m">addr</a>, <a id='5700' tid='5699', class="m">uint8_t</a> <a id='5702' tid='5701', class="m">value</a>) {
+  <a id='5704' tid='5703', class="m">uint8_t</a><a id='5706' tid='5705', class="m">*</a> <a id='5708' tid='5707', class="m">ptr</a> = <a id='5710' tid='5709', class="m">reinterpret_cast</a>&lt;<a id='5712' tid='5711', class="m">uint8_t</a><a id='5714' tid='5713', class="m">*</a>&gt;(<a id='5716' tid='5715', class="m">addr</a>);
+  <a id='5718' tid='5717', class="m">*</a><a id='5720' tid='5719', class="m">ptr</a> <a id='5722' tid='5721', class="m">=</a> <a id='5724' tid='5723', class="m">value</a>;
+}
+
+
+<a id='5640' tid='5639', class="m">void</a> <a id='5642' tid='5641', class="m">Simulator</a><a id='5644' tid='5643', class="m">::</a><a id='5646' tid='5645', class="m">WriteB</a>(<a id='5648' tid='5647', class="m">int32_t</a> <a id='5650' tid='5649', class="m">addr</a>, <a id='5652' tid='5651', class="m">int8_t</a> <a id='5654' tid='5653', class="m">value</a>) {
+  <a id='5656' tid='5655', class="m">int8_t</a><a id='5658' tid='5657', class="m">*</a> <a id='5660' tid='5659', class="m">ptr</a> = <a id='5662' tid='5661', class="m">reinterpret_cast</a>&lt;<a id='5664' tid='5663', class="m">int8_t</a><a id='5666' tid='5665', class="m">*</a>&gt;(<a id='5668' tid='5667', class="m">addr</a>);
+  <a id='5670' tid='5669', class="m">*</a><a id='5672' tid='5671', class="m">ptr</a> <a id='5674' tid='5673', class="m">=</a> <a id='5676' tid='5675', class="m">value</a>;
+}
+
+
+<span class="i">int32_t* Simulator::ReadDW(int32_t addr) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int32_t* ptr = reinterpret_cast&lt;int32_t*&gt;(addr);
+  return ptr;
+#else
+  if ((addr & 3) == 0) {
+    int32_t* ptr = reinterpret_cast&lt;int32_t*&gt;(addr);
+    return ptr;
+  }
+  PrintF(&quot;Unaligned read at 0x%08x\n&quot;, addr);
+  UNIMPLEMENTED();
+  return 0;
+#endif
+}</span>
+
+
+<span class="i">void Simulator::WriteDW(int32_t addr, int32_t value1, int32_t value2) {
+#if V8_TARGET_CAN_READ_UNALIGNED
+  int32_t* ptr = reinterpret_cast&lt;int32_t*&gt;(addr);
+  *ptr++ = value1;
+  *ptr = value2;
+  return;
+#else
+  if ((addr & 3) == 0) {
+    int32_t* ptr = reinterpret_cast&lt;int32_t*&gt;(addr);
+    *ptr++ = value1;
+    *ptr = value2;
+    return;
+  }
+  PrintF(&quot;Unaligned write at 0x%08x\n&quot;, addr);
+  UNIMPLEMENTED();
+#endif
+}</span>
+
+
+// Returns the limit of the stack area to enable checking for stack overflows.
+<a id='5630' tid='5629', class="m">uintptr_t</a> <a id='5632' tid='5631', class="m">Simulator</a><a id='5634' tid='5633', class="m">::</a><a id='5636' tid='5635', class="m">StackLimit</a>() <a id='5638' tid='5637', class="m">const</a> {
+  // Leave a safety margin of 256 bytes to prevent overrunning the stack when
+  // pushing values.
+  <a id='5618' tid='5617', class="m">return</a> <a id='5620' tid='5619', class="m">reinterpret_cast</a>&lt;<a id='5622' tid='5621', class="m">uintptr_t</a>&gt;(<a id='5624' tid='5623', class="m">stack_</a>) <a id='5626' tid='5625', class="m">+</a> <a id='5628' tid='5627', class="m">256</a>;
+}
+
+
+// Unsupported instructions use Format to print an error and stop execution.
+<a id='5584' tid='5583', class="m">void</a> <a id='5586' tid='5585', class="m">Simulator</a><a id='5588' tid='5587', class="m">::</a><a id='5590' tid='5589', class="m">Format</a>(<a id='5592' tid='5591', class="m">Instruction</a><a id='5594' tid='5593', class="m">*</a> <a id='5596' tid='5595', class="m">instr</a>, <a id='5598' tid='5597', class="m">const</a> <a id='5600' tid='5599', class="m">char</a><a id='5602' tid='5601', class="m">*</a> <a id='5604' tid='5603', class="m">format</a>) {
+  <a id='5606' tid='5605', class="m">PrintF</a>(<a id='5608' tid='5607', class="m">&quot;Simulator found unsupported instruction:\n 0x%08x: %s\n&quot;</a>,
+         <a id='5610' tid='5609', class="m">reinterpret_cast</a>&lt;<a id='5612' tid='5611', class="m">intptr_t</a>&gt;(<a id='5614' tid='5613', class="m">instr</a>), <a id='5616' tid='5615', class="m">format</a>);
+  <span class="i">UNIMPLEMENTED();</span>
+}
+
+
+// Checks if the current instruction should be executed based on its
+// condition bits.
+<span class="i">bool Simulator::ConditionallyExecute(Instruction* instr) {
+  switch (instr-&gt;ConditionField()) {
+    case eq: return z_flag_;
+    case ne: return !z_flag_;
+    case cs: return c_flag_;
+    case cc: return !c_flag_;
+    case mi: return n_flag_;
+    case pl: return !n_flag_;
+    case vs: return v_flag_;
+    case vc: return !v_flag_;
+    case hi: return c_flag_ && !z_flag_;
+    case ls: return !c_flag_ || z_flag_;
+    case ge: return n_flag_ == v_flag_;
+    case lt: return n_flag_ != v_flag_;
+    case gt: return !z_flag_ && (n_flag_ == v_flag_);
+    case le: return z_flag_ || (n_flag_ != v_flag_);
+    case al: return true;
+    default: UNREACHABLE();
+  }
+  return false;
+}</span>
+
+
+// Calculate and set the Negative and Zero flags.
+<span class="i">void Simulator::SetNZFlags(int32_t val) {
+  n_flag_ = (val &lt; 0);
+  z_flag_ = (val == 0);
+}</span>
+
+
+// Set the Carry flag.
+<span class="i">void Simulator::SetCFlag(bool val) {
+  c_flag_ = val;
+}</span>
+
+
+// Set the oVerflow flag.
+<span class="i">void Simulator::SetVFlag(bool val) {
+  v_flag_ = val;
+}</span>
+
+
+// Calculate C flag value for additions.
+<span class="i">bool Simulator::CarryFrom(int32_t left, int32_t right, int32_t carry) {
+  uint32_t uleft = static_cast&lt;uint32_t&gt;(left);
+  uint32_t uright = static_cast&lt;uint32_t&gt;(right);
+  uint32_t urest  = 0xffffffffU - uleft;
+
+  return (uright &gt; urest) ||
+         (carry && (((uright + 1) &gt; urest) || (uright &gt; (urest - 1))));
+}</span>
+
+
+// Calculate C flag value for subtractions.
+<span class="i">bool Simulator::BorrowFrom(int32_t left, int32_t right) {
+  uint32_t uleft = static_cast&lt;uint32_t&gt;(left);
+  uint32_t uright = static_cast&lt;uint32_t&gt;(right);
+
+  return (uright &gt; uleft);
+}</span>
+
+
+// Calculate V flag value for additions and subtractions.
+<span class="i">bool Simulator::OverflowFrom(int32_t alu_out,
+                             int32_t left, int32_t right, bool addition) {
+  bool overflow;
+  if (addition) {
+               // operands have the same sign
+    overflow = ((left &gt;= 0 && right &gt;= 0) || (left &lt; 0 && right &lt; 0))
+               // and operands and result have different sign
+               && ((left &lt; 0 && alu_out &gt;= 0) || (left &gt;= 0 && alu_out &lt; 0));
+  } else {
+               // operands have different signs
+    overflow = ((left &lt; 0 && right &gt;= 0) || (left &gt;= 0 && right &lt; 0))
+               // and first operand and result have different signs
+               && ((left &lt; 0 && alu_out &gt;= 0) || (left &gt;= 0 && alu_out &lt; 0));
+  }
+  return overflow;
+}</span>
+
+
+// Support for VFP comparisons.
+<span class="i">void Simulator::Compute_FPSCR_Flags(double val1, double val2) {
+  if (isnan(val1) || isnan(val2)) {
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = true;
+  // All non-NaN cases.
+  } else if (val1 == val2) {
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = true;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = false;
+  } else if (val1 &lt; val2) {
+    n_flag_FPSCR_ = true;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = false;
+    v_flag_FPSCR_ = false;
+  } else {
+    // Case when (val1 &gt; val2).
+    n_flag_FPSCR_ = false;
+    z_flag_FPSCR_ = false;
+    c_flag_FPSCR_ = true;
+    v_flag_FPSCR_ = false;
+  }
+}</span>
+
+
+<span class="i">void Simulator::Copy_FPSCR_to_APSR() {
+  n_flag_ = n_flag_FPSCR_;
+  z_flag_ = z_flag_FPSCR_;
+  c_flag_ = c_flag_FPSCR_;
+  v_flag_ = v_flag_FPSCR_;
