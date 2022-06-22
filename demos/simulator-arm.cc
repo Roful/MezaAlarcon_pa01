@@ -2723,3 +2723,703 @@ void Simulator::DecodeTypeVFP(Instruction* instr) {
   // Obtain double precision register codes.
   int vm = instr->VFPMRegValue(kDoublePrecision);
   int vd = instr->VFPDRegValue(kDoublePrecision);
+  int vn = instr->VFPNRegValue(kDoublePrecision);
+
+  if (instr->Bit(4) == 0) {
+    if (instr->Opc1Value() == 0x7) {
+      // Other data processing instructions
+      if ((instr->Opc2Value() == 0x0) && (instr->Opc3Value() == 0x1)) {
+        // vmov register to register.
+        if (instr->SzValue() == 0x1) {
+          int m = instr->VFPMRegValue(kDoublePrecision);
+          int d = instr->VFPDRegValue(kDoublePrecision);
+          set_d_register_from_double(d, get_double_from_d_register(m));
+        } else {
+          int m = instr->VFPMRegValue(kSinglePrecision);
+          int d = instr->VFPDRegValue(kSinglePrecision);
+          set_s_register_from_float(d, get_float_from_s_register(m));
+        }
+      } else if ((instr->Opc2Value() == 0x0) && (instr->Opc3Value() == 0x3)) {
+        // vabs
+        double dm_value = get_double_from_d_register(vm);
+        double dd_value = fabs(dm_value);
+        set_d_register_from_double(vd, dd_value);
+      } else if ((instr->Opc2Value() == 0x1) && (instr->Opc3Value() == 0x1)) {
+        // vneg
+        double dm_value = get_double_from_d_register(vm);
+        double dd_value = -dm_value;
+        set_d_register_from_double(vd, dd_value);
+      } else if ((instr->Opc2Value() == 0x7) && (instr->Opc3Value() == 0x3)) {
+        DecodeVCVTBetweenDoubleAndSingle(instr);
+      } else if ((instr->Opc2Value() == 0x8) && (instr->Opc3Value() & 0x1)) {
+        DecodeVCVTBetweenFloatingPointAndInteger(instr);
+      } else if (((instr->Opc2Value() >> 1) == 0x6) &&
+                 (instr->Opc3Value() & 0x1)) {
+        DecodeVCVTBetweenFloatingPointAndInteger(instr);
+      } else if (((instr->Opc2Value() == 0x4) || (instr->Opc2Value() == 0x5)) &&
+                 (instr->Opc3Value() & 0x1)) {
+        DecodeVCMP(instr);
+      } else if (((instr->Opc2Value() == 0x1)) && (instr->Opc3Value() == 0x3)) {
+        // vsqrt
+        double dm_value = get_double_from_d_register(vm);
+        double dd_value = sqrt(dm_value);
+        set_d_register_from_double(vd, dd_value);
+      } else if (instr->Opc3Value() == 0x0) {
+        // vmov immediate.
+        if (instr->SzValue() == 0x1) {
+          set_d_register_from_double(vd, instr->DoubleImmedVmov());
+        } else {
+          UNREACHABLE();  // Not used by v8.
+        }
+      } else {
+        UNREACHABLE();  // Not used by V8.
+      }
+    } else if (instr->Opc1Value() == 0x3) {
+      if (instr->SzValue() != 0x1) {
+        UNREACHABLE();  // Not used by V8.
+      }
+
+      if (instr->Opc3Value() & 0x1) {
+        // vsub
+        double dn_value = get_double_from_d_register(vn);
+        double dm_value = get_double_from_d_register(vm);
+        double dd_value = dn_value - dm_value;
+        set_d_register_from_double(vd, dd_value);
+      } else {
+        // vadd
+        double dn_value = get_double_from_d_register(vn);
+        double dm_value = get_double_from_d_register(vm);
+        double dd_value = dn_value + dm_value;
+        set_d_register_from_double(vd, dd_value);
+      }
+    } else if ((instr->Opc1Value() == 0x2) && !(instr->Opc3Value() & 0x1)) {
+      // vmul
+      if (instr->SzValue() != 0x1) {
+        UNREACHABLE();  // Not used by V8.
+      }
+
+      double dn_value = get_double_from_d_register(vn);
+      double dm_value = get_double_from_d_register(vm);
+      double dd_value = dn_value * dm_value;
+      set_d_register_from_double(vd, dd_value);
+    } else if ((instr->Opc1Value() == 0x4) && !(instr->Opc3Value() & 0x1)) {
+      // vdiv
+      if (instr->SzValue() != 0x1) {
+        UNREACHABLE();  // Not used by V8.
+      }
+
+      double dn_value = get_double_from_d_register(vn);
+      double dm_value = get_double_from_d_register(vm);
+      double dd_value = dn_value / dm_value;
+      div_zero_vfp_flag_ = (dm_value == 0);
+      set_d_register_from_double(vd, dd_value);
+    } else {
+      UNIMPLEMENTED();  // Not used by V8.
+    }
+  } else {
+    if ((instr->VCValue() == 0x0) &&
+        (instr->VAValue() == 0x0)) {
+      DecodeVMOVBetweenCoreAndSinglePrecisionRegisters(instr);
+    } else if ((instr->VLValue() == 0x1) &&
+               (instr->VCValue() == 0x0) &&
+               (instr->VAValue() == 0x7) &&
+               (instr->Bits(19, 16) == 0x1)) {
+      // vmrs
+      uint32_t rt = instr->RtValue();
+      if (rt == 0xF) {
+        Copy_FPSCR_to_APSR();
+      } else {
+        // Emulate FPSCR from the Simulator flags.
+        uint32_t fpscr = (n_flag_FPSCR_ << 31) |
+                         (z_flag_FPSCR_ << 30) |
+                         (c_flag_FPSCR_ << 29) |
+                         (v_flag_FPSCR_ << 28) |
+                         (inexact_vfp_flag_ << 4) |
+                         (underflow_vfp_flag_ << 3) |
+                         (overflow_vfp_flag_ << 2) |
+                         (div_zero_vfp_flag_ << 1) |
+                         (inv_op_vfp_flag_ << 0) |
+                         (FPSCR_rounding_mode_);
+        set_register(rt, fpscr);
+      }
+    } else if ((instr->VLValue() == 0x0) &&
+               (instr->VCValue() == 0x0) &&
+               (instr->VAValue() == 0x7) &&
+               (instr->Bits(19, 16) == 0x1)) {
+      // vmsr
+      uint32_t rt = instr->RtValue();
+      if (rt == pc) {
+        UNREACHABLE();
+      } else {
+        uint32_t rt_value = get_register(rt);
+        n_flag_FPSCR_ = (rt_value >> 31) & 1;
+        z_flag_FPSCR_ = (rt_value >> 30) & 1;
+        c_flag_FPSCR_ = (rt_value >> 29) & 1;
+        v_flag_FPSCR_ = (rt_value >> 28) & 1;
+        inexact_vfp_flag_ = (rt_value >> 4) & 1;
+        underflow_vfp_flag_ = (rt_value >> 3) & 1;
+        overflow_vfp_flag_ = (rt_value >> 2) & 1;
+        div_zero_vfp_flag_ = (rt_value >> 1) & 1;
+        inv_op_vfp_flag_ = (rt_value >> 0) & 1;
+        FPSCR_rounding_mode_ =
+            static_cast<VFPRoundingMode>((rt_value) & kVFPRoundingModeMask);
+      }
+    } else {
+      UNIMPLEMENTED();  // Not used by V8.
+    }
+  }
+}
+
+
+void Simulator::DecodeVMOVBetweenCoreAndSinglePrecisionRegisters(
+    Instruction* instr) {
+  ASSERT((instr->Bit(4) == 1) && (instr->VCValue() == 0x0) &&
+         (instr->VAValue() == 0x0));
+
+  int t = instr->RtValue();
+  int n = instr->VFPNRegValue(kSinglePrecision);
+  bool to_arm_register = (instr->VLValue() == 0x1);
+
+  if (to_arm_register) {
+    int32_t int_value = get_sinteger_from_s_register(n);
+    set_register(t, int_value);
+  } else {
+    int32_t rs_val = get_register(t);
+    set_s_register_from_sinteger(n, rs_val);
+  }
+}
+
+
+void Simulator::DecodeVCMP(Instruction* instr) {
+  ASSERT((instr->Bit(4) == 0) && (instr->Opc1Value() == 0x7));
+  ASSERT(((instr->Opc2Value() == 0x4) || (instr->Opc2Value() == 0x5)) &&
+         (instr->Opc3Value() & 0x1));
+  // Comparison.
+
+  VFPRegPrecision precision = kSinglePrecision;
+  if (instr->SzValue() == 1) {
+    precision = kDoublePrecision;
+  }
+
+  int d = instr->VFPDRegValue(precision);
+  int m = 0;
+  if (instr->Opc2Value() == 0x4) {
+    m = instr->VFPMRegValue(precision);
+  }
+
+  if (precision == kDoublePrecision) {
+    double dd_value = get_double_from_d_register(d);
+    double dm_value = 0.0;
+    if (instr->Opc2Value() == 0x4) {
+      dm_value = get_double_from_d_register(m);
+    }
+
+    // Raise exceptions for quiet NaNs if necessary.
+    if (instr->Bit(7) == 1) {
+      if (isnan(dd_value)) {
+        inv_op_vfp_flag_ = true;
+      }
+    }
+
+    Compute_FPSCR_Flags(dd_value, dm_value);
+  } else {
+    UNIMPLEMENTED();  // Not used by V8.
+  }
+}
+
+
+void Simulator::DecodeVCVTBetweenDoubleAndSingle(Instruction* instr) {
+  ASSERT((instr->Bit(4) == 0) && (instr->Opc1Value() == 0x7));
+  ASSERT((instr->Opc2Value() == 0x7) && (instr->Opc3Value() == 0x3));
+
+  VFPRegPrecision dst_precision = kDoublePrecision;
+  VFPRegPrecision src_precision = kSinglePrecision;
+  if (instr->SzValue() == 1) {
+    dst_precision = kSinglePrecision;
+    src_precision = kDoublePrecision;
+  }
+
+  int dst = instr->VFPDRegValue(dst_precision);
+  int src = instr->VFPMRegValue(src_precision);
+
+  if (dst_precision == kSinglePrecision) {
+    double val = get_double_from_d_register(src);
+    set_s_register_from_float(dst, static_cast<float>(val));
+  } else {
+    float val = get_float_from_s_register(src);
+    set_d_register_from_double(dst, static_cast<double>(val));
+  }
+}
+
+bool get_inv_op_vfp_flag(VFPRoundingMode mode,
+                         double val,
+                         bool unsigned_) {
+  ASSERT((mode == RN) || (mode == RM) || (mode == RZ));
+  double max_uint = static_cast<double>(0xffffffffu);
+  double max_int = static_cast<double>(kMaxInt);
+  double min_int = static_cast<double>(kMinInt);
+
+  // Check for NaN.
+  if (val != val) {
+    return true;
+  }
+
+  // Check for overflow. This code works because 32bit integers can be
+  // exactly represented by ieee-754 64bit floating-point values.
+  switch (mode) {
+    case RN:
+      return  unsigned_ ? (val >= (max_uint + 0.5)) ||
+                          (val < -0.5)
+                        : (val >= (max_int + 0.5)) ||
+                          (val < (min_int - 0.5));
+
+    case RM:
+      return  unsigned_ ? (val >= (max_uint + 1.0)) ||
+                          (val < 0)
+                        : (val >= (max_int + 1.0)) ||
+                          (val < min_int);
+
+    case RZ:
+      return  unsigned_ ? (val >= (max_uint + 1.0)) ||
+                          (val <= -1)
+                        : (val >= (max_int + 1.0)) ||
+                          (val <= (min_int - 1.0));
+    default:
+      UNREACHABLE();
+      return true;
+  }
+}
+
+
+// We call this function only if we had a vfp invalid exception.
+// It returns the correct saturated value.
+int VFPConversionSaturate(double val, bool unsigned_res) {
+  if (val != val) {
+    return 0;
+  } else {
+    if (unsigned_res) {
+      return (val < 0) ? 0 : 0xffffffffu;
+    } else {
+      return (val < 0) ? kMinInt : kMaxInt;
+    }
+  }
+}
+
+
+void Simulator::DecodeVCVTBetweenFloatingPointAndInteger(Instruction* instr) {
+  ASSERT((instr->Bit(4) == 0) && (instr->Opc1Value() == 0x7) &&
+         (instr->Bits(27, 23) == 0x1D));
+  ASSERT(((instr->Opc2Value() == 0x8) && (instr->Opc3Value() & 0x1)) ||
+         (((instr->Opc2Value() >> 1) == 0x6) && (instr->Opc3Value() & 0x1)));
+
+  // Conversion between floating-point and integer.
+  bool to_integer = (instr->Bit(18) == 1);
+
+  VFPRegPrecision src_precision = (instr->SzValue() == 1) ? kDoublePrecision
+                                                          : kSinglePrecision;
+
+  if (to_integer) {
+    // We are playing with code close to the C++ standard's limits below,
+    // hence the very simple code and heavy checks.
+    //
+    // Note:
+    // C++ defines default type casting from floating point to integer as
+    // (close to) rounding toward zero ("fractional part discarded").
+
+    int dst = instr->VFPDRegValue(kSinglePrecision);
+    int src = instr->VFPMRegValue(src_precision);
+
+    // Bit 7 in vcvt instructions indicates if we should use the FPSCR rounding
+    // mode or the default Round to Zero mode.
+    VFPRoundingMode mode = (instr->Bit(7) != 1) ? FPSCR_rounding_mode_
+                                                : RZ;
+    ASSERT((mode == RM) || (mode == RZ) || (mode == RN));
+
+    bool unsigned_integer = (instr->Bit(16) == 0);
+    bool double_precision = (src_precision == kDoublePrecision);
+
+    double val = double_precision ? get_double_from_d_register(src)
+                                  : get_float_from_s_register(src);
+
+    int temp = unsigned_integer ? static_cast<uint32_t>(val)
+                                : static_cast<int32_t>(val);
+
+    inv_op_vfp_flag_ = get_inv_op_vfp_flag(mode, val, unsigned_integer);
+
+    double abs_diff =
+      unsigned_integer ? fabs(val - static_cast<uint32_t>(temp))
+                       : fabs(val - temp);
+
+    inexact_vfp_flag_ = (abs_diff != 0);
+
+    if (inv_op_vfp_flag_) {
+      temp = VFPConversionSaturate(val, unsigned_integer);
+    } else {
+      switch (mode) {
+        case RN: {
+          int val_sign = (val > 0) ? 1 : -1;
+          if (abs_diff > 0.5) {
+            temp += val_sign;
+          } else if (abs_diff == 0.5) {
+            // Round to even if exactly halfway.
+            temp = ((temp % 2) == 0) ? temp : temp + val_sign;
+          }
+          break;
+        }
+
+        case RM:
+          temp = temp > val ? temp - 1 : temp;
+          break;
+
+        case RZ:
+          // Nothing to do.
+          break;
+
+        default:
+          UNREACHABLE();
+      }
+    }
+
+    // Update the destination register.
+    set_s_register_from_sinteger(dst, temp);
+
+  } else {
+    bool unsigned_integer = (instr->Bit(7) == 0);
+
+    int dst = instr->VFPDRegValue(src_precision);
+    int src = instr->VFPMRegValue(kSinglePrecision);
+
+    int val = get_sinteger_from_s_register(src);
+
+    if (src_precision == kDoublePrecision) {
+      if (unsigned_integer) {
+        set_d_register_from_double(dst,
+                                   static_cast<double>((uint32_t)val));
+      } else {
+        set_d_register_from_double(dst, static_cast<double>(val));
+      }
+    } else {
+      if (unsigned_integer) {
+        set_s_register_from_float(dst,
+                                  static_cast<float>((uint32_t)val));
+      } else {
+        set_s_register_from_float(dst, static_cast<float>(val));
+      }
+    }
+  }
+}
+
+
+// void Simulator::DecodeType6CoprocessorIns(Instruction* instr)
+// Decode Type 6 coprocessor instructions.
+// Dm = vmov(Rt, Rt2)
+// <Rt, Rt2> = vmov(Dm)
+// Ddst = MEM(Rbase + 4*offset).
+// MEM(Rbase + 4*offset) = Dsrc.
+void Simulator::DecodeType6CoprocessorIns(Instruction* instr) {
+  ASSERT((instr->TypeValue() == 6));
+
+  if (instr->CoprocessorValue() == 0xA) {
+    switch (instr->OpcodeValue()) {
+      case 0x8:
+      case 0xA:
+      case 0xC:
+      case 0xE: {  // Load and store single precision float to memory.
+        int rn = instr->RnValue();
+        int vd = instr->VFPDRegValue(kSinglePrecision);
+        int offset = instr->Immed8Value();
+        if (!instr->HasU()) {
+          offset = -offset;
+        }
+
+        int32_t address = get_register(rn) + 4 * offset;
+        if (instr->HasL()) {
+          // Load double from memory: vldr.
+          set_s_register_from_sinteger(vd, ReadW(address, instr));
+        } else {
+          // Store double to memory: vstr.
+          WriteW(address, get_sinteger_from_s_register(vd), instr);
+        }
+        break;
+      }
+      case 0x4:
+      case 0x5:
+      case 0x6:
+      case 0x7:
+      case 0x9:
+      case 0xB:
+        // Load/store multiple single from memory: vldm/vstm.
+        HandleVList(instr);
+        break;
+      default:
+        UNIMPLEMENTED();  // Not used by V8.
+    }
+  } else if (instr->CoprocessorValue() == 0xB) {
+    switch (instr->OpcodeValue()) {
+      case 0x2:
+        // Load and store double to two GP registers
+        if (instr->Bits(7, 4) != 0x1) {
+          UNIMPLEMENTED();  // Not used by V8.
+        } else {
+          int rt = instr->RtValue();
+          int rn = instr->RnValue();
+          int vm = instr->VmValue();
+          if (instr->HasL()) {
+            int32_t rt_int_value = get_sinteger_from_s_register(2*vm);
+            int32_t rn_int_value = get_sinteger_from_s_register(2*vm+1);
+
+            set_register(rt, rt_int_value);
+            set_register(rn, rn_int_value);
+          } else {
+            int32_t rs_val = get_register(rt);
+            int32_t rn_val = get_register(rn);
+
+            set_s_register_from_sinteger(2*vm, rs_val);
+            set_s_register_from_sinteger((2*vm+1), rn_val);
+          }
+        }
+        break;
+      case 0x8:
+      case 0xC: {  // Load and store double to memory.
+        int rn = instr->RnValue();
+        int vd = instr->VdValue();
+        int offset = instr->Immed8Value();
+        if (!instr->HasU()) {
+          offset = -offset;
+        }
+        int32_t address = get_register(rn) + 4 * offset;
+        if (instr->HasL()) {
+          // Load double from memory: vldr.
+          set_s_register_from_sinteger(2*vd, ReadW(address, instr));
+          set_s_register_from_sinteger(2*vd + 1, ReadW(address + 4, instr));
+        } else {
+          // Store double to memory: vstr.
+          WriteW(address, get_sinteger_from_s_register(2*vd), instr);
+          WriteW(address + 4, get_sinteger_from_s_register(2*vd + 1), instr);
+        }
+        break;
+      }
+      case 0x4:
+      case 0x5:
+      case 0x9:
+        // Load/store multiple double from memory: vldm/vstm.
+        HandleVList(instr);
+        break;
+      default:
+        UNIMPLEMENTED();  // Not used by V8.
+    }
+  } else {
+    UNIMPLEMENTED();  // Not used by V8.
+  }
+}
+
+
+// Executes the current instruction.
+void Simulator::InstructionDecode(Instruction* instr) {
+  if (v8::internal::FLAG_check_icache) {
+    CheckICache(isolate_->simulator_i_cache(), instr);
+  }
+  pc_modified_ = false;
+  if (::v8::internal::FLAG_trace_sim) {
+    disasm::NameConverter converter;
+    disasm::Disassembler dasm(converter);
+    // use a reasonably large buffer
+    v8::internal::EmbeddedVector<char, 256> buffer;
+    dasm.InstructionDecode(buffer,
+                           reinterpret_cast<byte*>(instr));
+    PrintF("  0x%08x  %s\n", reinterpret_cast<intptr_t>(instr), buffer.start());
+  }
+  if (instr->ConditionField() == kSpecialCondition) {
+    UNIMPLEMENTED();
+  } else if (ConditionallyExecute(instr)) {
+    switch (instr->TypeValue()) {
+      case 0:
+      case 1: {
+        DecodeType01(instr);
+        break;
+      }
+      case 2: {
+        DecodeType2(instr);
+        break;
+      }
+      case 3: {
+        DecodeType3(instr);
+        break;
+      }
+      case 4: {
+        DecodeType4(instr);
+        break;
+      }
+      case 5: {
+        DecodeType5(instr);
+        break;
+      }
+      case 6: {
+        DecodeType6(instr);
+        break;
+      }
+      case 7: {
+        DecodeType7(instr);
+        break;
+      }
+      default: {
+        UNIMPLEMENTED();
+        break;
+      }
+    }
+  // If the instruction is a non taken conditional stop, we need to skip the
+  // inlined message address.
+  } else if (instr->IsStop()) {
+    set_pc(get_pc() + 2 * Instruction::kInstrSize);
+  }
+  if (!pc_modified_) {
+    set_register(pc, reinterpret_cast<int32_t>(instr)
+                         + Instruction::kInstrSize);
+  }
+}
+
+
+void Simulator::Execute() {
+  // Get the PC to simulate. Cannot use the accessor here as we need the
+  // raw PC value and not the one used as input to arithmetic instructions.
+  int program_counter = get_pc();
+
+  if (::v8::internal::FLAG_stop_sim_at == 0) {
+    // Fast version of the dispatch loop without checking whether the simulator
+    // should be stopping at a particular executed instruction.
+    while (program_counter != end_sim_pc) {
+      Instruction* instr = reinterpret_cast<Instruction*>(program_counter);
+      icount_++;
+      InstructionDecode(instr);
+      program_counter = get_pc();
+    }
+  } else {
+    // FLAG_stop_sim_at is at the non-default value. Stop in the debugger when
+    // we reach the particular instuction count.
+    while (program_counter != end_sim_pc) {
+      Instruction* instr = reinterpret_cast<Instruction*>(program_counter);
+      icount_++;
+      if (icount_ == ::v8::internal::FLAG_stop_sim_at) {
+        ArmDebugger dbg(this);
+        dbg.Debug();
+      } else {
+        InstructionDecode(instr);
+      }
+      program_counter = get_pc();
+    }
+  }
+}
+
+
+int32_t Simulator::Call(byte* entry, int argument_count, ...) {
+  va_list parameters;
+  va_start(parameters, argument_count);
+  // Setup arguments
+
+  // First four arguments passed in registers.
+  ASSERT(argument_count >= 4);
+  set_register(r0, va_arg(parameters, int32_t));
+  set_register(r1, va_arg(parameters, int32_t));
+  set_register(r2, va_arg(parameters, int32_t));
+  set_register(r3, va_arg(parameters, int32_t));
+
+  // Remaining arguments passed on stack.
+  int original_stack = get_register(sp);
+  // Compute position of stack on entry to generated code.
+  int entry_stack = (original_stack - (argument_count - 4) * sizeof(int32_t));
+  if (OS::ActivationFrameAlignment() != 0) {
+    entry_stack &= -OS::ActivationFrameAlignment();
+  }
+  // Store remaining arguments on stack, from low to high memory.
+  intptr_t* stack_argument = reinterpret_cast<intptr_t*>(entry_stack);
+  for (int i = 4; i < argument_count; i++) {
+    stack_argument[i - 4] = va_arg(parameters, int32_t);
+  }
+  va_end(parameters);
+  set_register(sp, entry_stack);
+
+  // Prepare to execute the code at entry
+  set_register(pc, reinterpret_cast<int32_t>(entry));
+  // Put down marker for end of simulation. The simulator will stop simulation
+  // when the PC reaches this value. By saving the "end simulation" value into
+  // the LR the simulation stops when returning to this call point.
+  set_register(lr, end_sim_pc);
+
+  // Remember the values of callee-saved registers.
+  // The code below assumes that r9 is not used as sb (static base) in
+  // simulator code and therefore is regarded as a callee-saved register.
+  int32_t r4_val = get_register(r4);
+  int32_t r5_val = get_register(r5);
+  int32_t r6_val = get_register(r6);
+  int32_t r7_val = get_register(r7);
+  int32_t r8_val = get_register(r8);
+  int32_t r9_val = get_register(r9);
+  int32_t r10_val = get_register(r10);
+  int32_t r11_val = get_register(r11);
+
+  // Setup the callee-saved registers with a known value. To be able to check
+  // that they are preserved properly across JS execution.
+  int32_t callee_saved_value = icount_;
+  set_register(r4, callee_saved_value);
+  set_register(r5, callee_saved_value);
+  set_register(r6, callee_saved_value);
+  set_register(r7, callee_saved_value);
+  set_register(r8, callee_saved_value);
+  set_register(r9, callee_saved_value);
+  set_register(r10, callee_saved_value);
+  set_register(r11, callee_saved_value);
+
+  // Start the simulation
+  Execute();
+
+  // Check that the callee-saved registers have been preserved.
+  CHECK_EQ(callee_saved_value, get_register(r4));
+  CHECK_EQ(callee_saved_value, get_register(r5));
+  CHECK_EQ(callee_saved_value, get_register(r6));
+  CHECK_EQ(callee_saved_value, get_register(r7));
+  CHECK_EQ(callee_saved_value, get_register(r8));
+  CHECK_EQ(callee_saved_value, get_register(r9));
+  CHECK_EQ(callee_saved_value, get_register(r10));
+  CHECK_EQ(callee_saved_value, get_register(r11));
+
+  // Restore callee-saved registers with the original value.
+  set_register(r4, r4_val);
+  set_register(r5, r5_val);
+  set_register(r6, r6_val);
+  set_register(r7, r7_val);
+  set_register(r8, r8_val);
+  set_register(r9, r9_val);
+  set_register(r10, r10_val);
+  set_register(r11, r11_val);
+
+  // Pop stack passed arguments.
+  CHECK_EQ(entry_stack, get_register(sp));
+  set_register(sp, original_stack);
+
+  int32_t result = get_register(r0);
+  return result;
+}
+
+
+uintptr_t Simulator::PushAddress(uintptr_t address) {
+  int new_sp = get_register(sp) - sizeof(uintptr_t);
+  uintptr_t* stack_slot = reinterpret_cast<uintptr_t*>(new_sp);
+  *stack_slot = address;
+  set_register(sp, new_sp);
+  return new_sp;
+}
+
+
+uintptr_t Simulator::PopAddress() {
+  int current_sp = get_register(sp);
+  uintptr_t* stack_slot = reinterpret_cast<uintptr_t*>(current_sp);
+  uintptr_t address = *stack_slot;
+  set_register(sp, current_sp + sizeof(uintptr_t));
+  return address;
+}
+
+} }  // namespace v8::internal
+
+#endif  // USE_SIMULATOR
+
+#endif  // V8_TARGET_ARCH_ARM
