@@ -1315,3 +1315,963 @@ namespace <span class="d">internal</span> {
 
 <a id='5755' tid='5756', class="m">void</a> <a id='5757' tid='5758', class="m">Simulator</a><a id='5759' tid='5760', class="m">::</a><a id='5761' tid='5762', class="m">WriteH</a>(<a id='5763' tid='5764', class="m">int32_t</a> <a id='5765' tid='5766', class="m">addr</a>, <a id='5767' tid='5768', class="m">uint16_t</a> <a id='5769' tid='5770', class="m">value</a>, <a id='5771' tid='5772', class="m">Instruction</a><a id='5773' tid='5774', class="m">*</a> <a id='5775' tid='5776', class="m">instr</a>) {
   <a id='5831' tid='5832', class="m">if</a> ((<a id='5865' tid='5866', class="m">addr</a> <a id='5867' tid='5868', class="m">&</a> <a id='5869' tid='5870', class="m">1</a>) <a id='5871' tid='5872', class="m">==</a> <a id='5873' tid='5874', class="m">0</a>) {
+    <a id='5833' tid='5834', class="m">uint16_t</a><a id='5835' tid='5836', class="m">*</a> <a id='5837' tid='5838', class="m">ptr</a> = <a id='5839' tid='5840', class="m">reinterpret_cast</a>&lt;<a id='5841' tid='5842', class="m">uint16_t</a><a id='5843' tid='5844', class="m">*</a>&gt;(<a id='5845' tid='5846', class="m">addr</a>);
+    <a id='5847' tid='5848', class="m">*</a><a id='5849' tid='5850', class="m">ptr</a> <a id='5851' tid='5852', class="m">=</a> <a id='5853' tid='5854', class="m">value</a>;
+    <a id='5855' tid='5856', class="m">return</a>;
+  }
+  <a id='5815' tid='5816', class="m">PrintF</a>(<a id='5817' tid='5818', class="m">&quot;Unaligned unsigned halfword write at 0x%08x, pc=0x%08&quot;</a> <a id='5819' tid='5820', class="m">V8PRIxPTR</a> <a id='5821' tid='5822', class="m">&quot;\n&quot;</a>,
+         <a id='5823' tid='5824', class="m">addr</a>,
+         <a id='5825' tid='5826', class="m">reinterpret_cast</a>&lt;<a id='5827' tid='5828', class="m">intptr_t</a>&gt;(<a id='5829' tid='5830', class="m">instr</a>));
+  <span class="d">OS::Abort();</span>
+}
+
+
+<a id='4299' tid='4300', class="m">void</a> <a id='4301' tid='4302', class="m">Simulator</a><a id='4303' tid='4304', class="m">::</a><a id='4305' tid='4306', class="m">WriteH</a>(<a id='4307' tid='4308', class="m">int32_t</a> <a id='4309' tid='4310', class="m">addr</a>, <a id='4311' tid='4312', class="m">int16_t</a> <a id='4313' tid='4314', class="m">value</a>, <a id='4315' tid='4316', class="m">Instruction</a><a id='4317' tid='4318', class="m">*</a> <a id='4319' tid='4320', class="m">instr</a>) {
+  <a id='4337' tid='4338', class="m">if</a> ((<a id='4339' tid='4340', class="m">addr</a> <a id='4341' tid='4342', class="m">&</a> <a id='4343' tid='4344', class="m">1</a>) <a id='4345' tid='4346', class="m">==</a> <a id='4347' tid='4348', class="m">0</a>) {
+    <a id='4349' tid='4350', class="m">int16_t</a><a id='4351' tid='4352', class="m">*</a> <a id='4353' tid='4354', class="m">ptr</a> = <a id='4355' tid='4356', class="m">reinterpret_cast</a>&lt;<a id='4357' tid='4358', class="m">int16_t</a><a id='4359' tid='4360', class="m">*</a>&gt;(<a id='4361' tid='4362', class="m">addr</a>);
+    <span class="d">*ptr = value;</span>
+    <span class="d">return;</span>
+  }
+  <a id='4321' tid='4322', class="m">PrintF</a>(<a id='4323' tid='4324', class="m">&quot;Unaligned halfword write at 0x%08x, pc=0x%08&quot;</a> <a id='4325' tid='4326', class="m">V8PRIxPTR</a> <a id='4327' tid='4328', class="m">&quot;\n&quot;</a>,
+         <a id='4329' tid='4330', class="m">addr</a>,
+         <a id='4331' tid='4332', class="m">reinterpret_cast</a>&lt;<a id='4333' tid='4334', class="m">intptr_t</a>&gt;(<a id='4335' tid='4336', class="m">instr</a>));
+  <span class="d">OS::Abort();</span>
+}
+
+
+<span class="d">uint32_t</span> <a id='5725' tid='5726', class="m">Simulator</a><a id='5727' tid='5728', class="m">::</a><a id='5729' tid='5730', class="m">ReadBU</a>(<a id='5731' tid='5732', class="m">int32_t</a> <a id='5733' tid='5734', class="m">addr</a>) {
+  <a id='5777' tid='5778', class="m">uint8_t</a><a id='5779' tid='5780', class="m">*</a> <a id='5781' tid='5782', class="m">ptr</a> = <a id='5783' tid='5784', class="m">reinterpret_cast</a>&lt;<a id='5785' tid='5786', class="m">uint8_t</a><a id='5787' tid='5788', class="m">*</a>&gt;(<a id='5789' tid='5790', class="m">addr</a>);
+  <span class="d">return *ptr & 0xff;</span>
+}
+
+
+<span class="d">int32_t</span> <a id='5677' tid='5678', class="m">Simulator</a><a id='5679' tid='5680', class="m">::</a><a id='5681' tid='5682', class="m">ReadB</a>(<a id='5683' tid='5684', class="m">int32_t</a> <a id='5685' tid='5686', class="m">addr</a>) {
+  <a id='5735' tid='5736', class="m">int8_t</a><a id='5737' tid='5738', class="m">*</a> <a id='5739' tid='5740', class="m">ptr</a> = <a id='5741' tid='5742', class="m">reinterpret_cast</a>&lt;<a id='5743' tid='5744', class="m">int8_t</a><a id='5745' tid='5746', class="m">*</a>&gt;(<a id='5747' tid='5748', class="m">addr</a>);
+  <a id='5749' tid='5750', class="m">return</a> <a id='5751' tid='5752', class="m">*</a><a id='5753' tid='5754', class="m">ptr</a>;
+}
+
+
+<a id='5687' tid='5688', class="m">void</a> <a id='5689' tid='5690', class="m">Simulator</a><a id='5691' tid='5692', class="m">::</a><a id='5693' tid='5694', class="m">WriteB</a>(<a id='5695' tid='5696', class="m">int32_t</a> <a id='5697' tid='5698', class="m">addr</a>, <a id='5699' tid='5700', class="m">uint8_t</a> <a id='5701' tid='5702', class="m">value</a>) {
+  <a id='5703' tid='5704', class="m">uint8_t</a><a id='5705' tid='5706', class="m">*</a> <a id='5707' tid='5708', class="m">ptr</a> = <a id='5709' tid='5710', class="m">reinterpret_cast</a>&lt;<a id='5711' tid='5712', class="m">uint8_t</a><a id='5713' tid='5714', class="m">*</a>&gt;(<a id='5715' tid='5716', class="m">addr</a>);
+  <a id='5717' tid='5718', class="m">*</a><a id='5719' tid='5720', class="m">ptr</a> <a id='5721' tid='5722', class="m">=</a> <a id='5723' tid='5724', class="m">value</a>;
+}
+
+
+<a id='5639' tid='5640', class="m">void</a> <a id='5641' tid='5642', class="m">Simulator</a><a id='5643' tid='5644', class="m">::</a><a id='5645' tid='5646', class="m">WriteB</a>(<a id='5647' tid='5648', class="m">int32_t</a> <a id='5649' tid='5650', class="m">addr</a>, <a id='5651' tid='5652', class="m">int8_t</a> <a id='5653' tid='5654', class="m">value</a>) {
+  <a id='5655' tid='5656', class="m">int8_t</a><a id='5657' tid='5658', class="m">*</a> <a id='5659' tid='5660', class="m">ptr</a> = <a id='5661' tid='5662', class="m">reinterpret_cast</a>&lt;<a id='5663' tid='5664', class="m">int8_t</a><a id='5665' tid='5666', class="m">*</a>&gt;(<a id='5667' tid='5668', class="m">addr</a>);
+  <a id='5669' tid='5670', class="m">*</a><a id='5671' tid='5672', class="m">ptr</a> <a id='5673' tid='5674', class="m">=</a> <a id='5675' tid='5676', class="m">value</a>;
+}
+
+
+// Returns the limit of the stack area to enable checking for stack overflows.
+<a id='5629' tid='5630', class="m">uintptr_t</a> <a id='5631' tid='5632', class="m">Simulator</a><a id='5633' tid='5634', class="m">::</a><a id='5635' tid='5636', class="m">StackLimit</a>() <a id='5637' tid='5638', class="m">const</a> {
+  // Leave a safety margin of 256 bytes to prevent overrunning the stack when
+  // pushing values.
+  <a id='5617' tid='5618', class="m">return</a> <a id='5619' tid='5620', class="m">reinterpret_cast</a>&lt;<a id='5621' tid='5622', class="m">uintptr_t</a>&gt;(<a id='5623' tid='5624', class="m">stack_</a>) <a id='5625' tid='5626', class="m">+</a> <a id='5627' tid='5628', class="m">256</a>;
+}
+
+
+// Unsupported instructions use Format to print an error and stop execution.
+<a id='5583' tid='5584', class="m">void</a> <a id='5585' tid='5586', class="m">Simulator</a><a id='5587' tid='5588', class="m">::</a><a id='5589' tid='5590', class="m">Format</a>(<a id='5591' tid='5592', class="m">Instruction</a><a id='5593' tid='5594', class="m">*</a> <a id='5595' tid='5596', class="m">instr</a>, <a id='5597' tid='5598', class="m">const</a> <a id='5599' tid='5600', class="m">char</a><a id='5601' tid='5602', class="m">*</a> <a id='5603' tid='5604', class="m">format</a>) {
+  <a id='5605' tid='5606', class="m">PrintF</a>(<a id='5607' tid='5608', class="m">&quot;Simulator found unsupported instruction:\n 0x%08x: %s\n&quot;</a>,
+         <a id='5609' tid='5610', class="m">reinterpret_cast</a>&lt;<a id='5611' tid='5612', class="m">intptr_t</a>&gt;(<a id='5613' tid='5614', class="m">instr</a>), <a id='5615' tid='5616', class="m">format</a>);
+  <span class="d">UNIMPLEMENTED_MIPS();</span>
+}
+
+
+// Calls into the V8 runtime are based on this very simple interface.
+// Note: To be able to return two values from some calls the code in runtime.cc
+// uses the ObjectPair which is essentially two 32-bit values stuffed into a
+// 64-bit value. With the code below we assume that all runtime calls return
+// 64 bits of result. If they don&#39;t, the v1 result register contains a bogus
+// value, which is fine because it is caller-saved.
+<a id='5551' tid='5552', class="m">typedef</a> <a id='5553' tid='5554', class="m">int64_t</a> (<a id='5555' tid='5556', class="m">*</a><a id='5557' tid='5558', class="m">SimulatorRuntimeCall</a>)(<a id='5559' tid='5560', class="m">int32_t</a> <a id='5561' tid='5562', class="m">arg0</a>,
+                                        <a id='5563' tid='5564', class="m">int32_t</a> <a id='5565' tid='5566', class="m">arg1</a>,
+                                        <a id='5567' tid='5568', class="m">int32_t</a> <a id='5569' tid='5570', class="m">arg2</a>,
+                                        <a id='5571' tid='5572', class="m">int32_t</a> <a id='5573' tid='5574', class="m">arg3</a>,
+                                        <a id='5575' tid='5576', class="m">int32_t</a> <a id='5577' tid='5578', class="m">arg4</a>,
+                                        <a id='5579' tid='5580', class="m">int32_t</a> <a id='5581' tid='5582', class="m">arg5</a>);
+<a id='5527' tid='5528', class="m">typedef</a> <a id='5529' tid='5530', class="m">double</a> (<a id='5531' tid='5532', class="m">*</a><a id='5533' tid='5534', class="m">SimulatorRuntimeFPCall</a>)(<a id='5535' tid='5536', class="m">int32_t</a> <a id='5537' tid='5538', class="m">arg0</a>,
+                                         <a id='5539' tid='5540', class="m">int32_t</a> <a id='5541' tid='5542', class="m">arg1</a>,
+                                         <a id='5543' tid='5544', class="m">int32_t</a> <a id='5545' tid='5546', class="m">arg2</a>,
+                                         <a id='5547' tid='5548', class="m">int32_t</a> <a id='5549' tid='5550', class="m">arg3</a>);
+
+// This signature supports direct call in to API function native callback
+// (refer to InvocationCallback in v8.h).
+<a id='5505' tid='5506', class="m">typedef</a> <a id='5507' tid='5508', class="m">v8</a><a id='5509' tid='5510', class="m">::</a><a id='5511' tid='5512', class="m">Handle</a>&lt;<a id='5513' tid='5514', class="m">v8</a><a id='5515' tid='5516', class="m">::</a><a id='5517' tid='5518', class="m">Value</a>&gt; (<a id='5519' tid='5520', class="m">*</a><a id='5521' tid='5522', class="m">SimulatorRuntimeDirectApiCall</a>)(<a id='5523' tid='5524', class="m">int32_t</a> <a id='5525' tid='5526', class="m">arg0</a>);
+
+// This signature supports direct call to accessor getter callback.
+<a id='5479' tid='5480', class="m">typedef</a> <a id='5481' tid='5482', class="m">v8</a><a id='5483' tid='5484', class="m">::</a><a id='5485' tid='5486', class="m">Handle</a>&lt;<a id='5487' tid='5488', class="m">v8</a><a id='5489' tid='5490', class="m">::</a><a id='5491' tid='5492', class="m">Value</a>&gt; (<a id='5493' tid='5494', class="m">*</a><a id='5495' tid='5496', class="m">SimulatorRuntimeDirectGetterCall</a>)(<a id='5497' tid='5498', class="m">int32_t</a> <a id='5499' tid='5500', class="m">arg0</a>,
+                                                                  <a id='5501' tid='5502', class="m">int32_t</a> <a id='5503' tid='5504', class="m">arg1</a>);
+
+// Software interrupt instructions are used by the simulator to call into the
+// C-based V8 runtime. They are also used for debugging with simulator.
+<a id='5451' tid='5452', class="m">void</a> <a id='5453' tid='5454', class="m">Simulator</a><a id='5455' tid='5456', class="m">::</a><a id='5457' tid='5458', class="m">SoftwareInterrupt</a>(<a id='5459' tid='5460', class="m">Instruction</a><a id='5461' tid='5462', class="m">*</a> <a id='5463' tid='5464', class="m">instr</a>) {
+  // There are several instructions that could get us here,
+  // the break_ instruction, or several variants of traps. All
+  // Are &quot;SPECIAL&quot; class opcode, and are distinuished by function.
+  <span class="d">int32_t func = instr-&gt;FunctionFieldRaw();</span>
+  <span class="d">uint32_t code = (func == BREAK) ? instr-&gt;Bits(25, 6) : -1;</span>
+
+  // We first check if we met a call_rt_redirected.
+  <span class="d">if</span> <span class="d">(instr-&gt;InstructionBits() == rtCallRedirInstr)</span> {
+    <a id='5465' tid='5466', class="m">Redirection</a><a id='5467' tid='5468', class="m">*</a> <a id='5469' tid='5470', class="m">redirection</a> = <a id='5471' tid='5472', class="m">Redirection</a><a id='5473' tid='5474', class="m">::</a><a id='5475' tid='5476', class="m">FromSwiInstruction</a>(<a id='5477' tid='5478', class="m">instr</a>);
+    <span class="d">int32_t arg0 = get_register(a0);</span>
+    <span class="d">int32_t arg1 = get_register(a1);</span>
+    <span class="d">int32_t arg2 = get_register(a2);</span>
+    <span class="d">int32_t arg3 = get_register(a3);</span>
+    <span class="d">int32_t arg4 = 0;</span>
+    <span class="d">int32_t arg5 = 0;</span>
+
+    // Need to check if sp is valid before assigning arg4, arg5.
+    // This is a fix for cctest test-api/CatchStackOverflow which causes
+    // the stack to overflow. For some reason arm doesn&#39;t need this
+    // stack check here.
+    <a id='5435' tid='5436', class="m">int32_t</a><a id='5437' tid='5438', class="m">*</a> <a id='5439' tid='5440', class="m">stack_pointer</a> = <a id='5441' tid='5442', class="m">reinterpret_cast</a>&lt;<a id='5443' tid='5444', class="m">int32_t</a><a id='5445' tid='5446', class="m">*</a>&gt;(<a id='5447' tid='5448', class="m">get_register</a>(<a id='5449' tid='5450', class="m">sp</a>));
+    <span class="d">int32_t* stack = reinterpret_cast&lt;int32_t*&gt;(stack_);</span>
+    <span class="d">if (stack_pointer &gt;= stack && stack_pointer &lt; stack + stack_size_ - 5) {
+      // Args 4 and 5 are on the stack after the reserved space for args 0..3.
+      arg4 = stack_pointer[4];
+      arg5 = stack_pointer[5];
+    }</span>
+
+    <a id='5363' tid='5364', class="m">bool</a> <a id='5365' tid='5366', class="m">fp_call</a> =
+         (<a id='5367' tid='5368', class="m">redirection</a>-&gt;<a id='5369' tid='5370', class="m">type</a>() <a id='5371' tid='5372', class="m">==</a> <a id='5373' tid='5374', class="m">ExternalReference</a><a id='5375' tid='5376', class="m">::</a><a id='5377' tid='5378', class="m">BUILTIN_FP_FP_CALL</a>) <a id='5379' tid='5380', class="m">||</a>
+         (<a id='5381' tid='5382', class="m">redirection</a>-&gt;<a id='5383' tid='5384', class="m">type</a>() <a id='5385' tid='5386', class="m">==</a> <a id='5387' tid='5388', class="m">ExternalReference</a><a id='5389' tid='5390', class="m">::</a><a id='5391' tid='5392', class="m">BUILTIN_COMPARE_CALL</a>) <a id='5393' tid='5394', class="m">||</a>
+         (<a id='5395' tid='5396', class="m">redirection</a>-&gt;<a id='5397' tid='5398', class="m">type</a>() <a id='5399' tid='5400', class="m">==</a> <a id='5401' tid='5402', class="m">ExternalReference</a><a id='5403' tid='5404', class="m">::</a><a id='5405' tid='5406', class="m">BUILTIN_FP_CALL</a>) <a id='5407' tid='5408', class="m">||</a>
+         (<a id='5409' tid='5410', class="m">redirection</a>-&gt;<a id='5411' tid='5412', class="m">type</a>() <a id='5413' tid='5414', class="m">==</a> <a id='5415' tid='5416', class="m">ExternalReference</a><a id='5417' tid='5418', class="m">::</a><a id='5419' tid='5420', class="m">BUILTIN_FP_INT_CALL</a>);
+
+    <span class="d">if (!IsMipsSoftFloatABI) {
+      // With the hard floating point calling convention, double
+      // arguments are passed in FPU registers. Fetch the arguments
+      // from there and call the builtin using soft floating point
+      // convention.
+      switch (redirection-&gt;type()) {
+      case ExternalReference::BUILTIN_FP_FP_CALL:
+      case ExternalReference::BUILTIN_COMPARE_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        arg2 = get_fpu_register(f14);
+        arg3 = get_fpu_register(f15);
+        break;
+      case ExternalReference::BUILTIN_FP_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        break;
+      case ExternalReference::BUILTIN_FP_INT_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        arg2 = get_register(a2);
+        break;
+      default:
+        break;
+      }
+    }</span>
+
+    // This is dodgy but it works because the C entry stubs are never moved.
+    // See comment in codegen-arm.cc and bug 1242173.
+    <span class="d">int32_t saved_ra = get_register(ra);</span>
+
+    <a id='5327' tid='5328', class="m">intptr_t</a> <a id='5329' tid='5330', class="m">external</a> =
+          <a id='5331' tid='5332', class="m">reinterpret_cast</a>&lt;<a id='5333' tid='5334', class="m">intptr_t</a>&gt;(<a id='5335' tid='5336', class="m">redirection</a>-&gt;<a id='5337' tid='5338', class="m">external_function</a>());
+
+    // Based on CpuFeatures::IsSupported(FPU), Mips will use either hardware
+    // FPU, or gcc soft-float routines. Hardware FPU is simulated in this
+    // simulator. Soft-float has additional abstraction of ExternalReference,
+    // to support serialization.
+    <a id='5227' tid='5228', class="m">if</a> (<a id='5229' tid='5230', class="m">fp_call</a>) {
+      <a id='5231' tid='5232', class="m">SimulatorRuntimeFPCall</a> <a id='5233' tid='5234', class="m">target</a> =
+                  <a id='5235' tid='5236', class="m">reinterpret_cast</a>&lt;<a id='5237' tid='5238', class="m">SimulatorRuntimeFPCall</a>&gt;(<a id='5239' tid='5240', class="m">external</a>);
+      <span class="d">if</span> (<a id='4631' tid='4632', class="m">::</a><a id='4633' tid='4634', class="m">v8</a><a id='4635' tid='4636', class="m">::</a><a id='4637' tid='4638', class="m">internal</a><a id='4639' tid='4640', class="m">::</a><a id='4641' tid='4642', class="m">FLAG_trace_sim</a>) {
+        <span class="d">double dval0, dval1;</span>
+        <span class="d">int32_t ival;</span>
+        <a id='5015' tid='5016', class="m">switch</a> (<a id='5017' tid='5018', class="m">redirection</a>-&gt;<a id='5019' tid='5020', class="m">type</a>()) {
+          <a id='5021' tid='5022', class="m">case</a> <a id='5023' tid='5024', class="m">ExternalReference</a><a id='5025' tid='5026', class="m">::</a><a id='5027' tid='5028', class="m">BUILTIN_FP_FP_CALL</a>:
+          <a id='5029' tid='5030', class="m">case</a> <a id='5031' tid='5032', class="m">ExternalReference</a><a id='5033' tid='5034', class="m">::</a><a id='5035' tid='5036', class="m">BUILTIN_COMPARE_CALL</a>:
+            <a id='5037' tid='5038', class="m">GetFpArgs</a>(<a id='5039' tid='5040', class="m">&</a><a id='5041' tid='5042', class="m">dval0</a>, <a id='5043' tid='5044', class="m">&</a><a id='5045' tid='5046', class="m">dval1</a>);
+            <a id='5047' tid='5048', class="m">PrintF</a>(<a id='5049' tid='5050', class="m">&quot;Call to host function at %p with args %f, %f&quot;</a>,
+                <a id='5051' tid='5052', class="m">FUNCTION_ADDR</a>(<a id='5053' tid='5054', class="m">target</a>), <a id='5055' tid='5056', class="m">dval0</a>, <a id='5057' tid='5058', class="m">dval1</a>);
+            <a id='5059' tid='5060', class="m">break</a>;
+          <a id='5061' tid='5062', class="m">case</a> <a id='5063' tid='5064', class="m">ExternalReference</a><a id='5065' tid='5066', class="m">::</a><a id='5067' tid='5068', class="m">BUILTIN_FP_CALL</a>:
+            <a id='5069' tid='5070', class="m">GetFpArgs</a>(<a id='5071' tid='5072', class="m">&</a><a id='5073' tid='5074', class="m">dval0</a>);
+            <a id='5075' tid='5076', class="m">PrintF</a>(<a id='5077' tid='5078', class="m">&quot;Call to host function at %p with arg %f&quot;</a>,
+                <a id='5079' tid='5080', class="m">FUNCTION_ADDR</a>(<a id='5081' tid='5082', class="m">target</a>), <a id='5083' tid='5084', class="m">dval0</a>);
+            <a id='5085' tid='5086', class="m">break</a>;
+          <a id='5087' tid='5088', class="m">case</a> <a id='5089' tid='5090', class="m">ExternalReference</a><a id='5091' tid='5092', class="m">::</a><a id='5093' tid='5094', class="m">BUILTIN_FP_INT_CALL</a>:
+            <a id='5095' tid='5096', class="m">GetFpArgs</a>(<a id='5097' tid='5098', class="m">&</a><a id='5099' tid='5100', class="m">dval0</a>, <a id='5101' tid='5102', class="m">&</a><a id='5103' tid='5104', class="m">ival</a>);
+            <a id='5105' tid='5106', class="m">PrintF</a>(<a id='5107' tid='5108', class="m">&quot;Call to host function at %p with args %f, %d&quot;</a>,
+                <a id='5109' tid='5110', class="m">FUNCTION_ADDR</a>(<a id='5111' tid='5112', class="m">target</a>), <a id='5113' tid='5114', class="m">dval0</a>, <a id='5115' tid='5116', class="m">ival</a>);
+            <a id='5117' tid='5118', class="m">break</a>;
+          <a id='5119' tid='5120', class="m">default</a>:
+            <a id='5121' tid='5122', class="m">UNREACHABLE</a>();
+            <a id='5123' tid='5124', class="m">break</a>;
+        }
+      }
+      <span class="d">double</span> <a id='4619' tid='4620', class="m">result</a> = <a id='4621' tid='4622', class="m">target</a>(<a id='4623' tid='4624', class="m">arg0</a>, <a id='4625' tid='4626', class="m">arg1</a>, <a id='4627' tid='4628', class="m">arg2</a>, <a id='4629' tid='4630', class="m">arg3</a>);
+      <span class="d">if</span> (<a id='4873' tid='4874', class="m">redirection</a>-&gt;<a id='4875' tid='4876', class="m">type</a>() <a id='4877' tid='4878', class="m">!=</a> <a id='4879' tid='4880', class="m">ExternalReference</a><a id='4881' tid='4882', class="m">::</a><a id='4883' tid='4884', class="m">BUILTIN_COMPARE_CALL</a>) <span class="d">{
+          SetFpResult(result);
+      }</span> <span class="d">else {
+        int32_t gpreg_pair[2];
+        memcpy(&gpreg_pair[0], &result, 2 * sizeof(int32_t));
+        set_register(v0, gpreg_pair[0]);
+        set_register(v1, gpreg_pair[1]);
+      }</span>
+    } <a id='5241' tid='5242', class="m">else</a> <a id='5243' tid='5244', class="m">if</a> (<a id='5245' tid='5246', class="m">redirection</a>-&gt;<a id='5247' tid='5248', class="m">type</a>() <a id='5249' tid='5250', class="m">==</a> <a id='5251' tid='5252', class="m">ExternalReference</a><a id='5253' tid='5254', class="m">::</a><a id='5255' tid='5256', class="m">DIRECT_API_CALL</a>) {
+      // See DirectCEntryStub::GenerateCall for explanation of register usage.
+      <a id='5257' tid='5258', class="m">SimulatorRuntimeDirectApiCall</a> <a id='5259' tid='5260', class="m">target</a> =
+                  <a id='5261' tid='5262', class="m">reinterpret_cast</a>&lt;<a id='5263' tid='5264', class="m">SimulatorRuntimeDirectApiCall</a>&gt;(<a id='5265' tid='5266', class="m">external</a>);
+      <span class="d">if</span> (<a id='5125' tid='5126', class="m">::</a><a id='5127' tid='5128', class="m">v8</a><a id='5129' tid='5130', class="m">::</a><a id='5131' tid='5132', class="m">internal</a><a id='5133' tid='5134', class="m">::</a><a id='5135' tid='5136', class="m">FLAG_trace_sim</a>) <span class="d">{
+        PrintF(&quot;Call to host function at %p args %08x\n&quot;,
+               FUNCTION_ADDR(target), arg1);
+      }</span>
+      <a id='4885' tid='4886', class="m">v8</a><a id='4887' tid='4888', class="m">::</a><a id='4889' tid='4890', class="m">Handle</a>&lt;<a id='4891' tid='4892', class="m">v8</a><a id='4893' tid='4894', class="m">::</a><a id='4895' tid='4896', class="m">Value</a>&gt; <span class="d">result = target(arg1)</span>;
+      <span class="d">*(reinterpret_cast&lt;int*&gt;(arg0)) = (int32_t) *result;</span>
+      <span class="d">set_register(v0, arg0);</span>
+    } <a id='5267' tid='5268', class="m">else</a> <a id='5269' tid='5270', class="m">if</a> (<a id='5271' tid='5272', class="m">redirection</a>-&gt;<a id='5273' tid='5274', class="m">type</a>() <a id='5275' tid='5276', class="m">==</a> <a id='5277' tid='5278', class="m">ExternalReference</a><a id='5279' tid='5280', class="m">::</a><a id='5281' tid='5282', class="m">DIRECT_GETTER_CALL</a>) {
+      // See DirectCEntryStub::GenerateCall for explanation of register usage.
+      <a id='5283' tid='5284', class="m">SimulatorRuntimeDirectGetterCall</a> <a id='5285' tid='5286', class="m">target</a> =
+                  <a id='5287' tid='5288', class="m">reinterpret_cast</a>&lt;<a id='5289' tid='5290', class="m">SimulatorRuntimeDirectGetterCall</a>&gt;(<a id='5291' tid='5292', class="m">external</a>);
+      <span class="d">if</span> (<a id='5137' tid='5138', class="m">::</a><a id='5139' tid='5140', class="m">v8</a><a id='5141' tid='5142', class="m">::</a><a id='5143' tid='5144', class="m">internal</a><a id='5145' tid='5146', class="m">::</a><a id='5147' tid='5148', class="m">FLAG_trace_sim</a>) <span class="d">{
+        PrintF(&quot;Call to host function at %p args %08x %08x\n&quot;,
+               FUNCTION_ADDR(target), arg1, arg2);
+      }</span>
+      <a id='4897' tid='4898', class="m">v8</a><a id='4899' tid='4900', class="m">::</a><a id='4901' tid='4902', class="m">Handle</a>&lt;<a id='4903' tid='4904', class="m">v8</a><a id='4905' tid='4906', class="m">::</a><a id='4907' tid='4908', class="m">Value</a>&gt; <span class="d">result = target(arg1, arg2)</span>;
+      <span class="d">*(reinterpret_cast&lt;int*&gt;(arg0)) = (int32_t) *result;</span>
+      <span class="d">set_register(v0, arg0);</span>
+    } <a id='5293' tid='5294', class="m">else</a> {
+      <a id='5295' tid='5296', class="m">SimulatorRuntimeCall</a> <a id='5297' tid='5298', class="m">target</a> =
+                  <a id='5299' tid='5300', class="m">reinterpret_cast</a>&lt;<a id='5301' tid='5302', class="m">SimulatorRuntimeCall</a>&gt;(<a id='5303' tid='5304', class="m">external</a>);
+      <span class="d">if</span> (<a id='5149' tid='5150', class="m">::</a><a id='5151' tid='5152', class="m">v8</a><a id='5153' tid='5154', class="m">::</a><a id='5155' tid='5156', class="m">internal</a><a id='5157' tid='5158', class="m">::</a><a id='5159' tid='5160', class="m">FLAG_trace_sim</a>) <span class="d">{
+        PrintF(
+            &quot;Call to host function at %p &quot;
+            &quot;args %08x, %08x, %08x, %08x, %08x, %08x\n&quot;,
+            FUNCTION_ADDR(target),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+            arg5);
+      }</span>
+      <a id='4909' tid='4910', class="m">int64_t</a> <a id='4911' tid='4912', class="m">result</a> = <a id='4913' tid='4914', class="m">target</a>(<a id='4915' tid='4916', class="m">arg0</a>, <a id='4917' tid='4918', class="m">arg1</a>, <a id='4919' tid='4920', class="m">arg2</a>, <a id='4921' tid='4922', class="m">arg3</a>, <a id='4923' tid='4924', class="m">arg4</a>, <a id='4925' tid='4926', class="m">arg5</a>);
+      <span class="d">set_register(v0, static_cast&lt;int32_t&gt;(result));</span>
+      <span class="d">set_register</span>(<span class="d">v1</span>, <a id='4643' tid='4644', class="m">static_cast</a>&lt;<a id='4645' tid='4646', class="m">int32_t</a>&gt;(<a id='4647' tid='4648', class="m">result</a> <a id='4649' tid='4650', class="m">&gt;&gt;</a> <a id='4651' tid='4652', class="m">32</a>));
+    }
+    <span class="d">if</span> (<a id='5003' tid='5004', class="m">::</a><a id='5005' tid='5006', class="m">v8</a><a id='5007' tid='5008', class="m">::</a><a id='5009' tid='5010', class="m">internal</a><a id='5011' tid='5012', class="m">::</a><a id='5013' tid='5014', class="m">FLAG_trace_sim</a>) <span class="d">{
+      PrintF(&quot;Returned %08x : %08x\n&quot;, get_register(v1), get_register(v0));
+    }</span>
+    <span class="d">set_register(ra, saved_ra);</span>
+    <span class="d">set_pc(get_register(ra));</span>
+
+  } <span class="d">else if (func == BREAK && code &lt;= kMaxStopCode) {
+    if (IsWatchpoint(code)) {
+      PrintWatchpoint(code);
+    } else {
+      IncreaseStopCounter(code);
+      HandleStop(code, instr);
+    }
+  } else {
+    // All remaining break_ codes, and all traps are handled here.
+    MipsDebugger dbg(this);
+    dbg.Debug();
+  }</span>
+}
+
+
+// Stop helper functions.
+<span class="d">bool Simulator::IsWatchpoint(uint32_t code) {
+  return (code &lt;= kMaxWatchpointCode);
+}</span>
+
+
+<span class="d">void Simulator::PrintWatchpoint(uint32_t code) {
+  MipsDebugger dbg(this);
+  ++break_count_;
+  PrintF(&quot;\n---- break %d marker: %3d  (instr count: %8d) ----------&quot;
+         &quot;----------------------------------&quot;,
+         code, break_count_, icount_);
+  dbg.PrintAllRegs();  // Print registers and continue running.
+}</span>
+
+
+<span class="d">void</span> <span class="d">Simulator::HandleStop</span><span class="d">(uint32_t code, Instruction* instr)</span> {
+  // Stop if it is enabled, otherwise go on jumping over the stop
+  // and the message address.
+  <span class="d">if</span> <span class="d">(IsEnabledStop(code))</span> <span class="d">{
+    MipsDebugger dbg(this);
+    dbg.Stop(instr);
+  }</span> <a id='4855' tid='4856', class="m">else</a> {
+    <a id='4857' tid='4858', class="m">set_pc</a>(<a id='4859' tid='4860', class="m">get_pc</a>() <a id='4861' tid='4862', class="m">+</a> <a id='4863' tid='4864', class="m">2</a> <a id='4865' tid='4866', class="m">*</a> <a id='4867' tid='4868', class="m">Instruction</a><a id='4869' tid='4870', class="m">::</a><a id='4871' tid='4872', class="m">kInstrSize</a>);
+  }
+}
+
+
+<span class="d">bool Simulator::IsStopInstruction(Instruction* instr) {
+  int32_t func = instr-&gt;FunctionFieldRaw();
+  uint32_t code = static_cast&lt;uint32_t&gt;(instr-&gt;Bits(25, 6));
+  return (func == BREAK) && code &gt; kMaxWatchpointCode && code &lt;= kMaxStopCode;
+}</span>
+
+
+<span class="d">bool</span> <span class="d">Simulator::IsEnabledStop</span><span class="d">(uint32_t code)</span> {
+  <span class="d">ASSERT(code &lt;= kMaxStopCode);</span>
+  <span class="d">ASSERT(code &gt; kMaxWatchpointCode);</span>
+  <a id='5421' tid='5422', class="m">return</a> <a id='5423' tid='5424', class="m">!</a>(<a id='5425' tid='5426', class="m">watched_stops</a>[<a id='5427' tid='5428', class="m">code</a>].<a id='5429' tid='5430', class="m">count</a> <a id='5431' tid='5432', class="m">&</a> <a id='5433' tid='5434', class="m">kStopDisabledBit</a>);
+}
+
+
+<a id='5339' tid='5340', class="m">void</a> <a id='5341' tid='5342', class="m">Simulator</a><a id='5343' tid='5344', class="m">::</a><a id='5345' tid='5346', class="m">EnableStop</a>(<a id='5347' tid='5348', class="m">uint32_t</a> <a id='5349' tid='5350', class="m">code</a>) {
+  <span class="d">if</span> <span class="d">(!IsEnabledStop(code))</span> {
+    <a id='5351' tid='5352', class="m">watched_stops</a>[<a id='5353' tid='5354', class="m">code</a>].<a id='5355' tid='5356', class="m">count</a> <a id='5357' tid='5358', class="m">&=</a> <a id='5359' tid='5360', class="m">~</a><a id='5361' tid='5362', class="m">kStopDisabledBit</a>;
+  }
+}
+
+
+<a id='5305' tid='5306', class="m">void</a> <a id='5307' tid='5308', class="m">Simulator</a><a id='5309' tid='5310', class="m">::</a><a id='5311' tid='5312', class="m">DisableStop</a>(<a id='5313' tid='5314', class="m">uint32_t</a> <a id='5315' tid='5316', class="m">code</a>) {
+  <span class="d">if</span> <span class="d">(IsEnabledStop(code))</span> {
+    <a id='5317' tid='5318', class="m">watched_stops</a>[<a id='5319' tid='5320', class="m">code</a>].<a id='5321' tid='5322', class="m">count</a> <a id='5323' tid='5324', class="m">|=</a> <a id='5325' tid='5326', class="m">kStopDisabledBit</a>;
+  }
+}
+
+
+<a id='5161' tid='5162', class="m">void</a> <a id='5163' tid='5164', class="m">Simulator</a><a id='5165' tid='5166', class="m">::</a><a id='5167' tid='5168', class="m">IncreaseStopCounter</a>(<a id='5169' tid='5170', class="m">uint32_t</a> <a id='5171' tid='5172', class="m">code</a>) {
+  <span class="d">ASSERT(code &lt;= kMaxStopCode);</span>
+  <a id='5173' tid='5174', class="m">if</a> ((<a id='5175' tid='5176', class="m">watched_stops</a>[<a id='5177' tid='5178', class="m">code</a>].<a id='5179' tid='5180', class="m">count</a> <a id='5181' tid='5182', class="m">&</a> <a id='5183' tid='5184', class="m">~</a>(<a id='5185' tid='5186', class="m">1</a> <a id='5187' tid='5188', class="m">&lt;&lt;</a> <a id='5189' tid='5190', class="m">31</a>)) <a id='5191' tid='5192', class="m">==</a> <a id='5193' tid='5194', class="m">0x7fffffff</a>) {
+    <a id='5195' tid='5196', class="m">PrintF</a>(<a id='5197' tid='5198', class="m">&quot;Stop counter for code %i has overflowed.\n&quot;</a>
+           <a id='5199' tid='5200', class="m">&quot;Enabling this code and reseting the counter to 0.\n&quot;</a>, <a id='5201' tid='5202', class="m">code</a>);
+    <a id='5203' tid='5204', class="m">watched_stops</a>[<a id='5205' tid='5206', class="m">code</a>].<a id='5207' tid='5208', class="m">count</a> <a id='5209' tid='5210', class="m">=</a> <a id='5211' tid='5212', class="m">0</a>;
+    <a id='5213' tid='5214', class="m">EnableStop</a>(<a id='5215' tid='5216', class="m">code</a>);
+  } <a id='5217' tid='5218', class="m">else</a> {
+    <a id='5219' tid='5220', class="m">watched_stops</a>[<a id='5221' tid='5222', class="m">code</a>].<a id='5223' tid='5224', class="m">count</a><a id='5225' tid='5226', class="m">++</a>;
+  }
+}
+
+
+// Print a stop status.
+<a id='4975' tid='4976', class="m">void</a> <a id='4977' tid='4978', class="m">Simulator</a><a id='4979' tid='4980', class="m">::</a><a id='4981' tid='4982', class="m">PrintStopInfo</a>(<a id='4983' tid='4984', class="m">uint32_t</a> <a id='4985' tid='4986', class="m">code</a>) {
+  <span class="d">if (code &lt;= kMaxWatchpointCode) {
+    PrintF(&quot;That is a watchpoint, not a stop.\n&quot;);
+    return;
+  } else if (code &gt; kMaxStopCode) {
+    PrintF(&quot;Code too large, only %u stops can be used\n&quot;, kMaxStopCode + 1);
+    return;
+  }</span>
+  <span class="d">const char* state = IsEnabledStop(code) ? &quot;Enabled&quot; : &quot;Disabled&quot;;</span>
+  <a id='4987' tid='4988', class="m">int32_t</a> <a id='4989' tid='4990', class="m">count</a> = <a id='4991' tid='4992', class="m">watched_stops</a>[<a id='4993' tid='4994', class="m">code</a>].<a id='4995' tid='4996', class="m">count</a> <a id='4997' tid='4998', class="m">&</a> <a id='4999' tid='5000', class="m">~</a><a id='5001' tid='5002', class="m">kStopDisabledBit</a>;
+  // Don&#39;t print the state of unused breakpoints.
+  <a id='4927' tid='4928', class="m">if</a> (<a id='4929' tid='4930', class="m">count</a> <a id='4931' tid='4932', class="m">!=</a> <a id='4933' tid='4934', class="m">0</a>) {
+    <a id='4935' tid='4936', class="m">if</a> (<a id='4937' tid='4938', class="m">watched_stops</a>[<a id='4939' tid='4940', class="m">code</a>].<a id='4941' tid='4942', class="m">desc</a>) {
+      <a id='4943' tid='4944', class="m">PrintF</a>(<a id='4945' tid='4946', class="m">&quot;stop %i - 0x%x: \t%s, \tcounter = %i, \t%s\n&quot;</a>,
+             <a id='4947' tid='4948', class="m">code</a>, <a id='4949' tid='4950', class="m">code</a>, <a id='4951' tid='4952', class="m">state</a>, <a id='4953' tid='4954', class="m">count</a>, <a id='4955' tid='4956', class="m">watched_stops</a>[<a id='4957' tid='4958', class="m">code</a>].<a id='4959' tid='4960', class="m">desc</a>);
+    } <a id='4961' tid='4962', class="m">else</a> {
+      <a id='4963' tid='4964', class="m">PrintF</a>(<a id='4965' tid='4966', class="m">&quot;stop %i - 0x%x: \t%s, \tcounter = %i\n&quot;</a>,
+             <a id='4967' tid='4968', class="m">code</a>, <a id='4969' tid='4970', class="m">code</a>, <a id='4971' tid='4972', class="m">state</a>, <a id='4973' tid='4974', class="m">count</a>);
+    }
+  }
+}
+
+
+<span class="d">void Simulator::SignalExceptions() {
+  for (int i = 1; i &lt; kNumExceptions; i++) {
+    if (exceptions[i] != 0) {
+      V8_Fatal(__FILE__, __LINE__, &quot;Error: Exception %i raised.&quot;, i);
+    }
+  }
+}</span>
+
+
+// Handle execution based on instruction types.
+
+<span class="d">void Simulator::ConfigureTypeRegister(Instruction* instr,
+                                      int32_t& alu_out,
+                                      int64_t& i64hilo,
+                                      uint64_t& u64hilo,
+                                      int32_t& next_pc,
+                                      bool& do_interrupt) {
+  // Every local variable declared here needs to be const.
+  // This is to make sure that changed values are sent back to
+  // DecodeTypeRegister correctly.
+
+  // Instruction fields.
+  const Opcode   op     = instr-&gt;OpcodeFieldRaw();
+  const int32_t  rs_reg = instr-&gt;RsValue();
+  const int32_t  rs     = get_register(rs_reg);
+  const uint32_t rs_u   = static_cast&lt;uint32_t&gt;(rs);
+  const int32_t  rt_reg = instr-&gt;RtValue();
+  const int32_t  rt     = get_register(rt_reg);
+  const uint32_t rt_u   = static_cast&lt;uint32_t&gt;(rt);
+  const int32_t  rd_reg = instr-&gt;RdValue();
+  const uint32_t sa     = instr-&gt;SaValue();
+
+  const int32_t  fs_reg = instr-&gt;FsValue();
+
+
+  // ---------- Configuration.
+  switch (op) {
+    case COP1:    // Coprocessor instructions.
+      switch (instr-&gt;RsFieldRaw()) {
+        case BC1:   // Handled in DecodeTypeImmed, should never come here.
+          UNREACHABLE();
+          break;
+        case CFC1:
+          // At the moment only FCSR is supported.
+          ASSERT(fs_reg == kFCSRRegister);
+          alu_out = FCSR_;
+          break;
+        case MFC1:
+          alu_out = get_fpu_register(fs_reg);
+          break;
+        case MFHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
+        case CTC1:
+        case MTC1:
+        case MTHC1:
+          // Do the store in the execution step.
+          break;
+        case S:
+        case D:
+        case W:
+        case L:
+        case PS:
+          // Do everything in the execution step.
+          break;
+        default:
+          UNIMPLEMENTED_MIPS();
+      };
+      break;
+    case SPECIAL:
+      switch (instr-&gt;FunctionFieldRaw()) {
+        case JR:
+        case JALR:
+          next_pc = get_register(instr-&gt;RsValue());
+          break;
+        case SLL:
+          alu_out = rt &lt;&lt; sa;
+          break;
+        case SRL:
+          if (rs_reg == 0) {
+            // Regular logical right shift of a word by a fixed number of
+            // bits instruction. RS field is always equal to 0.
+            alu_out = rt_u &gt;&gt; sa;
+          } else {
+            // Logical right-rotate of a word by a fixed number of bits. This
+            // is special case of SRL instruction, added in MIPS32 Release 2.
+            // RS field is equal to 00001.
+            alu_out = (rt_u &gt;&gt; sa) | (rt_u &lt;&lt; (32 - sa));
+          }
+          break;
+        case SRA:
+          alu_out = rt &gt;&gt; sa;
+          break;
+        case SLLV:
+          alu_out = rt &lt;&lt; rs;
+          break;
+        case SRLV:
+          if (sa == 0) {
+            // Regular logical right-shift of a word by a variable number of
+            // bits instruction. SA field is always equal to 0.
+            alu_out = rt_u &gt;&gt; rs;
+          } else {
+            // Logical right-rotate of a word by a variable number of bits.
+            // This is special case od SRLV instruction, added in MIPS32
+            // Release 2. SA field is equal to 00001.
+            alu_out = (rt_u &gt;&gt; rs_u) | (rt_u &lt;&lt; (32 - rs_u));
+          }
+          break;
+        case SRAV:
+          alu_out = rt &gt;&gt; rs;
+          break;
+        case MFHI:
+          alu_out = get_register(HI);
+          break;
+        case MFLO:
+          alu_out = get_register(LO);
+          break;
+        case MULT:
+          i64hilo = static_cast&lt;int64_t&gt;(rs) * static_cast&lt;int64_t&gt;(rt);
+          break;
+        case MULTU:
+          u64hilo = static_cast&lt;uint64_t&gt;(rs_u) * static_cast&lt;uint64_t&gt;(rt_u);
+          break;
+        case ADD:
+          if (HaveSameSign(rs, rt)) {
+            if (rs &gt; 0) {
+              exceptions[kIntegerOverflow] = rs &gt; (Registers::kMaxValue - rt);
+            } else if (rs &lt; 0) {
+              exceptions[kIntegerUnderflow] = rs &lt; (Registers::kMinValue - rt);
+            }
+          }
+          alu_out = rs + rt;
+          break;
+        case ADDU:
+          alu_out = rs + rt;
+          break;
+        case SUB:
+          if (!HaveSameSign(rs, rt)) {
+            if (rs &gt; 0) {
+              exceptions[kIntegerOverflow] = rs &gt; (Registers::kMaxValue + rt);
+            } else if (rs &lt; 0) {
+              exceptions[kIntegerUnderflow] = rs &lt; (Registers::kMinValue + rt);
+            }
+          }
+          alu_out = rs - rt;
+          break;
+        case SUBU:
+          alu_out = rs - rt;
+          break;
+        case AND:
+          alu_out = rs & rt;
+          break;
+        case OR:
+          alu_out = rs | rt;
+          break;
+        case XOR:
+          alu_out = rs ^ rt;
+          break;
+        case NOR:
+          alu_out = ~(rs | rt);
+          break;
+        case SLT:
+          alu_out = rs &lt; rt ? 1 : 0;
+          break;
+        case SLTU:
+          alu_out = rs_u &lt; rt_u ? 1 : 0;
+          break;
+        // Break and trap instructions.
+        case BREAK:
+
+          do_interrupt = true;
+          break;
+        case TGE:
+          do_interrupt = rs &gt;= rt;
+          break;
+        case TGEU:
+          do_interrupt = rs_u &gt;= rt_u;
+          break;
+        case TLT:
+          do_interrupt = rs &lt; rt;
+          break;
+        case TLTU:
+          do_interrupt = rs_u &lt; rt_u;
+          break;
+        case TEQ:
+          do_interrupt = rs == rt;
+          break;
+        case TNE:
+          do_interrupt = rs != rt;
+          break;
+        case MOVN:
+        case MOVZ:
+        case MOVCI:
+          // No action taken on decode.
+          break;
+        case DIV:
+        case DIVU:
+          // div and divu never raise exceptions.
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    case SPECIAL2:
+      switch (instr-&gt;FunctionFieldRaw()) {
+        case MUL:
+          alu_out = rs_u * rt_u;  // Only the lower 32 bits are kept.
+          break;
+        case CLZ:
+          alu_out = __builtin_clz(rs_u);
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    case SPECIAL3:
+      switch (instr-&gt;FunctionFieldRaw()) {
+        case INS: {   // Mips32r2 instruction.
+          // Interpret rd field as 5-bit msb of insert.
+          uint16_t msb = rd_reg;
+          // Interpret sa field as 5-bit lsb of insert.
+          uint16_t lsb = sa;
+          uint16_t size = msb - lsb + 1;
+          uint32_t mask = (1 &lt;&lt; size) - 1;
+          alu_out = (rt_u & ~(mask &lt;&lt; lsb)) | ((rs_u & mask) &lt;&lt; lsb);
+          break;
+        }
+        case EXT: {   // Mips32r2 instruction.
+          // Interpret rd field as 5-bit msb of extract.
+          uint16_t msb = rd_reg;
+          // Interpret sa field as 5-bit lsb of extract.
+          uint16_t lsb = sa;
+          uint16_t size = msb + 1;
+          uint32_t mask = (1 &lt;&lt; size) - 1;
+          alu_out = (rs_u & (mask &lt;&lt; lsb)) &gt;&gt; lsb;
+          break;
+        }
+        default:
+          UNREACHABLE();
+      };
+      break;
+    default:
+      UNREACHABLE();
+  };
+}</span>
+
+
+<span class="d">void</span> <span class="d">Simulator::DecodeTypeRegister</span><span class="d">(Instruction* instr)</span> {
+  // Instruction fields.
+  <span class="d">const Opcode   op     = instr-&gt;OpcodeFieldRaw();</span>
+  <span class="d">const int32_t  rs_reg = instr-&gt;RsValue();</span>
+  <span class="d">const int32_t  rs     = get_register(rs_reg);</span>
+  <span class="d">const uint32_t rs_u   = static_cast&lt;uint32_t&gt;(rs);</span>
+  <span class="d">const int32_t  rt_reg = instr-&gt;RtValue();</span>
+  <span class="d">const int32_t  rt     = get_register(rt_reg);</span>
+  <span class="d">const uint32_t rt_u   = static_cast&lt;uint32_t&gt;(rt);</span>
+  <span class="d">const int32_t  rd_reg = instr-&gt;RdValue();</span>
+
+  <span class="d">const int32_t  fs_reg = instr-&gt;FsValue();</span>
+  <span class="d">const int32_t  ft_reg = instr-&gt;FtValue();</span>
+  <span class="d">const int32_t  fd_reg = instr-&gt;FdValue();</span>
+  <span class="d">int64_t  i64hilo = 0;</span>
+  <span class="d">uint64_t u64hilo = 0;</span>
+
+  // ALU output.
+  // It should not be used as is. Instructions using it should always
+  // initialize it first.
+  <span class="d">int32_t alu_out = 0x12345678;</span>
+
+  // For break and trap instructions.
+  <span class="d">bool do_interrupt = false;</span>
+
+  // For jr and jalr.
+  // Get current pc.
+  <span class="d">int32_t current_pc = get_pc();</span>
+  // Next pc
+  <span class="d">int32_t next_pc = 0;</span>
+
+  // Setup the variables if needed before executing the instruction.
+  <span class="d">ConfigureTypeRegister(instr,
+                        alu_out,
+                        i64hilo,
+                        u64hilo,
+                        next_pc,
+                        do_interrupt);</span>
+
+  // ---------- Raise exceptions triggered.
+  <span class="d">SignalExceptions();</span>
+
+  // ---------- Execution.
+  <span class="d">switch</span> (<span class="d">op</span>) {
+    <span class="d">case COP1:
+      switch (instr-&gt;RsFieldRaw()) {
+        case BC1:   // Branch on coprocessor condition.
+          UNREACHABLE();
+          break;
+        case CFC1:
+          set_register(rt_reg, alu_out);
+        case MFC1:
+          set_register(rt_reg, alu_out);
+          break;
+        case MFHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
+        case CTC1:
+          // At the moment only FCSR is supported.
+          ASSERT(fs_reg == kFCSRRegister);
+          FCSR_ = registers_[rt_reg];
+          break;
+        case MTC1:
+          FPUregisters_[fs_reg] = registers_[rt_reg];
+          break;
+        case MTHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
+        case S:
+          float f;
+          switch (instr-&gt;FunctionFieldRaw()) {
+            case CVT_D_S:
+              f = get_fpu_register_float(fs_reg);
+              set_fpu_register_double(fd_reg, static_cast&lt;double&gt;(f));
+              break;
+            case CVT_W_S:
+            case CVT_L_S:
+            case TRUNC_W_S:
+            case TRUNC_L_S:
+            case ROUND_W_S:
+            case ROUND_L_S:
+            case FLOOR_W_S:
+            case FLOOR_L_S:
+            case CEIL_W_S:
+            case CEIL_L_S:
+            case CVT_PS_S:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case D:
+          double ft, fs;
+          uint32_t cc, fcsr_cc;
+          int64_t  i64;
+          fs = get_fpu_register_double(fs_reg);
+          ft = get_fpu_register_double(ft_reg);
+          cc = instr-&gt;FCccValue();
+          fcsr_cc = get_fcsr_condition_bit(cc);
+          switch (instr-&gt;FunctionFieldRaw()) {
+            case ADD_D:
+              set_fpu_register_double(fd_reg, fs + ft);
+              break;
+            case SUB_D:
+              set_fpu_register_double(fd_reg, fs - ft);
+              break;
+            case MUL_D:
+              set_fpu_register_double(fd_reg, fs * ft);
+              break;
+            case DIV_D:
+              set_fpu_register_double(fd_reg, fs / ft);
+              break;
+            case ABS_D:
+              set_fpu_register_double(fd_reg, fs &lt; 0 ? -fs : fs);
+              break;
+            case MOV_D:
+              set_fpu_register_double(fd_reg, fs);
+              break;
+            case NEG_D:
+              set_fpu_register_double(fd_reg, -fs);
+              break;
+            case SQRT_D:
+              set_fpu_register_double(fd_reg, sqrt(fs));
+              break;
+            case C_UN_D:
+              set_fcsr_bit(fcsr_cc, isnan(fs) || isnan(ft));
+              break;
+            case C_EQ_D:
+              set_fcsr_bit(fcsr_cc, (fs == ft));
+              break;
+            case C_UEQ_D:
+              set_fcsr_bit(fcsr_cc, (fs == ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case C_OLT_D:
+              set_fcsr_bit(fcsr_cc, (fs &lt; ft));
+              break;
+            case C_ULT_D:
+              set_fcsr_bit(fcsr_cc, (fs &lt; ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case C_OLE_D:
+              set_fcsr_bit(fcsr_cc, (fs &lt;= ft));
+              break;
+            case C_ULE_D:
+              set_fcsr_bit(fcsr_cc, (fs &lt;= ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case CVT_W_D:   // Convert double to word.
+              // Rounding modes are not yet supported.
+              ASSERT((FCSR_ & 3) == 0);
+              // In rounding mode 0 it should behave like ROUND.
+            case ROUND_W_D:  // Round double to word.
+              {
+                double rounded = fs &gt; 0 ? floor(fs + 0.5) : ceil(fs - 0.5);
+                int32_t result = static_cast&lt;int32_t&gt;(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case TRUNC_W_D:  // Truncate double to word (round towards 0).
+              {
+                double rounded = trunc(fs);
+                int32_t result = static_cast&lt;int32_t&gt;(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case FLOOR_W_D:  // Round double to word towards negative infinity.
+              {
+                double rounded = floor(fs);
+                int32_t result = static_cast&lt;int32_t&gt;(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case CEIL_W_D:  // Round double to word towards positive infinity.
+              {
+                double rounded = ceil(fs);
+                int32_t result = static_cast&lt;int32_t&gt;(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case CVT_S_D:  // Convert double to float (single).
+              set_fpu_register_float(fd_reg, static_cast&lt;float&gt;(fs));
+              break;
+            case CVT_L_D: {  // Mips32r2: Truncate double to 64-bit long-word.
+              double rounded = trunc(fs);
+              i64 = static_cast&lt;int64_t&gt;(rounded);
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 &gt;&gt; 32);
+              break;
+            }
+            case TRUNC_L_D: {  // Mips32r2 instruction.
+              double rounded = trunc(fs);
+              i64 = static_cast&lt;int64_t&gt;(rounded);
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 &gt;&gt; 32);
+              break;
+            }
+            case ROUND_L_D: {  // Mips32r2 instruction.
+              double rounded = fs &gt; 0 ? floor(fs + 0.5) : ceil(fs - 0.5);
+              i64 = static_cast&lt;int64_t&gt;(rounded);
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 &gt;&gt; 32);
+              break;
+            }
+            case FLOOR_L_D:  // Mips32r2 instruction.
+              i64 = static_cast&lt;int64_t&gt;(floor(fs));
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 &gt;&gt; 32);
+              break;
+            case CEIL_L_D:  // Mips32r2 instruction.
+              i64 = static_cast&lt;int64_t&gt;(ceil(fs));
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 &gt;&gt; 32);
+              break;
+            case C_F_D:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case W:
+          switch (instr-&gt;FunctionFieldRaw()) {
+            case CVT_S_W:   // Convert word to float (single).
+              alu_out = get_fpu_register(fs_reg);
+              set_fpu_register_float(fd_reg, static_cast&lt;float&gt;(alu_out));
+              break;
+            case CVT_D_W:   // Convert word to double.
+              alu_out = get_fpu_register(fs_reg);
+              set_fpu_register_double(fd_reg, static_cast&lt;double&gt;(alu_out));
+              break;
+            default:
+              UNREACHABLE();
+          };
+          break;
+        case L:
+          switch (instr-&gt;FunctionFieldRaw()) {
+          case CVT_D_L:  // Mips32r2 instruction.
+            // Watch the signs here, we want 2 32-bit vals
+            // to make a sign-64.
+            i64 = (uint32_t) get_fpu_register(fs_reg);
+            i64 |= ((int64_t) get_fpu_register(fs_reg + 1) &lt;&lt; 32);
+            set_fpu_register_double(fd_reg, static_cast&lt;double&gt;(i64));
+            break;
+            case CVT_S_L:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case PS:
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;</span>
+    <span class="d">case</span> <span class="d">SPECIAL</span>:
+      <span class="d">switch</span> (<span class="d">instr-&gt;FunctionFieldRaw()</span>) {
+        <span class="d">case JR: {
+          Instruction* branch_delay_instr = reinterpret_cast&lt;Instruction*&gt;(
+              current_pc+Instruction::kInstrSize);
+          BranchDelayInstructionDecode(branch_delay_instr);
+          set_pc(next_pc);
+          pc_modified_ = true;
+          break;
+        }</span>
+        <span class="d">case</span> <span class="d">JALR</span>: {
+          <span class="d">Instruction* branch_delay_instr = reinterpret_cast&lt;Instruction*&gt;(
+              current_pc+Instruction::kInstrSize);</span>
+          <span class="d">BranchDelayInstructionDecode(branch_delay_instr);</span>
+          <span class="d">set_register</span>(<span class="d">31</span>, <span class="d">current_pc</span> <span class="d">+</span> <a id='4471' tid='4472', class="m">2</a> <a id='4473' tid='4474', class="m">*</a> <a id='4475' tid='4476', class="m">Instruction</a><a id='4477' tid='4478', class="m">::</a><a id='4479' tid='4480', class="m">kInstrSize</a>);
+          <span class="d">set_pc(next_pc);</span>
+          <span class="d">pc_modified_ = true;</span>
+          <span class="d">break;</span>
+        }
+        // Instructions using HI and LO registers.
+        <span class="d">case MULT:
+          set_register(LO, static_cast&lt;int32_t&gt;(i64hilo & 0xffffffff));</span>
+          <span class="d">set_register(HI, static_cast&lt;int32_t&gt;(i64hilo &gt;&gt; 32));</span>
+          <span class="d">break;</span>
+        <span class="d">case MULTU:
+          set_register(LO, static_cast&lt;int32_t&gt;(u64hilo & 0xffffffff));</span>
+          <span class="d">set_register(HI, static_cast&lt;int32_t&gt;(u64hilo &gt;&gt; 32));</span>
+          <span class="d">break;</span>
+        <span class="d">case DIV:
+          // Divide by zero was not checked in the configuration step - div and
+          // divu do not raise exceptions. On division by 0, the result will
+          // be UNPREDICTABLE.
+          if (rt != 0) {
+            set_register(LO, rs / rt);
+            set_register(HI, rs % rt);
+          }
+          break;</span>
+        <span class="d">case DIVU:
+          if (rt_u != 0) {
+            set_register(LO, rs_u / rt_u);
+            set_register(HI, rs_u % rt_u);
+          }
+          break;</span>
+        // Break and trap instructions.
+        <span class="d">case BREAK</span>:
+        <span class="d">case TGE</span>:
+        <span class="d">case TGEU</span>:
+        <span class="d">case TLT</span>:
+        <span class="d">case TLTU</span>:
+        <span class="d">case TEQ</span>:
+        <span class="d">case TNE:
+          if (do_interrupt) {
+            SoftwareInterrupt(instr);
+          }
+          break;</span>
+        // Conditional moves.
+        <span class="d">case MOVN:
+          if (rt) set_register(rd_reg, rs);
+          break;</span>
+        <span class="d">case MOVCI: {
+          uint32_t cc = instr-&gt;FBccValue();
+          uint32_t fcsr_cc = get_fcsr_condition_bit(cc);
+          if (instr-&gt;Bit(16)) {  // Read Tf bit.
+            if (test_fcsr_bit(fcsr_cc)) set_register(rd_reg, rs);
+          } else {
+            if (!test_fcsr_bit(fcsr_cc)) set_register(rd_reg, rs);
+          }
+          break;
+        }</span>
+        <span class="d">case MOVZ:
+          if (!rt) set_register(rd_reg, rs);
+          break;
+        default:  // For other special opcodes we do the default operation.
+          set_register(rd_reg, alu_out);</span>
+      };
+      <span class="d">break;</span>
+    <span class="d">case SPECIAL2:
+      switch (instr-&gt;FunctionFieldRaw()) {
+        case MUL:
+          set_register(rd_reg, alu_out);
+          // HI and LO are UNPREDICTABLE after the operation.
+          set_register(LO, Unpredictable);
+          set_register(HI, Unpredictable);
+          break;
+        default:  // For other special2 opcodes we do the default operation.
+          set_register(rd_reg, alu_out);
+      }
+      break;</span>
+    <span class="d">case SPECIAL3:
+      switch (instr-&gt;FunctionFieldRaw()) {
