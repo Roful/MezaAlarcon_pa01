@@ -6174,3 +6174,105 @@ namespace <span class="i">internal</span> {
   <span class="i">int original_stack = get_register(sp);</span>
   // Compute position of stack on entry to generated code.
   <span class="i">int entry_stack = (original_stack - (argument_count - 4) * sizeof(int32_t));</span>
+  <a id='4688' tid='4687', class="m">if</a> (<a id='4690' tid='4689', class="m">OS</a><a id='4692' tid='4691', class="m">::</a><a id='4694' tid='4693', class="m">ActivationFrameAlignment</a>() <a id='4696' tid='4695', class="m">!=</a> <a id='4698' tid='4697', class="m">0</a>) {
+    <a id='4700' tid='4699', class="m">entry_stack</a> <a id='4702' tid='4701', class="m">&=</a> <a id='4704' tid='4703', class="m">-</a><a id='4706' tid='4705', class="m">OS</a><a id='4708' tid='4707', class="m">::</a><a id='4710' tid='4709', class="m">ActivationFrameAlignment</a>();
+  }
+  // Store remaining arguments on stack, from low to high memory.
+  <a id='4654' tid='4653', class="m">intptr_t</a><a id='4656' tid='4655', class="m">*</a> <a id='4658' tid='4657', class="m">stack_argument</a> = <a id='4660' tid='4659', class="m">reinterpret_cast</a>&lt;<a id='4662' tid='4661', class="m">intptr_t</a><a id='4664' tid='4663', class="m">*</a>&gt;(<a id='4666' tid='4665', class="m">entry_stack</a>);
+  <span class="i">for</span> (<a id='4546' tid='4545', class="m">int</a> <a id='4548' tid='4547', class="m">i</a> = <a id='4550' tid='4549', class="m">4</a>; <a id='4552' tid='4551', class="m">i</a> <a id='4554' tid='4553', class="m">&lt;</a> <a id='4556' tid='4555', class="m">argument_count</a>; <a id='4558' tid='4557', class="m">i</a><a id='4560' tid='4559', class="m">++</a>) <span class="i">{
+    stack_argument[i - 4] = va_arg(parameters, int32_t);
+  }</span>
+  <span class="i">va_end(parameters);</span>
+  <span class="i">set_register(sp, entry_stack);</span>
+
+  // Prepare to execute the code at entry
+  <a id='4482' tid='4481', class="m">set_register</a>(<a id='4484' tid='4483', class="m">pc</a>, <a id='4486' tid='4485', class="m">reinterpret_cast</a>&lt;<a id='4488' tid='4487', class="m">int32_t</a>&gt;(<a id='4490' tid='4489', class="m">entry</a>));
+  // Put down marker for end of simulation. The simulator will stop simulation
+  // when the PC reaches this value. By saving the &quot;end simulation&quot; value into
+  // the LR the simulation stops when returning to this call point.
+  <span class="i">set_register(lr, end_sim_pc);</span>
+
+  // Remember the values of callee-saved registers.
+  // The code below assumes that r9 is not used as sb (static base) in
+  // simulator code and therefore is regarded as a callee-saved register.
+  <span class="i">int32_t r4_val = get_register(r4);</span>
+  <span class="i">int32_t r5_val = get_register(r5);</span>
+  <span class="i">int32_t r6_val = get_register(r6);</span>
+  <span class="i">int32_t r7_val = get_register(r7);</span>
+  <span class="i">int32_t r8_val = get_register(r8);</span>
+  <span class="i">int32_t r9_val = get_register(r9);</span>
+  <span class="i">int32_t r10_val = get_register(r10);</span>
+  <span class="i">int32_t r11_val = get_register(r11);</span>
+
+  // Setup the callee-saved registers with a known value. To be able to check
+  // that they are preserved properly across JS execution.
+  <span class="i">int32_t callee_saved_value = icount_;</span>
+  <span class="i">set_register(r4, callee_saved_value);</span>
+  <span class="i">set_register(r5, callee_saved_value);</span>
+  <span class="i">set_register(r6, callee_saved_value);</span>
+  <span class="i">set_register(r7, callee_saved_value);</span>
+  <span class="i">set_register(r8, callee_saved_value);</span>
+  <span class="i">set_register(r9, callee_saved_value);</span>
+  <span class="i">set_register(r10, callee_saved_value);</span>
+  <span class="i">set_register(r11, callee_saved_value);</span>
+
+  // Start the simulation
+  <span class="i">Execute();</span>
+
+  // Check that the callee-saved registers have been preserved.
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r4));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r5));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r6));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r7));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r8));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r9));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r10));</span>
+  <span class="i">CHECK_EQ(callee_saved_value, get_register(r11));</span>
+
+  // Restore callee-saved registers with the original value.
+  <span class="i">set_register(r4, r4_val);</span>
+  <span class="i">set_register(r5, r5_val);</span>
+  <span class="i">set_register(r6, r6_val);</span>
+  <span class="i">set_register(r7, r7_val);</span>
+  <span class="i">set_register(r8, r8_val);</span>
+  <span class="i">set_register(r9, r9_val);</span>
+  <span class="i">set_register(r10, r10_val);</span>
+  <span class="i">set_register(r11, r11_val);</span>
+
+  // Pop stack passed arguments.
+  <span class="i">CHECK_EQ(entry_stack, get_register(sp));</span>
+  <span class="i">set_register(sp, original_stack);</span>
+
+  <span class="i">int32_t result = get_register(r0);</span>
+  <span class="i">return result;</span>
+}
+
+
+<a id='4562' tid='4561', class="m">uintptr_t</a> <a id='4564' tid='4563', class="m">Simulator</a><a id='4566' tid='4565', class="m">::</a><a id='4568' tid='4567', class="m">PushAddress</a>(<a id='4570' tid='4569', class="m">uintptr_t</a> <a id='4572' tid='4571', class="m">address</a>) {
+  <a id='4574' tid='4573', class="m">int</a> <a id='4576' tid='4575', class="m">new_sp</a> = <a id='4578' tid='4577', class="m">get_register</a>(<a id='4580' tid='4579', class="m">sp</a>) <a id='4582' tid='4581', class="m">-</a> <a id='4584' tid='4583', class="m">sizeof</a>(<a id='4586' tid='4585', class="m">uintptr_t</a>);
+  <a id='4588' tid='4587', class="m">uintptr_t</a><a id='4590' tid='4589', class="m">*</a> <a id='4592' tid='4591', class="m">stack_slot</a> = <a id='4594' tid='4593', class="m">reinterpret_cast</a>&lt;<a id='4596' tid='4595', class="m">uintptr_t</a><a id='4598' tid='4597', class="m">*</a>&gt;(<a id='4600' tid='4599', class="m">new_sp</a>);
+  <a id='4602' tid='4601', class="m">*</a><a id='4604' tid='4603', class="m">stack_slot</a> <a id='4606' tid='4605', class="m">=</a> <a id='4608' tid='4607', class="m">address</a>;
+  <a id='4610' tid='4609', class="m">set_register</a>(<a id='4612' tid='4611', class="m">sp</a>, <a id='4614' tid='4613', class="m">new_sp</a>);
+  <a id='4616' tid='4615', class="m">return</a> <a id='4618' tid='4617', class="m">new_sp</a>;
+}
+
+
+<a id='4492' tid='4491', class="m">uintptr_t</a> <a id='4494' tid='4493', class="m">Simulator</a><a id='4496' tid='4495', class="m">::</a><a id='4498' tid='4497', class="m">PopAddress</a>() {
+  <a id='4500' tid='4499', class="m">int</a> <a id='4502' tid='4501', class="m">current_sp</a> = <a id='4504' tid='4503', class="m">get_register</a>(<a id='4506' tid='4505', class="m">sp</a>);
+  <a id='4508' tid='4507', class="m">uintptr_t</a><a id='4510' tid='4509', class="m">*</a> <a id='4512' tid='4511', class="m">stack_slot</a> = <a id='4514' tid='4513', class="m">reinterpret_cast</a>&lt;<a id='4516' tid='4515', class="m">uintptr_t</a><a id='4518' tid='4517', class="m">*</a>&gt;(<a id='4520' tid='4519', class="m">current_sp</a>);
+  <a id='4522' tid='4521', class="m">uintptr_t</a> <a id='4524' tid='4523', class="m">address</a> = <a id='4526' tid='4525', class="m">*</a><a id='4528' tid='4527', class="m">stack_slot</a>;
+  <a id='4530' tid='4529', class="m">set_register</a>(<a id='4532' tid='4531', class="m">sp</a>, <a id='4534' tid='4533', class="m">current_sp</a> <a id='4536' tid='4535', class="m">+</a> <a id='4538' tid='4537', class="m">sizeof</a>(<a id='4540' tid='4539', class="m">uintptr_t</a>));
+  <a id='4542' tid='4541', class="m">return</a> <a id='4544' tid='4543', class="m">address</a>;
+}
+
+} }  // namespace v8::internal
+
+<span class="i">#endif</span>  // USE_SIMULATOR
+
+<span class="i">#endif</span>  // V8_TARGET_ARCH_ARM
+
+
+</pre>
+</div>
+</body>
+</html>
