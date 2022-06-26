@@ -35,4 +35,45 @@
 
 #include "disasm.h"
 #include "assembler.h"
-#include "globals.h"    // Need
+#include "globals.h"    // Need the BitCast.
+#include "mips/constants-mips.h"
+#include "mips/simulator-mips.h"
+
+
+// Only build the simulator if not compiling for real MIPS hardware.
+#if defined(USE_SIMULATOR)
+
+namespace v8 {
+namespace internal {
+
+// Utils functions.
+bool HaveSameSign(int32_t a, int32_t b) {
+  return ((a ^ b) >= 0);
+}
+
+
+uint32_t get_fcsr_condition_bit(uint32_t cc) {
+  if (cc == 0) {
+    return 23;
+  } else {
+    return 24 + cc;
+  }
+}
+
+
+// This macro provides a platform independent use of sscanf. The reason for
+// SScanF not being implemented in a platform independent was through
+// ::v8::internal::OS in the same way as SNPrintF is that the Windows C Run-Time
+// Library does not provide vsscanf.
+#define SScanF sscanf  // NOLINT
+
+// The MipsDebugger class is used by the simulator while debugging simulated
+// code.
+class MipsDebugger {
+ public:
+  explicit MipsDebugger(Simulator* sim);
+  ~MipsDebugger();
+
+  void Stop(Instruction* instr);
+  void Debug();
+  // Print all registers with a nice formattin
