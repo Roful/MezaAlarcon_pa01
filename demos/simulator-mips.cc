@@ -76,4 +76,32 @@ class MipsDebugger {
 
   void Stop(Instruction* instr);
   void Debug();
-  // Print all registers with a nice formattin
+  // Print all registers with a nice formatting.
+  void PrintAllRegs();
+  void PrintAllRegsIncludingFPU();
+
+ private:
+  // We set the breakpoint code to 0xfffff to easily recognize it.
+  static const Instr kBreakpointInstr = SPECIAL | BREAK | 0xfffff << 6;
+  static const Instr kNopInstr =  0x0;
+
+  Simulator* sim_;
+
+  int32_t GetRegisterValue(int regnum);
+  int32_t GetFPURegisterValueInt(int regnum);
+  int64_t GetFPURegisterValueLong(int regnum);
+  float GetFPURegisterValueFloat(int regnum);
+  double GetFPURegisterValueDouble(int regnum);
+  bool GetValue(const char* desc, int32_t* value);
+
+  // Set or delete a breakpoint. Returns true if successful.
+  bool SetBreakpoint(Instruction* breakpc);
+  bool DeleteBreakpoint(Instruction* breakpc);
+
+  // Undo and redo all breakpoints. This is needed to bracket disassembly and
+  // execution to skip past breakpoints when run from the debugger.
+  void UndoBreakpoints();
+  void RedoBreakpoints();
+};
+
+MipsDebugger::MipsDebugger(Simulat
