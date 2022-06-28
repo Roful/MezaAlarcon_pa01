@@ -104,4 +104,45 @@ class MipsDebugger {
   void RedoBreakpoints();
 };
 
-MipsDebugger::MipsDebugger(Simulat
+MipsDebugger::MipsDebugger(Simulator* sim) {
+  sim_ = sim;
+}
+
+
+MipsDebugger::~MipsDebugger() {
+}
+
+
+#ifdef GENERATED_CODE_COVERAGE
+static FILE* coverage_log = NULL;
+
+
+static void InitializeCoverage() {
+  char* file_name = getenv("V8_GENERATED_CODE_COVERAGE_LOG");
+  if (file_name != NULL) {
+    coverage_log = fopen(file_name, "aw+");
+  }
+}
+
+
+void MipsDebugger::Stop(Instruction* instr) {
+  // Get the stop code.
+  uint32_t code = instr->Bits(25, 6);
+  // Retrieve the encoded address, which comes just after this stop.
+  char** msg_address =
+    reinterpret_cast<char**>(sim_->get_pc() + Instr::kInstrSize);
+  char* msg = *msg_address;
+  ASSERT(msg != NULL);
+
+  // Update this stop description.
+  if (!watched_stops[code].desc) {
+    watched_stops[code].desc = msg;
+  }
+
+  if (strlen(msg) > 0) {
+    if (coverage_log != NULL) {
+      fprintf(coverage_log, "%s\n", str);
+      fflush(coverage_log);
+    }
+    // Overwrite the instruction and address with nops.
+    instr->SetInstructionBits(kNopInstr);
