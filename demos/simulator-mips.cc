@@ -146,3 +146,38 @@ void MipsDebugger::Stop(Instruction* instr) {
     }
     // Overwrite the instruction and address with nops.
     instr->SetInstructionBits(kNopInstr);
+    reinterpret_cast<Instr*>(msg_address)->SetInstructionBits(kNopInstr);
+  }
+  sim_->set_pc(sim_->get_pc() + 2 * Instruction::kInstructionSize);
+}
+
+
+#else  // GENERATED_CODE_COVERAGE
+
+#define UNSUPPORTED() printf("Unsupported instruction.\n");
+
+static void InitializeCoverage() {}
+
+
+void MipsDebugger::Stop(Instruction* instr) {
+  // Get the stop code.
+  uint32_t code = instr->Bits(25, 6);
+  // Retrieve the encoded address, which comes just after this stop.
+  char* msg = *reinterpret_cast<char**>(sim_->get_pc() +
+      Instruction::kInstrSize);
+  // Update this stop description.
+  if (!sim_->watched_stops[code].desc) {
+    sim_->watched_stops[code].desc = msg;
+  }
+  PrintF("Simulator hit %s (%u)\n", msg, code);
+  sim_->set_pc(sim_->get_pc() + 2 * Instruction::kInstrSize);
+  Debug();
+}
+#endif  // GENERATED_CODE_COVERAGE
+
+
+int32_t MipsDebugger::GetRegisterValue(int regnum) {
+  if (regnum == kNumSimuRegisters) {
+    return sim_->get_pc();
+  } else {
+    return sim_->get_register(regn
