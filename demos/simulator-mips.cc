@@ -180,4 +180,50 @@ int32_t MipsDebugger::GetRegisterValue(int regnum) {
   if (regnum == kNumSimuRegisters) {
     return sim_->get_pc();
   } else {
-    return sim_->get_register(regn
+    return sim_->get_register(regnum);
+  }
+}
+
+
+int32_t MipsDebugger::GetFPURegisterValueInt(int regnum) {
+  if (regnum == kNumFPURegisters) {
+    return sim_->get_pc();
+  } else {
+    return sim_->get_fpu_register(regnum);
+  }
+}
+
+
+int64_t MipsDebugger::GetFPURegisterValueLong(int regnum) {
+  if (regnum == kNumFPURegisters) {
+    return sim_->get_pc();
+  } else {
+    return sim_->get_fpu_register_long(regnum);
+  }
+}
+
+
+float MipsDebugger::GetFPURegisterValueFloat(int regnum) {
+  if (regnum == kNumFPURegisters) {
+    return sim_->get_pc();
+  } else {
+    return sim_->get_fpu_register_float(regnum);
+  }
+}
+
+
+double MipsDebugger::GetFPURegisterValueDouble(int regnum) {
+  if (regnum == kNumFPURegisters) {
+    return sim_->get_pc();
+  } else {
+    return sim_->get_fpu_register_double(regnum);
+  }
+}
+
+
+bool MipsDebugger::GetValue(const char* desc, int32_t* value) {
+  int regnum = Registers::Number(desc);
+  int fpuregnum = FPURegisters::Number(desc);
+
+  if (regnum != kInvalidRegister) {
+    *value = GetR
