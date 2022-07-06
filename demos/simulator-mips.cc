@@ -226,4 +226,35 @@ bool MipsDebugger::GetValue(const char* desc, int32_t* value) {
   int fpuregnum = FPURegisters::Number(desc);
 
   if (regnum != kInvalidRegister) {
-    *value = GetR
+    *value = GetRegisterValue(regnum);
+    return true;
+  } else if (fpuregnum != kInvalidFPURegister) {
+    *value = GetFPURegisterValueInt(fpuregnum);
+    return true;
+  } else if (strncmp(desc, "0x", 2) == 0) {
+    return SScanF(desc, "%x", reinterpret_cast<uint32_t*>(value)) == 1;
+  } else {
+    return SScanF(desc, "%i", value) == 1;
+  }
+  return false;
+}
+
+
+bool MipsDebugger::SetBreakpoint(Instruction* breakpc) {
+  // Check if a breakpoint can be set. If not return without any side-effects.
+  if (sim_->break_pc_ != NULL) {
+    return false;
+  }
+
+  // Set the breakpoint.
+  sim_->break_pc_ = breakpc;
+  sim_->break_instr_ = breakpc->InstructionBits();
+  // Not setting the breakpoint instruction in the code itself. It will be set
+  // when the debugger shell continues.
+  return true;
+}
+
+
+bool MipsDebugger::DeleteBreakpoint(Instruction* breakpc) {
+  if (sim_->break_pc_ != NULL) {
+    sim_->break_pc_->SetInstructionBits(sim_->brea
