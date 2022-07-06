@@ -297,4 +297,35 @@ void MipsDebugger::PrintAllRegs() {
   PrintF("\n");
   // t0-t7, s0-s7
   for (int i = 0; i < 8; i++) {
-    PrintF("%3s: 0x%08x %10d\t%3s: 0
+    PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+           REG_INFO(8+i), REG_INFO(16+i));
+  }
+  PrintF("\n");
+  // t8, k0, LO.
+  PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         REG_INFO(24), REG_INFO(26), REG_INFO(32));
+  // t9, k1, HI.
+  PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         REG_INFO(25), REG_INFO(27), REG_INFO(33));
+  // sp, fp, gp.
+  PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         REG_INFO(29), REG_INFO(30), REG_INFO(28));
+  // pc.
+  PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         REG_INFO(31), REG_INFO(34));
+
+#undef REG_INFO
+#undef FPU_REG_INFO
+}
+
+
+void MipsDebugger::PrintAllRegsIncludingFPU() {
+#define FPU_REG_INFO(n) FPURegisters::Name(n), FPURegisters::Name(n+1), \
+        GetFPURegisterValueInt(n+1), \
+        GetFPURegisterValueInt(n), \
+                        GetFPURegisterValueDouble(n)
+
+  PrintAllRegs();
+
+  PrintF("\n\n");
+  // f0, f1, f2, ... f3
