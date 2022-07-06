@@ -257,4 +257,44 @@ bool MipsDebugger::SetBreakpoint(Instruction* breakpc) {
 
 bool MipsDebugger::DeleteBreakpoint(Instruction* breakpc) {
   if (sim_->break_pc_ != NULL) {
-    sim_->break_pc_->SetInstructionBits(sim_->brea
+    sim_->break_pc_->SetInstructionBits(sim_->break_instr_);
+  }
+
+  sim_->break_pc_ = NULL;
+  sim_->break_instr_ = 0;
+  return true;
+}
+
+
+void MipsDebugger::UndoBreakpoints() {
+  if (sim_->break_pc_ != NULL) {
+    sim_->break_pc_->SetInstructionBits(sim_->break_instr_);
+  }
+}
+
+
+void MipsDebugger::RedoBreakpoints() {
+  if (sim_->break_pc_ != NULL) {
+    sim_->break_pc_->SetInstructionBits(kBreakpointInstr);
+  }
+}
+
+
+void MipsDebugger::PrintAllRegs() {
+#define REG_INFO(n) Registers::Name(n), GetRegisterValue(n), GetRegisterValue(n)
+
+  PrintF("\n");
+  // at, v0, a0.
+  PrintF("%3s: 0x%08x %10d\t%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         REG_INFO(1), REG_INFO(2), REG_INFO(4));
+  // v1, a1.
+  PrintF("%26s\t%3s: 0x%08x %10d\t%3s: 0x%08x %10d\n",
+         "", REG_INFO(3), REG_INFO(5));
+  // a2.
+  PrintF("%26s\t%26s\t%3s: 0x%08x %10d\n", "", "", REG_INFO(6));
+  // a3.
+  PrintF("%26s\t%26s\t%3s: 0x%08x %10d\n", "", "", REG_INFO(7));
+  PrintF("\n");
+  // t0-t7, s0-s7
+  for (int i = 0; i < 8; i++) {
+    PrintF("%3s: 0x%08x %10d\t%3s: 0
