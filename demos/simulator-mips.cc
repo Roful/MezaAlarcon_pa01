@@ -382,4 +382,27 @@ void MipsDebugger::Debug() {
       // Use a reasonably large buffer.
       v8::internal::EmbeddedVector<char, 256> buffer;
       dasm.InstructionDecode(buffer,
-                          
+                             reinterpret_cast<byte*>(sim_->get_pc()));
+      PrintF("  0x%08x  %s\n", sim_->get_pc(), buffer.start());
+      last_pc = sim_->get_pc();
+    }
+    char* line = ReadLine("sim> ");
+    if (line == NULL) {
+      break;
+    } else {
+      // Use sscanf to parse the individual parts of the command line. At the
+      // moment no command expects more than two parameters.
+      int argc = SScanF(line,
+                        "%" XSTR(COMMAND_SIZE) "s "
+                        "%" XSTR(ARG_SIZE) "s "
+                        "%" XSTR(ARG_SIZE) "s",
+                        cmd, arg1, arg2);
+      if ((strcmp(cmd, "si") == 0) || (strcmp(cmd, "stepi") == 0)) {
+        Instruction* instr = reinterpret_cast<Instruction*>(sim_->get_pc());
+        if (!(instr->IsTrap()) ||
+            instr->InstructionBits() == rtCallRedirInstr) {
+          sim_->InstructionDecode(
+              reinterpret_cast<Instruction*>(sim_->get_pc()));
+        } else {
+          // Allow si to jump over generated breakpoints.
+          PrintF("/!\\ Jumpin
