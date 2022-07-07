@@ -344,4 +344,42 @@ void MipsDebugger::PrintAllRegsIncludingFPU() {
   PrintF("%3s,%3s: 0x%08x%08x %16.4e\n", FPU_REG_INFO(24));
   PrintF("%3s,%3s: 0x%08x%08x %16.4e\n", FPU_REG_INFO(26));
   PrintF("%3s,%3s: 0x%08x%08x %16.4e\n", FPU_REG_INFO(28));
-  PrintF("%3s,%3s: 0x%08x%0
+  PrintF("%3s,%3s: 0x%08x%08x %16.4e\n", FPU_REG_INFO(30));
+
+#undef REG_INFO
+#undef FPU_REG_INFO
+}
+
+
+void MipsDebugger::Debug() {
+  intptr_t last_pc = -1;
+  bool done = false;
+
+#define COMMAND_SIZE 63
+#define ARG_SIZE 255
+
+#define STR(a) #a
+#define XSTR(a) STR(a)
+
+  char cmd[COMMAND_SIZE + 1];
+  char arg1[ARG_SIZE + 1];
+  char arg2[ARG_SIZE + 1];
+  char* argv[3] = { cmd, arg1, arg2 };
+
+  // Make sure to have a proper terminating character if reaching the limit.
+  cmd[COMMAND_SIZE] = 0;
+  arg1[ARG_SIZE] = 0;
+  arg2[ARG_SIZE] = 0;
+
+  // Undo all set breakpoints while running in the debugger shell. This will
+  // make them invisible to all commands.
+  UndoBreakpoints();
+
+  while (!done && (sim_->get_pc() != Simulator::end_sim_pc)) {
+    if (last_pc != sim_->get_pc()) {
+      disasm::NameConverter converter;
+      disasm::Disassembler dasm(converter);
+      // Use a reasonably large buffer.
+      v8::internal::EmbeddedVector<char, 256> buffer;
+      dasm.InstructionDecode(buffer,
+                          
