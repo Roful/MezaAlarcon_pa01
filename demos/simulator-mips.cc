@@ -405,4 +405,27 @@ void MipsDebugger::Debug() {
               reinterpret_cast<Instruction*>(sim_->get_pc()));
         } else {
           // Allow si to jump over generated breakpoints.
-          PrintF("/!\\ Jumpin
+          PrintF("/!\\ Jumping over generated breakpoint.\n");
+          sim_->set_pc(sim_->get_pc() + Instruction::kInstrSize);
+        }
+      } else if ((strcmp(cmd, "c") == 0) || (strcmp(cmd, "cont") == 0)) {
+        // Execute the one instruction we broke at with breakpoints disabled.
+        sim_->InstructionDecode(reinterpret_cast<Instruction*>(sim_->get_pc()));
+        // Leave the debugger shell.
+        done = true;
+      } else if ((strcmp(cmd, "p") == 0) || (strcmp(cmd, "print") == 0)) {
+        if (argc == 2) {
+          int32_t value;
+          float fvalue;
+          if (strcmp(arg1, "all") == 0) {
+            PrintAllRegs();
+          } else if (strcmp(arg1, "allf") == 0) {
+            PrintAllRegsIncludingFPU();
+          } else {
+            int regnum = Registers::Number(arg1);
+            int fpuregnum = FPURegisters::Number(arg1);
+
+            if (regnum != kInvalidRegister) {
+              value = GetRegisterValue(regnum);
+              PrintF("%s: 0x%08x %d \n", arg1, value, value);
+            }
