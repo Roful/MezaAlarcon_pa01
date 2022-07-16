@@ -428,4 +428,27 @@ void MipsDebugger::Debug() {
             if (regnum != kInvalidRegister) {
               value = GetRegisterValue(regnum);
               PrintF("%s: 0x%08x %d \n", arg1, value, value);
+            } else if (fpuregnum != kInvalidFPURegister) {
+              if (fpuregnum % 2 == 1) {
+                value = GetFPURegisterValueInt(fpuregnum);
+                fvalue = GetFPURegisterValueFloat(fpuregnum);
+                PrintF("%s: 0x%08x %11.4e\n", arg1, value, fvalue);
+              } else {
+                double dfvalue;
+                int32_t lvalue1 = GetFPURegisterValueInt(fpuregnum);
+                int32_t lvalue2 = GetFPURegisterValueInt(fpuregnum + 1);
+                dfvalue = GetFPURegisterValueDouble(fpuregnum);
+                PrintF("%3s,%3s: 0x%08x%08x %16.4e\n",
+                       FPURegisters::Name(fpuregnum+1),
+                       FPURegisters::Name(fpuregnum),
+                       lvalue1,
+                       lvalue2,
+                       dfvalue);
+              }
+            } else {
+              PrintF("%s unrecognized\n", arg1);
             }
+          }
+        } else {
+          if (argc == 3) {
+            if (strcmp(arg2
