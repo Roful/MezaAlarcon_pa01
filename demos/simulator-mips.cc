@@ -451,4 +451,31 @@ void MipsDebugger::Debug() {
           }
         } else {
           if (argc == 3) {
-            if (strcmp(arg2
+            if (strcmp(arg2, "single") == 0) {
+              int32_t value;
+              float fvalue;
+              int fpuregnum = FPURegisters::Number(arg1);
+
+              if (fpuregnum != kInvalidFPURegister) {
+                value = GetFPURegisterValueInt(fpuregnum);
+                fvalue = GetFPURegisterValueFloat(fpuregnum);
+                PrintF("%s: 0x%08x %11.4e\n", arg1, value, fvalue);
+              } else {
+                PrintF("%s unrecognized\n", arg1);
+              }
+            } else {
+              PrintF("print <fpu register> single\n");
+            }
+          } else {
+            PrintF("print <register> or print <fpu register> single\n");
+          }
+        }
+      } else if ((strcmp(cmd, "po") == 0)
+                 || (strcmp(cmd, "printobject") == 0)) {
+        if (argc == 2) {
+          int32_t value;
+          if (GetValue(arg1, &value)) {
+            Object* obj = reinterpret_cast<Object*>(value);
+            PrintF("%s: \n", arg1);
+#ifdef DEBUG
+ 
