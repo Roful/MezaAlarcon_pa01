@@ -509,4 +509,34 @@ void MipsDebugger::Debug() {
         int32_t words;
         if (argc == next_arg) {
           words = 10;
-        } else if (argc
+        } else if (argc == next_arg + 1) {
+          if (!GetValue(argv[next_arg], &words)) {
+            words = 10;
+          }
+        }
+        end = cur + words;
+
+        while (cur < end) {
+          PrintF("  0x%08x:  0x%08x %10d",
+                 reinterpret_cast<intptr_t>(cur), *cur, *cur);
+          HeapObject* obj = reinterpret_cast<HeapObject*>(*cur);
+          int value = *cur;
+          Heap* current_heap = v8::internal::Isolate::Current()->heap();
+          if (current_heap->Contains(obj) || ((value & 1) == 0)) {
+            PrintF(" (");
+            if ((value & 1) == 0) {
+              PrintF("smi %d", value / 2);
+            } else {
+              obj->ShortPrint();
+            }
+            PrintF(")");
+          }
+          PrintF("\n");
+          cur++;
+        }
+
+      } else if ((strcmp(cmd, "disasm") == 0) ||
+                 (strcmp(cmd, "dpc") == 0) ||
+                 (strcmp(cmd, "di") == 0)) {
+        disasm::NameConverter converter;
+        disasm::Disassembl
