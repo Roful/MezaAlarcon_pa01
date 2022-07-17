@@ -539,4 +539,29 @@ void MipsDebugger::Debug() {
                  (strcmp(cmd, "dpc") == 0) ||
                  (strcmp(cmd, "di") == 0)) {
         disasm::NameConverter converter;
-        disasm::Disassembl
+        disasm::Disassembler dasm(converter);
+        // Use a reasonably large buffer.
+        v8::internal::EmbeddedVector<char, 256> buffer;
+
+        byte* cur = NULL;
+        byte* end = NULL;
+
+        if (argc == 1) {
+          cur = reinterpret_cast<byte*>(sim_->get_pc());
+          end = cur + (10 * Instruction::kInstrSize);
+        } else if (argc == 2) {
+          int regnum = Registers::Number(arg1);
+          if (regnum != kInvalidRegister || strncmp(arg1, "0x", 2) == 0) {
+            // The argument is an address or a register name.
+            int32_t value;
+            if (GetValue(arg1, &value)) {
+              cur = reinterpret_cast<byte*>(value);
+              // Disassemble 10 instructions at <arg1>.
+              end = cur + (10 * Instruction::kInstrSize);
+            }
+          } else {
+            // The argument is the number of instructions.
+            int32_t value;
+            if (GetValue(arg1, &value)) {
+              cur = reinterpret_cast<byte*>(sim_->get_pc());
+              // Disass
