@@ -478,4 +478,35 @@ void MipsDebugger::Debug() {
             Object* obj = reinterpret_cast<Object*>(value);
             PrintF("%s: \n", arg1);
 #ifdef DEBUG
- 
+            obj->PrintLn();
+#else
+            obj->ShortPrint();
+            PrintF("\n");
+#endif
+          } else {
+            PrintF("%s unrecognized\n", arg1);
+          }
+        } else {
+          PrintF("printobject <value>\n");
+        }
+      } else if (strcmp(cmd, "stack") == 0 || strcmp(cmd, "mem") == 0) {
+        int32_t* cur = NULL;
+        int32_t* end = NULL;
+        int next_arg = 1;
+
+        if (strcmp(cmd, "stack") == 0) {
+          cur = reinterpret_cast<int32_t*>(sim_->get_register(Simulator::sp));
+        } else {  // Command "mem".
+          int32_t value;
+          if (!GetValue(arg1, &value)) {
+            PrintF("%s unrecognized\n", arg1);
+            continue;
+          }
+          cur = reinterpret_cast<int32_t*>(value);
+          next_arg++;
+        }
+
+        int32_t words;
+        if (argc == next_arg) {
+          words = 10;
+        } else if (argc
