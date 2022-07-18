@@ -564,4 +564,31 @@ void MipsDebugger::Debug() {
             int32_t value;
             if (GetValue(arg1, &value)) {
               cur = reinterpret_cast<byte*>(sim_->get_pc());
-              // Disass
+              // Disassemble <arg1> instructions.
+              end = cur + (value * Instruction::kInstrSize);
+            }
+          }
+        } else {
+          int32_t value1;
+          int32_t value2;
+          if (GetValue(arg1, &value1) && GetValue(arg2, &value2)) {
+            cur = reinterpret_cast<byte*>(value1);
+            end = cur + (value2 * Instruction::kInstrSize);
+          }
+        }
+
+        while (cur < end) {
+          dasm.InstructionDecode(buffer, cur);
+          PrintF("  0x%08x  %s\n",
+              reinterpret_cast<intptr_t>(cur), buffer.start());
+          cur += Instruction::kInstrSize;
+        }
+      } else if (strcmp(cmd, "gdb") == 0) {
+        PrintF("relinquishing control to gdb\n");
+        v8::internal::OS::DebugBreak();
+        PrintF("regaining control from gdb\n");
+      } else if (strcmp(cmd, "break") == 0) {
+        if (argc == 2) {
+          int32_t value;
+          if (GetValue(arg1, &value)) {
+            if (!SetBre
