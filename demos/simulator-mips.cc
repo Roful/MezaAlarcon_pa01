@@ -591,4 +591,29 @@ void MipsDebugger::Debug() {
         if (argc == 2) {
           int32_t value;
           if (GetValue(arg1, &value)) {
-            if (!SetBre
+            if (!SetBreakpoint(reinterpret_cast<Instruction*>(value))) {
+              PrintF("setting breakpoint failed\n");
+            }
+          } else {
+            PrintF("%s unrecognized\n", arg1);
+          }
+        } else {
+          PrintF("break <address>\n");
+        }
+      } else if (strcmp(cmd, "del") == 0) {
+        if (!DeleteBreakpoint(NULL)) {
+          PrintF("deleting breakpoint failed\n");
+        }
+      } else if (strcmp(cmd, "flags") == 0) {
+        PrintF("No flags on MIPS !\n");
+      } else if (strcmp(cmd, "stop") == 0) {
+        int32_t value;
+        intptr_t stop_pc = sim_->get_pc() -
+            2 * Instruction::kInstrSize;
+        Instruction* stop_instr = reinterpret_cast<Instruction*>(stop_pc);
+        Instruction* msg_address =
+          reinterpret_cast<Instruction*>(stop_pc +
+              Instruction::kInstrSize);
+        if ((argc == 2) && (strcmp(arg1, "unstop") == 0)) {
+          // Remove the current stop.
+          if (sim_->IsStopInstruction(stop_instr)
