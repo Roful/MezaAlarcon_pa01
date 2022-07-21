@@ -616,4 +616,30 @@ void MipsDebugger::Debug() {
               Instruction::kInstrSize);
         if ((argc == 2) && (strcmp(arg1, "unstop") == 0)) {
           // Remove the current stop.
-          if (sim_->IsStopInstruction(stop_instr)
+          if (sim_->IsStopInstruction(stop_instr)) {
+            stop_instr->SetInstructionBits(kNopInstr);
+            msg_address->SetInstructionBits(kNopInstr);
+          } else {
+            PrintF("Not at debugger stop.\n");
+          }
+        } else if (argc == 3) {
+          // Print information about all/the specified breakpoint(s).
+          if (strcmp(arg1, "info") == 0) {
+            if (strcmp(arg2, "all") == 0) {
+              PrintF("Stop information:\n");
+              for (uint32_t i = kMaxWatchpointCode + 1;
+                   i <= kMaxStopCode;
+                   i++) {
+                sim_->PrintStopInfo(i);
+              }
+            } else if (GetValue(arg2, &value)) {
+              sim_->PrintStopInfo(value);
+            } else {
+              PrintF("Unrecognized argument.\n");
+            }
+          } else if (strcmp(arg1, "enable") == 0) {
+            // Enable all/the specified breakpoint(s).
+            if (strcmp(arg2, "all") == 0) {
+              for (uint32_t i = kMaxWatchpointCode + 1;
+                   i <= kMaxStopCode;
+   
