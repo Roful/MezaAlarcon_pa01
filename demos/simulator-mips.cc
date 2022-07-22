@@ -642,4 +642,31 @@ void MipsDebugger::Debug() {
             if (strcmp(arg2, "all") == 0) {
               for (uint32_t i = kMaxWatchpointCode + 1;
                    i <= kMaxStopCode;
-   
+                   i++) {
+                sim_->EnableStop(i);
+              }
+            } else if (GetValue(arg2, &value)) {
+              sim_->EnableStop(value);
+            } else {
+              PrintF("Unrecognized argument.\n");
+            }
+          } else if (strcmp(arg1, "disable") == 0) {
+            // Disable all/the specified breakpoint(s).
+            if (strcmp(arg2, "all") == 0) {
+              for (uint32_t i = kMaxWatchpointCode + 1;
+                   i <= kMaxStopCode;
+                   i++) {
+                sim_->DisableStop(i);
+              }
+            } else if (GetValue(arg2, &value)) {
+              sim_->DisableStop(value);
+            } else {
+              PrintF("Unrecognized argument.\n");
+            }
+          }
+        } else {
+          PrintF("Wrong usage. Use help command for more information.\n");
+        }
+      } else if ((strcmp(cmd, "stat") == 0) || (strcmp(cmd, "st") == 0)) {
+        // Print registers and disassemble.
+       
