@@ -669,4 +669,30 @@ void MipsDebugger::Debug() {
         }
       } else if ((strcmp(cmd, "stat") == 0) || (strcmp(cmd, "st") == 0)) {
         // Print registers and disassemble.
-       
+        PrintAllRegs();
+        PrintF("\n");
+
+        disasm::NameConverter converter;
+        disasm::Disassembler dasm(converter);
+        // Use a reasonably large buffer.
+        v8::internal::EmbeddedVector<char, 256> buffer;
+
+        byte* cur = NULL;
+        byte* end = NULL;
+
+        if (argc == 1) {
+          cur = reinterpret_cast<byte*>(sim_->get_pc());
+          end = cur + (10 * Instruction::kInstrSize);
+        } else if (argc == 2) {
+          int32_t value;
+          if (GetValue(arg1, &value)) {
+            cur = reinterpret_cast<byte*>(value);
+            // no length parameter passed, assume 10 instructions
+            end = cur + (10 * Instruction::kInstrSize);
+          }
+        } else {
+          int32_t value1;
+          int32_t value2;
+          if (GetValue(arg1, &value1) && GetValue(arg2, &value2)) {
+            cur = reinterpret_cast<byte*>(value1);
+            end = cur + (value2 * Instruction::kInstrSi
