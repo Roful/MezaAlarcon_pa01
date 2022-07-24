@@ -695,4 +695,27 @@ void MipsDebugger::Debug() {
           int32_t value2;
           if (GetValue(arg1, &value1) && GetValue(arg2, &value2)) {
             cur = reinterpret_cast<byte*>(value1);
-            end = cur + (value2 * Instruction::kInstrSi
+            end = cur + (value2 * Instruction::kInstrSize);
+          }
+        }
+
+        while (cur < end) {
+          dasm.InstructionDecode(buffer, cur);
+          PrintF("  0x%08x  %s\n",
+                 reinterpret_cast<intptr_t>(cur), buffer.start());
+          cur += Instruction::kInstrSize;
+        }
+      } else if ((strcmp(cmd, "h") == 0) || (strcmp(cmd, "help") == 0)) {
+        PrintF("cont\n");
+        PrintF("  continue execution (alias 'c')\n");
+        PrintF("stepi\n");
+        PrintF("  step one instruction (alias 'si')\n");
+        PrintF("print <register>\n");
+        PrintF("  print register content (alias 'p')\n");
+        PrintF("  use register name 'all' to print all registers\n");
+        PrintF("printobject <register>\n");
+        PrintF("  print an object from a register (alias 'po')\n");
+        PrintF("stack [<words>]\n");
+        PrintF("  dump stack content, default dump 10 words)\n");
+        PrintF("mem <address> [<words>]\n");
+        PrintF("  dump memory content, default dump 10 word
