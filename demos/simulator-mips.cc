@@ -718,4 +718,25 @@ void MipsDebugger::Debug() {
         PrintF("stack [<words>]\n");
         PrintF("  dump stack content, default dump 10 words)\n");
         PrintF("mem <address> [<words>]\n");
-        PrintF("  dump memory content, default dump 10 word
+        PrintF("  dump memory content, default dump 10 words)\n");
+        PrintF("flags\n");
+        PrintF("  print flags\n");
+        PrintF("disasm [<instructions>]\n");
+        PrintF("disasm [<address/register>]\n");
+        PrintF("disasm [[<address/register>] <instructions>]\n");
+        PrintF("  disassemble code, default is 10 instructions\n");
+        PrintF("  from pc (alias 'di')\n");
+        PrintF("gdb\n");
+        PrintF("  enter gdb\n");
+        PrintF("break <address>\n");
+        PrintF("  set a break point on the address\n");
+        PrintF("del\n");
+        PrintF("  delete the breakpoint\n");
+        PrintF("stop feature:\n");
+        PrintF("  Description:\n");
+        PrintF("    Stops are debug instructions inserted by\n");
+        PrintF("    the Assembler::stop() function.\n");
+        PrintF("    When hitting a stop, the Simulator will\n");
+        PrintF("    stop and and give control to the Debugger.\n");
+        PrintF("    All stop codes are watched:\n");
+        PrintF("    - They can be e
