@@ -739,4 +739,29 @@ void MipsDebugger::Debug() {
         PrintF("    When hitting a stop, the Simulator will\n");
         PrintF("    stop and and give control to the Debugger.\n");
         PrintF("    All stop codes are watched:\n");
-        PrintF("    - They can be e
+        PrintF("    - They can be enabled / disabled: the Simulator\n");
+        PrintF("       will / won't stop when hitting them.\n");
+        PrintF("    - The Simulator keeps track of how many times they \n");
+        PrintF("      are met. (See the info command.) Going over a\n");
+        PrintF("      disabled stop still increases its counter. \n");
+        PrintF("  Commands:\n");
+        PrintF("    stop info all/<code> : print infos about number <code>\n");
+        PrintF("      or all stop(s).\n");
+        PrintF("    stop enable/disable all/<code> : enables / disables\n");
+        PrintF("      all or number <code> stop(s)\n");
+        PrintF("    stop unstop\n");
+        PrintF("      ignore the stop instruction at the current location\n");
+        PrintF("      from now on\n");
+      } else {
+        PrintF("Unknown command: %s\n", cmd);
+      }
+    }
+    DeleteArray(line);
+  }
+
+  // Add all the breakpoints back to stop execution and enter the debugger
+  // shell when hit.
+  RedoBreakpoints();
+
+#undef COMMAND_SIZE
+#u
