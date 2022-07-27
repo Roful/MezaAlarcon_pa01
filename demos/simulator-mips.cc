@@ -764,4 +764,40 @@ void MipsDebugger::Debug() {
   RedoBreakpoints();
 
 #undef COMMAND_SIZE
-#u
+#undef ARG_SIZE
+
+#undef STR
+#undef XSTR
+}
+
+
+static bool ICacheMatch(void* one, void* two) {
+  ASSERT((reinterpret_cast<intptr_t>(one) & CachePage::kPageMask) == 0);
+  ASSERT((reinterpret_cast<intptr_t>(two) & CachePage::kPageMask) == 0);
+  return one == two;
+}
+
+
+static uint32_t ICacheHash(void* key) {
+  return static_cast<uint32_t>(reinterpret_cast<uintptr_t>(key)) >> 2;
+}
+
+
+static bool AllOnOnePage(uintptr_t start, int size) {
+  intptr_t start_page = (start & ~CachePage::kPageMask);
+  intptr_t end_page = ((start + size) & ~CachePage::kPageMask);
+  return start_page == end_page;
+}
+
+
+void Simulator::FlushICache(v8::internal::HashMap* i_cache,
+                            void* start_addr,
+                            size_t size) {
+  intptr_t start = reinterpret_cast<intptr_t>(start_addr);
+  int intra_line = (start & CachePage::kLineMask);
+  start -= intra_line;
+  size += intra_line;
+  size = ((size - 1) | CachePage::kLineMask) + 1;
+  int offset = (start & CachePage::kPageMask);
+  while (!AllOnOnePage(start, size - 1)) {
+    int by
