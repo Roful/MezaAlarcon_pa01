@@ -929,4 +929,29 @@ class Redirection {
         next_(NULL) {
     Isolate* isolate = Isolate::Current();
     next_ = isolate->simulator_redirection();
- 
+    Simulator::current(isolate)->
+        FlushICache(isolate->simulator_i_cache(),
+                    reinterpret_cast<void*>(&swi_instruction_),
+                    Instruction::kInstrSize);
+    isolate->set_simulator_redirection(this);
+  }
+
+  void* address_of_swi_instruction() {
+    return reinterpret_cast<void*>(&swi_instruction_);
+  }
+
+  void* external_function() { return external_function_; }
+  ExternalReference::Type type() { return type_; }
+
+  static Redirection* Get(void* external_function,
+                          ExternalReference::Type type) {
+    Isolate* isolate = Isolate::Current();
+    Redirection* current = isolate->simulator_redirection();
+    for (; current != NULL; current = current->next_) {
+      if (current->external_function_ == external_function) return current;
+    }
+    return new Redirection(external_function, type);
+  }
+
+  static Redirection* FromSwiInstruction(Instruction* swi_instruction) {
+    char
