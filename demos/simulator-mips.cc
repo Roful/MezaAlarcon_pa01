@@ -879,4 +879,32 @@ Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
     isolate_->set_simulator_i_cache(i_cache_);
   }
   Initialize(isolate);
-  // Setup si
+  // Setup simulator support first. Some of this information is needed to
+  // setup the architecture state.
+  stack_ = reinterpret_cast<char*>(malloc(stack_size_));
+  pc_modified_ = false;
+  icount_ = 0;
+  break_count_ = 0;
+  break_pc_ = NULL;
+  break_instr_ = 0;
+
+  // Setup architecture state.
+  // All registers are initialized to zero to start with.
+  for (int i = 0; i < kNumSimuRegisters; i++) {
+    registers_[i] = 0;
+  }
+  for (int i = 0; i < kNumFPURegisters; i++) {
+    FPUregisters_[i] = 0;
+  }
+  FCSR_ = 0;
+
+  // The sp is initialized to point to the bottom (high address) of the
+  // allocated stack area. To be safe in potential stack underflows we leave
+  // some buffer below.
+  registers_[sp] = reinterpret_cast<int32_t>(stack_) + stack_size_ - 64;
+  // The ra and pc are initialized to a known bad value that will cause an
+  // access violation if the simulator ever tries to execute it.
+  registers_[pc] = bad_ra;
+  registers_[ra] = bad_ra;
+  InitializeCoverage();
+  
