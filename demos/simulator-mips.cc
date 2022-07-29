@@ -984,4 +984,38 @@ Simulator* Simulator::current(Isolate* isolate) {
 
   Simulator* sim = isolate_data->simulator();
   if (sim == NULL) {
- 
+    // TODO(146): delete the simulator object when a thread/isolate goes away.
+    sim = new Simulator(isolate);
+    isolate_data->set_simulator(sim);
+  }
+  return sim;
+}
+
+
+// Sets the register in the architecture state. It will also deal with updating
+// Simulator internal state for special registers such as PC.
+void Simulator::set_register(int reg, int32_t value) {
+  ASSERT((reg >= 0) && (reg < kNumSimuRegisters));
+  if (reg == pc) {
+    pc_modified_ = true;
+  }
+
+  // Zero register always holds 0.
+  registers_[reg] = (reg == 0) ? 0 : value;
+}
+
+
+void Simulator::set_fpu_register(int fpureg, int32_t value) {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters));
+  FPUregisters_[fpureg] = value;
+}
+
+
+void Simulator::set_fpu_register_float(int fpureg, float value) {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters));
+  *BitCast<float*>(&FPUregisters_[fpureg]) = value;
+}
+
+
+void Simulator::set_fpu_register_double(int fpureg, double value) {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters) &
