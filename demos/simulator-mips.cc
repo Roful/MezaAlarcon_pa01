@@ -907,4 +907,26 @@ Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
   registers_[pc] = bad_ra;
   registers_[ra] = bad_ra;
   InitializeCoverage();
-  
+  for (int i = 0; i < kNumExceptions; i++) {
+    exceptions[i] = 0;
+  }
+}
+
+
+// When the generated code calls an external reference we need to catch that in
+// the simulator.  The external reference will be a function compiled for the
+// host architecture.  We need to call that function instead of trying to
+// execute it with the simulator.  We do that by redirecting the external
+// reference to a swi (software-interrupt) instruction that is handled by
+// the simulator.  We write the original destination of the jump just at a known
+// offset from the swi instruction so the simulator knows what to call.
+class Redirection {
+ public:
+  Redirection(void* external_function, ExternalReference::Type type)
+      : external_function_(external_function),
+        swi_instruction_(rtCallRedirInstr),
+        type_(type),
+        next_(NULL) {
+    Isolate* isolate = Isolate::Current();
+    next_ = isolate->simulator_redirection();
+ 
