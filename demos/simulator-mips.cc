@@ -850,4 +850,33 @@ void Simulator::CheckICache(v8::internal::HashMap* i_cache,
   CachePage* cache_page = GetCachePage(i_cache, page);
   char* cache_valid_byte = cache_page->ValidityByte(offset);
   bool cache_hit = (*cache_valid_byte == CachePage::LINE_VALID);
-  char* cached_line = cache_page->CachedData(of
+  char* cached_line = cache_page->CachedData(offset & ~CachePage::kLineMask);
+  if (cache_hit) {
+    // Check that the data in memory matches the contents of the I-cache.
+    CHECK(memcmp(reinterpret_cast<void*>(instr),
+                 cache_page->CachedData(offset),
+                 Instruction::kInstrSize) == 0);
+  } else {
+    // Cache miss.  Load memory into the cache.
+    memcpy(cached_line, line, CachePage::kLineLength);
+    *cache_valid_byte = CachePage::LINE_VALID;
+  }
+}
+
+
+void Simulator::Initialize(Isolate* isolate) {
+  if (isolate->simulator_initialized()) return;
+  isolate->set_simulator_initialized(true);
+  ::v8::internal::ExternalReference::set_redirector(isolate,
+                                                    &RedirectExternalReference);
+}
+
+
+Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
+  i_cache_ = isolate_->simulator_i_cache();
+  if (i_cache_ == NULL) {
+    i_cache_ = new v8::internal::HashMap(&ICacheMatch);
+    isolate_->set_simulator_i_cache(i_cache_);
+  }
+  Initialize(isolate);
+  // Setup si
