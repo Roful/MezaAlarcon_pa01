@@ -954,4 +954,34 @@ class Redirection {
   }
 
   static Redirection* FromSwiInstruction(Instruction* swi_instruction) {
-    char
+    char* addr_of_swi = reinterpret_cast<char*>(swi_instruction);
+    char* addr_of_redirection =
+        addr_of_swi - OFFSET_OF(Redirection, swi_instruction_);
+    return reinterpret_cast<Redirection*>(addr_of_redirection);
+  }
+
+ private:
+  void* external_function_;
+  uint32_t swi_instruction_;
+  ExternalReference::Type type_;
+  Redirection* next_;
+};
+
+
+void* Simulator::RedirectExternalReference(void* external_function,
+                                           ExternalReference::Type type) {
+  Redirection* redirection = Redirection::Get(external_function, type);
+  return redirection->address_of_swi_instruction();
+}
+
+
+// Get the active Simulator for the current thread.
+Simulator* Simulator::current(Isolate* isolate) {
+  v8::internal::Isolate::PerIsolateThreadData* isolate_data =
+       isolate->FindOrAllocatePerThreadDataForThisThread();
+  ASSERT(isolate_data != NULL);
+  ASSERT(isolate_data != NULL);
+
+  Simulator* sim = isolate_data->simulator();
+  if (sim == NULL) {
+ 
