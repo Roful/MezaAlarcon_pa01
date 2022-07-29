@@ -800,4 +800,35 @@ void Simulator::FlushICache(v8::internal::HashMap* i_cache,
   size = ((size - 1) | CachePage::kLineMask) + 1;
   int offset = (start & CachePage::kPageMask);
   while (!AllOnOnePage(start, size - 1)) {
-    int by
+    int bytes_to_flush = CachePage::kPageSize - offset;
+    FlushOnePage(i_cache, start, bytes_to_flush);
+    start += bytes_to_flush;
+    size -= bytes_to_flush;
+    ASSERT_EQ(0, start & CachePage::kPageMask);
+    offset = 0;
+  }
+  if (size != 0) {
+    FlushOnePage(i_cache, start, size);
+  }
+}
+
+
+CachePage* Simulator::GetCachePage(v8::internal::HashMap* i_cache, void* page) {
+  v8::internal::HashMap::Entry* entry = i_cache->Lookup(page,
+                                                        ICacheHash(page),
+                                                        true);
+  if (entry->value == NULL) {
+    CachePage* new_page = new CachePage();
+    entry->value = new_page;
+  }
+  return reinterpret_cast<CachePage*>(entry->value);
+}
+
+
+// Flush from start up to and not including start + size.
+void Simulator::FlushOnePage(v8::internal::HashMap* i_cache,
+                             intptr_t start,
+                             int size) {
+  ASSERT(size <= CachePage::kPageSize);
+  ASSERT(AllOnOnePage(start, size - 1));
+  A
