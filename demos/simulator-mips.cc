@@ -831,4 +831,23 @@ void Simulator::FlushOnePage(v8::internal::HashMap* i_cache,
                              int size) {
   ASSERT(size <= CachePage::kPageSize);
   ASSERT(AllOnOnePage(start, size - 1));
-  A
+  ASSERT((start & CachePage::kLineMask) == 0);
+  ASSERT((size & CachePage::kLineMask) == 0);
+  void* page = reinterpret_cast<void*>(start & (~CachePage::kPageMask));
+  int offset = (start & CachePage::kPageMask);
+  CachePage* cache_page = GetCachePage(i_cache, page);
+  char* valid_bytemap = cache_page->ValidityByte(offset);
+  memset(valid_bytemap, CachePage::LINE_INVALID, size >> CachePage::kLineShift);
+}
+
+
+void Simulator::CheckICache(v8::internal::HashMap* i_cache,
+                            Instruction* instr) {
+  intptr_t address = reinterpret_cast<intptr_t>(instr);
+  void* page = reinterpret_cast<void*>(address & (~CachePage::kPageMask));
+  void* line = reinterpret_cast<void*>(address & (~CachePage::kLineMask));
+  int offset = (address & CachePage::kPageMask);
+  CachePage* cache_page = GetCachePage(i_cache, page);
+  char* cache_valid_byte = cache_page->ValidityByte(offset);
+  bool cache_hit = (*cache_valid_byte == CachePage::LINE_VALID);
+  char* cached_line = cache_page->CachedData(of
