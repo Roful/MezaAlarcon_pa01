@@ -1018,4 +1018,35 @@ void Simulator::set_fpu_register_float(int fpureg, float value) {
 
 
 void Simulator::set_fpu_register_double(int fpureg, double value) {
-  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters) &
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters) && ((fpureg % 2) == 0));
+  *BitCast<double*>(&FPUregisters_[fpureg]) = value;
+}
+
+
+// Get the register from the architecture state. This function does handle
+// the special case of accessing the PC register.
+int32_t Simulator::get_register(int reg) const {
+  ASSERT((reg >= 0) && (reg < kNumSimuRegisters));
+  if (reg == 0)
+    return 0;
+  else
+    return registers_[reg] + ((reg == pc) ? Instruction::kPCReadOffset : 0);
+}
+
+
+int32_t Simulator::get_fpu_register(int fpureg) const {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters));
+  return FPUregisters_[fpureg];
+}
+
+
+int64_t Simulator::get_fpu_register_long(int fpureg) const {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters) && ((fpureg % 2) == 0));
+  return *BitCast<int64_t*>(
+      const_cast<int32_t*>(&FPUregisters_[fpureg]));
+}
+
+
+float Simulator::get_fpu_register_float(int fpureg) const {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters));
+  return *BitCast
