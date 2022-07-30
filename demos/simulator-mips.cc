@@ -1049,4 +1049,32 @@ int64_t Simulator::get_fpu_register_long(int fpureg) const {
 
 float Simulator::get_fpu_register_float(int fpureg) const {
   ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters));
-  return *BitCast
+  return *BitCast<float*>(
+      const_cast<int32_t*>(&FPUregisters_[fpureg]));
+}
+
+
+double Simulator::get_fpu_register_double(int fpureg) const {
+  ASSERT((fpureg >= 0) && (fpureg < kNumFPURegisters) && ((fpureg % 2) == 0));
+  return *BitCast<double*>(const_cast<int32_t*>(&FPUregisters_[fpureg]));
+}
+
+
+// For use in calls that take two double values, constructed either
+// from a0-a3 or f12 and f14.
+void Simulator::GetFpArgs(double* x, double* y) {
+  if (!IsMipsSoftFloatABI) {
+    *x = get_fpu_register_double(12);
+    *y = get_fpu_register_double(14);
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    int32_t* reg_buffer = reinterpret_cast<int32_t*>(buffer);
+
+    // Registers a0 and a1 -> x.
+    reg_buffer[0] = get_register(a0);
+    reg_buffer[1] = get_register(a1);
+    memcpy(x, buffer, sizeof(buffer));
+
+   
