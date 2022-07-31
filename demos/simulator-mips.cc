@@ -1209,4 +1209,37 @@ int32_t Simulator::get_pc() const {
 // simply disallow unaligned reads, but at some point we may want to move to
 // emulating the rotate behaviour.  Note that simulator runs have the runtime
 // system running directly on the host system and only generated code is
-// executed in the simulator.  Since the host is typically IA32 we
+// executed in the simulator.  Since the host is typically IA32 we will not
+// get the correct MIPS-like behaviour on unaligned accesses.
+
+int Simulator::ReadW(int32_t addr, Instruction* instr) {
+  if (addr >=0 && addr < 0x400) {
+    // This has to be a NULL-dereference, drop into debugger.
+    MipsDebugger dbg(this);
+    dbg.Debug();
+  }
+  if ((addr & kPointerAlignmentMask) == 0) {
+    intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  MipsDebugger dbg(this);
+  dbg.Debug();
+  return 0;
+}
+
+
+void Simulator::WriteW(int32_t addr, int value, Instruction* instr) {
+  if (addr >= 0 && addr < 0x400) {
+    // This has to be a NULL-dereference, drop into debugger.
+    MipsDebugger dbg(this);
+    dbg.Debug();
+  }
+  if ((addr & kPointerAlignmentMask) == 0) {
+    intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
+    *ptr = value;
+    return;
+  }
+  PrintF("Unaligned write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
