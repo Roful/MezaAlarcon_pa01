@@ -1108,4 +1108,37 @@ void Simulator::GetFpArgs(double* x) {
 void Simulator::GetFpArgs(double* x, int32_t* y) {
   if (!IsMipsSoftFloatABI) {
     *x = get_fpu_register_double(12);
-  
+    *y = get_register(a2);
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    int32_t* reg_buffer = reinterpret_cast<int32_t*>(buffer);
+    // Registers 0 and 1 -> x.
+    reg_buffer[0] = get_register(a0);
+    reg_buffer[1] = get_register(a1);
+    memcpy(x, buffer, sizeof(buffer));
+
+    // Register 2 -> y.
+    reg_buffer[0] = get_register(a2);
+    memcpy(y, buffer, sizeof(*y));
+  }
+}
+
+
+// The return value is either in v0/v1 or f0.
+void Simulator::SetFpResult(const double& result) {
+  if (!IsMipsSoftFloatABI) {
+    set_fpu_register_double(0, result);
+  } else {
+    char buffer[2 * sizeof(registers_[0])];
+    int32_t* reg_buffer = reinterpret_cast<int32_t*>(buffer);
+    memcpy(buffer, &result, sizeof(buffer));
+    // Copy result to v0 and v1.
+    set_register(v0, reg_buffer[0]);
+    set_register(v1, reg_buffer[1]);
+  }
+}
+
+
+// Helper functi
