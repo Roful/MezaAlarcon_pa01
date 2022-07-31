@@ -1177,4 +1177,36 @@ bool Simulator::set_fcsr_round_error(double original, double rounded) {
 
   if (rounded > INT_MAX || rounded < INT_MIN) {
     set_fcsr_bit(kFCSROverflowFlagBit, true);
-    // The reference is not 
+    // The reference is not really clear but it seems this is required:
+    set_fcsr_bit(kFCSRInvalidOpFlagBit, true);
+    ret = true;
+  }
+
+  return ret;
+}
+
+
+// Raw access to the PC register.
+void Simulator::set_pc(int32_t value) {
+  pc_modified_ = true;
+  registers_[pc] = value;
+}
+
+
+bool Simulator::has_bad_pc() const {
+  return ((registers_[pc] == bad_ra) || (registers_[pc] == end_sim_pc));
+}
+
+
+// Raw access to the PC register without the special adjustment when reading.
+int32_t Simulator::get_pc() const {
+  return registers_[pc];
+}
+
+
+// The MIPS cannot do unaligned reads and writes.  On some MIPS platforms an
+// interrupt is caused.  On others it does a funky rotation thing.  For now we
+// simply disallow unaligned reads, but at some point we may want to move to
+// emulating the rotate behaviour.  Note that simulator runs have the runtime
+// system running directly on the host system and only generated code is
+// executed in the simulator.  Since the host is typically IA32 we
