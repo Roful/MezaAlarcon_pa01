@@ -1141,4 +1141,40 @@ void Simulator::SetFpResult(const double& result) {
 }
 
 
-// Helper functi
+// Helper functions for setting and testing the FCSR register's bits.
+void Simulator::set_fcsr_bit(uint32_t cc, bool value) {
+  if (value) {
+    FCSR_ |= (1 << cc);
+  } else {
+    FCSR_ &= ~(1 << cc);
+  }
+}
+
+
+bool Simulator::test_fcsr_bit(uint32_t cc) {
+  return FCSR_ & (1 << cc);
+}
+
+
+// Sets the rounding error codes in FCSR based on the result of the rounding.
+// Returns true if the operation was invalid.
+bool Simulator::set_fcsr_round_error(double original, double rounded) {
+  bool ret = false;
+
+  if (!isfinite(original) || !isfinite(rounded)) {
+    set_fcsr_bit(kFCSRInvalidOpFlagBit, true);
+    ret = true;
+  }
+
+  if (original != rounded) {
+    set_fcsr_bit(kFCSRInexactFlagBit, true);
+  }
+
+  if (rounded < DBL_MIN && rounded > -DBL_MIN && rounded != 0) {
+    set_fcsr_bit(kFCSRUnderflowFlagBit, true);
+    ret = true;
+  }
+
+  if (rounded > INT_MAX || rounded < INT_MIN) {
+    set_fcsr_bit(kFCSROverflowFlagBit, true);
+    // The reference is not 
