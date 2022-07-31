@@ -1077,4 +1077,35 @@ void Simulator::GetFpArgs(double* x, double* y) {
     reg_buffer[1] = get_register(a1);
     memcpy(x, buffer, sizeof(buffer));
 
-   
+    // Registers a2 and a3 -> y.
+    reg_buffer[0] = get_register(a2);
+    reg_buffer[1] = get_register(a3);
+    memcpy(y, buffer, sizeof(buffer));
+  }
+}
+
+
+// For use in calls that take one double value, constructed either
+// from a0 and a1 or f12.
+void Simulator::GetFpArgs(double* x) {
+  if (!IsMipsSoftFloatABI) {
+    *x = get_fpu_register_double(12);
+  } else {
+    // We use a char buffer to get around the strict-aliasing rules which
+    // otherwise allow the compiler to optimize away the copy.
+    char buffer[sizeof(*x)];
+    int32_t* reg_buffer = reinterpret_cast<int32_t*>(buffer);
+    // Registers a0 and a1 -> x.
+    reg_buffer[0] = get_register(a0);
+    reg_buffer[1] = get_register(a1);
+    memcpy(x, buffer, sizeof(buffer));
+  }
+}
+
+
+// For use in calls that take one double value constructed either
+// from a0 and a1 or f12 and one integer value.
+void Simulator::GetFpArgs(double* x, int32_t* y) {
+  if (!IsMipsSoftFloatABI) {
+    *x = get_fpu_register_double(12);
+  
