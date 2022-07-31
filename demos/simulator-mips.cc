@@ -1243,3 +1243,42 @@ void Simulator::WriteW(int32_t addr, int value, Instruction* instr) {
     return;
   }
   PrintF("Unaligned write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  MipsDebugger dbg(this);
+  dbg.Debug();
+}
+
+
+double Simulator::ReadD(int32_t addr, Instruction* instr) {
+  if ((addr & kDoubleAlignmentMask) == 0) {
+    double* ptr = reinterpret_cast<double*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned (double) read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  OS::Abort();
+  return 0;
+}
+
+
+void Simulator::WriteD(int32_t addr, double value, Instruction* instr) {
+  if ((addr & kDoubleAlignmentMask) == 0) {
+    double* ptr = reinterpret_cast<double*>(addr);
+    *ptr = value;
+    return;
+  }
+  PrintF("Unaligned (double) write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  OS::Abort();
+}
+
+
+uint16_t Simulator::ReadHU(int32_t addr, Instruction* instr) {
+  if ((addr & 1) == 0) {
+    uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
+    return *ptr;
+  }
+  PrintF("Unaligned unsigned halfword read at 0x%08x
