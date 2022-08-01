@@ -1321,4 +1321,44 @@ void Simulator::WriteH(int32_t addr, int16_t value, Instruction* instr) {
     *ptr = value;
     return;
   }
-  PrintF("Un
+  PrintF("Unaligned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+         addr,
+         reinterpret_cast<intptr_t>(instr));
+  OS::Abort();
+}
+
+
+uint32_t Simulator::ReadBU(int32_t addr) {
+  uint8_t* ptr = reinterpret_cast<uint8_t*>(addr);
+  return *ptr & 0xff;
+}
+
+
+int32_t Simulator::ReadB(int32_t addr) {
+  int8_t* ptr = reinterpret_cast<int8_t*>(addr);
+  return *ptr;
+}
+
+
+void Simulator::WriteB(int32_t addr, uint8_t value) {
+  uint8_t* ptr = reinterpret_cast<uint8_t*>(addr);
+  *ptr = value;
+}
+
+
+void Simulator::WriteB(int32_t addr, int8_t value) {
+  int8_t* ptr = reinterpret_cast<int8_t*>(addr);
+  *ptr = value;
+}
+
+
+// Returns the limit of the stack area to enable checking for stack overflows.
+uintptr_t Simulator::StackLimit() const {
+  // Leave a safety margin of 256 bytes to prevent overrunning the stack when
+  // pushing values.
+  return reinterpret_cast<uintptr_t>(stack_) + 256;
+}
+
+
+// Unsupported instructions use Format to print an error and stop execution.
+v
