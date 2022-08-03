@@ -1398,4 +1398,25 @@ typedef v8::Handle<v8::Value> (*SimulatorRuntimeDirectGetterCall)(int32_t arg0,
 void Simulator::SoftwareInterrupt(Instruction* instr) {
   // There are several instructions that could get us here,
   // the break_ instruction, or several variants of traps. All
-  // Are "SPECIAL" class opc
+  // Are "SPECIAL" class opcode, and are distinuished by function.
+  int32_t func = instr->FunctionFieldRaw();
+  uint32_t code = (func == BREAK) ? instr->Bits(25, 6) : -1;
+
+  // We first check if we met a call_rt_redirected.
+  if (instr->InstructionBits() == rtCallRedirInstr) {
+    Redirection* redirection = Redirection::FromSwiInstruction(instr);
+    int32_t arg0 = get_register(a0);
+    int32_t arg1 = get_register(a1);
+    int32_t arg2 = get_register(a2);
+    int32_t arg3 = get_register(a3);
+    int32_t arg4 = 0;
+    int32_t arg5 = 0;
+
+    // Need to check if sp is valid before assigning arg4, arg5.
+    // This is a fix for cctest test-api/CatchStackOverflow which causes
+    // the stack to overflow. For some reason arm doesn't need this
+    // stack check here.
+    int32_t* stack_pointer = reinterpret_cast<int32_t*>(get_register(sp));
+    int32_t* stack = reinterpret_cast<int32_t*>(stack_);
+    if (stack_pointer >= stack && stack_pointer < stack + stack_size_ - 5) {
+      // Args 4 and 5 are o
