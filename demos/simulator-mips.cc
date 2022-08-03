@@ -1419,4 +1419,26 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
     int32_t* stack_pointer = reinterpret_cast<int32_t*>(get_register(sp));
     int32_t* stack = reinterpret_cast<int32_t*>(stack_);
     if (stack_pointer >= stack && stack_pointer < stack + stack_size_ - 5) {
-      // Args 4 and 5 are o
+      // Args 4 and 5 are on the stack after the reserved space for args 0..3.
+      arg4 = stack_pointer[4];
+      arg5 = stack_pointer[5];
+    }
+
+    bool fp_call =
+         (redirection->type() == ExternalReference::BUILTIN_FP_FP_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_COMPARE_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_FP_CALL) ||
+         (redirection->type() == ExternalReference::BUILTIN_FP_INT_CALL);
+
+    if (!IsMipsSoftFloatABI) {
+      // With the hard floating point calling convention, double
+      // arguments are passed in FPU registers. Fetch the arguments
+      // from there and call the builtin using soft floating point
+      // convention.
+      switch (redirection->type()) {
+      case ExternalReference::BUILTIN_FP_FP_CALL:
+      case ExternalReference::BUILTIN_COMPARE_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        arg2 = get_fpu_register(f14);
+        arg
