@@ -1441,4 +1441,32 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
         arg0 = get_fpu_register(f12);
         arg1 = get_fpu_register(f13);
         arg2 = get_fpu_register(f14);
-        arg
+        arg3 = get_fpu_register(f15);
+        break;
+      case ExternalReference::BUILTIN_FP_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        break;
+      case ExternalReference::BUILTIN_FP_INT_CALL:
+        arg0 = get_fpu_register(f12);
+        arg1 = get_fpu_register(f13);
+        arg2 = get_register(a2);
+        break;
+      default:
+        break;
+      }
+    }
+
+    // This is dodgy but it works because the C entry stubs are never moved.
+    // See comment in codegen-arm.cc and bug 1242173.
+    int32_t saved_ra = get_register(ra);
+
+    intptr_t external =
+          reinterpret_cast<intptr_t>(redirection->external_function());
+
+    // Based on CpuFeatures::IsSupported(FPU), Mips will use either hardware
+    // FPU, or gcc soft-float routines. Hardware FPU is simulated in this
+    // simulator. Soft-float has additional abstraction of ExternalReference,
+    // to support serialization.
+    if (fp_call) {
+      SimulatorRu
