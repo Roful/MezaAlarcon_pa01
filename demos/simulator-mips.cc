@@ -1491,4 +1491,28 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
             PrintF("Call to host function at %p with args %f, %d",
                 FUNCTION_ADDR(target), dval0, ival);
             break;
-          de
+          default:
+            UNREACHABLE();
+            break;
+        }
+      }
+      double result = target(arg0, arg1, arg2, arg3);
+      if (redirection->type() != ExternalReference::BUILTIN_COMPARE_CALL) {
+          SetFpResult(result);
+      } else {
+        int32_t gpreg_pair[2];
+        memcpy(&gpreg_pair[0], &result, 2 * sizeof(int32_t));
+        set_register(v0, gpreg_pair[0]);
+        set_register(v1, gpreg_pair[1]);
+      }
+    } else if (redirection->type() == ExternalReference::DIRECT_API_CALL) {
+      // See DirectCEntryStub::GenerateCall for explanation of register usage.
+      SimulatorRuntimeDirectApiCall target =
+                  reinterpret_cast<SimulatorRuntimeDirectApiCall>(external);
+      if (::v8::internal::FLAG_trace_sim) {
+        PrintF("Call to host function at %p args %08x\n",
+               FUNCTION_ADDR(target), arg1);
+      }
+      v8::Handle<v8::Value> result = target(arg1);
+      *(reinterpret_cast<int*>(arg0)) = (int32_t) *result;
+      set_regis
