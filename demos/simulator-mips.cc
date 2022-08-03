@@ -1469,4 +1469,26 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
     // simulator. Soft-float has additional abstraction of ExternalReference,
     // to support serialization.
     if (fp_call) {
-      SimulatorRu
+      SimulatorRuntimeFPCall target =
+                  reinterpret_cast<SimulatorRuntimeFPCall>(external);
+      if (::v8::internal::FLAG_trace_sim) {
+        double dval0, dval1;
+        int32_t ival;
+        switch (redirection->type()) {
+          case ExternalReference::BUILTIN_FP_FP_CALL:
+          case ExternalReference::BUILTIN_COMPARE_CALL:
+            GetFpArgs(&dval0, &dval1);
+            PrintF("Call to host function at %p with args %f, %f",
+                FUNCTION_ADDR(target), dval0, dval1);
+            break;
+          case ExternalReference::BUILTIN_FP_CALL:
+            GetFpArgs(&dval0);
+            PrintF("Call to host function at %p with arg %f",
+                FUNCTION_ADDR(target), dval0);
+            break;
+          case ExternalReference::BUILTIN_FP_INT_CALL:
+            GetFpArgs(&dval0, &ival);
+            PrintF("Call to host function at %p with args %f, %d",
+                FUNCTION_ADDR(target), dval0, ival);
+            break;
+          de
