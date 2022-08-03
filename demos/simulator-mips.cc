@@ -1515,4 +1515,29 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
       }
       v8::Handle<v8::Value> result = target(arg1);
       *(reinterpret_cast<int*>(arg0)) = (int32_t) *result;
-      set_regis
+      set_register(v0, arg0);
+    } else if (redirection->type() == ExternalReference::DIRECT_GETTER_CALL) {
+      // See DirectCEntryStub::GenerateCall for explanation of register usage.
+      SimulatorRuntimeDirectGetterCall target =
+                  reinterpret_cast<SimulatorRuntimeDirectGetterCall>(external);
+      if (::v8::internal::FLAG_trace_sim) {
+        PrintF("Call to host function at %p args %08x %08x\n",
+               FUNCTION_ADDR(target), arg1, arg2);
+      }
+      v8::Handle<v8::Value> result = target(arg1, arg2);
+      *(reinterpret_cast<int*>(arg0)) = (int32_t) *result;
+      set_register(v0, arg0);
+    } else {
+      SimulatorRuntimeCall target =
+                  reinterpret_cast<SimulatorRuntimeCall>(external);
+      if (::v8::internal::FLAG_trace_sim) {
+        PrintF(
+            "Call to host function at %p "
+            "args %08x, %08x, %08x, %08x, %08x, %08x\n",
+            FUNCTION_ADDR(target),
+            arg0,
+            arg1,
+            arg2,
+            arg3,
+            arg4,
+         
