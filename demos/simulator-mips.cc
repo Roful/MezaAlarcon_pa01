@@ -1379,4 +1379,23 @@ typedef int64_t (*SimulatorRuntimeCall)(int32_t arg0,
                                         int32_t arg2,
                                         int32_t arg3,
                                         int32_t arg4,
-                                        int32_
+                                        int32_t arg5);
+typedef double (*SimulatorRuntimeFPCall)(int32_t arg0,
+                                         int32_t arg1,
+                                         int32_t arg2,
+                                         int32_t arg3);
+
+// This signature supports direct call in to API function native callback
+// (refer to InvocationCallback in v8.h).
+typedef v8::Handle<v8::Value> (*SimulatorRuntimeDirectApiCall)(int32_t arg0);
+
+// This signature supports direct call to accessor getter callback.
+typedef v8::Handle<v8::Value> (*SimulatorRuntimeDirectGetterCall)(int32_t arg0,
+                                                                  int32_t arg1);
+
+// Software interrupt instructions are used by the simulator to call into the
+// C-based V8 runtime. They are also used for debugging with simulator.
+void Simulator::SoftwareInterrupt(Instruction* instr) {
+  // There are several instructions that could get us here,
+  // the break_ instruction, or several variants of traps. All
+  // Are "SPECIAL" class opc
