@@ -1540,4 +1540,41 @@ void Simulator::SoftwareInterrupt(Instruction* instr) {
             arg2,
             arg3,
             arg4,
+            arg5);
+      }
+      int64_t result = target(arg0, arg1, arg2, arg3, arg4, arg5);
+      set_register(v0, static_cast<int32_t>(result));
+      set_register(v1, static_cast<int32_t>(result >> 32));
+    }
+    if (::v8::internal::FLAG_trace_sim) {
+      PrintF("Returned %08x : %08x\n", get_register(v1), get_register(v0));
+    }
+    set_register(ra, saved_ra);
+    set_pc(get_register(ra));
+
+  } else if (func == BREAK && code <= kMaxStopCode) {
+    if (IsWatchpoint(code)) {
+      PrintWatchpoint(code);
+    } else {
+      IncreaseStopCounter(code);
+      HandleStop(code, instr);
+    }
+  } else {
+    // All remaining break_ codes, and all traps are handled here.
+    MipsDebugger dbg(this);
+    dbg.Debug();
+  }
+}
+
+
+// Stop helper functions.
+bool Simulator::IsWatchpoint(uint32_t code) {
+  return (code <= kMaxWatchpointCode);
+}
+
+
+void Simulator::PrintWatchpoint(uint32_t code) {
+  MipsDebugger dbg(this);
+  ++break_count_;
+  PrintF("\n---- break %d marker: %3d  (instr count: %8d) ----------"
          
