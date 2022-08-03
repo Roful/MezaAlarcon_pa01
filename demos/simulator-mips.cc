@@ -1361,4 +1361,22 @@ uintptr_t Simulator::StackLimit() const {
 
 
 // Unsupported instructions use Format to print an error and stop execution.
-v
+void Simulator::Format(Instruction* instr, const char* format) {
+  PrintF("Simulator found unsupported instruction:\n 0x%08x: %s\n",
+         reinterpret_cast<intptr_t>(instr), format);
+  UNIMPLEMENTED_MIPS();
+}
+
+
+// Calls into the V8 runtime are based on this very simple interface.
+// Note: To be able to return two values from some calls the code in runtime.cc
+// uses the ObjectPair which is essentially two 32-bit values stuffed into a
+// 64-bit value. With the code below we assume that all runtime calls return
+// 64 bits of result. If they don't, the v1 result register contains a bogus
+// value, which is fine because it is caller-saved.
+typedef int64_t (*SimulatorRuntimeCall)(int32_t arg0,
+                                        int32_t arg1,
+                                        int32_t arg2,
+                                        int32_t arg3,
+                                        int32_t arg4,
+                                        int32_
