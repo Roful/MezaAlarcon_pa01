@@ -1577,4 +1577,38 @@ void Simulator::PrintWatchpoint(uint32_t code) {
   MipsDebugger dbg(this);
   ++break_count_;
   PrintF("\n---- break %d marker: %3d  (instr count: %8d) ----------"
-         
+         "----------------------------------",
+         code, break_count_, icount_);
+  dbg.PrintAllRegs();  // Print registers and continue running.
+}
+
+
+void Simulator::HandleStop(uint32_t code, Instruction* instr) {
+  // Stop if it is enabled, otherwise go on jumping over the stop
+  // and the message address.
+  if (IsEnabledStop(code)) {
+    MipsDebugger dbg(this);
+    dbg.Stop(instr);
+  } else {
+    set_pc(get_pc() + 2 * Instruction::kInstrSize);
+  }
+}
+
+
+bool Simulator::IsStopInstruction(Instruction* instr) {
+  int32_t func = instr->FunctionFieldRaw();
+  uint32_t code = static_cast<uint32_t>(instr->Bits(25, 6));
+  return (func == BREAK) && code > kMaxWatchpointCode && code <= kMaxStopCode;
+}
+
+
+bool Simulator::IsEnabledStop(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  ASSERT(code > kMaxWatchpointCode);
+  return !(watched_stops[code].count & kStopDisabledBit);
+}
+
+
+void Simulator::EnableStop(uint32_t code) {
+  if (!IsEnabledStop(code)) {
+    watched_stops[code].co
