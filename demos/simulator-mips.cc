@@ -1646,4 +1646,34 @@ void Simulator::PrintStopInfo(uint32_t code) {
     return;
   }
   const char* state = IsEnabledStop(code) ? "Enabled" : "Disabled";
-  int32_t count = watched_stop
+  int32_t count = watched_stops[code].count & ~kStopDisabledBit;
+  // Don't print the state of unused breakpoints.
+  if (count != 0) {
+    if (watched_stops[code].desc) {
+      PrintF("stop %i - 0x%x: \t%s, \tcounter = %i, \t%s\n",
+             code, code, state, count, watched_stops[code].desc);
+    } else {
+      PrintF("stop %i - 0x%x: \t%s, \tcounter = %i\n",
+             code, code, state, count);
+    }
+  }
+}
+
+
+void Simulator::SignalExceptions() {
+  for (int i = 1; i < kNumExceptions; i++) {
+    if (exceptions[i] != 0) {
+      V8_Fatal(__FILE__, __LINE__, "Error: Exception %i raised.", i);
+    }
+  }
+}
+
+
+// Handle execution based on instruction types.
+
+void Simulator::ConfigureTypeRegister(Instruction* instr,
+                                      int32_t& alu_out,
+                                      int64_t& i64hilo,
+                                      uint64_t& u64hilo,
+                                      int32_t& next_pc,
+                                      bool& d
