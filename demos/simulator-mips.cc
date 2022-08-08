@@ -1611,4 +1611,39 @@ bool Simulator::IsEnabledStop(uint32_t code) {
 
 void Simulator::EnableStop(uint32_t code) {
   if (!IsEnabledStop(code)) {
-    watched_stops[code].co
+    watched_stops[code].count &= ~kStopDisabledBit;
+  }
+}
+
+
+void Simulator::DisableStop(uint32_t code) {
+  if (IsEnabledStop(code)) {
+    watched_stops[code].count |= kStopDisabledBit;
+  }
+}
+
+
+void Simulator::IncreaseStopCounter(uint32_t code) {
+  ASSERT(code <= kMaxStopCode);
+  if ((watched_stops[code].count & ~(1 << 31)) == 0x7fffffff) {
+    PrintF("Stop counter for code %i has overflowed.\n"
+           "Enabling this code and reseting the counter to 0.\n", code);
+    watched_stops[code].count = 0;
+    EnableStop(code);
+  } else {
+    watched_stops[code].count++;
+  }
+}
+
+
+// Print a stop status.
+void Simulator::PrintStopInfo(uint32_t code) {
+  if (code <= kMaxWatchpointCode) {
+    PrintF("That is a watchpoint, not a stop.\n");
+    return;
+  } else if (code > kMaxStopCode) {
+    PrintF("Code too large, only %u stops can be used\n", kMaxStopCode + 1);
+    return;
+  }
+  const char* state = IsEnabledStop(code) ? "Enabled" : "Disabled";
+  int32_t count = watched_stop
