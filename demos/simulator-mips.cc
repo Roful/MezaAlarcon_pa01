@@ -1676,4 +1676,31 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
                                       int64_t& i64hilo,
                                       uint64_t& u64hilo,
                                       int32_t& next_pc,
-                                      bool& d
+                                      bool& do_interrupt) {
+  // Every local variable declared here needs to be const.
+  // This is to make sure that changed values are sent back to
+  // DecodeTypeRegister correctly.
+
+  // Instruction fields.
+  const Opcode   op     = instr->OpcodeFieldRaw();
+  const int32_t  rs_reg = instr->RsValue();
+  const int32_t  rs     = get_register(rs_reg);
+  const uint32_t rs_u   = static_cast<uint32_t>(rs);
+  const int32_t  rt_reg = instr->RtValue();
+  const int32_t  rt     = get_register(rt_reg);
+  const uint32_t rt_u   = static_cast<uint32_t>(rt);
+  const int32_t  rd_reg = instr->RdValue();
+  const uint32_t sa     = instr->SaValue();
+
+  const int32_t  fs_reg = instr->FsValue();
+
+
+  // ---------- Configuration.
+  switch (op) {
+    case COP1:    // Coprocessor instructions.
+      switch (instr->RsFieldRaw()) {
+        case BC1:   // Handled in DecodeTypeImmed, should never come here.
+          UNREACHABLE();
+          break;
+        case CFC1:
+          // At the moment only FCSR is supp
