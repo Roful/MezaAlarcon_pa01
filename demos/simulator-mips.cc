@@ -1703,4 +1703,42 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
           UNREACHABLE();
           break;
         case CFC1:
-          // At the moment only FCSR is supp
+          // At the moment only FCSR is supported.
+          ASSERT(fs_reg == kFCSRRegister);
+          alu_out = FCSR_;
+          break;
+        case MFC1:
+          alu_out = get_fpu_register(fs_reg);
+          break;
+        case MFHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
+        case CTC1:
+        case MTC1:
+        case MTHC1:
+          // Do the store in the execution step.
+          break;
+        case S:
+        case D:
+        case W:
+        case L:
+        case PS:
+          // Do everything in the execution step.
+          break;
+        default:
+          UNIMPLEMENTED_MIPS();
+      };
+      break;
+    case SPECIAL:
+      switch (instr->FunctionFieldRaw()) {
+        case JR:
+        case JALR:
+          next_pc = get_register(instr->RsValue());
+          break;
+        case SLL:
+          alu_out = rt << sa;
+          break;
+        case SRL:
+          if (rs_reg == 0) {
+            // Regular logical right shift of a word by a fixed number of
+            // bits instruction. RS field is 
