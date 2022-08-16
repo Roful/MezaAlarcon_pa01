@@ -1741,4 +1741,29 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
         case SRL:
           if (rs_reg == 0) {
             // Regular logical right shift of a word by a fixed number of
-            // bits instruction. RS field is 
+            // bits instruction. RS field is always equal to 0.
+            alu_out = rt_u >> sa;
+          } else {
+            // Logical right-rotate of a word by a fixed number of bits. This
+            // is special case of SRL instruction, added in MIPS32 Release 2.
+            // RS field is equal to 00001.
+            alu_out = (rt_u >> sa) | (rt_u << (32 - sa));
+          }
+          break;
+        case SRA:
+          alu_out = rt >> sa;
+          break;
+        case SLLV:
+          alu_out = rt << rs;
+          break;
+        case SRLV:
+          if (sa == 0) {
+            // Regular logical right-shift of a word by a variable number of
+            // bits instruction. SA field is always equal to 0.
+            alu_out = rt_u >> rs;
+          } else {
+            // Logical right-rotate of a word by a variable number of bits.
+            // This is special case od SRLV instruction, added in MIPS32
+            // Release 2. SA field is equal to 00001.
+            alu_out = (rt_u >> rs_u) | (rt_u << (32 - rs_u));
+   
