@@ -1798,4 +1798,42 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
           break;
         case SUB:
           if (!HaveSameSign(rs, rt)) {
-            if
+            if (rs > 0) {
+              exceptions[kIntegerOverflow] = rs > (Registers::kMaxValue + rt);
+            } else if (rs < 0) {
+              exceptions[kIntegerUnderflow] = rs < (Registers::kMinValue + rt);
+            }
+          }
+          alu_out = rs - rt;
+          break;
+        case SUBU:
+          alu_out = rs - rt;
+          break;
+        case AND:
+          alu_out = rs & rt;
+          break;
+        case OR:
+          alu_out = rs | rt;
+          break;
+        case XOR:
+          alu_out = rs ^ rt;
+          break;
+        case NOR:
+          alu_out = ~(rs | rt);
+          break;
+        case SLT:
+          alu_out = rs < rt ? 1 : 0;
+          break;
+        case SLTU:
+          alu_out = rs_u < rt_u ? 1 : 0;
+          break;
+        // Break and trap instructions.
+        case BREAK:
+
+          do_interrupt = true;
+          break;
+        case TGE:
+          do_interrupt = rs >= rt;
+          break;
+        case TGEU:
+          do_interrupt = rs_
