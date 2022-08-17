@@ -1975,3 +1975,35 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
         case MTHC1:
           UNIMPLEMENTED_MIPS();
           break;
+        case S:
+          float f;
+          switch (instr->FunctionFieldRaw()) {
+            case CVT_D_S:
+              f = get_fpu_register_float(fs_reg);
+              set_fpu_register_double(fd_reg, static_cast<double>(f));
+              break;
+            case CVT_W_S:
+            case CVT_L_S:
+            case TRUNC_W_S:
+            case TRUNC_L_S:
+            case ROUND_W_S:
+            case ROUND_L_S:
+            case FLOOR_W_S:
+            case FLOOR_L_S:
+            case CEIL_W_S:
+            case CEIL_L_S:
+            case CVT_PS_S:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case D:
+          double ft, fs;
+          uint32_t cc, fcsr_cc;
+          int64_t  i64;
+          fs = get_fpu_register_double(fs_reg);
+          ft = get_fpu_register_double(ft_reg);
+          cc = instr->FCccValue();
+          fcsr_cc = get_fc
