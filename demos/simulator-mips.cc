@@ -1940,4 +1940,38 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
 
   // Setup the variables if needed before executing the instruction.
   ConfigureTypeRegister(instr,
-                 
+                        alu_out,
+                        i64hilo,
+                        u64hilo,
+                        next_pc,
+                        do_interrupt);
+
+  // ---------- Raise exceptions triggered.
+  SignalExceptions();
+
+  // ---------- Execution.
+  switch (op) {
+    case COP1:
+      switch (instr->RsFieldRaw()) {
+        case BC1:   // Branch on coprocessor condition.
+          UNREACHABLE();
+          break;
+        case CFC1:
+          set_register(rt_reg, alu_out);
+        case MFC1:
+          set_register(rt_reg, alu_out);
+          break;
+        case MFHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
+        case CTC1:
+          // At the moment only FCSR is supported.
+          ASSERT(fs_reg == kFCSRRegister);
+          FCSR_ = registers_[rt_reg];
+          break;
+        case MTC1:
+          FPUregisters_[fs_reg] = registers_[rt_reg];
+          break;
+        case MTHC1:
+          UNIMPLEMENTED_MIPS();
+          break;
