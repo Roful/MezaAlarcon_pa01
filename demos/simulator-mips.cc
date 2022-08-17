@@ -1877,4 +1877,36 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
       break;
     case SPECIAL3:
       switch (instr->FunctionFieldRaw()) {
-        case INS: {   // Mips
+        case INS: {   // Mips32r2 instruction.
+          // Interpret rd field as 5-bit msb of insert.
+          uint16_t msb = rd_reg;
+          // Interpret sa field as 5-bit lsb of insert.
+          uint16_t lsb = sa;
+          uint16_t size = msb - lsb + 1;
+          uint32_t mask = (1 << size) - 1;
+          alu_out = (rt_u & ~(mask << lsb)) | ((rs_u & mask) << lsb);
+          break;
+        }
+        case EXT: {   // Mips32r2 instruction.
+          // Interpret rd field as 5-bit msb of extract.
+          uint16_t msb = rd_reg;
+          // Interpret sa field as 5-bit lsb of extract.
+          uint16_t lsb = sa;
+          uint16_t size = msb + 1;
+          uint32_t mask = (1 << size) - 1;
+          alu_out = (rs_u & (mask << lsb)) >> lsb;
+          break;
+        }
+        default:
+          UNREACHABLE();
+      };
+      break;
+    default:
+      UNREACHABLE();
+  };
+}
+
+
+void Simulator::DecodeTypeRegister(Instruction* instr) {
+  // Instruction fields.
+  const Opcode   op    
