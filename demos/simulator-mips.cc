@@ -2033,4 +2033,30 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
               set_fpu_register_double(fd_reg, sqrt(fs));
               break;
             case C_UN_D:
-              set_fcsr_bit(fcsr_cc, isnan(fs) || 
+              set_fcsr_bit(fcsr_cc, isnan(fs) || isnan(ft));
+              break;
+            case C_EQ_D:
+              set_fcsr_bit(fcsr_cc, (fs == ft));
+              break;
+            case C_UEQ_D:
+              set_fcsr_bit(fcsr_cc, (fs == ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case C_OLT_D:
+              set_fcsr_bit(fcsr_cc, (fs < ft));
+              break;
+            case C_ULT_D:
+              set_fcsr_bit(fcsr_cc, (fs < ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case C_OLE_D:
+              set_fcsr_bit(fcsr_cc, (fs <= ft));
+              break;
+            case C_ULE_D:
+              set_fcsr_bit(fcsr_cc, (fs <= ft) || (isnan(fs) || isnan(ft)));
+              break;
+            case CVT_W_D:   // Convert double to word.
+              // Rounding modes are not yet supported.
+              ASSERT((FCSR_ & 3) == 0);
+              // In rounding mode 0 it should behave like ROUND.
+            case ROUND_W_D:  // Round double to word.
+              {
+          
