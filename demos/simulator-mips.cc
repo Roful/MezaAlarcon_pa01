@@ -1909,4 +1909,35 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
 
 void Simulator::DecodeTypeRegister(Instruction* instr) {
   // Instruction fields.
-  const Opcode   op    
+  const Opcode   op     = instr->OpcodeFieldRaw();
+  const int32_t  rs_reg = instr->RsValue();
+  const int32_t  rs     = get_register(rs_reg);
+  const uint32_t rs_u   = static_cast<uint32_t>(rs);
+  const int32_t  rt_reg = instr->RtValue();
+  const int32_t  rt     = get_register(rt_reg);
+  const uint32_t rt_u   = static_cast<uint32_t>(rt);
+  const int32_t  rd_reg = instr->RdValue();
+
+  const int32_t  fs_reg = instr->FsValue();
+  const int32_t  ft_reg = instr->FtValue();
+  const int32_t  fd_reg = instr->FdValue();
+  int64_t  i64hilo = 0;
+  uint64_t u64hilo = 0;
+
+  // ALU output.
+  // It should not be used as is. Instructions using it should always
+  // initialize it first.
+  int32_t alu_out = 0x12345678;
+
+  // For break and trap instructions.
+  bool do_interrupt = false;
+
+  // For jr and jalr.
+  // Get current pc.
+  int32_t current_pc = get_pc();
+  // Next pc
+  int32_t next_pc = 0;
+
+  // Setup the variables if needed before executing the instruction.
+  ConfigureTypeRegister(instr,
+                 
