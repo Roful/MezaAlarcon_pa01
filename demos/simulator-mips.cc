@@ -1836,4 +1836,45 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
           do_interrupt = rs >= rt;
           break;
         case TGEU:
-          do_interrupt = rs_
+          do_interrupt = rs_u >= rt_u;
+          break;
+        case TLT:
+          do_interrupt = rs < rt;
+          break;
+        case TLTU:
+          do_interrupt = rs_u < rt_u;
+          break;
+        case TEQ:
+          do_interrupt = rs == rt;
+          break;
+        case TNE:
+          do_interrupt = rs != rt;
+          break;
+        case MOVN:
+        case MOVZ:
+        case MOVCI:
+          // No action taken on decode.
+          break;
+        case DIV:
+        case DIVU:
+          // div and divu never raise exceptions.
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    case SPECIAL2:
+      switch (instr->FunctionFieldRaw()) {
+        case MUL:
+          alu_out = rs_u * rt_u;  // Only the lower 32 bits are kept.
+          break;
+        case CLZ:
+          alu_out = __builtin_clz(rs_u);
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    case SPECIAL3:
+      switch (instr->FunctionFieldRaw()) {
+        case INS: {   // Mips
