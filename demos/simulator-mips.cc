@@ -2006,4 +2006,31 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
           fs = get_fpu_register_double(fs_reg);
           ft = get_fpu_register_double(ft_reg);
           cc = instr->FCccValue();
-          fcsr_cc = get_fc
+          fcsr_cc = get_fcsr_condition_bit(cc);
+          switch (instr->FunctionFieldRaw()) {
+            case ADD_D:
+              set_fpu_register_double(fd_reg, fs + ft);
+              break;
+            case SUB_D:
+              set_fpu_register_double(fd_reg, fs - ft);
+              break;
+            case MUL_D:
+              set_fpu_register_double(fd_reg, fs * ft);
+              break;
+            case DIV_D:
+              set_fpu_register_double(fd_reg, fs / ft);
+              break;
+            case ABS_D:
+              set_fpu_register_double(fd_reg, fs < 0 ? -fs : fs);
+              break;
+            case MOV_D:
+              set_fpu_register_double(fd_reg, fs);
+              break;
+            case NEG_D:
+              set_fpu_register_double(fd_reg, -fs);
+              break;
+            case SQRT_D:
+              set_fpu_register_double(fd_reg, sqrt(fs));
+              break;
+            case C_UN_D:
+              set_fcsr_bit(fcsr_cc, isnan(fs) || 
