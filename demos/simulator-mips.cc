@@ -1766,4 +1766,36 @@ void Simulator::ConfigureTypeRegister(Instruction* instr,
             // This is special case od SRLV instruction, added in MIPS32
             // Release 2. SA field is equal to 00001.
             alu_out = (rt_u >> rs_u) | (rt_u << (32 - rs_u));
-   
+          }
+          break;
+        case SRAV:
+          alu_out = rt >> rs;
+          break;
+        case MFHI:
+          alu_out = get_register(HI);
+          break;
+        case MFLO:
+          alu_out = get_register(LO);
+          break;
+        case MULT:
+          i64hilo = static_cast<int64_t>(rs) * static_cast<int64_t>(rt);
+          break;
+        case MULTU:
+          u64hilo = static_cast<uint64_t>(rs_u) * static_cast<uint64_t>(rt_u);
+          break;
+        case ADD:
+          if (HaveSameSign(rs, rt)) {
+            if (rs > 0) {
+              exceptions[kIntegerOverflow] = rs > (Registers::kMaxValue - rt);
+            } else if (rs < 0) {
+              exceptions[kIntegerUnderflow] = rs < (Registers::kMinValue - rt);
+            }
+          }
+          alu_out = rs + rt;
+          break;
+        case ADDU:
+          alu_out = rs + rt;
+          break;
+        case SUB:
+          if (!HaveSameSign(rs, rt)) {
+            if
