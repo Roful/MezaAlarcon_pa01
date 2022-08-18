@@ -2126,4 +2126,30 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
               set_fpu_register(fd_reg, i64 & 0xffffffff);
               set_fpu_register(fd_reg + 1, i64 >> 32);
               break;
-            case CEIL_L_D:  // Mip
+            case CEIL_L_D:  // Mips32r2 instruction.
+              i64 = static_cast<int64_t>(ceil(fs));
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 >> 32);
+              break;
+            case C_F_D:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case W:
+          switch (instr->FunctionFieldRaw()) {
+            case CVT_S_W:   // Convert word to float (single).
+              alu_out = get_fpu_register(fs_reg);
+              set_fpu_register_float(fd_reg, static_cast<float>(alu_out));
+              break;
+            case CVT_D_W:   // Convert word to double.
+              alu_out = get_fpu_register(fs_reg);
+              set_fpu_register_double(fd_reg, static_cast<double>(alu_out));
+              break;
+            default:
+              UNREACHABLE();
+          };
+          break;
+        case 
