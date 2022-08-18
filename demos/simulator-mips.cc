@@ -2103,4 +2103,27 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
             case CVT_L_D: {  // Mips32r2: Truncate double to 64-bit long-word.
               double rounded = trunc(fs);
               i64 = static_cast<int64_t>(rounded);
-              set_fpu_register(f
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 >> 32);
+              break;
+            }
+            case TRUNC_L_D: {  // Mips32r2 instruction.
+              double rounded = trunc(fs);
+              i64 = static_cast<int64_t>(rounded);
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 >> 32);
+              break;
+            }
+            case ROUND_L_D: {  // Mips32r2 instruction.
+              double rounded = fs > 0 ? floor(fs + 0.5) : ceil(fs - 0.5);
+              i64 = static_cast<int64_t>(rounded);
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 >> 32);
+              break;
+            }
+            case FLOOR_L_D:  // Mips32r2 instruction.
+              i64 = static_cast<int64_t>(floor(fs));
+              set_fpu_register(fd_reg, i64 & 0xffffffff);
+              set_fpu_register(fd_reg + 1, i64 >> 32);
+              break;
+            case CEIL_L_D:  // Mip
