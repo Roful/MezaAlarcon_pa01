@@ -2059,4 +2059,25 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
               // In rounding mode 0 it should behave like ROUND.
             case ROUND_W_D:  // Round double to word.
               {
-          
+                double rounded = fs > 0 ? floor(fs + 0.5) : ceil(fs - 0.5);
+                int32_t result = static_cast<int32_t>(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case TRUNC_W_D:  // Truncate double to word (round towards 0).
+              {
+                double rounded = trunc(fs);
+                int32_t result = static_cast<int32_t>(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case FLOOR_W_D:  // Round double to word towards negative infinity.
+              {
+                double rounded = floor(fs);
+                int32_t result = static_cast<int32_t>(ro
