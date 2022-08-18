@@ -2080,4 +2080,27 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
             case FLOOR_W_D:  // Round double to word towards negative infinity.
               {
                 double rounded = floor(fs);
-                int32_t result = static_cast<int32_t>(ro
+                int32_t result = static_cast<int32_t>(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case CEIL_W_D:  // Round double to word towards positive infinity.
+              {
+                double rounded = ceil(fs);
+                int32_t result = static_cast<int32_t>(rounded);
+                set_fpu_register(fd_reg, result);
+                if (set_fcsr_round_error(fs, rounded)) {
+                  set_fpu_register(fd_reg, kFPUInvalidResult);
+                }
+              }
+              break;
+            case CVT_S_D:  // Convert double to float (single).
+              set_fpu_register_float(fd_reg, static_cast<float>(fs));
+              break;
+            case CVT_L_D: {  // Mips32r2: Truncate double to 64-bit long-word.
+              double rounded = trunc(fs);
+              i64 = static_cast<int64_t>(rounded);
+              set_fpu_register(f
