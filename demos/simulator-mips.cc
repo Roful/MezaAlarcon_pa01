@@ -2152,4 +2152,34 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
               UNREACHABLE();
           };
           break;
-        case 
+        case L:
+          switch (instr->FunctionFieldRaw()) {
+          case CVT_D_L:  // Mips32r2 instruction.
+            // Watch the signs here, we want 2 32-bit vals
+            // to make a sign-64.
+            i64 = (uint32_t) get_fpu_register(fs_reg);
+            i64 |= ((int64_t) get_fpu_register(fs_reg + 1) << 32);
+            set_fpu_register_double(fd_reg, static_cast<double>(i64));
+            break;
+            case CVT_S_L:
+              UNIMPLEMENTED_MIPS();
+              break;
+            default:
+              UNREACHABLE();
+          }
+          break;
+        case PS:
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    case SPECIAL:
+      switch (instr->FunctionFieldRaw()) {
+        case JR: {
+          Instruction* branch_delay_instr = reinterpret_cast<Instruction*>(
+              current_pc+Instruction::kInstrSize);
+          BranchDelayInstructionDecode(branch_delay_instr);
+          set_pc(next_pc);
+          pc_modified_ = true;
+ 
