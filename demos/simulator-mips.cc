@@ -2182,4 +2182,26 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
           BranchDelayInstructionDecode(branch_delay_instr);
           set_pc(next_pc);
           pc_modified_ = true;
- 
+          break;
+        }
+        case JALR: {
+          Instruction* branch_delay_instr = reinterpret_cast<Instruction*>(
+              current_pc+Instruction::kInstrSize);
+          BranchDelayInstructionDecode(branch_delay_instr);
+          set_register(31, current_pc + 2 * Instruction::kInstrSize);
+          set_pc(next_pc);
+          pc_modified_ = true;
+          break;
+        }
+        // Instructions using HI and LO registers.
+        case MULT:
+          set_register(LO, static_cast<int32_t>(i64hilo & 0xffffffff));
+          set_register(HI, static_cast<int32_t>(i64hilo >> 32));
+          break;
+        case MULTU:
+          set_register(LO, static_cast<int32_t>(u64hilo & 0xffffffff));
+          set_register(HI, static_cast<int32_t>(u64hilo >> 32));
+          break;
+        case DIV:
+          // Divide by zero was not checked in the configuration step - div and
+          // divu do not raise exceptions. On division by 0, the re
