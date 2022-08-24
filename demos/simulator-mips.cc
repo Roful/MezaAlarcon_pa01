@@ -2204,4 +2204,39 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
           break;
         case DIV:
           // Divide by zero was not checked in the configuration step - div and
-          // divu do not raise exceptions. On division by 0, the re
+          // divu do not raise exceptions. On division by 0, the result will
+          // be UNPREDICTABLE.
+          if (rt != 0) {
+            set_register(LO, rs / rt);
+            set_register(HI, rs % rt);
+          }
+          break;
+        case DIVU:
+          if (rt_u != 0) {
+            set_register(LO, rs_u / rt_u);
+            set_register(HI, rs_u % rt_u);
+          }
+          break;
+        // Break and trap instructions.
+        case BREAK:
+        case TGE:
+        case TGEU:
+        case TLT:
+        case TLTU:
+        case TEQ:
+        case TNE:
+          if (do_interrupt) {
+            SoftwareInterrupt(instr);
+          }
+          break;
+        // Conditional moves.
+        case MOVN:
+          if (rt) set_register(rd_reg, rs);
+          break;
+        case MOVCI: {
+          uint32_t cc = instr->FBccValue();
+          uint32_t fcsr_cc = get_fcsr_condition_bit(cc);
+          if (instr->Bit(16)) {  // Read Tf bit.
+            if (test_fcsr_bit(fcsr_cc)) set_register(rd_reg, rs);
+          } else {
+            if (!tes
