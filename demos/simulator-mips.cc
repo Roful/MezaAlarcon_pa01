@@ -2297,4 +2297,36 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
 
   int32_t  ft_reg = instr->FtValue();  // Destination register.
 
- 
+  // Zero extended immediate.
+  uint32_t  oe_imm16 = 0xffff & imm16;
+  // Sign extended immediate.
+  int32_t   se_imm16 = imm16;
+
+  // Get current pc.
+  int32_t current_pc = get_pc();
+  // Next pc.
+  int32_t next_pc = bad_ra;
+
+  // Used for conditional branch instructions.
+  bool do_branch = false;
+  bool execute_branch_delay_instruction = false;
+
+  // Used for arithmetic instructions.
+  int32_t alu_out = 0;
+  // Floating point.
+  double fp_out = 0.0;
+  uint32_t cc, cc_value, fcsr_cc;
+
+  // Used for memory instructions.
+  int32_t addr = 0x0;
+  // Value to be written in memory.
+  uint32_t mem_value = 0x0;
+
+  // ---------- Configuration (and execution for REGIMM).
+  switch (op) {
+    // ------------- COP1. Coprocessor instructions.
+    case COP1:
+      switch (instr->RsFieldRaw()) {
+        case BC1:   // Branch on coprocessor condition.
+          cc = instr->FBccValue();
+          fcsr_cc = get_fcsr_con
