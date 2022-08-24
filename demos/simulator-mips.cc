@@ -2266,4 +2266,35 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
       switch (instr->FunctionFieldRaw()) {
         case INS:
           // Ins instr leaves result in Rt, rather than Rd.
-          set_register(rt_r
+          set_register(rt_reg, alu_out);
+          break;
+        case EXT:
+          // Ext instr leaves result in Rt, rather than Rd.
+          set_register(rt_reg, alu_out);
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    // Unimplemented opcodes raised an error in the configuration step before,
+    // so we can use the default here to set the destination register in common
+    // cases.
+    default:
+      set_register(rd_reg, alu_out);
+  };
+}
+
+
+// Type 2: instructions using a 16 bytes immediate. (eg: addi, beq).
+void Simulator::DecodeTypeImmediate(Instruction* instr) {
+  // Instruction fields.
+  Opcode   op     = instr->OpcodeFieldRaw();
+  int32_t  rs     = get_register(instr->RsValue());
+  uint32_t rs_u   = static_cast<uint32_t>(rs);
+  int32_t  rt_reg = instr->RtValue();  // Destination register.
+  int32_t  rt     = get_register(rt_reg);
+  int16_t  imm16  = instr->Imm16Value();
+
+  int32_t  ft_reg = instr->FtValue();  // Destination register.
+
+ 
