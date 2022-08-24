@@ -2239,4 +2239,31 @@ void Simulator::DecodeTypeRegister(Instruction* instr) {
           if (instr->Bit(16)) {  // Read Tf bit.
             if (test_fcsr_bit(fcsr_cc)) set_register(rd_reg, rs);
           } else {
-            if (!tes
+            if (!test_fcsr_bit(fcsr_cc)) set_register(rd_reg, rs);
+          }
+          break;
+        }
+        case MOVZ:
+          if (!rt) set_register(rd_reg, rs);
+          break;
+        default:  // For other special opcodes we do the default operation.
+          set_register(rd_reg, alu_out);
+      };
+      break;
+    case SPECIAL2:
+      switch (instr->FunctionFieldRaw()) {
+        case MUL:
+          set_register(rd_reg, alu_out);
+          // HI and LO are UNPREDICTABLE after the operation.
+          set_register(LO, Unpredictable);
+          set_register(HI, Unpredictable);
+          break;
+        default:  // For other special2 opcodes we do the default operation.
+          set_register(rd_reg, alu_out);
+      }
+      break;
+    case SPECIAL3:
+      switch (instr->FunctionFieldRaw()) {
+        case INS:
+          // Ins instr leaves result in Rt, rather than Rd.
+          set_register(rt_r
