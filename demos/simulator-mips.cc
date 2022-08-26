@@ -2329,4 +2329,40 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
       switch (instr->RsFieldRaw()) {
         case BC1:   // Branch on coprocessor condition.
           cc = instr->FBccValue();
-          fcsr_cc = get_fcsr_con
+          fcsr_cc = get_fcsr_condition_bit(cc);
+          cc_value = test_fcsr_bit(fcsr_cc);
+          do_branch = (instr->FBtrueValue()) ? cc_value : !cc_value;
+          execute_branch_delay_instruction = true;
+          // Set next_pc.
+          if (do_branch) {
+            next_pc = current_pc + (imm16 << 2) + Instruction::kInstrSize;
+          } else {
+            next_pc = current_pc + kBranchReturnOffset;
+          }
+          break;
+        default:
+          UNREACHABLE();
+      };
+      break;
+    // ------------- REGIMM class.
+    case REGIMM:
+      switch (instr->RtFieldRaw()) {
+        case BLTZ:
+          do_branch = (rs  < 0);
+          break;
+        case BLTZAL:
+          do_branch = rs  < 0;
+          break;
+        case BGEZ:
+          do_branch = rs >= 0;
+          break;
+        case BGEZAL:
+          do_branch = rs >= 0;
+          break;
+        default:
+          UNREACHABLE();
+      };
+      switch (instr->RtFieldRaw()) {
+        case BLTZ:
+        case BLTZAL:
+        ca
