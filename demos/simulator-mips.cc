@@ -2365,4 +2365,36 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
       switch (instr->RtFieldRaw()) {
         case BLTZ:
         case BLTZAL:
-        ca
+        case BGEZ:
+        case BGEZAL:
+          // Branch instructions common part.
+          execute_branch_delay_instruction = true;
+          // Set next_pc.
+          if (do_branch) {
+            next_pc = current_pc + (imm16 << 2) + Instruction::kInstrSize;
+            if (instr->IsLinkingInstruction()) {
+              set_register(31, current_pc + kBranchReturnOffset);
+            }
+          } else {
+            next_pc = current_pc + kBranchReturnOffset;
+          }
+        default:
+          break;
+        };
+    break;  // case REGIMM.
+    // ------------- Branch instructions.
+    // When comparing to zero, the encoding of rt field is always 0, so we don't
+    // need to replace rt with zero.
+    case BEQ:
+      do_branch = (rs == rt);
+      break;
+    case BNE:
+      do_branch = rs != rt;
+      break;
+    case BLEZ:
+      do_branch = rs <= 0;
+      break;
+    case BGTZ:
+      do_branch = rs  > 0;
+      break;
+    // ------------- Ari
