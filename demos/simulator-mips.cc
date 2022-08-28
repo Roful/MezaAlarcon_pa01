@@ -2397,4 +2397,43 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
     case BGTZ:
       do_branch = rs  > 0;
       break;
-    // ------------- Ari
+    // ------------- Arithmetic instructions.
+    case ADDI:
+      if (HaveSameSign(rs, se_imm16)) {
+        if (rs > 0) {
+          exceptions[kIntegerOverflow] = rs > (Registers::kMaxValue - se_imm16);
+        } else if (rs < 0) {
+          exceptions[kIntegerUnderflow] =
+              rs < (Registers::kMinValue - se_imm16);
+        }
+      }
+      alu_out = rs + se_imm16;
+      break;
+    case ADDIU:
+      alu_out = rs + se_imm16;
+      break;
+    case SLTI:
+      alu_out = (rs < se_imm16) ? 1 : 0;
+      break;
+    case SLTIU:
+      alu_out = (rs_u < static_cast<uint32_t>(se_imm16)) ? 1 : 0;
+      break;
+    case ANDI:
+        alu_out = rs & oe_imm16;
+      break;
+    case ORI:
+        alu_out = rs | oe_imm16;
+      break;
+    case XORI:
+        alu_out = rs ^ oe_imm16;
+      break;
+    case LUI:
+        alu_out = (oe_imm16 << 16);
+      break;
+    // ------------- Memory instructions.
+    case LB:
+      addr = rs + se_imm16;
+      alu_out = ReadB(addr);
+      break;
+    case LH:
+      addr = rs + se_imm16;
