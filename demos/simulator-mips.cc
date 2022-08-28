@@ -2494,4 +2494,43 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
     case SWR: {
       uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
       uint32_t mask = (1 << al_offset * 8) - 1;
-      addr = rs + se_imm16 - 
+      addr = rs + se_imm16 - al_offset;
+      mem_value = ReadW(addr, instr);
+      mem_value = (rt << al_offset * 8) | (mem_value & mask);
+      break;
+    }
+    case LWC1:
+      addr = rs + se_imm16;
+      alu_out = ReadW(addr, instr);
+      break;
+    case LDC1:
+      addr = rs + se_imm16;
+      fp_out = ReadD(addr, instr);
+      break;
+    case SWC1:
+    case SDC1:
+      addr = rs + se_imm16;
+      break;
+    default:
+      UNREACHABLE();
+  };
+
+  // ---------- Raise exceptions triggered.
+  SignalExceptions();
+
+  // ---------- Execution.
+  switch (op) {
+    // ------------- Branch instructions.
+    case BEQ:
+    case BNE:
+    case BLEZ:
+    case BGTZ:
+      // Branch instructions common part.
+      execute_branch_delay_instruction = true;
+      // Set next_pc.
+      if (do_branch) {
+        next_pc = current_pc + (imm16 << 2) + Instruction::kInstrSize;
+        if (instr->IsLinkingInstruction()) {
+          set_register(31, current_pc + 2* Instruction::kInstrSize);
+        }
+      
