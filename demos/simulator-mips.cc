@@ -2437,3 +2437,33 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
       break;
     case LH:
       addr = rs + se_imm16;
+      alu_out = ReadH(addr, instr);
+      break;
+    case LWL: {
+      // al_offset is offset of the effective address within an aligned word.
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint8_t byte_shift = kPointerAlignmentMask - al_offset;
+      uint32_t mask = (1 << byte_shift * 8) - 1;
+      addr = rs + se_imm16 - al_offset;
+      alu_out = ReadW(addr, instr);
+      alu_out <<= byte_shift * 8;
+      alu_out |= rt & mask;
+      break;
+    }
+    case LW:
+      addr = rs + se_imm16;
+      alu_out = ReadW(addr, instr);
+      break;
+    case LBU:
+      addr = rs + se_imm16;
+      alu_out = ReadBU(addr);
+      break;
+    case LHU:
+      addr = rs + se_imm16;
+      alu_out = ReadHU(addr, instr);
+      break;
+    case LWR: {
+      // al_offset is offset of the effective address within an aligned word.
+      uint8_t al_offset = (rs + se_imm16) & kPointerAlignmentMask;
+      uint8_t byte_shift = kPointerAlignmentMask - al_offset;
+      uint32_t m
