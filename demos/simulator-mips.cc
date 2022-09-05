@@ -2579,3 +2579,37 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
     case LDC1:
       set_fpu_register_double(ft_reg, fp_out);
       break;
+    case SWC1:
+      addr = rs + se_imm16;
+      WriteW(addr, get_fpu_register(ft_reg), instr);
+      break;
+    case SDC1:
+      addr = rs + se_imm16;
+      WriteD(addr, get_fpu_register_double(ft_reg), instr);
+      break;
+    default:
+      break;
+  };
+
+
+  if (execute_branch_delay_instruction) {
+    // Execute branch delay slot
+    // We don't check for end_sim_pc. First it should not be met as the current
+    // pc is valid. Secondly a jump should always execute its branch delay slot.
+    Instruction* branch_delay_instr =
+      reinterpret_cast<Instruction*>(current_pc+Instruction::kInstrSize);
+    BranchDelayInstructionDecode(branch_delay_instr);
+  }
+
+  // If needed update pc after the branch delay execution.
+  if (next_pc != bad_ra) {
+    set_pc(next_pc);
+  }
+}
+
+
+// Type 3: instructions using a 26 bytes immediate. (eg: j, jal).
+void Simulator::DecodeTypeJump(Instruction* instr) {
+  // Get current pc.
+  int32_t current_pc = get_pc();
+  // Get un
