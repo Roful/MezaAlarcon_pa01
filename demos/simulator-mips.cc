@@ -2533,4 +2533,49 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
         if (instr->IsLinkingInstruction()) {
           set_register(31, current_pc + 2* Instruction::kInstrSize);
         }
-      
+      } else {
+        next_pc = current_pc + 2 * Instruction::kInstrSize;
+      }
+      break;
+    // ------------- Arithmetic instructions.
+    case ADDI:
+    case ADDIU:
+    case SLTI:
+    case SLTIU:
+    case ANDI:
+    case ORI:
+    case XORI:
+    case LUI:
+      set_register(rt_reg, alu_out);
+      break;
+    // ------------- Memory instructions.
+    case LB:
+    case LH:
+    case LWL:
+    case LW:
+    case LBU:
+    case LHU:
+    case LWR:
+      set_register(rt_reg, alu_out);
+      break;
+    case SB:
+      WriteB(addr, static_cast<int8_t>(rt));
+      break;
+    case SH:
+      WriteH(addr, static_cast<uint16_t>(rt), instr);
+      break;
+    case SWL:
+      WriteW(addr, mem_value, instr);
+      break;
+    case SW:
+      WriteW(addr, rt, instr);
+      break;
+    case SWR:
+      WriteW(addr, mem_value, instr);
+      break;
+    case LWC1:
+      set_fpu_register(ft_reg, alu_out);
+      break;
+    case LDC1:
+      set_fpu_register_double(ft_reg, fp_out);
+      break;
