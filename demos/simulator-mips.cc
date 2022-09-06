@@ -2612,4 +2612,32 @@ void Simulator::DecodeTypeImmediate(Instruction* instr) {
 void Simulator::DecodeTypeJump(Instruction* instr) {
   // Get current pc.
   int32_t current_pc = get_pc();
-  // Get un
+  // Get unchanged bits of pc.
+  int32_t pc_high_bits = current_pc & 0xf0000000;
+  // Next pc.
+  int32_t next_pc = pc_high_bits | (instr->Imm26Value() << 2);
+
+  // Execute branch delay slot.
+  // We don't check for end_sim_pc. First it should not be met as the current pc
+  // is valid. Secondly a jump should always execute its branch delay slot.
+  Instruction* branch_delay_instr =
+      reinterpret_cast<Instruction*>(current_pc + Instruction::kInstrSize);
+  BranchDelayInstructionDecode(branch_delay_instr);
+
+  // Update pc and ra if necessary.
+  // Do this after the branch delay execution.
+  if (instr->IsLinkingInstruction()) {
+    set_register(31, current_pc + 2 * Instruction::kInstrSize);
+  }
+  set_pc(next_pc);
+  pc_modified_ = true;
+}
+
+
+// Executes the current instruction.
+void Simulator::InstructionDecode(Instruction* instr) {
+  if (v8::internal::FLAG_check_icache) {
+    CheckICache(isolate_->simulator_i_cache(), instr);
+  }
+  pc_modified_ = false;
+  if (::v8::internal::FLAG_trace_sim)
