@@ -2702,4 +2702,26 @@ void Simulator::Execute() {
 }
 
 
-int32_t Simulator::Call(byte* entry, int argum
+int32_t Simulator::Call(byte* entry, int argument_count, ...) {
+  va_list parameters;
+  va_start(parameters, argument_count);
+  // Setup arguments.
+
+  // First four arguments passed in registers.
+  ASSERT(argument_count >= 4);
+  set_register(a0, va_arg(parameters, int32_t));
+  set_register(a1, va_arg(parameters, int32_t));
+  set_register(a2, va_arg(parameters, int32_t));
+  set_register(a3, va_arg(parameters, int32_t));
+
+  // Remaining arguments passed on stack.
+  int original_stack = get_register(sp);
+  // Compute position of stack on entry to generated code.
+  int entry_stack = (original_stack - (argument_count - 4) * sizeof(int32_t)
+                                    - kCArgsSlotsSize);
+  if (OS::ActivationFrameAlignment() != 0) {
+    entry_stack &= -OS::ActivationFrameAlignment();
+  }
+  // Store remaining arguments on stack, from low to high memory.
+  intptr_t* stack_argument = reinterpret_cast<intptr_t*>(entry_stack);
+  for (int i = 4; i < argument_count; i++) 
