@@ -2724,4 +2724,29 @@ int32_t Simulator::Call(byte* entry, int argument_count, ...) {
   }
   // Store remaining arguments on stack, from low to high memory.
   intptr_t* stack_argument = reinterpret_cast<intptr_t*>(entry_stack);
-  for (int i = 4; i < argument_count; i++) 
+  for (int i = 4; i < argument_count; i++) {
+    stack_argument[i - 4 + kArgsSlotsNum] = va_arg(parameters, int32_t);
+  }
+  va_end(parameters);
+  set_register(sp, entry_stack);
+
+  // Prepare to execute the code at entry.
+  set_register(pc, reinterpret_cast<int32_t>(entry));
+  // Put down marker for end of simulation. The simulator will stop simulation
+  // when the PC reaches this value. By saving the "end simulation" value into
+  // the LR the simulation stops when returning to this call point.
+  set_register(ra, end_sim_pc);
+
+  // Remember the values of callee-saved registers.
+  // The code below assumes that r9 is not used as sb (static base) in
+  // simulator code and therefore is regarded as a callee-saved register.
+  int32_t s0_val = get_register(s0);
+  int32_t s1_val = get_register(s1);
+  int32_t s2_val = get_register(s2);
+  int32_t s3_val = get_register(s3);
+  int32_t s4_val = get_register(s4);
+  int32_t s5_val = get_register(s5);
+  int32_t s6_val = get_register(s6);
+  int32_t s7_val = get_register(s7);
+  int32_t gp_val = get_register(gp);
+ 
