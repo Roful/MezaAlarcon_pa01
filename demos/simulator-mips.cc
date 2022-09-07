@@ -2675,4 +2675,31 @@ void Simulator::Execute() {
   // Get the PC to simulate. Cannot use the accessor here as we need the
   // raw PC value and not the one used as input to arithmetic instructions.
   int program_counter = get_pc();
-  if (::v8::internal
+  if (::v8::internal::FLAG_stop_sim_at == 0) {
+    // Fast version of the dispatch loop without checking whether the simulator
+    // should be stopping at a particular executed instruction.
+    while (program_counter != end_sim_pc) {
+      Instruction* instr = reinterpret_cast<Instruction*>(program_counter);
+      icount_++;
+      InstructionDecode(instr);
+      program_counter = get_pc();
+    }
+  } else {
+    // FLAG_stop_sim_at is at the non-default value. Stop in the debugger when
+    // we reach the particular instuction count.
+    while (program_counter != end_sim_pc) {
+      Instruction* instr = reinterpret_cast<Instruction*>(program_counter);
+      icount_++;
+      if (icount_ == ::v8::internal::FLAG_stop_sim_at) {
+        MipsDebugger dbg(this);
+        dbg.Debug();
+      } else {
+        InstructionDecode(instr);
+      }
+      program_counter = get_pc();
+    }
+  }
+}
+
+
+int32_t Simulator::Call(byte* entry, int argum
