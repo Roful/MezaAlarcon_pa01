@@ -2640,4 +2640,39 @@ void Simulator::InstructionDecode(Instruction* instr) {
     CheckICache(isolate_->simulator_i_cache(), instr);
   }
   pc_modified_ = false;
-  if (::v8::internal::FLAG_trace_sim)
+  if (::v8::internal::FLAG_trace_sim) {
+    disasm::NameConverter converter;
+    disasm::Disassembler dasm(converter);
+    // Use a reasonably large buffer.
+    v8::internal::EmbeddedVector<char, 256> buffer;
+    dasm.InstructionDecode(buffer, reinterpret_cast<byte*>(instr));
+    PrintF("  0x%08x  %s\n", reinterpret_cast<intptr_t>(instr),
+        buffer.start());
+  }
+
+  switch (instr->InstructionType()) {
+    case Instruction::kRegisterType:
+      DecodeTypeRegister(instr);
+      break;
+    case Instruction::kImmediateType:
+      DecodeTypeImmediate(instr);
+      break;
+    case Instruction::kJumpType:
+      DecodeTypeJump(instr);
+      break;
+    default:
+      UNSUPPORTED();
+  }
+  if (!pc_modified_) {
+    set_register(pc, reinterpret_cast<int32_t>(instr) +
+                 Instruction::kInstrSize);
+  }
+}
+
+
+
+void Simulator::Execute() {
+  // Get the PC to simulate. Cannot use the accessor here as we need the
+  // raw PC value and not the one used as input to arithmetic instructions.
+  int program_counter = get_pc();
+  if (::v8::internal
