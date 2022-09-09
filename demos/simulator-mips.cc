@@ -2749,4 +2749,29 @@ int32_t Simulator::Call(byte* entry, int argument_count, ...) {
   int32_t s6_val = get_register(s6);
   int32_t s7_val = get_register(s7);
   int32_t gp_val = get_register(gp);
- 
+  int32_t sp_val = get_register(sp);
+  int32_t fp_val = get_register(fp);
+
+  // Setup the callee-saved registers with a known value. To be able to check
+  // that they are preserved properly across JS execution.
+  int32_t callee_saved_value = icount_;
+  set_register(s0, callee_saved_value);
+  set_register(s1, callee_saved_value);
+  set_register(s2, callee_saved_value);
+  set_register(s3, callee_saved_value);
+  set_register(s4, callee_saved_value);
+  set_register(s5, callee_saved_value);
+  set_register(s6, callee_saved_value);
+  set_register(s7, callee_saved_value);
+  set_register(gp, callee_saved_value);
+  set_register(fp, callee_saved_value);
+
+  // Start the simulation.
+  Execute();
+
+  // Check that the callee-saved registers have been preserved.
+  CHECK_EQ(callee_saved_value, get_register(s0));
+  CHECK_EQ(callee_saved_value, get_register(s1));
+  CHECK_EQ(callee_saved_value, get_register(s2));
+  CHECK_EQ(callee_saved_value, get_register(s3));
+  CHECK
