@@ -2774,4 +2774,35 @@ int32_t Simulator::Call(byte* entry, int argument_count, ...) {
   CHECK_EQ(callee_saved_value, get_register(s1));
   CHECK_EQ(callee_saved_value, get_register(s2));
   CHECK_EQ(callee_saved_value, get_register(s3));
-  CHECK
+  CHECK_EQ(callee_saved_value, get_register(s4));
+  CHECK_EQ(callee_saved_value, get_register(s5));
+  CHECK_EQ(callee_saved_value, get_register(s6));
+  CHECK_EQ(callee_saved_value, get_register(s7));
+  CHECK_EQ(callee_saved_value, get_register(gp));
+  CHECK_EQ(callee_saved_value, get_register(fp));
+
+  // Restore callee-saved registers with the original value.
+  set_register(s0, s0_val);
+  set_register(s1, s1_val);
+  set_register(s2, s2_val);
+  set_register(s3, s3_val);
+  set_register(s4, s4_val);
+  set_register(s5, s5_val);
+  set_register(s6, s6_val);
+  set_register(s7, s7_val);
+  set_register(gp, gp_val);
+  set_register(sp, sp_val);
+  set_register(fp, fp_val);
+
+  // Pop stack passed arguments.
+  CHECK_EQ(entry_stack, get_register(sp));
+  set_register(sp, original_stack);
+
+  int32_t result = get_register(v0);
+  return result;
+}
+
+
+uintptr_t Simulator::PushAddress(uintptr_t address) {
+  int new_sp = get_register(sp) - sizeof(uintptr_t);
+  
