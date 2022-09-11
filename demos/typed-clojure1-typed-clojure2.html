@@ -11,4 +11,23 @@
 <span class='d'>(ns clojure.core.typed
   (:refer-clojure :exclude [defrecord type])
   (:import (clojure.lang IPersistentList IPersistentVector Symbol Cons Seqable IPersistentCollection
-                 
+                         ISeq ASeq ILookup Var Namespace PersistentVector APersistentVector
+                         IFn IPersistentStack Associative IPersistentSet IPersistentMap IMapEntry
+                         Keyword Atom PersistentList IMeta PersistentArrayMap Compiler Named
+                         IRef AReference ARef IDeref IReference APersistentSet PersistentHashSet Sorted
+                         LazySeq APersistentMap))
+  (:require [analyze.core :refer [ast] :as analyze]
+            [analyze.hygienic :as hygienic]
+            [clojure.set :as set]
+            [clojure.reflect :as reflect]
+            [clojure.string :as str]
+            [clojure.repl :refer [pst]]
+            [clojure.pprint :refer [pprint]]
+            [trammel.core :as contracts]
+            [clojure.math.combinatorics :as comb]
+            [clojure.java.io :as io]
+            [cljs
+             [compiler]
+             [analyzer :as cljs]]
+            [clojure.tools.trace :refer [trace-vars untrace-vars
+     
