@@ -30,4 +30,25 @@
              [compiler]
              [analyzer :as cljs]]
             [clojure.tools.trace :refer [trace-vars untrace-vars
-     
+                                         trace-ns untrace-ns]]))</span>
+
+<span class='d'>(set! *warn-on-reflection* true)</span>
+
+
+<span class='d'>; constraint shorthands, other handy functions
+</span><span class='d'>(load &quot;typed/utils&quot;)</span>
+
+<span class='d'>;Note: defrecord is now trammel&#39;s defconstrainedrecord
+</span>
+<span class='d'>;(ann analyze.hygienic/emit-hy [Any -&gt; Any])
+</span>
+<span class='d'>;AnalysisExpr -&gt; Form
+</span><span class='d'>;(ann emit-form-fn [Any -&gt; Any])
+</span><span class='d'>(def emit-form-fn hygienic/emit-hy)</span>
+
+<span class='d'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='d'>;; Special functions
+</span>
+<span class='d'>;(ann print-filterset [String Any -&gt; Any])
+</span>(<a id='781' tid='782' class='u'>defn</a> <a id='783' tid='784' class='u'>print-filterset</a>
+  <span class='d'>&quot;Print the filter set attached to form, and debug-string&quot;</span>
