@@ -64,4 +64,12 @@
   (<span class='d'>let</span> [<span class='d'>ms</span> (<span class='d'>-&gt;&gt;</span> <span class='d'>(reflect/type-reflect (Class/forName (namespace mname)))</span>
              <span class='d'>:members</span>
              (<a id='171' tid='172' class='m'>filter</a> <a id='173' tid='174' class='m'>#</a>(<a id='175' tid='176' class='m'>and</a> (<a id='177' tid='178' class='m'>instance?</a> <a id='179' tid='180' class='m'>clojure.reflect.Method</a> <a id='181' tid='182' class='m'>%</a>)
-                 
+                           (<a id='183' tid='184' class='m'>=</a> (<a id='185' tid='186' class='m'>str</a> (<a id='187' tid='188' class='m'>:name</a> <a id='189' tid='190' class='m'>%</a>)) (<a id='191' tid='192' class='m'>name</a> <a id='193' tid='194' class='m'>mname</a>))))
+             <span class='d'>set</span>)
+        <span class='d'>_</span> (<a id='147' tid='148' class='m'>assert</a> (<a id='149' tid='150' class='m'>seq</a> <a id='151' tid='152' class='m'>ms</a>) (<a id='153' tid='154' class='m'>str</a> <a id='155' tid='156' class='m'>&quot;Method &quot;</a> <a id='157' tid='158' class='m'>mname</a> <a id='159' tid='160' class='m'>&quot; not found&quot;</a>))]
+    <span class='d'>(prn &quot;Method name:&quot; mname)</span>
+    <span class='d'>(doseq [m ms]
+      (prn (unparse-type (Method-&gt;Function m))))</span>))
+
+<span class='d'>;(ann inst-poly [Any Any -&gt; Any])
+</span>(<a id='589' tid='590' class='u'>defn</a> <a id='591' tid='592' class='u'>inst-pol
