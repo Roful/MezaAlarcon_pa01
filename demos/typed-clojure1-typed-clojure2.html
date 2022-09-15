@@ -52,3 +52,16 @@
 <span class='d'>;(ann print-filterset [String Any -&gt; Any])
 </span>(<a id='781' tid='782' class='u'>defn</a> <a id='783' tid='784' class='u'>print-filterset</a>
   <span class='d'>&quot;Print the filter set attached to form, and debug-string&quot;</span>
+  [<a id='785' tid='786' class='u'>debug-string</a> <a id='787' tid='788' class='u'>frm</a>] 
+  <a id='789' tid='790' class='u'>frm</a>)
+
+<span class='d'>(declare Method-&gt;Function unparse-type unparse-filter)</span>
+
+<span class='d'>;(ann method-type [Symbol -&gt; nil])
+</span>(<a id='671' tid='672' class='u'>defn</a> <a id='673' tid='674' class='u'>method-type</a> 
+  <span class='d'>&quot;Given a method symbol, print the core.typed types assigned to it&quot;</span>
+  [<a id='675' tid='676' class='u'>mname</a>]
+  (<span class='d'>let</span> [<span class='d'>ms</span> (<span class='d'>-&gt;&gt;</span> <span class='d'>(reflect/type-reflect (Class/forName (namespace mname)))</span>
+             <span class='d'>:members</span>
+             (<a id='171' tid='172' class='m'>filter</a> <a id='173' tid='174' class='m'>#</a>(<a id='175' tid='176' class='m'>and</a> (<a id='177' tid='178' class='m'>instance?</a> <a id='179' tid='180' class='m'>clojure.reflect.Method</a> <a id='181' tid='182' class='m'>%</a>)
+                 
