@@ -72,4 +72,17 @@
       (prn (unparse-type (Method-&gt;Function m))))</span>))
 
 <span class='d'>;(ann inst-poly [Any Any -&gt; Any])
-</span>(<a id='589' tid='590' class='u'>defn</a> <a id='591' tid='592' class='u'>inst-pol
+</span>(<a id='589' tid='590' class='u'>defn</a> <a id='591' tid='592' class='u'>inst-poly</a> 
+  [<a id='593' tid='594' class='u'>inst-of</a> <a id='595' tid='596' class='u'>types-syn</a>]
+  <a id='597' tid='598' class='u'>inst-of</a>)
+
+<span class='d'>;(ann inst-poly-ctor [Any Any -&gt; Any])
+</span>(<a id='599' tid='600' class='u'>defn</a> <a id='601' tid='602' class='u'>inst-poly-ctor</a> [<a id='603' tid='604' class='u'>inst-of</a> <a id='605' tid='606' class='u'>types-syn</a>]
+  <a id='607' tid='608' class='u'>inst-of</a>)
+
+(<a id='545' tid='546' class='u'>defmacro</a> <a id='547' tid='548' class='u'>inst</a> 
+  <a id='549' tid='550' class='u'>&quot;Instantiate a polymorphic type with a number of types&quot;</a>
+  [<a id='551' tid='552' class='u'>inst-of</a> <a id='553' tid='554' class='u'>&</a> <a id='555' tid='556' class='u'>types</a>]
+  <a id='557' tid='558' class='u'>`</a>(<a id='559' tid='560' class='u'>inst-poly</a> <a id='561' tid='562' class='u'>~inst-of</a> <a id='563' tid='564' class='u'>&#39;</a><a id='565' tid='566' class='u'>~types</a>))
+
+(<a id='567' tid='568' class
