@@ -95,4 +95,19 @@
 </span>(<a id='535' tid='536' class='u'>defn</a> <a id='537' tid='538' class='u'>fn&gt;-ann</a> [<a id='539' tid='540' class='u'>fn-of</a> <a id='541' tid='542' class='u'>param-types-syn</a>]
   <a id='543' tid='544' class='u'>fn-of</a>)
 
-<span class='d'>;(ann pfn&gt;-ann [Any Any -&gt; A
+<span class='d'>;(ann pfn&gt;-ann [Any Any -&gt; Any])
+</span>(<a id='761' tid='762' class='u'>defn</a> <a id='763' tid='764' class='u'>pfn&gt;-ann</a> [<a id='765' tid='766' class='u'>fn-of</a> <a id='767' tid='768' class='u'>polys</a> <a id='769' tid='770' class='u'>param-types-syn</a>]
+  <a id='771' tid='772' class='u'>fn-of</a>)
+
+<span class='d'>;(ann loop&gt;-ann [Any Any -&gt; Any])
+</span>(<a id='661' tid='662' class='u'>defn</a> <a id='663' tid='664' class='u'>loop&gt;-ann</a> [<a id='665' tid='666' class='u'>loop-of</a> <a id='667' tid='668' class='u'>bnding-types</a>]
+  <a id='669' tid='670' class='u'>loop-of</a>)
+
+<span class='d'>;(ann doseq&gt;-ann [Any Any -&gt; Any])
+</span><span class='d'>(defn doseq&gt;-ann [the-doseq bnding-types body]
+  the-doseq)</span>
+
+<span class='d'>;(ann parse-fn&gt; [Any (Seqable Any) -&gt;
+</span><span class='d'>;                &#39;{:poly Any
+</span><span class='d'>;                  :fn Any ;Form
+</span><span class='d'>;   
