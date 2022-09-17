@@ -85,4 +85,14 @@
   [<a id='551' tid='552' class='u'>inst-of</a> <a id='553' tid='554' class='u'>&</a> <a id='555' tid='556' class='u'>types</a>]
   <a id='557' tid='558' class='u'>`</a>(<a id='559' tid='560' class='u'>inst-poly</a> <a id='561' tid='562' class='u'>~inst-of</a> <a id='563' tid='564' class='u'>&#39;</a><a id='565' tid='566' class='u'>~types</a>))
 
-(<a id='567' tid='568' class
+(<a id='567' tid='568' class='u'>defmacro</a> <a id='569' tid='570' class='u'>inst-ctor</a>
+  <a id='571' tid='572' class='u'>&quot;Instantiate a call to a constructor with a number of types.
+  First argument must be an immediate call to a constructor.&quot;</a>
+  [<a id='573' tid='574' class='u'>inst-of</a> <a id='575' tid='576' class='u'>&</a> <a id='577' tid='578' class='u'>types</a>]
+  <a id='579' tid='580' class='u'>`</a>(<a id='581' tid='582' class='u'>inst-poly-ctor</a> <a id='583' tid='584' class='u'>~inst-of</a> <a id='585' tid='586' class='u'>&#39;</a><a id='587' tid='588' class='u'>~types</a>))
+
+<span class='d'>;(ann fn&gt;-ann [Any Any -&gt; Any])
+</span>(<a id='535' tid='536' class='u'>defn</a> <a id='537' tid='538' class='u'>fn&gt;-ann</a> [<a id='539' tid='540' class='u'>fn-of</a> <a id='541' tid='542' class='u'>param-types-syn</a>]
+  <a id='543' tid='544' class='u'>fn-of</a>)
+
+<span class='d'>;(ann pfn&gt;-ann [Any Any -&gt; A
