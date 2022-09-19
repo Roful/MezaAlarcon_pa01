@@ -110,4 +110,14 @@
 <span class='d'>;(ann parse-fn&gt; [Any (Seqable Any) -&gt;
 </span><span class='d'>;                &#39;{:poly Any
 </span><span class='d'>;                  :fn Any ;Form
-</span><span class='d'>;   
+</span><span class='d'>;                  :parsed-methods (Seqable &#39;{:dom-syntax (Seqable Any)
+</span><span class='d'>;                                             :dom-lhs (Seqable Any)
+</span><span class='d'>;                                             :rng-syntax Any
+</span><span class='d'>;                                             :has-rng? Any
+</span><span class='d'>;                                             :body Any})}])
+</span><span class='d'>;for
+</span>(<a id='195' tid='196' class='m'>defn-</a> <a id='197' tid='198' class='m'>parse-fn&gt;</a>
+  <a id='199' tid='200' class='m'>&quot;(fn&gt; name? :- type? [[param :- type]* & [param :- type *]?] exprs*)
+  (fn&gt; name? (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
+  [<a id='201' tid='202' class='m'>is-poly</a> <a id='203' tid='204' class='m'>forms</a>]
+  (<a id='205' tid='206' class='m'>let</a> [<span class='d'>name</span> (<a id='207' tid='208' class='m'>when</a> (<a id='209
