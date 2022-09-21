@@ -120,4 +120,10 @@
   <a id='199' tid='200' class='m'>&quot;(fn&gt; name? :- type? [[param :- type]* & [param :- type *]?] exprs*)
   (fn&gt; name? (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
   [<a id='201' tid='202' class='m'>is-poly</a> <a id='203' tid='204' class='m'>forms</a>]
-  (<a id='205' tid='206' class='m'>let</a> [<span class='d'>name</span> (<a id='207' tid='208' class='m'>when</a> (<a id='209
+  (<a id='205' tid='206' class='m'>let</a> [<span class='d'>name</span> (<a id='207' tid='208' class='m'>when</a> (<a id='209' tid='210' class='m'>symbol?</a> (<a id='211' tid='212' class='m'>first</a> <a id='213' tid='214' class='m'>forms</a>))
+               (<a id='215' tid='216' class='m'>first</a> <a id='217' tid='218' class='m'>forms</a>))
+        <span class='d'>forms</span> (<a id='161' tid='162' class='m'>if</a> <a id='163' tid='164' class='m'>name</a> (<a id='165' tid='166' class='m'>rest</a> <a id='167' tid='168' class='m'>forms</a>) <a id='169' tid='170' class='m'>forms</a>)
+        <span class='d'>poly</span> <span class='d'>(when is-poly
+               (first forms))</span>
+        <span class='d'>forms</span> (<a id='137' tid='138' class='m'>if</a> <a id='139' tid='140' class='m'>poly</a> (<a id='141' tid='142' class='m'>rest</a> <a id='143' tid='144' class='m'>forms</a>) <a id='145' tid='146' class='m'>forms</a>)
+        <span class='d'>methods</span> (<a id='119' tid='120' class='m'>if</a> ((<a id='121' tid='122' class='m'>some-fn</a> <a id='123' tid='124' class='m'>vector?</a> <a id='125' t
