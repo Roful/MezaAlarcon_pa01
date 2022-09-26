@@ -135,4 +135,9 @@
 </span>        <span class='d'>;        :body Any})
 </span>        <span class='d'>parsed-methods</span> (<a id='25' tid='26' class='m'>doall</a> 
                          (<a id='27' tid='28' class='m'>for</a> [<a id='29' tid='30' class='m'>method</a> <a id='31' tid='32' class='m'>methods</a>]
-                           (<a id='33' tid='34' class='m'>let</a> [<span class='d'>[ret has-ret?]</span> (<a id='35' tid='36' class='m'>when</a> (<a id='37' tid='38' class=
+                           (<a id='33' tid='34' class='m'>let</a> [<span class='d'>[ret has-ret?]</span> (<a id='35' tid='36' class='m'>when</a> (<a id='37' tid='38' class='m'>not</a> (<a id='39' tid='40' class='m'>vector?</a> (<a id='41' tid='42' class='m'>first</a> <a id='43' tid='44' class='m'>method</a>)))
+                                                  (<a id='45' tid='46' class='m'>assert</a> (<a id='47' tid='48' class='m'>=</a> <a id='49' tid='50' class='m'>:-</a> (<a id='51' tid='52' class='m'>first</a> <a id='53' tid='54' class='m'>method</a>))
+                                                          <a id='55' tid='56' class='m'>&quot;Return type for fn&gt; must be prefixed by :-&quot;</a>)
+                                                  [(<a id='57' tid='58' class='m'>second</a> <a id='59' tid='60' class='m'>method</a>) <a id='61' tid='62' class='m'>true</a>])
+                                 <span class='d'>method</span> (<a id='15' tid='16' class='m'>if</a> <a id='17' tid='18' class='m'>ret</a> 
+                                          (<a id='19' tid='20' class='m'>nnext</a> <a id
