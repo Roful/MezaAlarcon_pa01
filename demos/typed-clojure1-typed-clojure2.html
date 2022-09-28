@@ -157,4 +157,13 @@
      <a id='225' tid='226' class='m'>:fn</a> <a id='227' tid='228' class='m'>`</a>(<a id='229' tid='230' class='m'>fn</a> <a id='231' tid='232' class='m'>~@</a>(<a id='233' tid='234' class='m'>concat</a>
                   (<a id='235' tid='236' class='m'>when</a> <a id='237' tid='238' class='m'>name</a>
                     [<a id='239' tid='240' class='m'>name</a>])
-                  (<a id='241' tid='242' class='m'>for</a> [<a id='243' tid='244' class='m'>{</a><a id='245' tid='246' class='m'>:keys</a> [<a id='247' tid='248' class='m'>body</a> <a id='249' tid='25
+                  (<a id='241' tid='242' class='m'>for</a> [<a id='243' tid='244' class='m'>{</a><a id='245' tid='246' class='m'>:keys</a> [<a id='247' tid='248' class='m'>body</a> <a id='249' tid='250' class='m'>dom-lhs</a>]<a id='251' tid='252' class='m'>}</a> <a id='253' tid='254' class='m'>parsed-methods</a>]
+                    (<a id='255' tid='256' class='m'>apply</a> <a id='257' tid='258' class='m'>list</a> (<a id='259' tid='260' class='m'>vec</a> <a id='261' tid='262' class='m'>dom-lhs</a>) <a id='263' tid='264' class='m'>body</a>))))
+     <a id='265' tid='266' class='m'>:parsed-methods</a> <a id='267' tid='268' class='m'>parsed-methods</a><a id='269' tid='270' class='m'>}</a>))
+
+(<a id='717' tid='718' class='u'>defmacro</a> <a id='719' tid='720' class='u'>pfn&gt;</a> 
+  <a id='721' tid='722' class='u'>&quot;Define a polymorphic typed anonymous function.
+  (pfn&gt; name? [binder+] :- type? [[param :- type]* & [param :- type *]?] exprs*)
+  (pfn&gt; name? [binder+] (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
+  [<a id='723' tid='724' class='u'>&</a> <a id='725' tid='726' class='u'>forms</a>]
+  (<a id='727'
