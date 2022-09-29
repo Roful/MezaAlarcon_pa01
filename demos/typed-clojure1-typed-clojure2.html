@@ -230,4 +230,24 @@
        (declare-names ~sym)
        (declare-alias-kind* qsym# ty#))))</span>)
 
-(<a id='453' tid='454' class='u'>defmacro</a> <a i
+(<a id='453' tid='454' class='u'>defmacro</a> <a id='455' tid='456' class='u'>declare-names</a> 
+  <a id='457' tid='458' class='u'>&quot;Declare names, similar to declare but on the type level.&quot;</a>
+  [<a id='459' tid='460' class='u'>&</a> <a id='461' tid='462' class='u'>syms</a>]
+  <a id='463' tid='464' class='u'>`</a><span class='d'>(tc-ignore
+  (doseq [sym# &#39;~syms]
+     (let [qsym# (if (namespace sym#)
+                   sym#
+                   (symbol (name (ns-name *ns*)) (name sym#)))]
+       (declare-name* qsym#))))</span>)
+
+(<a id='477' tid='478' class='u'>defmacro</a> <a id='479' tid='480' class='u'>def-alias</a> 
+  <span class='d'>&quot;Define a type alias&quot;</span>
+  <span class='d'>[sym type]</span>
+  <span class='d'>`</span><span class='d'>(tc-ignore
+  (do (ensure-clojure)
+    (let [sym# (if (namespace &#39;~sym)
+                 &#39;~sym
+                 (symbol (name (ns-name *ns*)) (name &#39;~sym)))
+          ty# (parse-type &#39;~type)]
+      (add-type-name sym# ty#)
+      (decla
