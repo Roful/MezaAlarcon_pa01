@@ -264,4 +264,24 @@
 </span><span class='d'>; 
 </span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;nil)) =&gt; Object
 </span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;(U nil Number))) =&gt; Number
-</span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;(Array (U nil Number)))) =~&gt; (Arra
+</span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;(Array (U nil Number)))) =~&gt; (Array Number)
+</span>
+<span class='d'>;(ann Type-&gt;array-member-Class (Fn [Type -&gt; (Option Class)]
+</span><span class='d'>;                                  [Type Any -&gt; (Option Class)]))
+</span><span class='d'>(defn Type-&gt;array-member-Class 
+  ([ty] (Type-&gt;array-member-Class ty false))
+  ([ty nilok?]
+   {:pre [(Type? ty)]}
+   (cond
+     (requires-resolving? ty) (Type-&gt;array-member-Class (-resolve ty) nilok?)
+     (Nil? ty) (if nilok?
+                 nil
+                 Object)
+     (Value? ty) (Value-&gt;Class ty)
+     ;; handles most common case of (U nil Type)
+     (Union? ty) (let [clss (map #(Type-&gt;array-member-Class % true) (:types ty))
+                       prim-and-nil? (and (some nil? clss)
+                                          (some #(when % (.isPrimitive ^Class %)) clss))
+                       nonil-clss (remove nil? clss)]
+                   (if (and (= 1 (count nonil-clss))
+                            (not 
