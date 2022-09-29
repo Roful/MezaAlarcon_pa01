@@ -171,4 +171,10 @@
 
 (<a id='497' tid='498' class='u'>defmacro</a> <a id='499' tid='500' class='u'>fn&gt;</a> 
   <a id='501' tid='502' class='u'>&quot;Define a typed anonymous function.
-  (fn&gt; name? :- type? [[param :- type]* & [param :- typ
+  (fn&gt; name? :- type? [[param :- type]* & [param :- type *]?] exprs*)
+  (fn&gt; name? (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
+  [<a id='503' tid='504' class='u'>&</a> <a id='505' tid='506' class='u'>forms</a>]
+  (<a id='507' tid='508' class='u'>let</a> [<a id='509' tid='510' class='u'>{</a><a id='511' tid='512' class='u'>:keys</a> [<a id='513' tid='514' class='u'>fn</a> <a id='515' tid='516' class='u'>parsed-methods</a>]<a id='517' tid='518' class='u'>}</a> (<a id='519' tid='520' class='u'>parse-fn&gt;</a> <a id='521' tid='522' class='u'>false</a> <a id='523' tid='524' class='u'>forms</a>)]
+    <a id='525' tid='526' class='u'>`</a>(<a id='527' tid='528' class='u'>fn&gt;-ann</a> <a id='529' tid='530' class='u'>~fn</a> <a id='531' tid='532' class='u'>&#39;</a><a id='533' tid='534' class='u'>~parsed-methods</a>)))
+
+(<a id='481' tid='482' class='u'>defmacro</a> <a id='483' tid='484' class='u'>defprotocol&gt;</a> [<a id='485' tid='486' class='u'>&</a> <a id='487' tid='488' class='u'>bod
