@@ -210,4 +210,24 @@
   [<a id='471' tid='472' class='u'>&</a> <a id='473' tid='474' class='u'>syms</a>]
   <a id='475' tid='476' class='u'>`</a><span class='d'>(tc-ignore
   (doseq [sym# &#39;~syms]
-     (let [qsym# (if (namespace sy
+     (let [qsym# (if (namespace sym#)
+                   sym#
+                   (symbol (str (name (ns-name *ns*))) (name sym#)))]
+       (declare-protocol* qsym#))))</span>)
+
+(<a id='429' tid='430' class='u'>defmacro</a> <a id='431' tid='432' class='u'>declare-alias-kind</a>
+  <a id='433' tid='434' class='u'>&quot;Declare a kind for an alias, similar to declare but on the kind level.&quot;</a>
+  [<a id='435' tid='436' class='u'>sym</a> <a id='437' tid='438' class='u'>ty</a>]
+  <a id='439' tid='440' class='u'>`</a><span class='d'>(tc-ignore
+   (do (ensure-clojure)
+     (let [sym# &#39;~sym
+           qsym# (if (namespace sym#)
+                   sym#
+                   (symbol (name (ns-name *ns*)) (name sym#)))
+           ty# (parse-type &#39;~ty)]
+       (assert (not (namespace sym#)) (str &quot;Cannot declare qualified name &quot; sym#))
+       (declare ~sym)
+       (declare-names ~sym)
+       (declare-alias-kind* qsym# ty#))))</span>)
+
+(<a id='453' tid='454' class='u'>defmacro</a> <a i
