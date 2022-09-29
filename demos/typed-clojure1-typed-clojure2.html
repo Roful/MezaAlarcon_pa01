@@ -195,4 +195,19 @@
                 <a id='309' tid='310' class='m'>&#39;</a><a id='311' tid='312' class='m'>~bnd-anns</a>)))
 
 (<a id='441' tid='442' class='u'>defmacro</a> <a id='443' tid='444' class='u'>declare-datatypes</a> 
-  <a id='445' tid='446' class='u'
+  <a id='445' tid='446' class='u'>&quot;Declare datatypes, similar to declare but on the type level.&quot;</a>
+  [<a id='447' tid='448' class='u'>&</a> <a id='449' tid='450' class='u'>syms</a>]
+  <a id='451' tid='452' class='u'>`</a><span class='d'>(tc-ignore
+  (doseq [sym# &#39;~syms]
+    (assert (not (or (some #(= \. %) (str sym#))
+                     (namespace sym#)))
+            (str &quot;Cannot declare qualified datatype: &quot; sym#))
+    (let [qsym# (symbol (str (munge (name (ns-name *ns*))) \. (name sym#)))]
+      (declare-datatype* qsym#))))</span>)
+
+(<a id='465' tid='466' class='u'>defmacro</a> <a id='467' tid='468' class='u'>declare-protocols</a> 
+  <a id='469' tid='470' class='u'>&quot;Declare protocols, similar to declare but on the type level.&quot;</a>
+  [<a id='471' tid='472' class='u'>&</a> <a id='473' tid='474' class='u'>syms</a>]
+  <a id='475' tid='476' class='u'>`</a><span class='d'>(tc-ignore
+  (doseq [sym# &#39;~syms]
+     (let [qsym# (if (namespace sy
