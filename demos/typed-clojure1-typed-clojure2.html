@@ -250,4 +250,18 @@
                  (symbol (name (ns-name *ns*)) (name &#39;~sym)))
           ty# (parse-type &#39;~type)]
       (add-type-name sym# ty#)
-      (decla
+      (declare ~sym)
+      (when-let [tfn# (@DECLARED-KIND-ENV sym#)]
+        (assert (subtype? ty# tfn#) (error-msg &quot;Declared kind &quot; (unparse-type tfn#)
+                                               &quot; does not match actual kind &quot; (unparse-type ty#))))
+      [sym# (unparse-type ty#)])))</span>)
+
+<span class='d'>(declare Type? RClass? PrimitiveArray? RClass-&gt;Class parse-type symbol-&gt;Class
+         requires-resolving? -resolve Nil? Value? Value-&gt;Class Union? Intersection?)</span>
+
+<span class='d'>;Return a Class that generalises what this Clojure type will look like from Java,
+</span><span class='d'>;suitable  for use as a Java primitive array member type.
+</span><span class='d'>; 
+</span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;nil)) =&gt; Object
+</span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;(U nil Number))) =&gt; Number
+</span><span class='d'>; (Type-&gt;array-member-Class (parse-type &#39;(Array (U nil Number)))) =~&gt; (Arra
