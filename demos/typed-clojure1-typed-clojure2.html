@@ -166,4 +166,9 @@
   (pfn&gt; name? [binder+] :- type? [[param :- type]* & [param :- type *]?] exprs*)
   (pfn&gt; name? [binder+] (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
   [<a id='723' tid='724' class='u'>&</a> <a id='725' tid='726' class='u'>forms</a>]
-  (<a id='727'
+  (<a id='727' tid='728' class='u'>let</a> [<a id='729' tid='730' class='u'>{</a><a id='731' tid='732' class='u'>:keys</a> [<a id='733' tid='734' class='u'>poly</a> <a id='735' tid='736' class='u'>fn</a> <a id='737' tid='738' class='u'>parsed-methods</a>]<a id='739' tid='740' class='u'>}</a> (<a id='741' tid='742' class='u'>parse-fn&gt;</a> <a id='743' tid='744' class='u'>true</a> <a id='745' tid='746' class='u'>forms</a>)]
+    <a id='747' tid='748' class='u'>`</a>(<a id='749' tid='750' class='u'>pfn&gt;-ann</a> <a id='751' tid='752' class='u'>~fn</a> <a id='753' tid='754' class='u'>&#39;</a><a id='755' tid='756' class='u'>~poly</a> <a id='757' tid='758' class='u'>&#39;</a><a id='759' tid='760' class='u'>~parsed-methods</a>)))
+
+(<a id='497' tid='498' class='u'>defmacro</a> <a id='499' tid='500' class='u'>fn&gt;</a> 
+  <a id='501' tid='502' class='u'>&quot;Define a typed anonymous function.
+  (fn&gt; name? :- type? [[param :- type]* & [param :- typ
