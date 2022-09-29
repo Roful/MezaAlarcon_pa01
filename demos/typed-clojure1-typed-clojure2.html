@@ -177,4 +177,16 @@
   (<a id='507' tid='508' class='u'>let</a> [<a id='509' tid='510' class='u'>{</a><a id='511' tid='512' class='u'>:keys</a> [<a id='513' tid='514' class='u'>fn</a> <a id='515' tid='516' class='u'>parsed-methods</a>]<a id='517' tid='518' class='u'>}</a> (<a id='519' tid='520' class='u'>parse-fn&gt;</a> <a id='521' tid='522' class='u'>false</a> <a id='523' tid='524' class='u'>forms</a>)]
     <a id='525' tid='526' class='u'>`</a>(<a id='527' tid='528' class='u'>fn&gt;-ann</a> <a id='529' tid='530' class='u'>~fn</a> <a id='531' tid='532' class='u'>&#39;</a><a id='533' tid='534' class='u'>~parsed-methods</a>)))
 
-(<a id='481' tid='482' class='u'>defmacro</a> <a id='483' tid='484' class='u'>defprotocol&gt;</a> [<a id='485' tid='486' class='u'>&</a> <a id='487' tid='488' class='u'>bod
+(<a id='481' tid='482' class='u'>defmacro</a> <a id='483' tid='484' class='u'>defprotocol&gt;</a> [<a id='485' tid='486' class='u'>&</a> <a id='487' tid='488' class='u'>body</a>]
+  <span class='d'>&quot;Define a typed protocol&quot;</span>
+  <a id='489' tid='490' class='u'>`</a>(<a id='491' tid='492' class='u'>tc-ignore</a>
+     (<a id='493' tid='494' class='u'>defprotocol</a> <a id='495' tid='496' class='u'>~@body</a>)))
+
+(<a id='651' tid='652' class='u'>defmacro</a> <a id='653' tid='654' class='u'>loop&gt;</a>
+  <span class='d'>&quot;Define a typed loop&quot;</span>
+  [<a id='655' tid='656' class='u'>bndings*</a> <a id='657' tid='658' class='u'>&</a> <a id='659' tid='660' class='u'>forms</a>]
+  (<a id='271' tid='272' class='m'>let</a> [<span class='d'>bnds</span> <span class='d'>(partition 2 bndings*)</span>
+        <span class='d'>; [[lhs :- bnd-ann] rhs]
+</span>        <span class='d'>lhs</span> <span class='d'>(map ffirst bnds)</span>
+        <span class='d'>rhs</span> <span class='d'>(map second bnds)</span>
+        <span class='d'>bnd-anns</span> (<a id='273' tid='274' class='
