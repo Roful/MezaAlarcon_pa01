@@ -284,4 +284,22 @@
                                           (some #(when % (.isPrimitive ^Class %)) clss))
                        nonil-clss (remove nil? clss)]
                    (if (and (= 1 (count nonil-clss))
-                            (not 
+                            (not prim-and-nil?))
+                     (first nonil-clss)
+                     Object))
+     (Intersection? ty) Object
+     (RClass? ty) (RClass-&gt;Class ty)
+     (PrimitiveArray? ty) (class (make-array (Type-&gt;array-member-Class (:jtype ty) false) 0))
+     :else Object)))</span>
+
+<span class='d'>;(ann into-array&gt;* [Any Any -&gt; Any])
+</span>(<a id='647' tid='648' class='u'>defn</a> <a id='649' tid='650' class='u'>into-array&gt;*</a> 
+  <span class='d'>([cljt coll]
+   (into-array (-&gt; cljt parse-type Type-&gt;array-member-Class) coll))</span>
+  <span class='d'>([javat cljt coll]
+   (into-array (-&gt; javat parse-type Type-&gt;array-member-Class) coll))</span>)
+
+(<a id='609' tid='610' class='u'>defmacro</a> <a id='611' tid='612' class='u'>into-array&gt;</a> 
+  <span class='d'>&quot;Make a Java array with Java class javat and Typed Clojure type
+  cljt. Resulting array will be of type javat, but elements of coll must be under
+  cljt
