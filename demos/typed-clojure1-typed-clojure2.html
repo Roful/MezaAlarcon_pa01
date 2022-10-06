@@ -302,4 +302,10 @@
 (<a id='609' tid='610' class='u'>defmacro</a> <a id='611' tid='612' class='u'>into-array&gt;</a> 
   <span class='d'>&quot;Make a Java array with Java class javat and Typed Clojure type
   cljt. Resulting array will be of type javat, but elements of coll must be under
-  cljt
+  cljt. cljt should be a subtype of javat (the same or more specific).&quot;</span>
+  ([<a id='613' tid='614' class='u'>cljt</a> <a id='615' tid='616' class='u'>coll</a>]
+   <a id='617' tid='618' class='u'>`</a>(<a id='619' tid='620' class='u'>into-array&gt;*</a> <a id='621' tid='622' class='u'>&#39;</a><a id='623' tid='624' class='u'>~cljt</a> <a id='625' tid='626' class='u'>~coll</a>))
+  ([<a id='627' tid='628' class='u'>javat</a> <a id='629' tid='630' class='u'>cljt</a> <a id='631' tid='632' class='u'>coll</a>]
+   <a id='633' tid='634' class='u'>`</a>(<a id='635' tid='636' class='u'>into-array&gt;*</a> <a id='637' tid='638' class='u'>&#39;</a><a id='639' tid='640' class='u'>~javat</a> <a id='641' tid='642' class='u'>&#39;</a><a id='643' tid='644' class='u'>~cljt</a> <a id='645' tid='646' class='u'>~coll</a>)))
+
+(<a id='365' tid='366' class='u'>defn</a> <a id='367' tid='368' class='u'>ann-form*</a> [<a id='369' tid='370' class='u'>form</a> <a id='371' tid='372' cl
