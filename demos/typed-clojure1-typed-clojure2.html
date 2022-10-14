@@ -350,4 +350,28 @@
   mmap is a map mapping arity parameter number to a set of parameter
   positions (integers). If the map contains the key :all then this overrides
   other entries. The key can also be :all, which declares all parameters nilable.&quot;</span>
- 
+  [<a id='681' tid='682' class='u'>msym</a> <a id='683' tid='684' class='u'>mmap</a>]
+  <a id='685' tid='686' class='u'>`</a><span class='d'>(tc-ignore
+  (add-method-nilable-param &#39;~msym &#39;~mmap))</span>)
+
+<span class='d'>(declare abstract-many instantiate-many)</span>
+
+<span class='d'>(load &quot;typed/type_rep&quot;
+      &quot;typed/type_ops&quot;
+      &quot;typed/filter_rep&quot;
+      &quot;typed/filter_ops&quot;
+      &quot;typed/path_rep&quot;
+      &quot;typed/object_rep&quot;)</span>
+
+<span class='d'>; must be after type/object/filter definitions
+</span><span class='d'>(load &quot;typed/fold&quot;)</span>
+
+<span class='d'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='d'>;; Annotations
+</span>
+<span class='d'>(declare TCResult?)</span>
+
+<span class='d'>;(ann (predicate (APersistentMap Symbol Any)))
+</span><span class='d'>(def lex-env? (hash-c? (every-pred symbol? (complement namespace)) Type?))</span>
+
+<span class='d'>(defrecord PropEnv [l prop
