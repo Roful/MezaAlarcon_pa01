@@ -334,4 +334,20 @@
 (<a id='687' tid='688' class='u'>defmacro</a> <a id='689' tid='690' class='u'>non-nil-return</a> 
   <span class='d'>&quot;Override the return type of method msym to be non-nil.
   Takes a set of relevant arities,
-  represented by 
+  represented by the number of parameters it takes (rest parameter counts as one),
+  or :all which overrides all arities.
+  
+  eg.  (non-nil-return java.lang.Class/getDeclaredMethod :all)&quot;</span>
+  [<a id='691' tid='692' class='u'>msym</a> <a id='693' tid='694' class='u'>arities</a>]
+  <a id='695' tid='696' class='u'>`</a><span class='d'>(tc-ignore
+  (add-nonnilable-method-return &#39;~msym &#39;~arities))</span>)
+
+(<a id='677' tid='678' class='u'>defmacro</a> <a id='679' tid='680' class='u'>nilable-param</a> 
+  <span class='d'>&quot;Overrides which parameters in a method may accept
+  nilable values. If the parameter is a parameterised type or
+  an Array, this also declares the parameterised types and the Array type as nilable.
+
+  mmap is a map mapping arity parameter number to a set of parameter
+  positions (integers). If the map contains the key :all then this overrides
+  other entries. The key can also be :all, which declares all parameters nilable.&quot;</span>
+ 
