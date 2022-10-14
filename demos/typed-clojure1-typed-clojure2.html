@@ -325,4 +325,13 @@
 </span>(<a id='821' tid='822' class='u'>defn</a> <a id='823' tid='824' class='u'>tc-ignore-forms*</a> [<a id='825' tid='826' class='u'>r</a>]
   <a id='827' tid='828' class='u'>r</a>)
 
-<span class='d'>;; `do` is speci
+<span class='d'>;; `do` is special at the top level
+</span>(<a id='791' tid='792' class='u'>defmacro</a> <a id='793' tid='794' class='u'>tc-ignore</a> 
+  <a id='795' tid='796' class='u'>&quot;Ignore forms in body during type checking&quot;</a>
+  [<a id='797' tid='798' class='u'>&</a> <a id='799' tid='800' class='u'>body</a>]
+  <a id='801' tid='802' class='u'>`</a>(<a id='803' tid='804' class='u'>do</a> <a id='805' tid='806' class='u'>~@</a>(<a id='807' tid='808' class='u'>map</a> (<a id='809' tid='810' class='u'>fn</a> [<a id='811' tid='812' class='u'>b</a>] <a id='813' tid='814' class='u'>`</a>(<a id='815' tid='816' class='u'>tc-ignore-forms*</a> <a id='817' tid='818' class='u'>~b</a>)) <a id='819' tid='820' class='u'>body</a>)))
+
+(<a id='687' tid='688' class='u'>defmacro</a> <a id='689' tid='690' class='u'>non-nil-return</a> 
+  <span class='d'>&quot;Override the return type of method msym to be non-nil.
+  Takes a set of relevant arities,
+  represented by 
