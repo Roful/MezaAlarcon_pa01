@@ -400,4 +400,26 @@
   `(binding [*lexical-env* ~env]
      ~@body))</span>
 
-<span class='d'>(set-validator! VAR-ANNOTATIONS #(and (ev
+<span class='d'>(set-validator! VAR-ANNOTATIONS #(and (every? (every-pred symbol? namespace) (keys %))
+                                      (every? Type? (vals %))))</span>
+<span class='d'>(set-validator! #&#39;*lexical-env* PropEnv?)</span>
+
+(<a id='313' tid='314' class='u'>defmacro</a> <a id='315' tid='316' class='u'>ann</a> [<a id='317' tid='318' class='u'>varsym</a> <a id='319' tid='320' class='u'>typesyn</a>]
+  <span class='d'>`</span><span class='d'>(tc-ignore
+ (do (ensure-clojure)
+   (let [t# (parse-type &#39;~typesyn)
+         s# (if (namespace &#39;~varsym)
+              &#39;~varsym
+              (symbol (-&gt; *ns* ns-name str) (str &#39;~varsym)))]
+     (do (add-var-type s# t#)
+       [s# (unparse-type t#)]))))</span>)
+
+<span class='d'>(declare parse-type alter-class*)</span>
+
+<span class='d'>(defn parse-field [[n _ t]]
+  [n (parse-type t)])</span>
+
+<span class='d'>(defn gen-datatype* [provided-name fields variances args ancests]
+  `(do (ensure-clojure)
+  (let [provided-name-str# (str &#39;~provided-name)
+         ;_# (prn &quot;provided-name-s
