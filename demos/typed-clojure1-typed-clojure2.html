@@ -374,4 +374,30 @@
 <span class='d'>;(ann (predicate (APersistentMap Symbol Any)))
 </span><span class='d'>(def lex-env? (hash-c? (every-pred symbol? (complement namespace)) Type?))</span>
 
-<span class='d'>(defrecord PropEnv [l prop
+<span class='d'>(defrecord PropEnv [l props]
+  &quot;A lexical environment l, props is a list of known propositions&quot;
+  [(lex-env? l)
+   (every? Filter? props)])</span>
+
+<span class='d'>(declare ^:dynamic *lexical-env*)</span>
+
+(<a id='773' tid='774' class='u'>defn</a> <a id='775' tid='776' class='u'>print-env</a> [<a id='777' tid='778' class='u'>debug-str</a>]
+  <a id='779' tid='780' class='u'>nil</a>)
+
+<span class='d'>(defn print-env*
+  ([] (print-env* *lexical-env*))
+  ([e]
+   {:pre [(PropEnv? e)]}
+   ;; DO NOT REMOVE
+   (prn {:env (into {} (for [[k v] (:l e)]
+                         [k (unparse-type v)]))
+         :props (map unparse-filter (:props e))})))</span>
+
+<span class='d'>(defonce VAR-ANNOTATIONS (atom {}))</span>
+<span class='d'>(def ^:dynamic *lexical-env* (-&gt;PropEnv {} []))</span>
+
+<span class='d'>(defmacro with-lexical-env [env & body]
+  `(binding [*lexical-env* ~env]
+     ~@body))</span>
+
+<span class='d'>(set-validator! VAR-ANNOTATIONS #(and (ev
