@@ -422,4 +422,18 @@
 <span class='d'>(defn gen-datatype* [provided-name fields variances args ancests]
   `(do (ensure-clojure)
   (let [provided-name-str# (str &#39;~provided-name)
-         ;_# (prn &quot;provided-name-s
+         ;_# (prn &quot;provided-name-str&quot; provided-name-str#)
+         munged-ns-str# (if (some #(= \. %) provided-name-str#)
+                          (apply str (butlast (apply concat (butlast (partition-by #(= \. %) provided-name-str#)))))
+                          (str (munge (-&gt; *ns* ns-name))))
+         ;_# (prn &quot;munged-ns-str&quot; munged-ns-str#)
+         demunged-ns-str# (str (clojure.repl/demunge munged-ns-str#))
+         ;_# (prn &quot;demunged-ns-str&quot; demunged-ns-str#)
+         local-name# (if (some #(= \. %) provided-name-str#)
+                       (symbol (apply str (last (partition-by #(= \. %) (str provided-name-str#)))))
+                       provided-name-str#)
+         ;_# (prn &quot;local-name&quot; local-name#)
+         s# (symbol (str munged-ns-str# \. local-name#))
+         fs# (apply array-map (apply concat (with-frees (mapv make-F &#39;~args)
+                                              (mapv parse-field (partition 3 &#39;~fields)))))
+         as# (set (with-f
