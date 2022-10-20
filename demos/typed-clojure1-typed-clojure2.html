@@ -436,4 +436,25 @@
          s# (symbol (str munged-ns-str# \. local-name#))
          fs# (apply array-map (apply concat (with-frees (mapv make-F &#39;~args)
                                               (mapv parse-field (partition 3 &#39;~fields)))))
-         as# (set (with-f
+         as# (set (with-frees (mapv make-F &#39;~args)
+                    (mapv parse-type &#39;~ancests)))
+         _# (add-datatype-ancestors s# as#)
+         pos-ctor-name# (symbol demunged-ns-str# (str &quot;-&gt;&quot; local-name#))
+         args# &#39;~args
+         vs# &#39;~variances
+         dt# (if args#
+               (Poly* args# (repeat (count args#) no-bounds)
+                      (-&gt;DataType s# vs# (map make-F args#) fs#)
+                      args#)
+               (-&gt;DataType s# nil nil fs#))
+         pos-ctor# (if args#
+                     (Poly* args# (repeat (count args#) no-bounds)
+                            (make-FnIntersection
+                              (make-Function (vec (vals fs#)) (-&gt;DataType s# vs# (map make-F args#) fs#)))
+                            args#)
+                     (make-FnIntersection
+                       (make-Function (vec (vals fs#)) dt#)))]
+     (do 
+       (when vs#
+         (let [f# (mapv make-F (repeatedly (count vs#) gensym))]
+           (alter-cla
