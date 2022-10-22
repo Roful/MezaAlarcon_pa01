@@ -467,4 +467,14 @@
   (<a id='325' tid='326' class='u'>assert</a> (<a id='327' tid='328' class='u'>not</a> <a id='329' tid='330' class='u'>rplc</a>) <a id='331' tid='332' class='u'>&quot;Replace NYI&quot;</a>)
   (<a id='333' tid='334' class='u'>assert</a> (<a id='335' tid='336' class='u'>symbol?</a> <a id='337' tid='338' class='u'>dname</a>)
           (<a id='339' tid='340' class='u'>str</a> <a id='341' tid='342' class='u'>&quot;Must provide name symbol: &quot;</a> <a id='343' tid='344' class='u'>dname</a>))
-  <a id='345' tid='346' class='u'>`</a><span class='d'>(tc-ignor
+  <a id='345' tid='346' class='u'>`</a><span class='d'>(tc-ignore
+     ~(gen-datatype* dname fields nil nil ancests))</span>)
+
+(<a id='375' tid='376' class='u'>defmacro</a> <a id='377' tid='378' class='u'>ann-pdatatype</a> <span class='d'>[dname vbnd fields & {ancests :unchecked-ancestors rplc :replace}]</span>
+  (<a id='379' tid='380' class='u'>assert</a> (<a id='381' tid='382' class='u'>not</a> <a id='383' tid='384' class='u'>rplc</a>) <a id='385' tid='386' class='u'>&quot;Replace NYI&quot;</a>)
+  (<a id='387' tid='388' class='u'>assert</a> (<a id='389' tid='390' class='u'>symbol?</a> <a id='391' tid='392' class='u'>dname</a>)
+          (<a id='393' tid='394' class='u'>str</a> <a id='395' tid='396' class='u'>&quot;Must provide local symbol: &quot;</a> <a id='397' tid='398' class='u'>dname</a>))
+  <a id='399' tid='400' class='u'>`</a><span class='d'>(tc-ignore
+     ~(gen-datatype* dname fields (map second vbnd) (map first vbnd) ancests))</span>)
+
+<span class='d'>(defn gen-protocol* [local-varsym var
