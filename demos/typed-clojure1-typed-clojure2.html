@@ -457,4 +457,14 @@
      (do 
        (when vs#
          (let [f# (mapv make-F (repeatedly (count vs#) gensym))]
-           (alter-cla
+           (alter-class* s# (RClass* (map :name f#) vs# f# s# {}))))
+       (add-datatype s# dt#)
+       (add-var-type pos-ctor-name# pos-ctor#)
+       [[s# (unparse-type dt#)]
+        [pos-ctor-name# (unparse-type pos-ctor#)]]))))</span>
+
+(<a id='321' tid='322' class='u'>defmacro</a> <a id='323' tid='324' class='u'>ann-datatype</a> <span class='d'>[dname fields & {ancests :unchecked-ancestors rplc :replace}]</span>
+  (<a id='325' tid='326' class='u'>assert</a> (<a id='327' tid='328' class='u'>not</a> <a id='329' tid='330' class='u'>rplc</a>) <a id='331' tid='332' class='u'>&quot;Replace NYI&quot;</a>)
+  (<a id='333' tid='334' class='u'>assert</a> (<a id='335' tid='336' class='u'>symbol?</a> <a id='337' tid='338' class='u'>dname</a>)
+          (<a id='339' tid='340' class='u'>str</a> <a id='341' tid='342' class='u'>&quot;Must provide name symbol: &quot;</a> <a id='343' tid='344' class='u'>dname</a>))
+  <a id='345' tid='346' class='u'>`</a><span class='d'>(tc-ignor
