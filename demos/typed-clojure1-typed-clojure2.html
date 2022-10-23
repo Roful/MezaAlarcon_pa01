@@ -499,4 +499,20 @@
               (-&gt;Protocol s# nil nil on-class# ms#))]
      (do
        (add-protocol s# t#)
-       
+       (doseq [[kuq# mt#] ms#]
+         ;qualify method names when adding methods as vars
+         (let [kq# (symbol (-&gt; *ns* ns-name str) (str kuq#))]
+           (add-var-type kq# mt#)))
+       [s# (unparse-type t#)]))))</span>
+
+(<a id='407' tid='408' class='u'>defmacro</a> <a id='409' tid='410' class='u'>ann-protocol</a> <span class='d'>[local-varsym & {:as mth}]</span>
+  <span class='d'>(assert (not (or (namespace local-varsym)
+                   (some #{\.} (str local-varsym))))
+          (str &quot;Must provide local var name for protocol: &quot; local-varsym))</span>
+  <a id='411' tid='412' class='u'>`</a><span class='d'>(tc-ignore
+     ~(gen-protocol* local-varsym nil nil mth))</span>)
+
+(<a id='401' tid='402' class='u'>defmacro</a> <a id='403' tid='404' class='u'>ann-pprotocol</a> <span class='d'>[local-varsym vbnd & {:as mth}]</span>
+  <span class='d'>(assert (not (or (namespace local-varsym)
+                   (some #{\.} (str local-varsym))))
+          (str &quot;Must provide local var name for protocol: 
