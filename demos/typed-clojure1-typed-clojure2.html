@@ -477,4 +477,26 @@
   <a id='399' tid='400' class='u'>`</a><span class='d'>(tc-ignore
      ~(gen-datatype* dname fields (map second vbnd) (map first vbnd) ancests))</span>)
 
-<span class='d'>(defn gen-protocol* [local-varsym var
+<span class='d'>(defn gen-protocol* [local-varsym variances args mths]
+  `(do (ensure-clojure)
+  (let [local-vsym# &#39;~local-varsym
+         s# (symbol (-&gt; *ns* ns-name str) (str local-vsym#))
+         on-class# (symbol (str (munge (namespace s#)) \. local-vsym#))
+         ; add a Name so the methods can be parsed
+         _# (declare-protocol* s#)
+         args# &#39;~args
+         fs# (when args# 
+               (map make-F args#))
+         ms# (into {} (for [[knq# v#] &#39;~mths]
+                        (do
+                          (assert (not (namespace knq#))
+                                  &quot;Protocol method should be unqualified&quot;)
+                          [knq# (with-frees fs# (parse-type v#))])))
+         t# (if fs#
+              (Poly* (map :name fs#) (repeat (count fs#) no-bounds) 
+                     (-&gt;Protocol s# &#39;~variances fs# on-class# ms#)
+                     (map :name fs#))
+              (-&gt;Protocol s# nil nil on-class# ms#))]
+     (do
+       (add-protocol s# t#)
+       
