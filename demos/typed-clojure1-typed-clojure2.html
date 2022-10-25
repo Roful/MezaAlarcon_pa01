@@ -515,4 +515,19 @@
 (<a id='401' tid='402' class='u'>defmacro</a> <a id='403' tid='404' class='u'>ann-pprotocol</a> <span class='d'>[local-varsym vbnd & {:as mth}]</span>
   <span class='d'>(assert (not (or (namespace local-varsym)
                    (some #{\.} (str local-varsym))))
-          (str &quot;Must provide local var name for protocol: 
+          (str &quot;Must provide local var name for protocol: &quot; local-varsym))</span>
+  <a id='405' tid='406' class='u'>`</a><span class='d'>(tc-ignore
+     ~(gen-protocol* local-varsym (mapv second vbnd) (mapv first vbnd) mth))</span>)
+
+(<a id='697' tid='698' class='u'>defmacro</a> <a id='699' tid='700' class='u'>override-constructor</a> [<a id='701' tid='702' class='u'>ctorsym</a> <a id='703' tid='704' class='u'>typesyn</a>]
+  <a id='705' tid='706' class='u'>`</a><span class='d'>(tc-ignore
+   (do (ensure-clojure)
+     (let [t# (parse-type &#39;~typesyn)
+           s# &#39;~ctorsym]
+       (do (add-constructor-override s# t#)
+         [s# (unparse-type t#)]))))</span>)
+
+(<a id='707' tid='708' class='u'>defmacro</a> <a id='709' tid='710' class='u'>override-method</a> [<a id='711' tid='712' class='u'>methodsym</a> <a id='713' tid='714' class='u'>typesyn</a>]
+  <a id='715' tid='716' class='u'>`</a><span class='d'>(tc-ignore
+   (do (ensure-clojure)
+     (let [t# (parse-type &#39;~ty
