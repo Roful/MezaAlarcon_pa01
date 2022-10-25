@@ -558,4 +558,31 @@
     (update-in [:l] #(merge % new))))</span>
 
 <span class='d'>(defmacro with-locals [locals & body]
-  `(b
+  `(binding [*lexical-env* (merge-locals *lexical-env* ~locals)]
+     ~@body))</span>
+
+<span class='d'>(declare ^:dynamic *current-env*)</span>
+
+<span class='d'>(defn type-of [sym]
+  {:pre [(symbol? sym)]
+   :post [(or (Type? %)
+              (TCResult? %))]}
+  (cond
+    (not (namespace sym)) (if-let [t (lookup-local sym)]
+                            t
+                            (throw (Exception. (str (when *current-env*
+                                                      (str (:line *current-env*) &quot;: &quot;))
+                                                    &quot;Reference to untyped binding: &quot; sym))))
+    :else (lookup-Var sym)))</span>
+
+
+<span class='d'>(derive ::clojurescript ::default)</span>
+<span class='d'>(derive ::clojure ::default)</span>
+
+<span class='d'>(def TYPED-IMPL (atom ::clojure))</span>
+<span class='d'>(set-validator! TYPED-IMPL #(isa? % ::default))</span>
+
+<span class='d'>(defn ensure-clojure []
+  (reset! TYPED-IMPL ::clojure))</span>
+
+<span class='d'>(defn ensure-cl
