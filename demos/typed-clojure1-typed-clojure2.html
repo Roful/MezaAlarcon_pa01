@@ -530,4 +530,32 @@
 (<a id='707' tid='708' class='u'>defmacro</a> <a id='709' tid='710' class='u'>override-method</a> [<a id='711' tid='712' class='u'>methodsym</a> <a id='713' tid='714' class='u'>typesyn</a>]
   <a id='715' tid='716' class='u'>`</a><span class='d'>(tc-ignore
    (do (ensure-clojure)
-     (let [t# (parse-type &#39;~ty
+     (let [t# (parse-type &#39;~typesyn)
+           s# (if (namespace &#39;~methodsym)
+                &#39;~methodsym
+                (throw (Exception. &quot;Method name must be a qualified symbol&quot;)))]
+       (do (add-method-override s# t#)
+         [s# (unparse-type t#)]))))</span>)
+
+<span class='d'>(defn add-var-type [sym type]
+  (swap! VAR-ANNOTATIONS #(assoc % sym type))
+  nil)</span>
+
+<span class='d'>(defn lookup-local [sym]
+  (-&gt; *lexical-env* :l sym))</span>
+
+<span class='d'>(def ^:dynamic *var-annotations*)</span>
+
+<span class='d'>(defn lookup-Var [nsym]
+  (assert (contains? @*var-annotations* nsym) 
+          (str (when *current-env*
+                 (str (:line *current-env*) &quot;: &quot;))
+            &quot;Untyped var reference: &quot; nsym))
+  (@*var-annotations* nsym))</span>
+
+<span class='d'>(defn merge-locals [env new]
+  (-&gt; env
+    (update-in [:l] #(merge % new))))</span>
+
+<span class='d'>(defmacro with-locals [locals & body]
+  `(b
