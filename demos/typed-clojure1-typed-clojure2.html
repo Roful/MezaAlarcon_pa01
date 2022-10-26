@@ -585,4 +585,32 @@
 <span class='d'>(defn ensure-clojure []
   (reset! TYPED-IMPL ::clojure))</span>
 
-<span class='d'>(defn ensure-cl
+<span class='d'>(defn ensure-clojurescript []
+  (reset! TYPED-IMPL ::clojurescript))</span>
+
+<span class='d'>(defn checking-clojure? []
+  (= ::clojure @TYPED-IMPL))</span>
+
+<span class='d'>(defn checking-clojurescript? []
+  (= ::clojurescript @TYPED-IMPL))</span>
+
+<span class='d'>(load &quot;typed/dvar_env&quot;
+      &quot;typed/datatype_ancestor_env&quot;
+      &quot;typed/datatype_env&quot;
+      &quot;typed/protocol_env&quot;
+      &quot;typed/method_override_env&quot;
+      &quot;typed/ctor_override_env&quot;
+      &quot;typed/method_return_nilables&quot;
+      &quot;typed/method_param_nilables&quot;
+      &quot;typed/declared_kind_env&quot;
+      &quot;typed/name_env&quot;
+      &quot;typed/rclass_env&quot;
+      &quot;typed/mm_env&quot;)</span>
+
+<span class='d'>(load &quot;typed/constant_type&quot;
+      &quot;typed/parse&quot;
+      &quot;typed/unparse&quot;
+      &quot;typed/frees&quot;
+      &quot;typed/promote_demote&quot;
+      &quot;typed/cs_gen&quot;
+      &quot;typed/subst_
