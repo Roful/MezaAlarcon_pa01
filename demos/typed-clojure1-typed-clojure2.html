@@ -613,4 +613,29 @@
       &quot;typed/frees&quot;
       &quot;typed/promote_demote&quot;
       &quot;typed/cs_gen&quot;
-      &quot;typed/subst_
+      &quot;typed/subst_dots&quot;
+      &quot;typed/infer&quot;
+      &quot;typed/tvar_rep&quot;
+      &quot;typed/subst&quot;
+      &quot;typed/trans&quot;
+      &quot;typed/inst&quot;
+      &quot;typed/subtype&quot;
+      &quot;typed/alter&quot;
+      &quot;typed/ann&quot;
+      &quot;typed/check&quot;
+      &quot;typed/check_cljs&quot;)</span>
+
+<span class='d'>;emit something that CLJS can display ie. a quoted unparsed typed
+</span><span class='d'>(defmacro cf-cljs
+  &quot;Type check a Clojurescript form and return its type&quot;
+  ([form]
+   (let [t
+         (do (ensure-clojurescript)
+           (-&gt; (ana-cljs {:locals {} :context :expr :ns {:name cljs/*cljs-ns*}} form) check-cljs expr-type unparse-TCResult))]
+     `&#39;~t))
+  ([form expected]
+   (let [t
+         (do (ensure-clojurescript)
+           (-&gt; (ana-cljs {:locals {} :context :expr :ns {:name cljs/*cljs-ns*}}
+                         (list `ann-form-cljs form expected))
+             (#(check-cljs % (ret (parse-t
