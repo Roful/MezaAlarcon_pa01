@@ -638,4 +638,24 @@
          (do (ensure-clojurescript)
            (-&gt; (ana-cljs {:locals {} :context :expr :ns {:name cljs/*cljs-ns*}}
                          (list `ann-form-cljs form expected))
-             (#(check-cljs % (ret (parse-t
+             (#(check-cljs % (ret (parse-type expected)))) expr-type unparse-TCResult))]
+     `&#39;~t)))</span>
+
+(<a id='413' tid='414' class='u'>defmacro</a> <a id='415' tid='416' class='u'>cf</a> 
+  <a id='417' tid='418' class='u'>&quot;Type check a Clojure form and return its type&quot;</a>
+  <span class='d'>([form]
+  `(do (ensure-clojure)
+     (tc-ignore
+       (-&gt; (ast ~form) hygienic/ast-hy check expr-type unparse-TCResult))))</span>
+  <span class='d'>([form expected]
+  `(do (ensure-clojure)
+     (tc-ignore
+       (-&gt; (ast (ann-form ~form ~expected)) hygienic/ast-hy (#(check % (ret (parse-type &#39;~expected)))) expr-type unparse-TCResult))))</span>)
+
+<span class='d'>(defn analyze-file-asts
+  [^String f]
+  (let [res (if (re-find #&quot;^file://&quot; f) (java.net.URL. f) (io/resource f))]
+    (assert res (str &quot;Can&#39;t find &quot; f &quot; in classpath&quot;))
+    (with-altered-specials
+      (binding [cljs/*cljs-ns* &#39;cljs.user
+                cljs/*cljs-file* (.getPath ^java.net.URL res
