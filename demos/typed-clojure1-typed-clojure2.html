@@ -683,4 +683,23 @@
 
 <span class='d'>(defmacro check-cljs-ns
   ([] (check-cljs-ns*) `&#39;~&#39;success)
-  ([nsym] (
+  ([nsym] (check-cljs-ns* nsym) `&#39;~&#39;success))</span>
+
+(<a id='419' tid='420' class='u'>defn</a> <a id='421' tid='422' class='u'>check-ns</a> 
+  <span class='d'>&quot;Type check a namespace. If not provided default to current namespace&quot;</span>
+  ([] (<a id='423' tid='424' class='u'>check-ns</a> (<a id='425' tid='426' class='u'>ns-name</a> <a id='427' tid='428' class='u'>*ns*</a>)))
+  <span class='d'>([nsym]
+   (ensure-clojure)
+   (with-open [^clojure.lang.LineNumberingPushbackReader pbr (analyze/pb-reader-for-ns nsym)]
+     (let [[_ns-decl_ & asts] (-&gt;&gt; (analyze/analyze-ns pbr (analyze/uri-for-ns nsym) nsym)
+                                (map hygienic/ast-hy))]
+       (doseq [ast asts]
+         (check-expr ast)))))</span>)
+
+<span class='d'>(defn trepl []
+  (clojure.main/repl 
+    :eval (fn [f] 
+            (let [t (do (ensure-clojure)
+                      (-&gt; (analyze/analyze-form f) hygienic/ast-hy
+                        check expr-type unparse-TCResult))]
+              (prn t) 
