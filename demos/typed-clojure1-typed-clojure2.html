@@ -703,3 +703,36 @@
                       (-&gt; (analyze/analyze-form f) hygienic/ast-hy
                         check expr-type unparse-TCResult))]
               (prn t) 
+              (eval f)))))</span>
+
+<span class='d'>(comment 
+  (check-ns &#39;typed.test.example)
+
+  ; very slow because of update-composite
+  (check-ns &#39;typed.test.rbt)
+
+  (check-ns &#39;typed.test.macro)
+  (check-ns &#39;typed.test.conduit)
+  (check-ns &#39;typed.test.person)
+  (check-ns &#39;typed.test.core-logic)
+  (check-ns &#39;typed.test.ckanren)
+
+  (check-cljs-ns &#39;typed.test.logic)
+  )</span>
+
+</pre>
+</div>
+<div id="right" class="src">
+<pre>
+<a id='rightstart' tid='leftstart'></a>
+<span class='i'>(ns clojure.core.typed
+  (:require [clojure.pprint :as pprint])
+  (:refer-clojure :exclude [defrecord type]))</span>
+
+<span class='i'>;=============================================================
+</span><span class='i'>; # core.typed
+</span><span class='i'>;
+</span><span class='i'>; This is the main namespace for core.typed. This project is
+</span><span class='i'>; split into many internal namespaces. Here are some of the main ones:
+</span><span class='i'>;
+</
