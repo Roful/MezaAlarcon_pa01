@@ -735,4 +735,24 @@
 </span><span class='i'>; This is the main namespace for core.typed. This project is
 </span><span class='i'>; split into many internal namespaces. Here are some of the main ones:
 </span><span class='i'>;
-</
+</span><span class='i'>; c.c.typed.base-env
+</span><span class='i'>;   The base global type environment. All base Var Annotations,
+</span><span class='i'>;   Java method annotations, Class overriding and other annotations
+</span><span class='i'>;   live here.
+</span><span class='i'>;
+</span><span class='i'>; c.c.typed.type-{rep,ctors}, c.c.parse-unparse,
+</span><span class='i'>; c.c.typed.fold-{rep,default}
+</span><span class='i'>;   Internal type representation and operations.
+</span><span class='i'>;   
+</span><span class='i'>; c.c.typed.check
+</span><span class='i'>;   The type checker.
+</span><span class='i'>;
+</span><span class='i'>; c.c.typed.cs-gen
+</span><span class='i'>;   Polymorphic local type inference algorithm.
+</span>
+<span class='i'>;=============================================================
+</span><span class='i'>; # Internal Loading
+</span>
+<span class='i'>; ## Lazy Loading
+</span><span class='i'>;
+</span><span class='i'>; We handle lazy loa
