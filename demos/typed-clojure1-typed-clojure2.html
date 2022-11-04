@@ -771,4 +771,22 @@
   &quot;Load and initialize all of core.typed if not already&quot;
   []
   (when-not (find-ns &#39;clojure.core.typed.init)
-    (prin
+    (println &quot;Initializing core.typed ...&quot;)
+    (flush)
+    (require &#39;clojure.core.typed.init)
+    (println &quot;core.typed initialized.&quot;)
+    (flush)))</span>
+
+<span class='i'>; ## Base alias vars
+</span><span class='i'>;
+</span><span class='i'>; Type aliases are resolved using possibly-unbound Vars. We get around
+</span><span class='i'>; having to load c.c.typed.base-env by interning each alias&#39; Var in c.c.typed
+</span><span class='i'>; here. This way the user can refer the base alias Vars without necessarily loading
+</span><span class='i'>; all of core.typed.
+</span><span class='i'>;
+</span><span class='i'>; ### Consistency
+</span><span class='i'>;
+</span><span class='i'>; `-base-aliases` is ensured not to get out of date.
+</span><span class='i'>; c.c.typed.base-env asserts that -base-aliases is kept in sync with the
+</span><span class='i'>; actual set of aliases defined in the c.c.typed namespace. ie. adding
+</span><span class='i'>; a new alias in c.c.typed.base-e
