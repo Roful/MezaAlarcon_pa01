@@ -755,4 +755,20 @@
 </span>
 <span class='i'>; ## Lazy Loading
 </span><span class='i'>;
-</span><span class='i'>; We handle lazy loa
+</span><span class='i'>; We handle lazy loading by moving all of c.c.typed&#39;s namespace
+</span><span class='i'>; dependencies to c.c.typed.init. We assume that
+</span><span class='i'>; if c.c.typed.init exists, then core.typed is fully loaded.
+</span><span class='i'>; Does this work with namespaces reloading tools like tools.namespace?
+</span><span class='i'>;
+</span><span class='i'>; By default, core.typed only loads:
+</span><span class='i'>; - c.c.typed macros (eg. `doseq&gt;`, `for&gt;`)
+</span><span class='i'>; - c.c.typed internal marker functions
+</span><span class='i'>;
+</span><span class='i'>; Code that requires anything further than this (eg. type checking) 
+</span><span class='i'>; must load *all* of core.typed with `load-if-needed`.
+</span>
+<span class='i'>(defn load-if-needed 
+  &quot;Load and initialize all of core.typed if not already&quot;
+  []
+  (when-not (find-ns &#39;clojure.core.typed.init)
+    (prin
