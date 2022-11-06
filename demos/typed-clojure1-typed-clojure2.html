@@ -789,4 +789,26 @@
 </span><span class='i'>; `-base-aliases` is ensured not to get out of date.
 </span><span class='i'>; c.c.typed.base-env asserts that -base-aliases is kept in sync with the
 </span><span class='i'>; actual set of aliases defined in the c.c.typed namespace. ie. adding
-</span><span class='i'>; a new alias in c.c.typed.base-e
+</span><span class='i'>; a new alias in c.c.typed.base-env without updating `-base-aliases` throws an internal error.
+</span><span class='i'>;
+</span><span class='i'>; ### Visibility level
+</span><span class='i'>;
+</span><span class='i'>; `-base-aliases` is not private because it is used from c.c.typed.base-env.
+</span>
+<span class='i'>(def -base-aliases
+  &quot;Internal use only.&quot;
+  &#39;#{Option AnyInteger AnyPrimitive Atom1})</span>
+
+<span class='i'>(doseq [v -base-aliases]
+  (intern &#39;clojure.core.typed v))</span>
+
+<span class='i'>;=============================================================
+</span><span class='i'>; Query functions
+</span>
+<span class='i'>; Usually query functions need to force core.typed to fully load.
+</span><span class='i'>; To be as lazy as possible, we use `ns-resolve` to grab the Vars
+</span><span class='i'>; we need.
+</span>
+<span class='i'>;(ann method-type [Symbol -&gt; nil])
+</span>(<a id='672' tid='671' class='u'>defn</a> <a id='674' tid='673' class='u'>method-type</a>
+  <span class='i'>&quot;Given a method symb
