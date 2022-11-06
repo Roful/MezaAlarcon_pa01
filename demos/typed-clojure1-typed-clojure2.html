@@ -811,4 +811,15 @@
 </span>
 <span class='i'>;(ann method-type [Symbol -&gt; nil])
 </span>(<a id='672' tid='671' class='u'>defn</a> <a id='674' tid='673' class='u'>method-type</a>
-  <span class='i'>&quot;Given a method symb
+  <span class='i'>&quot;Given a method symbol, print the core.typed types assigned to it.
+  Intended for use at the REPL.&quot;</span>
+  [<a id='676' tid='675' class='u'>mname</a>]
+  <span class='i'>(load-if-needed)</span>
+  (<span class='i'>let</span> [<span class='i'>type-reflect</span> <span class='i'>@</span><span class='i'>(ns-resolve (find-ns &#39;clojure.reflect) 
+                                  &#39;type-reflect)</span>
+        <span class='i'>unparse-type</span> <span class='i'>@</span><span class='i'>(ns-resolve (find-ns &#39;clojure.core.typed.parse-unparse)
+                                  &#39;unparse-type)</span>
+        <span class='i'>Method-&gt;Type</span> <span class='i'>@</span><span class='i'>(ns-resolve (find-ns &#39;clojure.core.typed.check)
+                                  &#39;Method-&gt;Type)</span>
+        <span class='i'>ms</span> (<span class='i'>-&gt;&gt;</span> <span class='i'>(type-reflect (Class/forName (namespace mname)))</span>
+             <span class='i'>:
