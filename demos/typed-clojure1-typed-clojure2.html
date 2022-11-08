@@ -822,4 +822,9 @@
         <span class='i'>Method-&gt;Type</span> <span class='i'>@</span><span class='i'>(ns-resolve (find-ns &#39;clojure.core.typed.check)
                                   &#39;Method-&gt;Type)</span>
         <span class='i'>ms</span> (<span class='i'>-&gt;&gt;</span> <span class='i'>(type-reflect (Class/forName (namespace mname)))</span>
-             <span class='i'>:
+             <span class='i'>:members</span>
+             (<a id='172' tid='171' class='m'>filter</a> <a id='174' tid='173' class='m'>#</a>(<a id='176' tid='175' class='m'>and</a> (<a id='178' tid='177' class='m'>instance?</a> <a id='180' tid='179' class='m'>clojure.reflect.Method</a> <a id='182' tid='181' class='m'>%</a>)
+                           (<a id='184' tid='183' class='m'>=</a> (<a id='186' tid='185' class='m'>str</a> (<a id='188' tid='187' class='m'>:name</a> <a id='190' tid='189' class='m'>%</a>)) (<a id='192' tid='191' class='m'>name</a> <a id='194' tid='193' class='m'>mname</a>))))
+             <span class='i'>set</span>)
+        <span class='i'>_</span> (<a id='148' tid='147' class='m'>assert</a> (<a id='150' tid='149' class='m'>seq</a> <a id='152' tid='151' class='m'>ms</a>) (<a id='154' tid='153' class='m'>str</a> <a id='156' tid='155' class='m'>&quot;Method &quot;</a> <a id='158' tid='157' class='m'>mname</a> <a id='160' tid='159' class='m'>&quot; not found&quot;</a>))]
+    <s
