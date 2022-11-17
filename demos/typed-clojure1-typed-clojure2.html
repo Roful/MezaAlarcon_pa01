@@ -827,4 +827,23 @@
                            (<a id='184' tid='183' class='m'>=</a> (<a id='186' tid='185' class='m'>str</a> (<a id='188' tid='187' class='m'>:name</a> <a id='190' tid='189' class='m'>%</a>)) (<a id='192' tid='191' class='m'>name</a> <a id='194' tid='193' class='m'>mname</a>))))
              <span class='i'>set</span>)
         <span class='i'>_</span> (<a id='148' tid='147' class='m'>assert</a> (<a id='150' tid='149' class='m'>seq</a> <a id='152' tid='151' class='m'>ms</a>) (<a id='154' tid='153' class='m'>str</a> <a id='156' tid='155' class='m'>&quot;Method &quot;</a> <a id='158' tid='157' class='m'>mname</a> <a id='160' tid='159' class='m'>&quot; not found&quot;</a>))]
-    <s
+    <span class='i'>(println &quot;Method name:&quot; mname)</span>
+    <span class='i'>(flush)</span>
+    <span class='i'>(doseq [m ms]
+      (println (unparse-type
+                 (Method-&gt;Type m)))
+      (flush))</span>))
+
+
+<span class='i'>;=============================================================
+</span><span class='i'>; Special functions
+</span>
+(<a id='782' tid='781' class='u'>defn</a> <a id='784' tid='783' class='u'>print-filterset</a>
+  <span class='i'>&quot;During type checking, print the filter set attached to form, 
+  preceeded by literal string debug-string&quot;</span>
+  [<a id='786' tid='785' class='u'>debug-string</a> <a id='788' tid='787' class='u'>frm</a>]
+  <a id='790' tid='789' class='u'>frm</a>)
+
+(<a id='590' tid='589' class='u'>defn</a> <a id='592' tid='591' class='u'>inst-poly</a> 
+  <span class='i'>&quot;Internal use only. Use inst.&quot;</span>
+  [<a id='594' tid='593' class='u'>inst-of</a> <a id='596' tid='595' class='u'>types-
