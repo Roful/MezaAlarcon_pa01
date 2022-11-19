@@ -846,4 +846,17 @@
 
 (<a id='590' tid='589' class='u'>defn</a> <a id='592' tid='591' class='u'>inst-poly</a> 
   <span class='i'>&quot;Internal use only. Use inst.&quot;</span>
-  [<a id='594' tid='593' class='u'>inst-of</a> <a id='596' tid='595' class='u'>types-
+  [<a id='594' tid='593' class='u'>inst-of</a> <a id='596' tid='595' class='u'>types-syn</a>]
+  <a id='598' tid='597' class='u'>inst-of</a>)
+
+(<a id='600' tid='599' class='u'>defn</a> <a id='602' tid='601' class='u'>inst-poly-ctor</a> 
+  <span class='i'>&quot;Internal use only. Use inst-ctor&quot;</span>
+  [<a id='604' tid='603' class='u'>inst-of</a> <a id='606' tid='605' class='u'>types-syn</a>]
+  <a id='608' tid='607' class='u'>inst-of</a>)
+
+(<a id='546' tid='545' class='u'>defmacro</a> <a id='548' tid='547' class='u'>inst</a> 
+  <a id='550' tid='549' class='u'>&quot;Instantiate a polymorphic type with a number of types&quot;</a>
+  [<a id='552' tid='551' class='u'>inst-of</a> <a id='554' tid='553' class='u'>&</a> <a id='556' tid='555' class='u'>types</a>]
+  <a id='558' tid='557' class='u'>`</a>(<a id='560' tid='559' class='u'>inst-poly</a> <a id='562' tid='561' class='u'>~inst-of</a> <a id='564' tid='563' class='u'>&#39;</a><a id='566' tid='565' class='u'>~types</a>))
+
+(<a id='568' tid='567' class='u'>defmacro</a> <a id='570' tid='569' class='u'>inst-ctor</
