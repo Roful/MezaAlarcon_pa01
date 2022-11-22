@@ -916,4 +916,19 @@
             (cond
               (empty? seq-exprs) flat-result
               (keyword? (first seq-exprs)) (recur (concat flat-result (take 2 seq-exprs))
-                 
+                                                  (drop 2 seq-exprs))
+              (and (vector? (first seq-exprs))
+                   (#{:-} (-&gt; seq-exprs first second))) (do
+                                                          (prn &quot;DEPRECATED WARNING: for&gt; syntax has changed, use [b :- t i] for clauses&quot;)
+                                                          (recur (concat flat-result (take 2 seq-exprs))
+                                                                 (drop 2 seq-exprs)))
+              :else (do (assert (#{:-} (second seq-exprs))
+                                &quot;Incorrect syntax in for&gt;.&quot;)
+                        (recur (concat flat-result [(vec (take 3 seq-exprs))
+                                                    (nth seq-exprs 3)])
+                               (drop 4 seq-exprs))))))
+
+        ; normalise seq-exprs to be flat pairs
+        seq-exprs (normalise-args seq-exprs)
+
+        to-groups (f
