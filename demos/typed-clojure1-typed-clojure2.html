@@ -892,4 +892,28 @@
        (loop&gt; [~i :- (~&#39;U Long Integer) 0]
          (when (&lt; ~i n#)
            ~@body
-           (recur (uncheck
+           (recur (unchecked-inc ~i)))))))</span>
+
+<span class='i'>(defmacro for&gt;
+  &quot;Like for but requires annotation for each loop variable: [a [1 2]] becomes [a :- Long [1 2]]
+  Also requires annotation for return type.
+  
+  eg.
+  (for&gt; :- Number
+        [a :- (U nil AnyInteger) [1 nil 2 3]
+         :when a]
+     (inc a))&quot;
+  [tk ret-ann seq-exprs body-expr]
+  (@#&#39;clojure.core/assert-args
+     (vector? seq-exprs) &quot;a vector for its binding&quot;
+     (even? (count seq-exprs)) &quot;an even number of forms in binding vector&quot;)
+  (assert (#{:-} tk) &quot;Must provide return type annotation for for&gt;.&quot;)
+  (let [normalise-args
+        ; change [a :- b c] to [[a :- b] c]
+        (fn [seq-exprs]
+          (loop [flat-result ()
+                 seq-exprs seq-exprs]
+            (cond
+              (empty? seq-exprs) flat-result
+              (keyword? (first seq-exprs)) (recur (concat flat-result (take 2 seq-exprs))
+                 
