@@ -960,4 +960,19 @@
                                       `(let [iterys# ~(emit-bind next-groups)
                                              fs# (seq (iterys# ~next-expr))]
                                          (if fs#
-                                        
+                                           (concat fs# (~giter (rest ~gxs)))
+                                           (recur (rest ~gxs))))
+                                     :else `(cons ~body-expr
+                                                  (~giter (rest ~gxs)))))]
+                      (if next-groups
+                        #_&quot;not the inner-most loop&quot;
+                        `(ann-form
+                           (fn ~giter [~gxs]
+                             (lazy-seq
+                               (loop&gt; [~gxs :- (~&#39;clojure.core.typed/Option (~&#39;clojure.lang.Seqable ~bind-ann)) ~gxs]
+                                 (when-first [~bind ~gxs]
+                                   ~(do-mod mod-pairs)))))
+                           [(~&#39;clojure.core.typed/Option (~&#39;clojure.lang.Seqable ~bind-ann)) ~&#39;-&gt; (~&#39;clojure.lang.LazySeq ~ret-ann)])
+                        #_&quot;inner-most loop&quot;
+                        (let [gi (gensym &quot;i__&quot;)
+                              gb (gensym 
