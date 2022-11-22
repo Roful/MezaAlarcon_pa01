@@ -859,4 +859,17 @@
   [<a id='552' tid='551' class='u'>inst-of</a> <a id='554' tid='553' class='u'>&</a> <a id='556' tid='555' class='u'>types</a>]
   <a id='558' tid='557' class='u'>`</a>(<a id='560' tid='559' class='u'>inst-poly</a> <a id='562' tid='561' class='u'>~inst-of</a> <a id='564' tid='563' class='u'>&#39;</a><a id='566' tid='565' class='u'>~types</a>))
 
-(<a id='568' tid='567' class='u'>defmacro</a> <a id='570' tid='569' class='u'>inst-ctor</
+(<a id='568' tid='567' class='u'>defmacro</a> <a id='570' tid='569' class='u'>inst-ctor</a>
+  <a id='572' tid='571' class='u'>&quot;Instantiate a call to a constructor with a number of types.
+  First argument must be an immediate call to a constructor.&quot;</a>
+  [<a id='574' tid='573' class='u'>inst-of</a> <a id='576' tid='575' class='u'>&</a> <a id='578' tid='577' class='u'>types</a>]
+  <a id='580' tid='579' class='u'>`</a>(<a id='582' tid='581' class='u'>inst-poly-ctor</a> <a id='584' tid='583' class='u'>~inst-of</a> <a id='586' tid='585' class='u'>&#39;</a><a id='588' tid='587' class='u'>~types</a>))
+
+(<a id='536' tid='535' class='u'>defn</a> <a id='538' tid='537' class='u'>fn&gt;-ann</a> 
+  <span class='i'>&quot;Internal use only. Use fn&gt;.&quot;</span>
+  [<a id='540' tid='539' class='u'>fn-of</a> <a id='542' tid='541' class='u'>param-types-syn</a>]
+  <a id='544' tid='543' class='u'>fn-of</a>)
+
+(<a id='762' tid='761' class='u'>defn</a> <a id='764' tid='763' class='u'>pfn&gt;-ann</a> 
+  <span class='i'>&quot;Internal use only. Use pfn&gt;.&quot;</span>
+  [<a
