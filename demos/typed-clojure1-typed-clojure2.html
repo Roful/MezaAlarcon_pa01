@@ -872,4 +872,24 @@
 
 (<a id='762' tid='761' class='u'>defn</a> <a id='764' tid='763' class='u'>pfn&gt;-ann</a> 
   <span class='i'>&quot;Internal use only. Use pfn&gt;.&quot;</span>
-  [<a
+  [<a id='766' tid='765' class='u'>fn-of</a> <a id='768' tid='767' class='u'>polys</a> <a id='770' tid='769' class='u'>param-types-syn</a>]
+  <a id='772' tid='771' class='u'>fn-of</a>)
+
+(<a id='662' tid='661' class='u'>defn</a> <a id='664' tid='663' class='u'>loop&gt;-ann</a> 
+  <span class='i'>&quot;Internal use only. Use loop&gt;&quot;</span>
+  [<a id='666' tid='665' class='u'>loop-of</a> <a id='668' tid='667' class='u'>bnding-types</a>]
+  <a id='670' tid='669' class='u'>loop-of</a>)
+
+<span class='i'>(defmacro dotimes&gt;
+  &quot;Like dotimes.&quot;
+  [bindings & body]
+  (@#&#39;clojure.core/assert-args
+     (vector? bindings) &quot;a vector for its binding&quot;
+     (= 2 (count bindings)) &quot;exactly 2 forms in binding vector&quot;)
+  (let [i (first bindings)
+        n (second bindings)]
+    `(let [n# (long ~n)]
+       (loop&gt; [~i :- (~&#39;U Long Integer) 0]
+         (when (&lt; ~i n#)
+           ~@body
+           (recur (uncheck
