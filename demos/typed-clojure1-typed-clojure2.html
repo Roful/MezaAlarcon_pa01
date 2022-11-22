@@ -946,4 +946,18 @@
                                     &quot;Binder must be of the form [lhs :- type]&quot;)
                           bind-ann (nth bind 2)
                           bind (nth bind 0)
-                   
+                          giter (gensym &quot;iter__&quot;)
+                          gxs (gensym &quot;s__&quot;)
+                          do-mod (fn do-mod [[[k v :as pair] & etc]]
+                                   (cond
+                                     (= k :let) `(let ~v ~(do-mod etc))
+                                     (= k :while) `(when ~v ~(do-mod etc))
+                                     (= k :when) `(if ~v
+                                                    ~(do-mod etc)
+                                                    (recur (rest ~gxs)))
+                                     (keyword? k) (err &quot;Invalid &#39;for&#39; keyword &quot; k)
+                                     next-groups
+                                      `(let [iterys# ~(emit-bind next-groups)
+                                             fs# (seq (iterys# ~next-expr))]
+                                         (if fs#
+                                        
