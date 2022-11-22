@@ -931,4 +931,19 @@
         ; normalise seq-exprs to be flat pairs
         seq-exprs (normalise-args seq-exprs)
 
-        to-groups (f
+        to-groups (fn [seq-exprs]
+                    (@#&#39;clojure.core/reduce1 (fn [groups [k v]]
+                                               (if (keyword? k)
+                                                 (conj (pop groups) (conj (peek groups) [k v]))
+                                                 (conj groups [k v])))
+                                             [] (partition 2 seq-exprs)))
+        err (fn [& msg] (throw (IllegalArgumentException. ^String (apply str msg))))
+        emit-bind (fn emit-bind [[[bind expr & mod-pairs]
+                                  & [[_ next-expr] :as next-groups]]]
+                    (let [_ (assert (and (vector? bind)
+                                         (#{3} (count bind))
+                                         (#{:-} (second bind))) 
+                                    &quot;Binder must be of the form [lhs :- type]&quot;)
+                          bind-ann (nth bind 2)
+                          bind (nth bind 0)
+                   
