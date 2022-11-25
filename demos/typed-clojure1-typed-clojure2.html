@@ -1002,4 +1002,17 @@
                                             (let [c# (chunk-first ~gxs)
                                                   size# (int (count c#))
                                                   ~gb (ann-form (chunk-buffer size#)
-                                                                (~&#39;clojure.la
+                                                                (~&#39;clojure.lang.ChunkBuffer ~ret-ann))]
+                                              (if (loop&gt; [~gi :- (~&#39;U ~&#39;Long ~&#39;Integer) (int 0)]
+                                                         (if (&lt; ~gi size#)
+                                                           (let [;~bind (.nth c# ~gi)]
+                                                                 ~bind (nth c# ~gi)]
+                                                             ~(do-cmod mod-pairs))
+                                                           true))
+                                                (chunk-cons
+                                                  (chunk ~gb)
+                                                  (~giter (chunk-rest ~gxs)))
+                                                (chunk-cons (chunk ~gb) nil)))
+                                            (let [~bind (first ~gxs)]
+                                              ~(do-mod mod-pairs)))))))
+            
