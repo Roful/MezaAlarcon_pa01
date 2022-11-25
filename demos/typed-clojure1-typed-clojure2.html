@@ -1052,4 +1052,23 @@
                                                     (nth seq-exprs 3)])
                                (drop 4 seq-exprs))))))
 
-        ; normalise seq-exprs to be flat pai
+        ; normalise seq-exprs to be flat pairs
+        seq-exprs (normalise-args seq-exprs)
+        step (fn step [recform exprs]
+               (if-not exprs
+                 [true `(do ~@body)]
+                 (let [k (first exprs)
+                       v (second exprs)]
+                   (if (keyword? k)
+                     (let [steppair (step recform (nnext exprs))
+                           needrec (steppair 0)
+                           subform (steppair 1)]
+                       (cond
+                         (= k :let) [needrec `(let ~v ~subform)]
+                         (= k :while) [false `(when ~v
+                                                ~subform
+                                                ~@(when needrec [recform]))]
+                         (= k :when) [false `(if ~v
+                                               (do
+                                                 ~subform
+                                                 ~@(wh
