@@ -1015,4 +1015,28 @@
                                                 (chunk-cons (chunk ~gb) nil)))
                                             (let [~bind (first ~gxs)]
                                               ~(do-mod mod-pairs)))))))
-            
+                             [(~&#39;clojure.core.typed/Option (~&#39;clojure.lang.Seqable ~bind-ann)) ~&#39;-&gt;
+                              (~&#39;clojure.lang.LazySeq ~ret-ann)])))))]
+    `(let [iter# ~(emit-bind (to-groups seq-exprs))]
+        (iter# ~(second seq-exprs)))))</span>
+
+<span class='i'>(defmacro doseq&gt;
+  &quot;Like doseq but requires annotation for each loop variable: 
+  [a [1 2]] becomes [a :- Long [1 2]]
+  
+  eg.
+  (doseq&gt; [a :- (U nil AnyInteger) [1 nil 2 3]
+           :when a]
+     (inc a))&quot;
+  [seq-exprs & body]
+  (@#&#39;clojure.core/assert-args
+     (vector? seq-exprs) &quot;a vector for its binding&quot;
+     (even? (count seq-exprs)) &quot;an even number of forms in binding vector&quot;)
+  (let [normalise-args
+        ; change [a :- b c] to [[a :- b] c]
+        (fn [seq-exprs]
+          (loop [flat-result ()
+                 seq-exprs seq-exprs]
+            (cond
+              (empty? seq-exprs) flat-result
+              (keyword? (first seq-exprs)) (
