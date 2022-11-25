@@ -1071,4 +1071,20 @@
                          (= k :when) [false `(if ~v
                                                (do
                                                  ~subform
-                                                 ~@(wh
+                                                 ~@(when needrec [recform]))
+                                               ~recform)]))
+                     ;; k is [k :- k-ann]
+                     (let [_ (assert (and (vector? k)
+                                          (#{3} (count k))
+                                          (#{:-} (second k))) 
+                                     &quot;Binder must be of the form [lhs :- type]&quot;)
+                           k-ann (nth k 2)
+                           k (nth k 0)
+                           ; k is the lhs binding
+                           seq- (gensym &quot;seq_&quot;)
+                           chunk- (with-meta (gensym &quot;chunk_&quot;)
+                                             {:tag &#39;clojure.lang.IChunk})
+                           count- (gensym &quot;count_&quot;)
+                           i- (gensym &quot;i_&quot;)
+                           recform `(recur (next ~seq-) nil 0 0)
+                           steppair (s
