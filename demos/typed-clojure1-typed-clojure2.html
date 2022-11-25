@@ -975,4 +975,18 @@
                            [(~&#39;clojure.core.typed/Option (~&#39;clojure.lang.Seqable ~bind-ann)) ~&#39;-&gt; (~&#39;clojure.lang.LazySeq ~ret-ann)])
                         #_&quot;inner-most loop&quot;
                         (let [gi (gensym &quot;i__&quot;)
-                              gb (gensym 
+                              gb (gensym &quot;b__&quot;)
+                              do-cmod (fn do-cmod [[[k v :as pair] & etc]]
+                                        (cond
+                                          (= k :let) `(let ~v ~(do-cmod etc))
+                                          (= k :while) `(when ~v ~(do-cmod etc))
+                                          (= k :when) `(if ~v
+                                                         ~(do-cmod etc)
+                                                         (recur
+                                                           (unchecked-inc ~gi)))
+                                          (keyword? k)
+                                            (err &quot;Invalid &#39;for&#39; keyword &quot; k)
+                                          :else
+                                            `(do (chunk-append ~gb 
+                                                               ; put an ann-form here so at least one error message
+                                                               ; 
