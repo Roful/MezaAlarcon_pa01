@@ -1151,4 +1151,19 @@
                    (#{:-} (nth seq-exprs 2)))
               (do
                 (assert (#{&#39;*} (nth seq-exprs 4)))
-                (assert (#{:-}
+                (assert (#{:-} (nth seq-exprs 2)))
+                (assert (empty? (drop 5 seq-exprs)))
+                (recur (concat flat-result [&#39;& (vec (take 4 (next seq-exprs)))])
+                       (drop 4 seq-exprs)))
+              ;old syntax
+              (#{&#39;&} (first seq-exprs))
+              (do 
+                (assert (#{2} (count seq-exprs)))
+                (prn &quot;DEPRECATED WARNING: fn&gt; syntax has changed, use [& b :- t i *] for rest arguments&quot;
+                     &quot;ns: &quot; *ns*)
+                (recur (concat flat-result [&#39;& (second seq-exprs)])
+                       (drop 1 seq-exprs)))
+              (and (vector? (first seq-exprs))
+                   (#{:-} (-&gt; seq-exprs first second))) (do
+                                                          (prn &quot;DEPRECATED WARNING: fn&gt; syntax has changed, use [b :- t i] for clauses&quot;
+                                                               &quot;ns: &quot; *ns*
