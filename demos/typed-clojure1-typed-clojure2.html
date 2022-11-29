@@ -1183,4 +1183,10 @@
                                                   (<a id='46' tid='45' class='m'>assert</a> (<a id='48' tid='47' class='m'>=</a> <a id='50' tid='49' class='m'>:-</a> (<a id='52' tid='51' class='m'>first</a> <a id='54' tid='53' class='m'>method</a>))
                                                           <a id='56' tid='55' class='m'>&quot;Return type for fn&gt; must be prefixed by :-&quot;</a>)
                                                   [(<a id='58' tid='57' class='m'>second</a> <a id='60' tid='59' class='m'>method</a>) <a id='62' tid='61' class='m'>true</a>])
-                                 <span class='i'>method</span> (<a id='16' tid='15' class='m'>if</a> <a id='18' tid='1
+                                 <span class='i'>method</span> (<a id='16' tid='15' class='m'>if</a> <a id='18' tid='17' class='m'>ret</a> 
+                                          (<a id='20' tid='19' class='m'>nnext</a> <a id='22' tid='21' class='m'>method</a>)
+                                          <a id='24' tid='23' class='m'>method</a>)
+                                 <span class='i'>body</span> <span class='i'>(rest method)</span>
+                                 <span class='i'>arg-anns</span> <span class='i'>(normalise-args (first method))</span>
+                                 <span class='i'>[required-params _ [rest-param]]</span> (<a id='2' tid='1' class='m'>split-with</a> <a id='4' tid='3' class='m'>#</a>(<a id='6' tid='5' class='m'>not=</a> <a id='8' tid='7' class='m'>&#39;</a><a id='10' tid='9' class='m'>&</a> <a id='12' tid='11' class='m'>%</a>) <a id='14' tid='13' class='m'>arg-anns</a>)]
+                             (<a id='64' tid='63' class='m'>assert</a> (<a id='66' tid='65' class='m'>sequential?</a> <a id='68' 
