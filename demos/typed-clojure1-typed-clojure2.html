@@ -1166,4 +1166,17 @@
               (and (vector? (first seq-exprs))
                    (#{:-} (-&gt; seq-exprs first second))) (do
                                                           (prn &quot;DEPRECATED WARNING: fn&gt; syntax has changed, use [b :- t i] for clauses&quot;
-                                                               &quot;ns: &quot; *ns*
+                                                               &quot;ns: &quot; *ns*)
+                                                          (recur (concat flat-result (take 1 seq-exprs))
+                                                                 (drop 1 seq-exprs)))
+              :else (do (assert (#{:-} (second seq-exprs))
+                                &quot;Incorrect syntax in fn&gt;.&quot;)
+                        (recur (concat flat-result [(vec (take 3 seq-exprs))])
+                               (drop 3 seq-exprs))))))</span>
+        <span class='i'>;(fn&gt; name? (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;
+</span>        <span class='i'>; (HMap {:dom (Seqable TypeSyntax)
+</span>        <span class='i'>;        :rng (U nil TypeSyntax)
+</span>        <span class='i'>;        :body Any})
+</span>        <span class='i'>parsed-methods</span> (<a id='26' tid='25' class='m'>doall</a> 
+                         (<a id='28' tid='27' class='m'>for</a> [<a id='30' tid='29' class='m'>method</a> <a id='32' tid='31' class='m'>methods</a>]
+                        
