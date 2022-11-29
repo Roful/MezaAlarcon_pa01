@@ -1087,4 +1087,19 @@
                            count- (gensym &quot;count_&quot;)
                            i- (gensym &quot;i_&quot;)
                            recform `(recur (next ~seq-) nil 0 0)
-                           steppair (s
+                           steppair (step recform (nnext exprs))
+                           needrec (steppair 0)
+                           subform (steppair 1)
+                           recform-chunk 
+                             `(recur ~seq- ~chunk- ~count- (unchecked-inc ~i-))
+                           steppair-chunk (step recform-chunk (nnext exprs))
+                           subform-chunk (steppair-chunk 1)]
+                       [true
+                        `(loop&gt; [~seq- :- (~&#39;U nil (~&#39;clojure.lang.Seqable ~k-ann)) (seq ~v), 
+                                 ~chunk- :- (~&#39;U nil (~&#39;clojure.lang.IChunk ~k-ann)) nil
+                                 ~count- :- ~&#39;(U Integer Long) 0,
+                                 ~i- :- ~&#39;(U Integer Long) 0]
+                           (if (and (&lt; ~i- ~count-)
+                                    ;; core.typed thinks chunk- could be nil here
+                                    ~chunk-)
+   
