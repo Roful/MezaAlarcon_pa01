@@ -1189,4 +1189,8 @@
                                  <span class='i'>body</span> <span class='i'>(rest method)</span>
                                  <span class='i'>arg-anns</span> <span class='i'>(normalise-args (first method))</span>
                                  <span class='i'>[required-params _ [rest-param]]</span> (<a id='2' tid='1' class='m'>split-with</a> <a id='4' tid='3' class='m'>#</a>(<a id='6' tid='5' class='m'>not=</a> <a id='8' tid='7' class='m'>&#39;</a><a id='10' tid='9' class='m'>&</a> <a id='12' tid='11' class='m'>%</a>) <a id='14' tid='13' class='m'>arg-anns</a>)]
-                             (<a id='64' tid='63' class='m'>assert</a> (<a id='66' tid='65' class='m'>sequential?</a> <a id='68' 
+                             (<a id='64' tid='63' class='m'>assert</a> (<a id='66' tid='65' class='m'>sequential?</a> <a id='68' tid='67' class='m'>required-params</a>)
+                                     <a id='70' tid='69' class='m'>&quot;Must provide a sequence of typed parameters to fn&gt;&quot;</a>)
+                             (<a id='72' tid='71' class='m'>assert</a> (<a id='74' tid='73' class='m'>not</a> <a id='76' tid='75' class='m'>rest-param</a>) <a id='78' tid='77' class='m'>&quot;fn&gt; doesn&#39;t support rest parameters yet&quot;</a>)
+                             <a id='80' tid='79' class='m'>{</a><a id='82' tid='81' class='m'>:dom-syntax</a> (<a id='84' tid='83' class='m'>doall</a> (<a id='86' tid='85' class='m'>map</a> (<a id='88' tid='87' class='m'>comp</a> <a id='90' tid='89' class='m'>second</a> <a id='92' tid='91' class='m'>next</a>) <a id='94' tid='93' class='m'>required-params</a>))
+                              <a id='96' tid='95' class='m'>:dom-lhs</a> (<a id='98' tid='97' class='m'>doall</a> (<a id='100' tid='99' class='m'>map</a> <a id='102'
