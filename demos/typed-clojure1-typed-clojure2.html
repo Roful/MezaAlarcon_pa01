@@ -1200,4 +1200,11 @@
     <a id='220' tid='219' class='m'>{</a><a id='222' tid='221' class='m'>:poly</a> <a id='224' tid='223' class='m'>poly</a>
      <a id='226' tid='225' class='m'>:fn</a> <a id='228' tid='227' class='m'>`</a>(<a id='230' tid='229' class='m'>fn</a> <a id='232' tid='231' class='m'>~@</a>(<a id='234' tid='233' class='m'>concat</a>
                   (<a id='236' tid='235' class='m'>when</a> <a id='238' tid='237' class='m'>name</a>
-                    [<a id='240' 
+                    [<a id='240' tid='239' class='m'>name</a>])
+                  (<a id='242' tid='241' class='m'>for</a> [<a id='244' tid='243' class='m'>{</a><a id='246' tid='245' class='m'>:keys</a> [<a id='248' tid='247' class='m'>body</a> <a id='250' tid='249' class='m'>dom-lhs</a>]<a id='252' tid='251' class='m'>}</a> <a id='254' tid='253' class='m'>parsed-methods</a>]
+                    (<a id='256' tid='255' class='m'>apply</a> <a id='258' tid='257' class='m'>list</a> (<a id='260' tid='259' class='m'>vec</a> <a id='262' tid='261' class='m'>dom-lhs</a>) <a id='264' tid='263' class='m'>body</a>))))
+     <a id='266' tid='265' class='m'>:parsed-methods</a> <a id='268' tid='267' class='m'>parsed-methods</a><a id='270' tid='269' class='m'>}</a>))
+
+(<a id='718' tid='717' class='u'>defmacro</a> <a id='720' tid='719' class='u'>pfn&gt;</a> 
+  <a id='722' tid='721' class='u'>&quot;Define a polymorphic typed anonymous function.
+  (pfn&gt; name? [bin
