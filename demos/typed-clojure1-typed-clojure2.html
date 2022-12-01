@@ -1193,4 +1193,11 @@
                                      <a id='70' tid='69' class='m'>&quot;Must provide a sequence of typed parameters to fn&gt;&quot;</a>)
                              (<a id='72' tid='71' class='m'>assert</a> (<a id='74' tid='73' class='m'>not</a> <a id='76' tid='75' class='m'>rest-param</a>) <a id='78' tid='77' class='m'>&quot;fn&gt; doesn&#39;t support rest parameters yet&quot;</a>)
                              <a id='80' tid='79' class='m'>{</a><a id='82' tid='81' class='m'>:dom-syntax</a> (<a id='84' tid='83' class='m'>doall</a> (<a id='86' tid='85' class='m'>map</a> (<a id='88' tid='87' class='m'>comp</a> <a id='90' tid='89' class='m'>second</a> <a id='92' tid='91' class='m'>next</a>) <a id='94' tid='93' class='m'>required-params</a>))
-                              <a id='96' tid='95' class='m'>:dom-lhs</a> (<a id='98' tid='97' class='m'>doall</a> (<a id='100' tid='99' class='m'>map</a> <a id='102'
+                              <a id='96' tid='95' class='m'>:dom-lhs</a> (<a id='98' tid='97' class='m'>doall</a> (<a id='100' tid='99' class='m'>map</a> <a id='102' tid='101' class='m'>first</a> <a id='104' tid='103' class='m'>required-params</a>))
+                              <a id='106' tid='105' class='m'>:rng-syntax</a> <a id='108' tid='107' class='m'>ret</a>
+                              <a id='110' tid='109' class='m'>:has-rng?</a> <a id='112' tid='111' class='m'>has-ret?</a>
+                              <a id='114' tid='113' class='m'>:body</a> <a id='116' tid='115' class='m'>body</a><a id='118' tid='117' class='m'>}</a>)))]
+    <a id='220' tid='219' class='m'>{</a><a id='222' tid='221' class='m'>:poly</a> <a id='224' tid='223' class='m'>poly</a>
+     <a id='226' tid='225' class='m'>:fn</a> <a id='228' tid='227' class='m'>`</a>(<a id='230' tid='229' class='m'>fn</a> <a id='232' tid='231' class='m'>~@</a>(<a id='234' tid='233' class='m'>concat</a>
+                  (<a id='236' tid='235' class='m'>when</a> <a id='238' tid='237' class='m'>name</a>
+                    [<a id='240' 
