@@ -1211,4 +1211,12 @@
   (pfn&gt; name? [binder+] (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
   [<a id='724' tid='723' class='u'>&</a> <a id='726' tid='725' class='u'>forms</a>]
   (<a id='728' tid='727' class='u'>let</a> [<a id='730' tid='729' class='u'>{</a><a id='732' tid='731' class='u'>:keys</a> [<a id='734' tid='733' class='u'>poly</a> <a id='736' tid='735' class='u'>fn</a> <a id='738' tid='737' class='u'>parsed-methods</a>]<a id='740' tid='739' class='u'>}</a> (<a id='742' tid='741' class='u'>parse-fn&gt;</a> <a id='744' tid='743' class='u'>true</a> <a id='746' tid='745' class='u'>forms</a>)]
-    <a id='748' tid='747' class='u'>`</a>(<a id='750' tid='749' class='u'>pfn&gt;-ann</a> <a id='752' tid='751' class='u'>~fn</a> <a id='754' tid='753' class='u'>&#39;</a><a id='756' tid='755' class='u'>~poly</a> <a id='758' tid='757' class='u'>&#39;</a><a id='760' ti
+    <a id='748' tid='747' class='u'>`</a>(<a id='750' tid='749' class='u'>pfn&gt;-ann</a> <a id='752' tid='751' class='u'>~fn</a> <a id='754' tid='753' class='u'>&#39;</a><a id='756' tid='755' class='u'>~poly</a> <a id='758' tid='757' class='u'>&#39;</a><a id='760' tid='759' class='u'>~parsed-methods</a>)))
+
+(<a id='498' tid='497' class='u'>defmacro</a> <a id='500' tid='499' class='u'>fn&gt;</a> 
+  <a id='502' tid='501' class='u'>&quot;Define a typed anonymous function.
+  (fn&gt; name? :- type? [[param :- type]* & [param :- type *]?] exprs*)
+  (fn&gt; name? (:- type? [[param :- type]* & [param :- type *]?] exprs*)+)&quot;</a>
+  [<a id='504' tid='503' class='u'>&</a> <a id='506' tid='505' class='u'>forms</a>]
+  (<a id='508' tid='507' class='u'>let</a> [<a id='510' tid='509' class='u'>{</a><a id='512' tid='511' class='u'>:keys</a> [<a id='514' tid='513' class='u'>fn</a> <a id='516' tid='515' class='u'>parsed-methods</a>]<a id='518' tid='517' class='u'>}</a> (<a id='520' tid='519' class='u'>parse-fn&gt;</a> <a id='522' tid='521' class='u'>false</a> <a id='524' tid='523' class='u'>forms</a>)]
+    <a id='526' tid='525' class='u'>`</a>(<a id='528' tid='527' class='u'>fn&gt;-ann</a> <a id='530' tid='529' class='u'>~fn</a> <a 
