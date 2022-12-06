@@ -1244,4 +1244,24 @@
                              (recur 
                                (drop 3 bindings)
                                (conj norm [(nth bindings 0)
-         
+                                           (nth bindings 2)])))
+            (list? fbnd) (recur
+                           (next bindings)
+                           (conj norm fbnd))
+            :else (throw (Exception. (str &quot;Unknown syntax to letfn&gt;: &quot; fbnd)))))
+        {anns false inits true} (group-by list? normalised-bindings)
+        ; init-syn unquotes local binding references to be compatible with hygienic expansion
+        init-syn (into {}
+                   (for [[lb type] anns]
+                     [lb `&#39;~type]))]
+    `(letfn ~(vec inits)
+       ;unquoted to allow bindings to resolve with hygiene
+       ~init-syn
+       ;preserve letfn empty body
+       nil
+       ~@body)))</span>
+
+
+(<a id='482' tid='481' class='u'>defmacro</a> <a id='484' tid='483' class='u'>defprotocol&gt;</a> [<a id='486' tid='485' class='u'>&</a> <a id='488' tid='487' class='u'>body</a>]
+  <span class='i'>&quot;Define a typed protocol. Syntax like defprotocol.&quot;</span>
+  <a id='
