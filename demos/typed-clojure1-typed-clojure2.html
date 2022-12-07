@@ -1264,4 +1264,21 @@
 
 (<a id='482' tid='481' class='u'>defmacro</a> <a id='484' tid='483' class='u'>defprotocol&gt;</a> [<a id='486' tid='485' class='u'>&</a> <a id='488' tid='487' class='u'>body</a>]
   <span class='i'>&quot;Define a typed protocol. Syntax like defprotocol.&quot;</span>
-  <a id='
+  <a id='490' tid='489' class='u'>`</a>(<a id='492' tid='491' class='u'>tc-ignore</a>
+     (<a id='494' tid='493' class='u'>defprotocol</a> <a id='496' tid='495' class='u'>~@body</a>)))
+
+(<a id='652' tid='651' class='u'>defmacro</a> <a id='654' tid='653' class='u'>loop&gt;</a>
+  <span class='i'>&quot;Like loop, except loop variables require annotation.
+
+  eg. (loop&gt; [a :- Number 1
+              b :- (U nil Number) nil]
+        ...)&quot;</span>
+  [<a id='656' tid='655' class='u'>bndings*</a> <a id='658' tid='657' class='u'>&</a> <a id='660' tid='659' class='u'>forms</a>]
+  (<a id='272' tid='271' class='m'>let</a> [<span class='i'>normalise-args</span>
+        <span class='i'>(fn [seq-exprs]
+          (loop [flat-result ()
+                 seq-exprs seq-exprs]
+            (cond
+              (empty? seq-exprs) flat-result
+              (and (vector? (first seq-exprs))
+                   (#{:-} (-&gt; seq-exprs first se
