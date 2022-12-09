@@ -1281,4 +1281,15 @@
             (cond
               (empty? seq-exprs) flat-result
               (and (vector? (first seq-exprs))
-                   (#{:-} (-&gt; seq-exprs first se
+                   (#{:-} (-&gt; seq-exprs first second))) (do
+                                                          (prn &quot;DEPRECATED WARNING: loop&gt; syntax has changed, use [b :- t i] for clauses&quot;
+                                                               &quot;ns: &quot; *ns* &quot; form:&quot; &form)
+                                                          (recur (concat flat-result (take 2 seq-exprs))
+                                                                 (drop 2 seq-exprs)))
+              :else (do (assert (#{:-} (second seq-exprs))
+                                &quot;Incorrect syntax in loop&gt;.&quot;)
+                        (recur (concat flat-result [(vec (take 3 seq-exprs))
+                                                    (nth seq-exprs 3)])
+                               (drop 4 seq-exprs))))))</span>
+        <span class='i'>;group args in flat pairs
+</span>        <span class='i'>bndings*</span> <span class='i'>(normalise
