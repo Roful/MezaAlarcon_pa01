@@ -1334,4 +1334,25 @@
      (declare ~sym)
      (declare-alias-kind* &#39;~sym &#39;~ty))</span>)
 
-<span class='i'>(defn declare-na
+<span class='i'>(defn declare-names* 
+  &quot;Internal use only. Use declare-names.&quot;
+  [syms]
+  nil)</span>
+
+(<a id='454' tid='453' class='u'>defmacro</a> <a id='456' tid='455' class='u'>declare-names</a> 
+  <a id='458' tid='457' class='u'>&quot;Declare names, similar to declare but on the type level.&quot;</a>
+  [<a id='460' tid='459' class='u'>&</a> <a id='462' tid='461' class='u'>syms</a>]
+  <a id='464' tid='463' class='u'>`</a><span class='i'>(declare-names* &#39;~syms)</span>)
+
+<span class='i'>(defn def-alias* 
+  &quot;Internal use only. Use def-alias.&quot;
+  [sym type]
+  nil)</span>
+
+(<a id='478' tid='477' class='u'>defmacro</a> <a id='480' tid='479' class='u'>def-alias</a> 
+  <span class='i'>&quot;Define a type alias. Takes an optional doc-string as a second
+  argument.&quot;</span>
+  <span class='i'>([sym doc-str type]
+   (assert (string? doc-str) &quot;Doc-string passed to def-alias must be a string&quot;)
+   `(def-alias ~(vary-meta sym assoc :doc doc-str) ~type))</span>
+  <span cla
