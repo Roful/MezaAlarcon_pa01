@@ -1374,4 +1374,20 @@
    (load-if-needed)
    (let [pt @(ns-resolve (find-ns &#39;clojure.core.typed.parse-unparse)
                          &#39;parse-type)
-         amc @(ns
+         amc @(ns-resolve (find-ns &#39;clojure.core.typed.array-ops)
+                          &#39;Type-&gt;array-member-Class)]
+     (into-array (-&gt; cljt pt amc) coll)))</span>
+  <span class='i'>([javat cljt coll]
+   (load-if-needed)
+   (let [pt @(ns-resolve (find-ns &#39;clojure.core.typed.parse-unparse)
+                         &#39;parse-type)
+         amc @(ns-resolve (find-ns &#39;clojure.core.typed.array-ops)
+                          &#39;Type-&gt;array-member-Class)]
+     (into-array (-&gt; javat pt amc) coll)))</span>
+  <span class='i'>;this is the hacky case to prevent full core.typed from loading
+</span>  <span class='i'>([into-array-syn javat cljt coll]
+   (into-array (resolve into-array-syn) coll))</span>)
+
+<span class='i'>;FIXME hacky 4-arity version to prevent full type system from loading
+</span>(<a id='610' tid='609' class='u'>defmacro</a> <a id='612' tid='611' class='u'>into-array&gt;</a> 
+  <span class='i'>&quot;Make a Java array with Java class
