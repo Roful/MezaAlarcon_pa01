@@ -1355,4 +1355,23 @@
   <span class='i'>([sym doc-str type]
    (assert (string? doc-str) &quot;Doc-string passed to def-alias must be a string&quot;)
    `(def-alias ~(vary-meta sym assoc :doc doc-str) ~type))</span>
-  <span cla
+  <span class='i'>([sym type]
+   (assert (symbol? sym) (str &quot;First argument to def-alias must be a symbol: &quot; sym))
+   (let [qsym (if (namespace sym)
+                sym
+                (symbol (-&gt; *ns* ns-name str) (str sym)))
+         m (-&gt; (meta sym)
+             (update-in [:doc] #(str % &quot;\n\n&quot; (with-out-str (pprint/pprint type)))))]
+     `(do
+        (intern &#39;~(symbol (namespace qsym)) &#39;~(symbol (name qsym)))
+        (tc-ignore (alter-meta! (resolve &#39;~qsym) merge &#39;~m))
+        (def-alias* &#39;~qsym &#39;~type))))</span>)
+
+<span class='i'>;(ann into-array&gt;* [Any Any -&gt; Any])
+</span>(<a id='648' tid='647' class='u'>defn</a> <a id='650' tid='649' class='u'>into-array&gt;*</a>
+  <span class='i'>&quot;Internal use only. Use into-array&gt;.&quot;</span>
+  <span class='i'>([cljt coll]
+   (load-if-needed)
+   (let [pt @(ns-resolve (find-ns &#39;clojure.core.typed.parse-unparse)
+                         &#39;parse-type)
+         amc @(ns
