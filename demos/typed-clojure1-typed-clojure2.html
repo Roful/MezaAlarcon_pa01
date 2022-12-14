@@ -1317,4 +1317,21 @@
   [syms]
   nil)</span>
 
-(<a id='466' tid='465' c
+(<a id='466' tid='465' class='u'>defmacro</a> <a id='468' tid='467' class='u'>declare-protocols</a> 
+  <a id='470' tid='469' class='u'>&quot;Declare protocols, similar to declare but on the type level.&quot;</a>
+  [<a id='472' tid='471' class='u'>&</a> <a id='474' tid='473' class='u'>syms</a>]
+  <a id='476' tid='475' class='u'>`</a><span class='i'>(declare-protocols* &#39;~syms)</span>)
+
+<span class='i'>(defn declare-alias-kind* 
+  &quot;Internal use only. Use declare-alias-kind.&quot;
+  [sym ty]
+  nil)</span>
+
+(<a id='430' tid='429' class='u'>defmacro</a> <a id='432' tid='431' class='u'>declare-alias-kind</a>
+  <a id='434' tid='433' class='u'>&quot;Declare a kind for an alias, similar to declare but on the kind level.&quot;</a>
+  [<a id='436' tid='435' class='u'>sym</a> <a id='438' tid='437' class='u'>ty</a>]
+  <a id='440' tid='439' class='u'>`</a><span class='i'>(do
+     (declare ~sym)
+     (declare-alias-kind* &#39;~sym &#39;~ty))</span>)
+
+<span class='i'>(defn declare-na
