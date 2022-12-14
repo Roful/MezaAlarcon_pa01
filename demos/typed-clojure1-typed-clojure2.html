@@ -1298,4 +1298,23 @@
 </span>        <span class='i'>lhs</span> <span class='i'>(map ffirst bnds)</span>
         <span class='i'>rhs</span> <span class='i'>(map second bnds)</span>
         <span class='i'>bnd-anns</span> (<a id='274' tid='273' class='m'>map</a> <a id='276' tid='275' class='m'>#</a>(<a id='278' tid='277' class='m'>-&gt;</a> <a id='280' tid='279' class='m'>%</a> <a id='282' tid='281' class='m'>first</a> <a id='284' tid='283' class='m'>next</a> <a id='286' tid='285' class='m'>second</a>) <a id='288' tid='287' class='m'>bnds</a>)]
-    <a id='290' tid='289' class='m'>`</a>(<a id='292' tid='291' class='m'>loop&gt;-ann</a> (<a id='294' tid='293' class='m'>loop</a> <a id='296' tid='295' class='m'>~</a>(<a id='298' tid='297' class='m'>vec</a> (<a 
+    <a id='290' tid='289' class='m'>`</a>(<a id='292' tid='291' class='m'>loop&gt;-ann</a> (<a id='294' tid='293' class='m'>loop</a> <a id='296' tid='295' class='m'>~</a>(<a id='298' tid='297' class='m'>vec</a> (<a id='300' tid='299' class='m'>mapcat</a> <a id='302' tid='301' class='m'>vector</a> <a id='304' tid='303' class='m'>lhs</a> <a id='306' tid='305' class='m'>rhs</a>))
+                  <a id='308' tid='307' class='m'>~@forms</a>)
+                <a id='310' tid='309' class='m'>&#39;</a><a id='312' tid='311' class='m'>~bnd-anns</a>)))
+
+<span class='i'>(defn declare-datatypes* 
+  &quot;Internal use only. Use declare-datatypes.&quot;
+  [nms]
+  nil)</span>
+
+(<a id='442' tid='441' class='u'>defmacro</a> <a id='444' tid='443' class='u'>declare-datatypes</a> 
+  <a id='446' tid='445' class='u'>&quot;Declare datatypes, similar to declare but on the type level.&quot;</a>
+  [<a id='448' tid='447' class='u'>&</a> <a id='450' tid='449' class='u'>syms</a>]
+  <a id='452' tid='451' class='u'>`</a><span class='i'>(declare-datatypes* &#39;~syms)</span>)
+
+<span class='i'>(defn declare-protocols* 
+  &quot;Internal use only. Use declare-protocols.&quot;
+  [syms]
+  nil)</span>
+
+(<a id='466' tid='465' c
