@@ -1390,4 +1390,14 @@
 
 <span class='i'>;FIXME hacky 4-arity version to prevent full type system from loading
 </span>(<a id='610' tid='609' class='u'>defmacro</a> <a id='612' tid='611' class='u'>into-array&gt;</a> 
-  <span class='i'>&quot;Make a Java array with Java class
+  <span class='i'>&quot;Make a Java array with Java class javat and Typed Clojure type
+  cljt. Resulting array will be of type javat, but elements of coll must be under
+  cljt. cljt should be a subtype of javat (the same or more specific).
+
+  *Temporary hack*
+  into-array-syn is exactly the syntax to put as the first argument to into-array.
+  Calling resolve on this syntax should give the correct class.&quot;</span>
+  ([<a id='614' tid='613' class='u'>cljt</a> <a id='616' tid='615' class='u'>coll</a>]
+   <a id='618' tid='617' class='u'>`</a>(<a id='620' tid='619' class='u'>into-array&gt;*</a> <a id='622' tid='621' class='u'>&#39;</a><a id='624' tid='623' class='u'>~cljt</a> <a id='626' tid='625' class='u'>~coll</a>))
+  ([<a id='628' tid='627' class='u'>javat</a> <a id='630' tid='629' class='u'>cljt</a> <a id='632' tid='631' class='u'>coll</a>]
+   <a id='634' tid='633' class='u'>`</a>(<a id='636' tid='635' class='u'>into-array&gt;*</a> <a 
