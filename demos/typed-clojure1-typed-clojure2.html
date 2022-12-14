@@ -1292,4 +1292,10 @@
                                                     (nth seq-exprs 3)])
                                (drop 4 seq-exprs))))))</span>
         <span class='i'>;group args in flat pairs
-</span>        <span class='i'>bndings*</span> <span class='i'>(normalise
+</span>        <span class='i'>bndings*</span> <span class='i'>(normalise-args bndings*)</span>
+        <span class='i'>bnds</span> <span class='i'>(partition 2 bndings*)</span>
+        <span class='i'>; [[lhs :- bnd-ann] rhs]
+</span>        <span class='i'>lhs</span> <span class='i'>(map ffirst bnds)</span>
+        <span class='i'>rhs</span> <span class='i'>(map second bnds)</span>
+        <span class='i'>bnd-anns</span> (<a id='274' tid='273' class='m'>map</a> <a id='276' tid='275' class='m'>#</a>(<a id='278' tid='277' class='m'>-&gt;</a> <a id='280' tid='279' class='m'>%</a> <a id='282' tid='281' class='m'>first</a> <a id='284' tid='283' class='m'>next</a> <a id='286' tid='285' class='m'>second</a>) <a id='288' tid='287' class='m'>bnds</a>)]
+    <a id='290' tid='289' class='m'>`</a>(<a id='292' tid='291' class='m'>loop&gt;-ann</a> (<a id='294' tid='293' class='m'>loop</a> <a id='296' tid='295' class='m'>~</a>(<a id='298' tid='297' class='m'>vec</a> (<a 
