@@ -1412,4 +1412,23 @@
 (<a id='348' tid='347' class='u'>defmacro</a> <a id='350' tid='349' class='u'>ann-form</a> 
   <span class='i'>&quot;Annotate a form with an expected type.&quot;</span>
   [<a id='352' tid='351' class='u'>form</a> <a id='354' tid='353' class='u'>ty</a>]
-  <a id='356' tid='355' class='u'>`</a>(<a id='358' tid='357' class='u'>ann-form*</a> <a id='360' tid='359' cla
+  <a id='356' tid='355' class='u'>`</a>(<a id='358' tid='357' class='u'>ann-form*</a> <a id='360' tid='359' class='u'>~form</a> <a id='362' tid='361' class='u'>&#39;</a><a id='364' tid='363' class='u'>~ty</a>))
+
+<span class='i'>;(ann unsafe-ann-form* [Any Any -&gt; Any])
+</span><span class='i'>(defn- unsafe-ann-form* [form ty]
+  form)</span>
+
+<span class='i'>(defmacro ^:private unsafe-ann-form [form ty]
+  `(unsafe-ann-form* ~form &#39;~ty))</span>
+
+<span class='i'>;(ann tc-ignore-forms* [Any -&gt; Any])
+</span>(<a id='822' tid='821' class='u'>defn</a> <a id='824' tid='823' class='u'>tc-ignore-forms*</a> 
+  <span class='i'>&quot;Internal use only. Use tc-ignore&quot;</span>
+  [<a id='826' tid='825' class='u'>r</a>]
+  <a id='828' tid='827' class='u'>r</a>)
+
+<span class='i'>;; `do` is special at the top level
+</span>(<a id='792' tid='791' class='u'>defmacro</a> <a id='794' tid='793' class='u'>tc-ignore</a> 
+  <a id='796' tid='795' class='u'>&quot;Ignore forms in body during type checking&quot;</a>
+  [<a id='798' tid='797' class='u'>&</a> <a id='800' tid='799' class='u'>body</a>]
+  <a i
