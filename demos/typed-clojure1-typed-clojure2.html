@@ -1400,4 +1400,16 @@
   ([<a id='614' tid='613' class='u'>cljt</a> <a id='616' tid='615' class='u'>coll</a>]
    <a id='618' tid='617' class='u'>`</a>(<a id='620' tid='619' class='u'>into-array&gt;*</a> <a id='622' tid='621' class='u'>&#39;</a><a id='624' tid='623' class='u'>~cljt</a> <a id='626' tid='625' class='u'>~coll</a>))
   ([<a id='628' tid='627' class='u'>javat</a> <a id='630' tid='629' class='u'>cljt</a> <a id='632' tid='631' class='u'>coll</a>]
-   <a id='634' tid='633' class='u'>`</a>(<a id='636' tid='635' class='u'>into-array&gt;*</a> <a 
+   <a id='634' tid='633' class='u'>`</a>(<a id='636' tid='635' class='u'>into-array&gt;*</a> <a id='638' tid='637' class='u'>&#39;</a><a id='640' tid='639' class='u'>~javat</a> <a id='642' tid='641' class='u'>&#39;</a><a id='644' tid='643' class='u'>~cljt</a> <a id='646' tid='645' class='u'>~coll</a>))
+  <span class='i'>([into-array-syn javat cljt coll]
+   `(into-array&gt;* &#39;~javat &#39;~cljt ~coll))</span>)
+
+(<a id='366' tid='365' class='u'>defn</a> <a id='368' tid='367' class='u'>ann-form*</a> 
+  <span class='i'>&quot;Internal use only. Use ann-form.&quot;</span>
+  [<a id='370' tid='369' class='u'>form</a> <a id='372' tid='371' class='u'>ty</a>]
+  <a id='374' tid='373' class='u'>form</a>)
+
+(<a id='348' tid='347' class='u'>defmacro</a> <a id='350' tid='349' class='u'>ann-form</a> 
+  <span class='i'>&quot;Annotate a form with an expected type.&quot;</span>
+  [<a id='352' tid='351' class='u'>form</a> <a id='354' tid='353' class='u'>ty</a>]
+  <a id='356' tid='355' class='u'>`</a>(<a id='358' tid='357' class='u'>ann-form*</a> <a id='360' tid='359' cla
