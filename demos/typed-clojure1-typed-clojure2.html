@@ -1431,4 +1431,17 @@
 </span>(<a id='792' tid='791' class='u'>defmacro</a> <a id='794' tid='793' class='u'>tc-ignore</a> 
   <a id='796' tid='795' class='u'>&quot;Ignore forms in body during type checking&quot;</a>
   [<a id='798' tid='797' class='u'>&</a> <a id='800' tid='799' class='u'>body</a>]
-  <a i
+  <a id='802' tid='801' class='u'>`</a>(<a id='804' tid='803' class='u'>do</a> <a id='806' tid='805' class='u'>~@</a>(<a id='808' tid='807' class='u'>map</a> (<a id='810' tid='809' class='u'>fn</a> [<a id='812' tid='811' class='u'>b</a>] <a id='814' tid='813' class='u'>`</a>(<a id='816' tid='815' class='u'>tc-ignore-forms*</a> <a id='818' tid='817' class='u'>~b</a>)) <a id='820' tid='819' class='u'>body</a>)))
+
+<span class='i'>(defn non-nil-return* 
+  &quot;Internal use only. Use non-nil-return.&quot;
+  [msym arities]
+  nil)</span>
+
+(<a id='688' tid='687' class='u'>defmacro</a> <a id='690' tid='689' class='u'>non-nil-return</a> 
+  <span class='i'>&quot;Override the return type of qualified method msym to be non-nil.
+  Takes a set of relevant arities,
+  represented by the number of parameters it takes (rest parameter counts as one),
+  or :all which overrides all arities.
+  
+  eg.  (non-nil-return java.lang.Class/getDeclaredMeth
