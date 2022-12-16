@@ -1444,4 +1444,21 @@
   represented by the number of parameters it takes (rest parameter counts as one),
   or :all which overrides all arities.
   
-  eg.  (non-nil-return java.lang.Class/getDeclaredMeth
+  eg.  (non-nil-return java.lang.Class/getDeclaredMethod :all)&quot;</span>
+  [<a id='692' tid='691' class='u'>msym</a> <a id='694' tid='693' class='u'>arities</a>]
+  <a id='696' tid='695' class='u'>`</a><span class='i'>(non-nil-return* &#39;~msym &#39;~arities)</span>)
+
+<span class='i'>(defn nilable-param* 
+  &quot;Internal use only. Use nilable-param.&quot;
+  [msym mmap]
+  nil)</span>
+
+(<a id='678' tid='677' class='u'>defmacro</a> <a id='680' tid='679' class='u'>nilable-param</a> 
+  <span class='i'>&quot;Override which parameters in qualified method msym may accept
+  nilable values. If the parameter is a parameterised type or
+  an Array, this also declares the parameterised types and the Array type as nilable.
+
+  mmap is a map mapping arity parameter number to a set of parameter
+  positions (integers). If the map contains the key :all then this overrides
+  other entries. The key can also be :all, which declares all parameters nilable.&quot;</span>
+  [<a id='682' tid='681' class='u'>msym</a> <a id='684' tid='
