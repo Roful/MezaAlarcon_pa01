@@ -1461,4 +1461,23 @@
   mmap is a map mapping arity parameter number to a set of parameter
   positions (integers). If the map contains the key :all then this overrides
   other entries. The key can also be :all, which declares all parameters nilable.&quot;</span>
-  [<a id='682' tid='681' class='u'>msym</a> <a id='684' tid='
+  [<a id='682' tid='681' class='u'>msym</a> <a id='684' tid='683' class='u'>mmap</a>]
+  <a id='686' tid='685' class='u'>`</a><span class='i'>(nilable-param* &#39;~msym &#39;~mmap)</span>)
+
+<span class='i'>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</span><span class='i'>;; Annotations
+</span>
+(<a id='774' tid='773' class='u'>defn</a> <a id='776' tid='775' class='u'>print-env</a> 
+  <span class='i'>&quot;During type checking, print the type environment to *out*,
+  preceeded by literal string debug-str.&quot;</span>
+  [<a id='778' tid='777' class='u'>debug-str</a>]
+  <a id='780' tid='779' class='u'>nil</a>)
+
+<span class='i'>(defn ann* 
+  &quot;Internal use only. Use ann.&quot;
+  [varsym typesyn check?]
+  nil)</span>
+
+(<a id='314' tid='313' class='u'>defmacro</a> <a id='316' tid='315' class='u'>ann</a> 
+  <span class='i'>&quot;Annotate varsym with type. If unqualified, qualify in the current namespace.
+  If varsym has metadata {:nocheck true}, ignore definitions of varsym while type checking.&quot;</
