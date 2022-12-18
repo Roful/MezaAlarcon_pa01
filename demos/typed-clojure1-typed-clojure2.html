@@ -1497,4 +1497,17 @@
   If unqualified, qualify in the current namespace.&quot;</span>
   <span class='i'>[dname fields & {ancests :unchecked-ancestors rplc :replace :as opts}]</span>
   (<a id='326' tid='325' class='u'>assert</a> (<a id='328' tid='327' class='u'>not</a> <a id='330' tid='329' class='u'>rplc</a>) <a id='332' tid='331' class='u'>&quot;Replace NYI&quot;</a>)
-  (<a id='334'
+  (<a id='334' tid='333' class='u'>assert</a> (<a id='336' tid='335' class='u'>symbol?</a> <a id='338' tid='337' class='u'>dname</a>)
+          (<a id='340' tid='339' class='u'>str</a> <a id='342' tid='341' class='u'>&quot;Must provide name symbol: &quot;</a> <a id='344' tid='343' class='u'>dname</a>))
+  <a id='346' tid='345' class='u'>`</a><span class='i'>(ann-datatype* &#39;~dname &#39;~fields &#39;~opts)</span>)
+
+<span class='i'>(defn ann-pdatatype* 
+  &quot;Internal use only. Use ann-pdatatype.&quot;
+  [dname vbnd fields opt]
+  nil)</span>
+
+(<a id='376' tid='375' class='u'>defmacro</a> <a id='378' tid='377' class='u'>ann-pdatatype</a> 
+  <span class='i'>&quot;Annotate datatype Class name dname with a polymorphic binder and expected fields.
+  If unqualified, qualify in the current namespace.&quot;</span>
+  <span class='i'>[dname vbnd fields & {ancests :unchecked-ancestors rplc :replace :as opt}]</span>
+  (<a id='380' tid='379' class='u'>assert</a> (<a id='382' tid='381' class='u'>not</a> <a id='384' tid='383' class='u'>rplc</a>) <a id='386' tid='
