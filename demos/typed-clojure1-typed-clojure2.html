@@ -1596,4 +1596,18 @@
 
 
 <span class='i'>; cf can pollute current type environment to allow REPL experimentation, 
-</span><span class='i'>; which is 
+</span><span class='i'>; which is ok because check-ns resets it when called.
+</span>(<a id='414' tid='413' class='u'>defmacro</a> <a id='416' tid='415' class='u'>cf</a>
+  <a id='418' tid='417' class='u'>&quot;Type check a Clojure form and return its type&quot;</a>
+  <span class='i'>([form]
+   `(do
+      (load-if-needed)
+      (let [check# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.check)
+                                &#39;~&#39;check)
+            expr-type# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.check)
+                                    &#39;~&#39;expr-type )
+            unparse-TCResult-in-ns# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.parse-unparse)
+                                           &#39;~&#39;unparse-TCResult-in-ns)
+            ensure-clojure# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.current-impl)
+                                         &#39;~&#39;ensure-clojure)
+            ast-for-form# @(ns-resolve (find-n
