@@ -1573,4 +1573,27 @@
   [<a id='702' tid='701' class='u'>ctorsym</a> <a id='704' tid='703' class='u'>typesyn</a>]
   <a id='706' tid='705' class='u'>`</a><span class='i'>(override-constructor* &#39;~ctorsym &#39;~typesyn)</span>)
 
-<span class='i'>(defn override-m
+<span class='i'>(defn override-method* 
+  &quot;Internal use only. Use override-method.&quot;
+  [methodsym typesyn]
+  nil)</span>
+
+(<a id='708' tid='707' class='u'>defmacro</a> <a id='710' tid='709' class='u'>override-method</a> 
+  <span class='i'>&quot;Override type for qualified method methodsym.&quot;</span>
+  [<a id='712' tid='711' class='u'>methodsym</a> <a id='714' tid='713' class='u'>typesyn</a>]
+  <a id='716' tid='715' class='u'>`</a><span class='i'>(override-method* &#39;~methodsym &#39;~typesyn)</span>)
+
+<span class='i'>(defn typed-deps* 
+  &quot;Internal use only. Use typed-deps.&quot;
+  [args]
+  nil)</span>
+
+<span class='i'>(defmacro typed-deps 
+  &quot;Declare namespaces which should be checked before the current namespace.
+  Accepts any number of symbols.&quot;
+  [& args]
+  `(typed-deps* &#39;~args))</span>
+
+
+<span class='i'>; cf can pollute current type environment to allow REPL experimentation, 
+</span><span class='i'>; which is 
