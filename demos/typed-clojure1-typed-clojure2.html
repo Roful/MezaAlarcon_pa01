@@ -1480,4 +1480,21 @@
 
 (<a id='314' tid='313' class='u'>defmacro</a> <a id='316' tid='315' class='u'>ann</a> 
   <span class='i'>&quot;Annotate varsym with type. If unqualified, qualify in the current namespace.
-  If varsym has metadata {:nocheck true}, ignore definitions of varsym while type checking.&quot;</
+  If varsym has metadata {:nocheck true}, ignore definitions of varsym while type checking.&quot;</span>
+  [<a id='318' tid='317' class='u'>varsym</a> <a id='320' tid='319' class='u'>typesyn</a>]
+  <span class='i'>(let [qsym (if (namespace varsym)
+               varsym
+               (symbol (-&gt; *ns* ns-name str) (str varsym)))]
+    `(ann* &#39;~qsym &#39;~typesyn &#39;~(-&gt; varsym meta :nocheck not)))</span>)
+
+<span class='i'>(defn ann-datatype*
+  &quot;Internal use only. Use ann-datatype.&quot;
+  [dname fields opts]
+  nil)</span>
+
+(<a id='322' tid='321' class='u'>defmacro</a> <a id='324' tid='323' class='u'>ann-datatype</a> 
+  <span class='i'>&quot;Annotate datatype Class name dname with expected fields.
+  If unqualified, qualify in the current namespace.&quot;</span>
+  <span class='i'>[dname fields & {ancests :unchecked-ancestors rplc :replace :as opts}]</span>
+  (<a id='326' tid='325' class='u'>assert</a> (<a id='328' tid='327' class='u'>not</a> <a id='330' tid='329' class='u'>rplc</a>) <a id='332' tid='331' class='u'>&quot;Replace NYI&quot;</a>)
+  (<a id='334'
