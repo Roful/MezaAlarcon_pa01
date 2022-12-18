@@ -1555,4 +1555,22 @@
 
 <span class='i'>(defn ann-pprotocol* 
   &quot;Internal use only. Use ann-pprotocol.&quot;
-  [varsym vbnd 
+  [varsym vbnd mth]
+  nil)</span>
+
+(<a id='402' tid='401' class='u'>defmacro</a> <a id='404' tid='403' class='u'>ann-pprotocol</a> 
+  <span class='i'>&quot;Annotate polymorphic protocol with a polymorphic binder and method types.&quot;</span>
+  <span class='i'>[varsym vbnd & {:as mth}]</span>
+  <a id='406' tid='405' class='u'>`</a><span class='i'>(ann-pprotocol* &#39;~varsym &#39;~vbnd &#39;~mth)</span>)
+
+<span class='i'>(defn override-constructor* 
+  &quot;Internal use only. Use override-constructor.&quot;
+  [ctorsym typesyn]
+  nil)</span>
+
+(<a id='698' tid='697' class='u'>defmacro</a> <a id='700' tid='699' class='u'>override-constructor</a> 
+  <span class='i'>&quot;Override all constructors for Class ctorsym with type.&quot;</span>
+  [<a id='702' tid='701' class='u'>ctorsym</a> <a id='704' tid='703' class='u'>typesyn</a>]
+  <a id='706' tid='705' class='u'>`</a><span class='i'>(override-constructor* &#39;~ctorsym &#39;~typesyn)</span>)
+
+<span class='i'>(defn override-m
