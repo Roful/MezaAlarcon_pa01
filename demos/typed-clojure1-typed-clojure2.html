@@ -1510,4 +1510,22 @@
   <span class='i'>&quot;Annotate datatype Class name dname with a polymorphic binder and expected fields.
   If unqualified, qualify in the current namespace.&quot;</span>
   <span class='i'>[dname vbnd fields & {ancests :unchecked-ancestors rplc :replace :as opt}]</span>
-  (<a id='380' tid='379' class='u'>assert</a> (<a id='382' tid='381' class='u'>not</a> <a id='384' tid='383' class='u'>rplc</a>) <a id='386' tid='
+  (<a id='380' tid='379' class='u'>assert</a> (<a id='382' tid='381' class='u'>not</a> <a id='384' tid='383' class='u'>rplc</a>) <a id='386' tid='385' class='u'>&quot;Replace NYI&quot;</a>)
+  (<a id='388' tid='387' class='u'>assert</a> (<a id='390' tid='389' class='u'>symbol?</a> <a id='392' tid='391' class='u'>dname</a>)
+          (<a id='394' tid='393' class='u'>str</a> <a id='396' tid='395' class='u'>&quot;Must provide local symbol: &quot;</a> <a id='398' tid='397' class='u'>dname</a>))
+  <a id='400' tid='399' class='u'>`</a><span class='i'>(ann-pdatatype* &#39;~dname &#39;~vbnd &#39;~fields &#39;~opt)</span>)
+
+<span class='i'>(defn ann-record* 
+  &quot;Internal use only. Use ann-record&quot;
+  [dname fields opt]
+  nil)</span>
+
+<span class='i'>(defmacro ann-record 
+  &quot;Annotate record Class name dname with expected fields.
+  If unqualified, qualify in the current namespace.&quot;
+  [dname fields & {ancests :unchecked-ancestors rplc :replace :as opt}]
+  `(ann-record* &#39;~dname &#39;~fields &#39;~opt))</span>
+
+<span class='i'>(defn ann-precord* 
+  &quot;Internal use only. Use ann-precord.&quot;
+  [dn
