@@ -1528,4 +1528,31 @@
 
 <span class='i'>(defn ann-precord* 
   &quot;Internal use only. Use ann-precord.&quot;
-  [dn
+  [dname vbnd fields opt]
+  nil)</span>
+
+<span class='i'>(defmacro ann-precord 
+  &quot;Annotate record Class name dname with a polymorphic binder and expected fields.
+  If unqualified, qualify in the current namespace.&quot;
+  [dname vbnd fields & {ancests :unchecked-ancestors rplc :replace :as opt}]
+  `(ann-precord* &#39;~dname &#39;~vbnd &#39;~fields &#39;~opt))</span>
+
+<span class='i'>(defn ann-protocol* 
+  &quot;Internal use only. Use ann-protocol.&quot;
+  [varsym mth]
+  nil)</span>
+
+(<a id='408' tid='407' class='u'>defmacro</a> <a id='410' tid='409' class='u'>ann-protocol</a> 
+  <span class='i'>&quot;Annotate protocol var with method types.
+  
+  eg. (ann-protocol IFoo
+        bar
+        [IFoo -&gt; Any]
+        baz
+        [IFoo -&gt; Number])&quot;</span>
+  <span class='i'>[varsym & {:as mth}]</span>
+  <a id='412' tid='411' class='u'>`</a><span class='i'>(ann-protocol* &#39;~varsym &#39;~mth)</span>)
+
+<span class='i'>(defn ann-pprotocol* 
+  &quot;Internal use only. Use ann-pprotocol.&quot;
+  [varsym vbnd 
