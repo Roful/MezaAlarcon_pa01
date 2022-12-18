@@ -1629,4 +1629,17 @@
                         (unparse-TCResult-in-ns# *ns*))))))))))</span>
    <span class='i'>([form expected]
    `(do
-      (load
+      (load-if-needed)
+      (let [check# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.check)
+                                &#39;~&#39;check)
+            expr-type# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.check)
+                                    &#39;~&#39;expr-type )
+            unparse-TCResult-in-ns# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.parse-unparse)
+                                                 &#39;~&#39;unparse-TCResult-in-ns)
+            ensure-clojure# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.current-impl)
+                                         &#39;~&#39;ensure-clojure)
+            ast-for-form# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.analyze-clj)
+                                       &#39;~&#39;ast-for-form)
+            collect# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.collect-phase)
+                                  &#39;~&#39;collect)
+            ret# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.type
