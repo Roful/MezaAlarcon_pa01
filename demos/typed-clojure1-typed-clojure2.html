@@ -1610,4 +1610,23 @@
                                            &#39;~&#39;unparse-TCResult-in-ns)
             ensure-clojure# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.current-impl)
                                          &#39;~&#39;ensure-clojure)
-            ast-for-form# @(ns-resolve (find-n
+            ast-for-form# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.analyze-clj)
+                                       &#39;~&#39;ast-for-form)
+            collect# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.collect-phase)
+                                  &#39;~&#39;collect)]
+        (if *currently-checking-clj*
+          (throw (Exception. &quot;Found inner call to check-ns or cf&quot;))
+          (do (ensure-clojure#)
+              (binding [*currently-checking-clj* true
+                        *delayed-errors* (-init-delayed-errors)]
+                (let [ast# (ast-for-form# &#39;~form)
+                      _# (collect# ast#)
+                      cexpr# (check# ast#)]
+                  (if-let [errors# (seq @*delayed-errors*)]
+                    (print-errors! errors#)
+                    (-&gt; cexpr#
+                        expr-type#
+                        (unparse-TCResult-in-ns# *ns*))))))))))</span>
+   <span class='i'>([form expected]
+   `(do
+      (load
