@@ -1642,4 +1642,24 @@
                                        &#39;~&#39;ast-for-form)
             collect# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.collect-phase)
                                   &#39;~&#39;collect)
-            ret# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.type
+            ret# @(ns-resolve (find-ns &#39;~&#39;clojure.core.typed.type-rep)
+                              &#39;~&#39;ret)
+            parse-type# @(ns-resolve (find-ns &#39;clojure.core.typed.parse-unparse)
+                                     &#39;~&#39;parse-type)]
+      (if *currently-checking-clj*
+        (throw (Exception. &quot;Found inner call to check-ns or cf&quot;))
+        (do (ensure-clojure#)
+            (binding [*currently-checking-clj* true
+                      *delayed-errors* (-init-delayed-errors)]
+              (let [ast# (ast-for-form# &#39;(ann-form ~form ~expected))
+                    _# (collect# ast#)
+                    c-ast# (check# ast# 
+                                   (ret#
+                                     (parse-type# &#39;~expected)))]
+                (if-let [errors# (seq @*delayed-errors*)]
+                  (print-errors! errors#)
+                  (-&gt; c-ast# 
+                      expr-type# 
+                      (unparse-TCResult-in-ns# *ns*))))))))))</span>)
+
+<span class='i'
