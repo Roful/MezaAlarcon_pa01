@@ -1662,4 +1662,29 @@
                       expr-type# 
                       (unparse-TCResult-in-ns# *ns*))))))))))</span>)
 
-<span class='i'
+<span class='i'>(declare ^:dynamic *verbose-forms*)</span>
+
+<span class='i'>(defn print-errors! [errors]
+  {:pre [(seq errors)
+         (every? #(instance? clojure.lang.ExceptionInfo %) errors)]}
+  (binding [*out* *err*]
+    (doseq [^Exception e errors]
+      (let [{:keys [env] :as data} (ex-data e)]
+        (print &quot;Type Error &quot;)
+        (print (str &quot;(&quot; (-&gt; env :ns :name) &quot;:&quot; (:line env) 
+                    (when-let [col (:column env)]
+                      (str &quot;:&quot;col))
+                    &quot;) &quot;))
+        (print (.getMessage e))
+        (println)
+        (flush)
+        (let [[_ form :as has-form?] (find data :form)]
+          (when has-form?
+            (binding [*print-length* (when-not *verbose-forms*
+                                       4)
+                      *print-level* (when-not *verbose-forms*
+                                      2)]
+              (print &quot;in: &quot;)
+              (println form)
+              (println)
+              (p
