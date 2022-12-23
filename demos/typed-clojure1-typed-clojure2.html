@@ -1687,4 +1687,28 @@
               (print &quot;in: &quot;)
               (println form)
               (println)
-              (p
+              (println)
+              (flush))))
+        (flush))))
+  (throw (ex-info (str &quot;Type Checker: Found &quot; (count errors) &quot; errors&quot;)
+                  {:type-error :top-level-error
+                   :errors errors})))</span>
+
+<span class='i'>(def ^:dynamic *already-collected*)</span>
+<span class='i'>(def ^:dynamic *already-checked*)</span>
+<span class='i'>(def ^:dynamic *currently-checking-clj* nil)</span>
+<span class='i'>(def ^:dynamic *delayed-errors*)</span>
+
+<span class='i'>(def ^:dynamic *verbose-types* 
+  &quot;If true, print fully qualified types in error messages
+  and return values.&quot;
+  nil)</span>
+<span class='i'>(def ^:dynamic *verbose-forms* 
+  &quot;If true, print complete forms in error messages.&quot;
+  nil)</span>
+
+<span class='i'>(defn -init-delayed-errors 
+  &quot;Internal use only&quot;
+  []
+  (atom [] :validator #(and (vector? %)
+                            (ev
