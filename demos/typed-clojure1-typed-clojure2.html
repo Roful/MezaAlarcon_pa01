@@ -1711,4 +1711,20 @@
   &quot;Internal use only&quot;
   []
   (atom [] :validator #(and (vector? %)
-                            (ev
+                            (every? (fn [a] 
+                                      (instance? clojure.lang.ExceptionInfo a))
+                                    %))))</span>
+
+(<a id='420' tid='419' class='u'>defn</a> <a id='422' tid='421' class='u'>check-ns</a>
+  <span class='i'>&quot;Type check a namespace. If not provided default to current namespace.
+  
+  Bind *verbose-types* to true to print fully qualified types.
+  Bind *verbose-forms* to print full forms in error messages.&quot;</span>
+  ([] (<a id='424' tid='423' class='u'>check-ns</a> (<a id='426' tid='425' class='u'>ns-name</a> <a id='428' tid='427' class='u'>*ns*</a>)))
+  <span class='i'>([nsym]
+   (load-if-needed)
+   (let [reset-envs! @(ns-resolve (find-ns &#39;clojure.core.typed.init)
+                                  &#39;reset-envs!)
+         ensure-clojure @(ns-resolve (find-ns &#39;clojure.core.typed.current-impl)
+                                     &#39;ensure-clojure)
+         collect-ns @(ns-resolve (find-ns &#39;clojure.core.ty
