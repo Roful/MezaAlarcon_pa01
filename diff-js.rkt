@@ -1,3 +1,4 @@
+
 ;; ydiff - a language-aware tool for comparing programs
 ;; Copyright (C) 2011-2013 Yin Wang (yinwang0@gmail.com)
 
@@ -15,30 +16,32 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+
 #lang racket
 
 (require "structs.rkt")
 (require "utils.rkt")
-(require "parse-cpp.rkt")
+(require "parse-js.rkt")
 (require "diff.rkt")
 (require "htmlize.rkt")
 
 
 
 ;-------------------------------------------------------------
-;                      overrides
+;                         overrides
 ;-------------------------------------------------------------
 
 (set-get-name
   (lambda (node)
-    (let ([id-exp (match-tags node '(name identifier id))])
-      (and id-exp (get-symbol (car (Node-elts id-exp)))))))
+    (let ([name (match-tags node '(name))])
+      (cond
+       [(not name) #f]
+       [(pair? (Node-elts name))
+        (get-symbol (car (Node-elts name)))]
+       [else #f]))))
 
-;; (get-name (car (parse1 $statement "int f(int x) {}")))
-
-
-;; (same-def? (car (parse1 $statement "int f(int x) {}"))
-;;            (car (parse1 $statement "int f(int x) {}")))
+;; (same-def? (car (parse1 $statement "function f(x) {}"))
+;;            (car (parse1 $statement "function f(x) {}")))
 
 
 ;; command line interface
@@ -47,12 +50,7 @@
        [file2 (vector-ref args 1)]
        [text1 (read-file file1)]
        [text2 (read-file file2)]
-       [node1 (parse-cpp text1)]
-       [node2 (parse-cpp text2)]
+       [node1 (parse-js text1)]
+       [node2 (parse-js text2)]
        [changes (diff node1 node2)])
   (htmlize changes file1 file2 text1 text2))
-
-
-;---------------------------------------------
-; (diff-cpp "tests/simulator-mips.cc" "tests/simulator-arm.cc")
-; (diff-cpp "tests/d8-3404.cc" "tests/d8-8424.cc")
