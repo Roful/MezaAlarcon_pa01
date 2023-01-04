@@ -1727,4 +1727,25 @@
                                   &#39;reset-envs!)
          ensure-clojure @(ns-resolve (find-ns &#39;clojure.core.typed.current-impl)
                                      &#39;ensure-clojure)
-         collect-ns @(ns-resolve (find-ns &#39;clojure.core.ty
+         collect-ns @(ns-resolve (find-ns &#39;clojure.core.typed.collect-phase)
+                                 &#39;collect-ns)
+         check-ns-and-deps @(ns-resolve (find-ns &#39;clojure.core.typed.check)
+                                        &#39;check-ns-and-deps)
+         vars-with-unchecked-defs @(ns-resolve (find-ns &#39;clojure.core.typed.var-env)
+                                               &#39;vars-with-unchecked-defs)]
+   (reset-envs!)
+   (cond
+     *currently-checking-clj* (throw (Exception. &quot;Found inner call to check-ns or cf&quot;))
+
+     :else
+     (binding [*currently-checking-clj* true
+               *delayed-errors* (-init-delayed-errors)
+               *already-collected* (atom #{})
+               *already-checked* (atom #{})]
+       (ensure-clojure)
+       (collect-ns nsym)
+       (check-ns-and-deps nsym)
+       (let [vs (vars-with-unchecked-defs)]
+         (binding [*out* *err*]
+           (doseq [v vs]
+             (println &quot;WARNING: Type Checker: Definition missing:&q
