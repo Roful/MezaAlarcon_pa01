@@ -11,4 +11,47 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+#lang racket
+
+(require "structs.rkt")
+(require "utils.rkt")
+(require "parse-lisp.rkt")
+(require "diff.rkt")
+(require "htmlize.rkt")
+
+
+(define *keywords*
+  '(define defun defvar lambda cond if else
+     let let* let-values let*-values
+     while for define-syntax syntax-rules
+     define-minor-mode defmacro defn))
+
+(define *defs*
+  '(define defun defvar define-syntax define-minor-mode
+    defmacro defn))
+
+
+(define get-keyword
+  (lambda (node)
+    (match node
+      [(Node type _ _ elts _ _)
+       (cond
+        [(pair? elts)
+         (let ([sym (get-symbol (car elts))])
+           (cond
+            [(memq sym *keywords*) sym]
+            [else #f]))]
+        [else #f])]
+      [_ #f])))
+
+
+;; Try to get the keyword of the sexp if it is not token, comment, str
+;; and char.
+(set-get-type
+  (lambda (node)
+    (cond
+     [(token? node) 'to
