@@ -11,4 +11,41 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
-;; You should have received a 
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+#lang racket
+
+(require "structs.rkt")
+(require "utils.rkt")
+(require "parse-cpp.rkt")
+(require "diff.rkt")
+(require "htmlize.rkt")
+
+
+
+;-------------------------------------------------------------
+;                      overrides
+;-------------------------------------------------------------
+
+(set-get-name
+  (lambda (node)
+    (let ([id-exp (match-tags node '(name identifier id))])
+      (and id-exp (get-symbol (car (Node-elts id-exp)))))))
+
+;; (get-name (car (parse1 $statement "int f(int x) {}")))
+
+
+;; (same-def? (car (parse1 $statement "int f(int x) {}"))
+;;            (car (parse1 $statement "int f(int x) {}")))
+
+
+;; command line interface
+(let* ([args (current-command-line-arguments)]
+       [file1 (vector-ref args 0)]
+       [file2 (vector-ref args 1)]
+       [text1 (read-file file1)]
+       [text2 (read-file file2)]
+       [node1 (parse-cpp text1)]
+       [node2 (parse-cpp
