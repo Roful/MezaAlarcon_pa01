@@ -702,3 +702,341 @@
   r)
 
 ;; `do` is special at the top level
+(defmacro tc-ignore 
+  "Ignore forms in body during type checking"
+  [& body]
+  `(do ~@(map (fn [b] `(tc-ignore-forms* ~b)) body)))
+
+(defn non-nil-return* 
+  "Internal use only. Use non-nil-return."
+  [msym arities]
+  nil)
+
+(defmacro non-nil-return 
+  "Override the return type of qualified method msym to be non-nil.
+  Takes a set of relevant arities,
+  represented by the number of parameters it takes (rest parameter counts as one),
+  or :all which overrides all arities.
+  
+  eg.  (non-nil-return java.lang.Class/getDeclaredMethod :all)"
+  [msym arities]
+  `(non-nil-return* '~msym '~arities))
+
+(defn nilable-param* 
+  "Internal use only. Use nilable-param."
+  [msym mmap]
+  nil)
+
+(defmacro nilable-param 
+  "Override which parameters in qualified method msym may accept
+  nilable values. If the parameter is a parameterised type or
+  an Array, this also declares the parameterised types and the Array type as nilable.
+
+  mmap is a map mapping arity parameter number to a set of parameter
+  positions (integers). If the map contains the key :all then this overrides
+  other entries. The key can also be :all, which declares all parameters nilable."
+  [msym mmap]
+  `(nilable-param* '~msym '~mmap))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Annotations
+
+(defn print-env 
+  "During type checking, print the type environment to *out*,
+  preceeded by literal string debug-str."
+  [debug-str]
+  nil)
+
+(defn ann* 
+  "Internal use only. Use ann."
+  [varsym typesyn check?]
+  nil)
+
+(defmacro ann 
+  "Annotate varsym with type. If unqualified, qualify in the current namespace.
+  If varsym has metadata {:nocheck true}, ignore definitions of varsym while type checking."
+  [varsym typesyn]
+  (let [qsym (if (namespace varsym)
+               varsym
+               (symbol (-> *ns* ns-name str) (str varsym)))]
+    `(ann* '~qsym '~typesyn '~(-> varsym meta :nocheck not))))
+
+(defn ann-datatype*
+  "Internal use only. Use ann-datatype."
+  [dname fields opts]
+  nil)
+
+(defmacro ann-datatype 
+  "Annotate datatype Class name dname with expected fields.
+  If unqualified, qualify in the current namespace."
+  [dname fields & {ancests :unchecked-ancestors rplc :replace :as opts}]
+  (assert (not rplc) "Replace NYI")
+  (assert (symbol? dname)
+          (str "Must provide name symbol: " dname))
+  `(ann-datatype* '~dname '~fields '~opts))
+
+(defn ann-pdatatype* 
+  "Internal use only. Use ann-pdatatype."
+  [dname vbnd fields opt]
+  nil)
+
+(defmacro ann-pdatatype 
+  "Annotate datatype Class name dname with a polymorphic binder and expected fields.
+  If unqualified, qualify in the current namespace."
+  [dname vbnd fields & {ancests :unchecked-ancestors rplc :replace :as opt}]
+  (assert (not rplc) "Replace NYI")
+  (assert (symbol? dname)
+          (str "Must provide local symbol: " dname))
+  `(ann-pdatatype* '~dname '~vbnd '~fields '~opt))
+
+(defn ann-record* 
+  "Internal use only. Use ann-record"
+  [dname fields opt]
+  nil)
+
+(defmacro ann-record 
+  "Annotate record Class name dname with expected fields.
+  If unqualified, qualify in the current namespace."
+  [dname fields & {ancests :unchecked-ancestors rplc :replace :as opt}]
+  `(ann-record* '~dname '~fields '~opt))
+
+(defn ann-precord* 
+  "Internal use only. Use ann-precord."
+  [dname vbnd fields opt]
+  nil)
+
+(defmacro ann-precord 
+  "Annotate record Class name dname with a polymorphic binder and expected fields.
+  If unqualified, qualify in the current namespace."
+  [dname vbnd fields & {ancests :unchecked-ancestors rplc :replace :as opt}]
+  `(ann-precord* '~dname '~vbnd '~fields '~opt))
+
+(defn ann-protocol* 
+  "Internal use only. Use ann-protocol."
+  [varsym mth]
+  nil)
+
+(defmacro ann-protocol 
+  "Annotate protocol var with method types.
+  
+  eg. (ann-protocol IFoo
+        bar
+        [IFoo -> Any]
+        baz
+        [IFoo -> Number])"
+  [varsym & {:as mth}]
+  `(ann-protocol* '~varsym '~mth))
+
+(defn ann-pprotocol* 
+  "Internal use only. Use ann-pprotocol."
+  [varsym vbnd mth]
+  nil)
+
+(defmacro ann-pprotocol 
+  "Annotate polymorphic protocol with a polymorphic binder and method types."
+  [varsym vbnd & {:as mth}]
+  `(ann-pprotocol* '~varsym '~vbnd '~mth))
+
+(defn override-constructor* 
+  "Internal use only. Use override-constructor."
+  [ctorsym typesyn]
+  nil)
+
+(defmacro override-constructor 
+  "Override all constructors for Class ctorsym with type."
+  [ctorsym typesyn]
+  `(override-constructor* '~ctorsym '~typesyn))
+
+(defn override-method* 
+  "Internal use only. Use override-method."
+  [methodsym typesyn]
+  nil)
+
+(defmacro override-method 
+  "Override type for qualified method methodsym."
+  [methodsym typesyn]
+  `(override-method* '~methodsym '~typesyn))
+
+(defn typed-deps* 
+  "Internal use only. Use typed-deps."
+  [args]
+  nil)
+
+(defmacro typed-deps 
+  "Declare namespaces which should be checked before the current namespace.
+  Accepts any number of symbols."
+  [& args]
+  `(typed-deps* '~args))
+
+
+; cf can pollute current type environment to allow REPL experimentation, 
+; which is ok because check-ns resets it when called.
+(defmacro cf
+  "Type check a Clojure form and return its type"
+  ([form]
+   `(do
+      (load-if-needed)
+      (let [check# @(ns-resolve (find-ns '~'clojure.core.typed.check)
+                                '~'check)
+            expr-type# @(ns-resolve (find-ns '~'clojure.core.typed.check)
+                                    '~'expr-type )
+            unparse-TCResult-in-ns# @(ns-resolve (find-ns '~'clojure.core.typed.parse-unparse)
+                                           '~'unparse-TCResult-in-ns)
+            ensure-clojure# @(ns-resolve (find-ns '~'clojure.core.typed.current-impl)
+                                         '~'ensure-clojure)
+            ast-for-form# @(ns-resolve (find-ns '~'clojure.core.typed.analyze-clj)
+                                       '~'ast-for-form)
+            collect# @(ns-resolve (find-ns '~'clojure.core.typed.collect-phase)
+                                  '~'collect)]
+        (if *currently-checking-clj*
+          (throw (Exception. "Found inner call to check-ns or cf"))
+          (do (ensure-clojure#)
+              (binding [*currently-checking-clj* true
+                        *delayed-errors* (-init-delayed-errors)]
+                (let [ast# (ast-for-form# '~form)
+                      _# (collect# ast#)
+                      cexpr# (check# ast#)]
+                  (if-let [errors# (seq @*delayed-errors*)]
+                    (print-errors! errors#)
+                    (-> cexpr#
+                        expr-type#
+                        (unparse-TCResult-in-ns# *ns*))))))))))
+   ([form expected]
+   `(do
+      (load-if-needed)
+      (let [check# @(ns-resolve (find-ns '~'clojure.core.typed.check)
+                                '~'check)
+            expr-type# @(ns-resolve (find-ns '~'clojure.core.typed.check)
+                                    '~'expr-type )
+            unparse-TCResult-in-ns# @(ns-resolve (find-ns '~'clojure.core.typed.parse-unparse)
+                                                 '~'unparse-TCResult-in-ns)
+            ensure-clojure# @(ns-resolve (find-ns '~'clojure.core.typed.current-impl)
+                                         '~'ensure-clojure)
+            ast-for-form# @(ns-resolve (find-ns '~'clojure.core.typed.analyze-clj)
+                                       '~'ast-for-form)
+            collect# @(ns-resolve (find-ns '~'clojure.core.typed.collect-phase)
+                                  '~'collect)
+            ret# @(ns-resolve (find-ns '~'clojure.core.typed.type-rep)
+                              '~'ret)
+            parse-type# @(ns-resolve (find-ns 'clojure.core.typed.parse-unparse)
+                                     '~'parse-type)]
+      (if *currently-checking-clj*
+        (throw (Exception. "Found inner call to check-ns or cf"))
+        (do (ensure-clojure#)
+            (binding [*currently-checking-clj* true
+                      *delayed-errors* (-init-delayed-errors)]
+              (let [ast# (ast-for-form# '(ann-form ~form ~expected))
+                    _# (collect# ast#)
+                    c-ast# (check# ast# 
+                                   (ret#
+                                     (parse-type# '~expected)))]
+                (if-let [errors# (seq @*delayed-errors*)]
+                  (print-errors! errors#)
+                  (-> c-ast# 
+                      expr-type# 
+                      (unparse-TCResult-in-ns# *ns*)))))))))))
+
+(declare ^:dynamic *verbose-forms*)
+
+(defn print-errors! [errors]
+  {:pre [(seq errors)
+         (every? #(instance? clojure.lang.ExceptionInfo %) errors)]}
+  (binding [*out* *err*]
+    (doseq [^Exception e errors]
+      (let [{:keys [env] :as data} (ex-data e)]
+        (print "Type Error ")
+        (print (str "(" (-> env :ns :name) ":" (:line env) 
+                    (when-let [col (:column env)]
+                      (str ":"col))
+                    ") "))
+        (print (.getMessage e))
+        (println)
+        (flush)
+        (let [[_ form :as has-form?] (find data :form)]
+          (when has-form?
+            (binding [*print-length* (when-not *verbose-forms*
+                                       4)
+                      *print-level* (when-not *verbose-forms*
+                                      2)]
+              (print "in: ")
+              (println form)
+              (println)
+              (println)
+              (flush))))
+        (flush))))
+  (throw (ex-info (str "Type Checker: Found " (count errors) " errors")
+                  {:type-error :top-level-error
+                   :errors errors})))
+
+(def ^:dynamic *already-collected*)
+(def ^:dynamic *already-checked*)
+(def ^:dynamic *currently-checking-clj* nil)
+(def ^:dynamic *delayed-errors*)
+
+(def ^:dynamic *verbose-types* 
+  "If true, print fully qualified types in error messages
+  and return values."
+  nil)
+(def ^:dynamic *verbose-forms* 
+  "If true, print complete forms in error messages."
+  nil)
+
+(defn -init-delayed-errors 
+  "Internal use only"
+  []
+  (atom [] :validator #(and (vector? %)
+                            (every? (fn [a] 
+                                      (instance? clojure.lang.ExceptionInfo a))
+                                    %))))
+
+(defn check-ns
+  "Type check a namespace. If not provided default to current namespace.
+  
+  Bind *verbose-types* to true to print fully qualified types.
+  Bind *verbose-forms* to print full forms in error messages."
+  ([] (check-ns (ns-name *ns*)))
+  ([nsym]
+   (load-if-needed)
+   (let [reset-envs! @(ns-resolve (find-ns 'clojure.core.typed.init)
+                                  'reset-envs!)
+         ensure-clojure @(ns-resolve (find-ns 'clojure.core.typed.current-impl)
+                                     'ensure-clojure)
+         collect-ns @(ns-resolve (find-ns 'clojure.core.typed.collect-phase)
+                                 'collect-ns)
+         check-ns-and-deps @(ns-resolve (find-ns 'clojure.core.typed.check)
+                                        'check-ns-and-deps)
+         vars-with-unchecked-defs @(ns-resolve (find-ns 'clojure.core.typed.var-env)
+                                               'vars-with-unchecked-defs)]
+   (reset-envs!)
+   (cond
+     *currently-checking-clj* (throw (Exception. "Found inner call to check-ns or cf"))
+
+     :else
+     (binding [*currently-checking-clj* true
+               *delayed-errors* (-init-delayed-errors)
+               *already-collected* (atom #{})
+               *already-checked* (atom #{})]
+       (ensure-clojure)
+       (collect-ns nsym)
+       (check-ns-and-deps nsym)
+       (let [vs (vars-with-unchecked-defs)]
+         (binding [*out* *err*]
+           (doseq [v vs]
+             (println "WARNING: Type Checker: Definition missing:" v)
+             (flush))))
+       (when-let [errors (seq @*delayed-errors*)]
+         (print-errors! errors))
+       :ok)))))
+
+(comment 
+  (check-ns 'clojure.core.typed.test.example)
+
+  ; very slow because of update-composite
+  (check-ns 'clojure.core.typed.test.rbt)
+
+  (check-ns 'clojure.core.typed.test.macro)
+  (check-ns 'clojure.core.typed.test.conduit)
+  (check-ns 'clojure.core.typed.test.person)
+  (check-ns 'clojure.core.typed.test.core-logic)
+  (check-ns 'clojure.core.typed.test.ckanren)
+  )
