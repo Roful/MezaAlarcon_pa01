@@ -1748,4 +1748,26 @@
        (let [vs (vars-with-unchecked-defs)]
          (binding [*out* *err*]
            (doseq [v vs]
-             (println &quot;WARNING: Type Checker: Definition missing:&q
+             (println &quot;WARNING: Type Checker: Definition missing:&quot; v)
+             (flush))))
+       (when-let [errors (seq @*delayed-errors*)]
+         (print-errors! errors))
+       :ok))))</span>)
+
+<span class='i'>(comment 
+  (check-ns &#39;clojure.core.typed.test.example)
+
+  ; very slow because of update-composite
+  (check-ns &#39;clojure.core.typed.test.rbt)
+
+  (check-ns &#39;clojure.core.typed.test.macro)
+  (check-ns &#39;clojure.core.typed.test.conduit)
+  (check-ns &#39;clojure.core.typed.test.person)
+  (check-ns &#39;clojure.core.typed.test.core-logic)
+  (check-ns &#39;clojure.core.typed.test.ckanren)
+  )</span>
+
+</pre>
+</div>
+</body>
+</html>
