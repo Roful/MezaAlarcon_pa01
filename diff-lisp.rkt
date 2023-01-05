@@ -54,4 +54,41 @@
 (set-get-type
   (lambda (node)
     (cond
-     [(token? node) 'to
+     [(token? node) 'token]
+     [(comment? node) 'comment]
+     [(str? node) 'str]
+     [(character? node) 'char]
+     [else
+      (get-keyword node)])))
+
+
+(set-get-name
+  (lambda (node)
+    (let ([key (get-keyword node)])
+      (cond
+       [(and key
+             (memq key *defs*)
+             (pair? (Node-elts node))
+             (not (null? (cdr (Node-elts node)))))
+        (get-symbol (cadr (Node-elts node)))]
+       [else #f]))))
+
+
+;; function interface
+(define diff-lisp
+  (lambda (file1 file2)
+    (let* ([text1 (read-file file1)]
+           [text2 (read-file file2)]
+           [node1 (parse-lisp text1)]
+           [node2 (parse-lisp text2)]
+           [changes (diff node1 node2)])
+      (htmlize changes file1 file2 text1 text2))))
+
+;; (diff-lisp "demos/mk1.ss" "demos/mk2.ss")
+
+
+;; command line interface
+(let* ([args (current-command-line-arguments)]
+       [file1 (vector-ref args 0)]
+       [file2 (vector-ref args 1)])
+  (diff-lisp file1 f
