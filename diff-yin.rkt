@@ -1,3 +1,4 @@
+
 ;; ydiff - a language-aware tool for comparing programs
 ;; Copyright (C) 2011-2013 Yin Wang (yinwang0@gmail.com)
 
@@ -19,7 +20,7 @@
 
 (require "structs.rkt")
 (require "utils.rkt")
-(require "parse-lisp.rkt")
+(require "parse-yin.rkt")
 (require "diff.rkt")
 (require "htmlize.rkt")
 
@@ -75,20 +76,20 @@
 
 
 ;; function interface
-(define diff-lisp
+(define diff-yin
   (lambda (file1 file2)
     (let* ([text1 (read-file file1)]
            [text2 (read-file file2)]
-           [node1 (parse-lisp text1)]
-           [node2 (parse-lisp text2)]
+           [node1 (parse-yin text1)]
+           [node2 (parse-yin text2)]
            [changes (diff node1 node2)])
       (htmlize changes file1 file2 text1 text2))))
 
-;; (diff-lisp "demos/mk1.ss" "demos/mk2.ss")
+;; (diff-yin "demos/mk1.ss" "demos/mk2.ss")
 
 
 ;; command line interface
 (let* ([args (current-command-line-arguments)]
        [file1 (vector-ref args 0)]
        [file2 (vector-ref args 1)])
-  (diff-lisp file1 file2))
+  (diff-yin file1 file2))
