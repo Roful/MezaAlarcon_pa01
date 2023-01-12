@@ -18,4 +18,41 @@
 #lang racket
 
 (require "structs.rkt")
-(require "u
+(require "utils.rkt")
+
+
+(provide (all-defined-out))
+
+
+;-------------------------------------------------------------
+;                      parameters
+;-------------------------------------------------------------
+
+;; The minimum size of a node to be considered as moved. Shouldn't be
+;; too small, otherwise small deleted names may appear in a very
+;; distant place!
+(define *move-size* 5)
+
+
+;; Similar to *move-size*, but this number is used for internal moves inside a
+;; named body (for example a function). This number can be smaller than
+;; *move-size*, usually set to 2 for maxmum accuracy without much noise.
+(define *inner-move-size* 2)
+
+
+;; Only memoize the diff of nodes of size larger than this number.
+;; This effectively reduces memory usage.
+(define *memo-node-size* 2)
+
+
+;; Are we in moving phase?
+;; This is internal switch used by the diff algorithm.
+;; Do not modify by handl.
+(define *moving* #f)
+
+
+
+;;------------------ frames utils --------------------
+(define deframe
+  (lambda (node)
+    (match n
