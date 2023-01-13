@@ -128,4 +128,34 @@
     (let* ([len1 (string-length s1)]
            [len2 (string-length s2)]
            [t (make-table len1 len2)]
-           [char-dist (dist1 t
+           [char-dist (dist1 t s1 0 s2 0)])
+      (cond
+       [(= 0 (+ len1 len2)) 0]
+       [else
+        (/ (* 2.0 char-dist) (+ len1 len2))]))))
+
+
+(define dist1
+  (lambda (table s1 start1 s2 start2)
+    (define memo
+      (lambda (value)
+        (table-set! table start1 start2 value)
+        value))
+    (cond
+     [(table-ref table start1 start2)
+      => (lambda (cached) cached)]
+     [(= start1 (string-length s1))
+      (memo (- (string-length s2) start2))]
+     [(= start2 (string-length s2))
+      (memo (- (string-length s1) start1))]
+     [else
+      (let* ([c1 (string-ref s1 start1)]
+             [c2 (string-ref s2 start2)]
+             [d0 (cond
+                  [(char=? c1 c2) 0]
+                  [(char=? (char-downcase c1)
+                           (char-downcase c2)) 1]
+                  [else 2])]
+             [d1 (+ d0 (dist1 table s1 (add1 start1) s2 (add1 start2)))]
+             [d2 (+ 1 (dist1 table s1 (add1 start1) s2 start2))]
+             [d3 (+ 1 (dist1 t
