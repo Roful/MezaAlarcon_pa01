@@ -90,4 +90,42 @@
 
 
 
-;--------------------------------------------------------
+;-------------------------------------------------------------
+;                       diff proper
+;-------------------------------------------------------------
+
+; 2-D memoization table
+(define make-table
+  (lambda (dim1 dim2)
+    (let ([vec (make-vector (add1 dim1))])
+      (let loop ([n 0])
+        (cond
+         [(= n (vector-length vec)) vec]
+         [else
+          (vector-set! vec n (make-vector (add1 dim2) #f))
+          (loop (add1 n))])))))
+
+
+(define table-ref
+  (lambda (t x y)
+    (let ([row (vector-ref t x)])
+      (vector-ref row y))))
+
+
+(define table-set!
+  (lambda (t x y v)
+    (let ([row (vector-ref t x)])
+      (vector-set! row y v))))
+
+
+
+;---------------- string distance function -----------------
+
+;; string distance is no longer used because string=? saffice to
+;; compare strings in ASTs. Retain it here for possible later uses.
+(define string-dist
+  (lambda (s1 s2)
+    (let* ([len1 (string-length s1)]
+           [len2 (string-length s2)]
+           [t (make-table len1 len2)]
+           [char-dist (dist1 t
