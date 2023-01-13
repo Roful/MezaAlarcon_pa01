@@ -55,4 +55,39 @@
 ;;------------------ frames utils --------------------
 (define deframe
   (lambda (node)
-    (match n
+    (match node
+      [(Node 'frame _ _ elts _ _)
+       (apply append (map deframe elts))]
+     [else (list node)])))
+
+
+(define deframe-change
+  (lambda (change)
+    (cond
+     [(ins? change)
+      (apply append
+             (map ins (deframe (Change-new change))))]
+     [(del? change)
+      (apply append
+             (map del (deframe (Change-old change))))]
+     [else (list change)])))
+
+
+(define extract-frame
+  (lambda (node1 node2 type)
+    (match node1
+      [(Node type1 start1 end1 elts1 size ctx)
+       (let ([frame-elts (filter (lambda (x)
+                                   (not (eq? x node2)))
+                                 elts1)])
+         (type (Node 'frame start1 start1 frame-elts (- size (node-size node2)) ctx)))]
+      [_ fatal 'extract-frame "I only accept Node"])))
+
+
+;; (define n1 (Token "ok" 0 1))
+;; (define n2 (Expr 'ok 0 2 (list n1 (Token "bar" 1 2))))
+;; (map deframe-change (extract-frame n2 n1 ins))
+
+
+
+;--------------------------------------------------------
