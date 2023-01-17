@@ -158,4 +158,44 @@
                   [else 2])]
              [d1 (+ d0 (dist1 table s1 (add1 start1) s2 (add1 start2)))]
              [d2 (+ 1 (dist1 table s1 (add1 start1) s2 start2))]
-             [d3 (+ 1 (dist1 t
+             [d3 (+ 1 (dist1 table s1 start1 s2 (add1 start2)))])
+        (memo (min d1 d2 d3)))])))
+
+
+
+;--------------------- the primary diff function -------------------
+
+;; global 2-D hash for storing known diffs
+(define *diff-hash* (make-hasheq))
+
+(define diff-node
+  (lambda (node1 node2)
+
+    (define memo
+      (lambda (v1 v2)
+        (and (> (node-size node1) *memo-node-size*)
+             (> (node-size node2) *memo-node-size*)
+             (hash-put! *diff-hash* node1 node2 (cons v1 v2)))
+        (values v1 v2)))
+
+    (define try-extract
+      (lambda (changes cost)
+        (cond
+         [(or (not *moving*)
+              (zero? cost))
+          (memo changes cost)]
+         [else
+          (letv ([(m c) (diff-extract node1 node2)])
+            (cond
+             [(not m)
+              (memo changes cost)]
+             [else
+              (memo m c)]))])))
+
+
+    (diff-progress 1) ;; progress bar
+
+    (cond
+     [(hash-get *diff-hash* node1 node2)
+      => (lambda (cached)
+     
