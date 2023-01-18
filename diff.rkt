@@ -218,4 +218,44 @@
      [(and (not (pair? node1)) (pair? node2))
       (diff-list (list node1) node2)]
      [(and (pair? node1) (pair? node2))
-      (diff-list node1 no
+      (diff-list node1 node2)]
+     [else
+      (letv ([(m c) (total node1 node2)])
+        (try-extract m c))])))
+
+
+
+
+;; helper for nodes with string contents (Str, Comment, Token etc.)
+(define diff-string
+  (lambda (string1 string2 node1 node2)
+    (cond
+     [(string=? string1 string2)
+      (values (mov node1 node2 0) 0)]
+     [else
+      (total node1 node2)])))
+
+
+(define diff-list
+  (lambda (ls1 ls2)
+    (let ([ls1 (sort ls1 node-sort-fn)]
+          [ls2 (sort ls2 node-sort-fn)])
+      (diff-list1 (make-hasheq) ls1 ls2))))
+
+
+(define diff-list1
+  (lambda (table ls1 ls2)
+
+    (define memo
+      (lambda (v1 v2)
+        (hash-put! table ls1 ls2 (cons v1 v2))
+        (values v1 v2)))
+
+    (define guess
+      (lambda (ls1  ls2)
+        (letv ([(m0 c0) (diff-node (car ls1) (car ls2))]
+               [(m1 c1) (diff-list1 table (cdr ls1) (cdr ls2))])
+          (cond
+           [(or (zero? c0)
+                (same-def? (car ls1) (car ls2)))
+            (m
