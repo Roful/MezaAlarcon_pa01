@@ -198,4 +198,24 @@
     (cond
      [(hash-get *diff-hash* node1 node2)
       => (lambda (cached)
-     
+           (values (car cached) (cdr cached)))]
+     [(and (character? node1) (character? node2))
+      (diff-string (char->string (Node-elts node1))
+                   (char->string (Node-elts node2))
+                   node1 node2)]
+     [(and (str? node1) (str? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (comment? node1) (comment? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (token? node1) (token? node2))
+      (diff-string (Node-elts node1) (Node-elts node2) node1 node2)]
+     [(and (Node? node1) (Node? node2)
+           (eq? (get-type node1) (get-type node2)))
+      (letv ([(m c) (diff-list (Node-elts node1) (Node-elts node2))])
+        (try-extract m c))]
+     [(and (pair? node1) (not (pair? node2)))
+      (diff-list node1 (list node2))]
+     [(and (not (pair? node1)) (pair? node2))
+      (diff-list (list node1) node2)]
+     [(and (pair? node1) (pair? node2))
+      (diff-list node1 no
