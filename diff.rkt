@@ -349,4 +349,43 @@
 
 (define big-node?
   (lambda (node)
-    (>= (node-size no
+    (>= (node-size node) *move-size*)))
+
+
+(define big-change?
+  (lambda (c)
+    (cond
+     [(ins? c)
+      (big-node? (Change-new c))]
+     [(del? c)
+      (big-node? (Change-old c))]
+     [(mov? c)
+      (or (big-node? (Change-old c))
+          (big-node? (Change-new c)))])))
+
+
+(define node-sort-fn
+  (lambda (x y)
+    (let ([name1 (get-name x)]
+          [name2 (get-name y)])
+      (cond
+       [(and name1 name2)
+        (string<? (symbol->string name1)
+                  (symbol->string name2))]
+       [(and name1 (not name2)) #t]
+       [(and (not name1) name2) #f]
+       [else
+        (< (Node-start x) (Node-start y))]))))
+
+
+
+;; iterate diff-list on the list of changes
+(define find-moves
+  (lambda (changes)
+    (set! *moving* #t)
+    (set! *diff-hash* (make-hasheq))
+    (let loop ([workset changes]
+               [finished '()])
+      (diff-progress "|")
+      (letv ([dels (filter (predand del? big-change?) workset)]
+             [adds (filter (predand i
