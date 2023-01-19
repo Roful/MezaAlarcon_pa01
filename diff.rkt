@@ -320,4 +320,33 @@
                 (let ([frame (extract-frame node2 (car elts2) ins)])
                   (values (append m0 frame) c0))]
                [else
-                (loop (cdr el
+                (loop (cdr elts2))]))]
+           [else
+            (values #f #f)]))]
+       [else
+        (let loop ([elts1 (Node-elts node1)])
+          (cond
+           [(pair? elts1)
+            (letv ([(m0 c0) (diff-node (car elts1) node2)])
+              (cond
+               [(or (same-def? (car elts1) node2)
+                    (and (zero? c0)
+                         (or (big-node? node2)
+                             (same-ctx? (car elts1) node2))))
+                (let ([frame (extract-frame node1 (car elts1) del)])
+                  (values (append m0 frame) c0))]
+               [else
+                (loop (cdr elts1))]))]
+           [else
+            (values #f #f)]))])]
+     [else (values #f #f)])))
+
+
+
+;-------------------------------------------------------------
+;                    finding moves
+;-------------------------------------------------------------
+
+(define big-node?
+  (lambda (node)
+    (>= (node-size no
