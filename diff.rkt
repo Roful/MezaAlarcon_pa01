@@ -388,4 +388,36 @@
                [finished '()])
       (diff-progress "|")
       (letv ([dels (filter (predand del? big-change?) workset)]
-             [adds (filter (predand i
+             [adds (filter (predand ins? big-change?) workset)]
+             [rest (set- workset (append dels adds))]
+             [ls1 (sort (map Change-old dels) node-sort-fn)]
+             [ls2 (sort (map Change-new adds) node-sort-fn)]
+             [(m c) (diff-list ls1 ls2)]
+             [new-moves (filter mov? m)])
+        (cond
+         [(null? new-moves)
+          (let ([all-changes (append workset finished)])
+            (apply append (map deframe-change all-changes)))]
+         [else
+          (let ([new-changes (filter (negate mov?) m)])
+            (loop new-changes
+                  (append new-moves rest finished)))])))))
+
+
+;; poor man's progress bar
+(define diff-progress
+  (new-progress 10000))
+
+
+(define cleanup
+  (lambda ()
+    (set! *diff-hash* #f)))
+
+
+;; main diff function
+;; returns all changes after diffing and moving
+(define diff
+  (lambda (node1 node2)
+    (letv ([start (current-seconds)]    ; start timer
+           [size1 (node-size node1)]
+           [siz
