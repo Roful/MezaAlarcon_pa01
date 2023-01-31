@@ -420,4 +420,22 @@
   (lambda (node1 node2)
     (letv ([start (current-seconds)]    ; start timer
            [size1 (node-size node1)]
-           [siz
+           [size2 (node-size node2)])
+
+      (printf "[info] size of program 1: ~a~n" size1)
+      (printf "[info] size of program 2: ~a~n" size2)
+
+      (set-node-context node1 'top)
+      (set-node-context node2 'top)
+
+      (printf "[diffing]~n")
+
+      (letv ([(changes cost) (diff-node node1 node2)])
+        (diff-progress 'reset)
+        (printf "~n[moving]~n")
+        (letv ([changes (find-moves changes)]
+               [end (current-seconds)])
+          (printf "~n[finished] ~a seconds~n" (- end start))
+          (printf "~n[info] count: ~a~n" (diff-progress 'get))
+          (cleanup)
+          changes)))))
