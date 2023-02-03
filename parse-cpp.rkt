@@ -56,4 +56,55 @@
 
 ;-------------------------------------------------------------
 ;                          parsers
-;-----------------------
+;-------------------------------------------------------------
+
+;; literals
+(:: $id
+    ($pred
+     (lambda (t)
+       (and (token? t)
+            (id? (Node-elts t))))))
+
+
+(::= $identifier 'identifier
+     (@? ($$ "::"))
+     (@* $id (@* $type-parameter) ($$ "::"))
+     (@= 'id (@? ($$ "~")) $id))
+
+
+;; (::= $identifier 'identifier
+;;      (@? ($$ "::")) $scope-resolution (@? ($$ "~")) $id)
+
+
+(:: $numeral-literal
+    ($pred
+     (lambda (t)
+       (and (token? t)
+            (numeral? (Node-elts t))))))
+
+(:: $char-literal ($pred character?))
+(:: $string-literal ($pred str?))
+(:: $newline ($pred newline?))
+(:: $comment ($pred comment?))
+
+
+;; delimeters
+(::  |,|   (@_ ","))
+(::  |;|   (@~ ";"))
+(::  |:|   (@_ ":"))
+(::  |(|   (@~ "("))
+(::  |)|   (@~ ")"))
+(::  |[|   (@~ "["))
+(::  |]|   (@~ "]"))
+(::  |{|   (@~ "{"))
+(::  |}|   (@~ "}"))
+
+(::  |\n|  ($glob^ (@*^ $newline)))
+(::  |;\n| (@or |;| |\n|))
+
+
+(define old-seq @seq)
+
+(set-seq
+  (lambda ps
+    (let ([psj (j
