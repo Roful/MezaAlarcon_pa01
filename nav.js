@@ -135,3 +135,126 @@ function matchWindow(linkId, targetId, n)
     } else {
         var stepSize = Math.floor(Math.abs(distY) / n);
         actualMinStep = Math.min(minStep, Math.abs(distY));
+        if (Math.abs(stepSize) < minStep) {
+            var step = actualMinStep * sign(distY);
+        } else {
+            var step = stepSize * sign(distY);
+        }
+        var blocked = scrollWithBlockCheck(targetContainer, distX, step);
+        var rest = Math.floor(distY / step) - 1;
+        log("blocked?" + blocked + ", rest steps=" + rest);
+        if (!blocked) {
+            cTimeout = setTimeout(function () {
+                return matchWindow(linkId, targetId, rest);
+            }, stepInterval);
+        } else {
+            clearTimeout(cTimeout);
+            moving = false;
+        }
+    }
+}
+
+
+
+////////////////////////// highlighting /////////////////////////////
+
+var highlighted = []
+function putHighlight(id, color) {
+    var elm = $(id);
+    if (elm !== null) {
+        elm.style.backgroundColor = color;
+        if (color !== bgColor) {
+            highlighted.push(id);
+        }
+    }
+}
+
+
+function clearHighlight() {
+    for (i = 0; i < highlighted.length; i += 1) {
+        putHighlight(highlighted[i], bgColor);
+    }
+    highlighted = [];
+}
+
+
+
+/*
+ * Highlight the link, target nodes and their lines,
+ * then start animation to move the other window to match.
+ */
+function highlight(me, linkId, targetId)
+{
+    clearHighlight();
+    putHighlight(linkId, nodeHLColor);
+    putHighlight(targetId, nodeHLColor);
+}
+
+
+function instantMoveOtherWindow (me) {
+    log("me=" + me.id + ", eventcount=" + eventCount[me.id]);
+    log("matchId1=" + matchId1 + ", matchId2=" + matchId2);
+
+    me.style.backgroundColor = bgColor;
+
+    if (!moving && eventCount[me.id] === 0) {
+        if (me.id === 'left') {
+            matchWindow(matchId1, matchId2, 1);
+        } else {
+            matchWindow(matchId2, matchId1, 1);
+        }
+    }
+    if (eventCount[me.id] > 0) {
+        eventCount[me.id] -= 1;
+    }
+}
+
+
+function getTarget(x){
+    x = x || window.event;
+    return x.target || x.srcElement;
+}
+
+
+window.onload =
+    function (e) {
+        var tags = document.getElementsByTagName("A")
+        for (var i = 0; i < tags.length; i++) {
+            tags[i].onmouseover =
+                function (e) {
+                    var t = getTarget(e)
+                    var lid = t.id
+                    var tid = t.getAttribute('tid')
+                    var container = getContainer(t)
+                    highlight(container, lid, tid)
+                }
+            tags[i].onclick =
+                function (e) {
+                    var t = getTarget(e)
+                    var lid = t.id
+                    var tid = t.getAttribute('tid')
+                    var container = getContainer(t)
+                    highlight(container, lid, tid)
+
+                    // lock left and right side
+                    if (container.id === 'left') {
+                        matchId1 = lid;
+                        matchId2 = tid;
+                    } else {
+                        matchId1 = tid;
+                        matchId2 = lid;
+                    }
+
+                    matchWindow(lid, tid, nSteps)
+                }
+        }
+
+        tags = document.getElementsByTagName("DIV")
+        for (var i = 0; i < tags.length; i++) {
+            tags[i].onscroll =
+                function (e) {
+                    instantMoveOtherWindow(getTarget(e))
+                }
+        }
+
+    }
