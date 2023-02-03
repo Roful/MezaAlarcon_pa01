@@ -18,4 +18,42 @@
 #lang racket
 
 (require "structs.rkt")
-(require "utils
+(require "utils.rkt")
+(require "parsec.rkt")
+
+(provide parse-cpp)
+
+
+
+
+;-------------------------------------------------------------
+;                     scanner settings
+;-------------------------------------------------------------
+
+(define set-parameters
+  (lambda ()
+    (set-delims (list "("  ")"  "["  "]"  "{"  "}" ","  "`"  ";" "#"))
+
+    (set-operators
+     (list
+      "<<="  ">>="   "->*"  "..."
+      "&&"  "||"  ">>"  "<<"  "++"  "--"
+      "=="  "!="  ">="  "<="  "+="  "-="  "*="  "/="  "^="  "&="  "|="
+      "->"  ".*"  "::"
+      "="  "+"  "-"  "*"  "/"  "%"  "<"  ">"  "!"  ":"  "?"  "."
+      "^"  "|"  "&"  "~"
+      ))
+
+    (set-line-comment  (list "//"))
+    (set-comment-start  "/*")
+    (set-comment-end    "*/")
+    (set-quotation-marks  '(#\" #\'))
+    (set-significant-whitespaces
+     (list #\newline #\linefeed #\u2028 #\u2029))))
+
+
+
+
+;-------------------------------------------------------------
+;                          parsers
+;-----------------------
