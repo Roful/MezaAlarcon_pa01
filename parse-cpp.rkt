@@ -107,4 +107,52 @@
 
 (set-seq
   (lambda ps
-    (let ([psj (j
+    (let ([psj (join ps |\n|)])
+      (apply old-seq `(,|\n| ,@psj ,|\n|)))))
+
+
+
+;; a hacky definition for macros
+;; will fix later
+(::= $macro-defintion 'macro
+     (@~ "#")
+     (@*^ (old-seq (@*^ (@and (@!^ ($$ "\\")) (@!^ $newline))) ($$ "\\") (@*^ $newline)))
+     (old-seq (@*^ (@!^ $newline)) ($glob^ $newline) ($glob^ (@*^ $newline)))
+)
+
+
+(:: $directive
+    (@or ($$ "ifdef")
+         ($$ "define")
+         ($$ "undef")
+         ($$ "endif")))
+
+
+;;------------------ starting point -----------------
+(::= $program 'program
+     (@* $statement)
+)
+
+
+
+(:: $statement
+    (@or $macro-defintion
+         $empty-statement
+         $access-label
+         $statement-block
+
+         $if-statement
+         $switch-statement
+         $do-while-statement
+         $while-statement
+         $for-statement
+         $continue-statement
+         $break-statement
+
+         $return-statement
+         $labelled-statement
+         $try-statement
+
+         $namespace-definition
+         $using-namespace
+
