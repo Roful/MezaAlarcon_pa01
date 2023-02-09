@@ -208,4 +208,44 @@
           ($$ "union"))
 
      (@* (@= 'declspec
-             (@or ($$ "_declspec") ($$ "__declspec")) 
+             (@or ($$ "_declspec") ($$ "__declspec")) |(|  $expression  |)|))
+
+     (@or (@= 'name $identifier |;| )
+
+          (@...
+           (@= 'name (@? $identifier)) (@? (@... (@_ ":") $base-clause))
+           (@= 'body  |{|  (@* $statement)  |}|) )
+          ))
+
+
+(::= $base-clause 'bases
+     (@.@ $base-specifier |,|)
+)
+
+
+(::= $base-specifier 'base-specifier
+     (@? $access-specifier) $identifier)
+
+
+(::= $access-specifier 'access-specifier
+     (@or ($$ "public")
+          ($$ "protected")
+          ($$ "private")
+          ($$ "virtual")))
+
+
+;;---------- function definition and declaration ------------
+
+(::= $function-declaration 'function-declaration
+     (@? ($$ "typedef"))
+     (@? $access-specifier) (@? $modifiers) (@? $type)
+     (@= 'name (@or $identifier
+                    (@... |(| ($$ "*") $identifier |)|)) )
+     $formal-parameter-list
+     (@? ($$ "const"))
+     (@? $initializer)
+)
+
+
+(::= $function-definition 'function
+     (
