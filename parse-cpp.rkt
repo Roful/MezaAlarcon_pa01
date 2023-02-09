@@ -248,4 +248,52 @@
 
 
 (::= $function-definition 'function
-     (
+     (@or (@... (@? $modifiers) $type
+                (@= 'name $identifier ) $formal-parameter-list)
+
+          (@... (@= 'name $identifier ) $formal-parameter-list))
+     (@? $initializer)
+     $function-body)
+
+
+(::= $type 'type
+     (@? $modifiers) (@or $primitive-type
+                          $ctype
+                          $identifier)
+     (@* $type-parameter) (@* $ptr-suffix))
+
+
+(::= $type-parameter 'type-parameter
+     (@~ "<") (@.@ (@or $type $numeral-literal) |,|) (@~ ">"))
+
+
+(::= $ptr-suffix 'suffix
+     (@or ($$ "*")
+          ($$ "&")))
+
+
+(::= $formal-parameter-list 'parameters
+     |(|  (@? (@.@ $type-variable |,|)) (@? |,| ($$ "..."))  |)|
+)
+
+
+(::= $type-variable 'type-variable
+     (@? $modifiers) $type (@? $identifier) (@? $array-suffix))
+
+
+(::= $function-body 'body
+     |{|  (@* $statement)  |}|
+)
+
+
+
+(::= $variable-definition 'variable-definition
+     $variable-declaration-list |;|
+)
+
+
+(:: $variable-declaration-list
+    (@... (@? $modifiers) $type (@.@ $variable-declaration |,|)))
+
+
+(::= $
