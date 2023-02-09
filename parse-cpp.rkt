@@ -156,3 +156,56 @@
          $namespace-definition
          $using-namespace
 
+         $class-definition
+         $function-definition
+         $function-declaration
+         $variable-definition
+         $enum-declaration
+
+         $extended-assembly
+         $inline-assembly
+
+         $expression-statement
+))
+
+
+(:: $empty-statement |;|)
+
+
+(::= $enum-declaration 'enum
+     (@~ "enum") (@? $identifier)
+     |{|
+       (@? (@.@  (@= 'name-value $identifier  (@? $initializer))  |,|))
+     |}|
+     |;|
+)
+
+
+(::= $access-label 'access-label
+     $access-specifier (@~ ":"))
+
+
+(::= $statement-block 'block
+     |{|  (@* $statement)  |}|
+)
+
+
+(::= $namespace-definition 'namespace
+     ($$ "namespace") $identifier
+     |{|  (@* $statement)  |}|
+)
+
+(::= $using-namespace 'using-namespace
+     ($$ "using") ($$ "namespace") $identifier)
+
+
+
+;;--------------------------------------------
+(::= $class-definition 'class
+
+     (@or ($$ "class")
+          ($$ "struct")
+          ($$ "union"))
+
+     (@* (@= 'declspec
+             (@or ($$ "_declspec") ($$ "__declspec")) 
