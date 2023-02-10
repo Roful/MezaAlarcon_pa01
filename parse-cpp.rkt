@@ -296,4 +296,47 @@
     (@... (@? $modifiers) $type (@.@ $variable-declaration |,|)))
 
 
-(::= $
+(::= $variable-declaration 'variable-declaration
+     $identifier (@? $variable-declaration-suffix)
+     (@? $initializer))
+
+
+(::= $modifiers 'modifiers
+     (@+ (@or ($$ "const")
+              ($$ "static")
+              ($$ "inline"))))
+
+(:: $primitive-type
+     (@or (@...
+           (@or ($$ "signed")
+                ($$ "unsigned"))
+           (@or ($$ "int")
+                ($$ "char")
+                ($$ "long")
+                ($$ "double")
+                ($$ "float")))
+          (@or ($$ "signed")
+               ($$ "unsigned"))))
+
+(::= $ctype 'ctype
+     (@or ($$ "struct")
+          ($$ "enum"))
+     $identifier
+)
+
+
+(::= $variable-declaration-suffix 'suffix
+     (@or (@... |[|  $expression  |]|))
+)
+
+(::= $initializer 'initializer
+     (@or (@... (@_ "=") $expression)
+          (@... (@_ ":") $expression)
+          (@... (@_ "(") $expression (@_ ")"))))
+
+
+
+
+(::= $if-statement 'if
+     ($$ "if")  (@= 'test |(| $expression |)|) $statement
+     (@? (@= 'else
