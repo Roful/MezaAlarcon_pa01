@@ -339,4 +339,58 @@
 
 (::= $if-statement 'if
      ($$ "if")  (@= 'test |(| $expression |)|) $statement
-     (@? (@= 'else
+     (@? (@= 'else ($$ "else") $statement))
+)
+
+
+
+(::= $do-while-statement 'do-while
+    ($$ "do") $statement
+    (@= 'while-do ($$ "while")  (@= 'test |(| $expression |)|   ))
+    |;|
+)
+
+
+(::= $while-statement 'while
+     ($$ "while")  (@= 'test |(| $expression |)|   )
+     $statement
+)
+
+
+(::= $for-statement 'for
+     ($$ "for") (@= 'iter
+                    |(| (@? $for-initaliser) |;|
+                    (@? $expression)     |;|
+                    (@? $expression)
+                    |)|
+                    )
+     $statement
+)
+
+
+(::= $for-initaliser 'for-initializer
+     (@or (@= 'variable-declaration
+              $variable-declaration-list)
+
+          $expression
+))
+
+
+(::= $continue-statement 'continue
+     ($$ "continue") (@= 'label (@? $identifier)) |;|
+)
+
+
+(::= $break-statement 'break
+     ($$ "break") (@= 'label (@? $identifier)) |;|
+)
+
+
+(::= $return-statement 'return
+     ($$ "return") (@= 'value (@? $expression)) |;|
+)
+
+
+
+(::= $labelled-statement 'labelled-statement
+    
