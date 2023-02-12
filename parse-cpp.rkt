@@ -393,4 +393,53 @@
 
 
 (::= $labelled-statement 'labelled-statement
-    
+     $identifier |:| $statement
+)
+
+
+(::= $switch-statement 'switch
+     ($$ "switch")  |(| $expression |)|
+     |{|  (@* $case-clause)
+          (@? (@... $default-clause
+                    (@* $case-clause)))
+     |}|
+)
+
+
+(::= $case-clause 'case-clause
+     ($$ "case") $expression |:| (@* $statement)
+)
+
+
+(::= $default-clause 'default-clause
+    ($$ "default") |:| (@* $statement)
+)
+
+
+;; throw is an expression in C++
+;; (::= $throw-statement 'throw
+;;      ($$ "throw") $expression  |;|
+;; )
+
+
+(::= $try-statement 'try
+     ($$ "try") $statement-block
+     (@or $finally-clause
+          (@... $catch-clause (@? $finally-clause))))
+
+
+(::= $catch-clause 'catch
+     ($$ "catch") |(| $identifier |)| $statement-block)
+
+
+(::= $finally-clause 'finally
+     ($$ "finally") $statement-block)
+
+
+(::= $expression-statement 'expression-statement
+     $expression |;|)
+
+
+
+
+;-------------------------------------------------------
