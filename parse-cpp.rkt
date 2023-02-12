@@ -442,4 +442,57 @@
 
 
 
-;-------------------------------------------------------
+;-------------------------------------------------------------
+;                       expressions
+;-------------------------------------------------------------
+
+;; utility for constructing operators
+(define op
+  (lambda (s)
+    (@= 'op ($$ s))))
+
+
+(:: $expression
+    $comma-expression
+    )
+
+
+
+;; 18. comma
+;;--------------------------------------------
+(::= $comma-expression 'comma
+     (@.@ $assignment-expression |,|))
+
+
+
+;; 17. throw
+;;--------------------------------------------
+(::= $throw-expression 'throw
+     (@or (@... (@~ "throw")) $expression
+          $assignment-expression)
+)
+
+
+;; 16. assignment
+;;--------------------------------------------
+(:: $assignment-expression
+    (@or (@= 'assignment
+             $conditional-expression
+             $assignment-operator
+             $assignment-expression)
+
+         $conditional-expression
+         ))
+
+
+(:: $assignment-operator
+     (@or (op "=")
+          (op "*=")
+          (op "/=")
+          (op "%=")
+          (op "+=")
+          (op "-=")
+          (op "<<=")
+          (op ">>=")
+          (op "&=")
+   
