@@ -495,4 +495,50 @@
           (op "<<=")
           (op ">>=")
           (op "&=")
-   
+          (op "^=")
+          (op "|=")))
+
+
+
+;; 15.	?:	 Ternary conditional
+;;--------------------------------------------
+(:: $conditional-expression
+    (@or (@= 'conditional-expression
+             (@= 'test $logical-or-expression)
+             (@~ "?") (@= 'then $conditional-expression)
+             (@~ ":") (@= 'else $conditional-expression))
+
+         $logical-or-expression
+         ))
+
+
+; ($eval $conditional-expression (scan "x > 0? x-1 : x"))
+
+
+
+
+;; 14.	||	 Logical OR
+;;--------------------------------------------
+(:: $logical-or-expression
+     (@or (@infix-left 'binop
+                       $logical-and-expression
+                       (op "||"))
+
+          $logical-and-expression
+          ))
+
+
+
+;; 13.	&&	 Logical AND
+;;--------------------------------------------
+(:: $logical-and-expression
+     (@or (@infix-left 'binop
+                       $bitwise-or-expression
+                       (op "&&"))
+
+          $bitwise-or-expression
+          ))
+
+
+
+;; 12.	|	 Bitwise OR (inclusive or)
