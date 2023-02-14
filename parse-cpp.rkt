@@ -584,4 +584,57 @@
                        $relational-expression
                        $equality-operator)
 
-          $relati
+          $relational-expression
+          ))
+
+(:: $equality-operator
+     (@or (op "==")
+          (op "!=")
+          (op "!=")
+))
+
+
+
+;; 8. relational
+;;--------------------------------------------
+(:: $relational-expression
+     (@or (@infix-left 'binop
+                       $bitwise-shift-expression
+                       $relational-operator)
+
+          $bitwise-shift-expression
+          ))
+
+(:: $relational-operator
+     (@or (op "<")
+          (op "<=")
+          (op ">")
+          (op ">=")
+          (op "instanceof")
+          (op "in")
+          ))
+
+
+
+;; 7. bitwise shift
+;;--------------------------------------------
+(:: $bitwise-shift-expression
+    (@or (@infix-left 'binop
+                      $additive-expression
+                      $bitwise-shift-operator)
+
+         $additive-expression
+))
+
+
+(:: $bitwise-shift-operator
+    (@or (op "<<")
+         (op ">>")
+         ))
+
+
+
+;; 6. additive
+;;--------------------------------------------
+(:: $additive-expression
+    (@or (
