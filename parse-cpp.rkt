@@ -637,4 +637,58 @@
 ;; 6. additive
 ;;--------------------------------------------
 (:: $additive-expression
-    (@or (
+    (@or (@infix-left 'binop
+                      $multiplicative-expression
+                      $additive-operator)
+
+         $multiplicative-expression
+))
+
+
+(:: $additive-operator
+    (@or (op "+")
+         (op "-")))
+
+
+;; ($eval $additive-expression (scan "x + y + z"))
+
+
+
+
+;; 5. multiplicative
+;;--------------------------------------------
+(:: $multiplicative-expression
+    (@or (@infix-left 'binop
+                      $unary-expression
+                      $multiplicative-operator)
+
+         $unary-expression))
+
+(:: $multiplicative-operator
+    (@or (op "*")
+         (op "/")
+         (op "%")))
+
+
+
+
+;; unary =
+;; 3. prefix
+;; 2. postfix
+;;--------------------------------------------
+(:: $unary-expression
+    $prefix-expression)
+
+
+
+;; 3. prefix
+;;--------------------------------------------
+(:: $prefix-expression
+    (@or (@prefix 'prefix
+                  $postfix-expression
+                  $prefix-operator)
+         $postfix-expression))
+
+
+(:: $prefix-operator
+     (
