@@ -542,3 +542,46 @@
 
 
 ;; 12.	|	 Bitwise OR (inclusive or)
+;;--------------------------------------------
+(:: $bitwise-or-expression
+     (@or (@infix-left 'binop
+                       $bitwise-xor-expression
+                       (op "|"))
+
+          $bitwise-xor-expression
+          ))
+
+
+
+;; 11.	^	 Bitwise XOR (exclusive or)
+;;--------------------------------------------
+(:: $bitwise-xor-expression
+     (@or (@infix-left 'binop
+                       $bitwise-and-expression
+                       (op "^"))
+
+          $bitwise-and-expression
+          ))
+
+
+
+;; 10.	&	 Bitwise AND
+;;--------------------------------------------
+(:: $bitwise-and-expression
+     (@or (@infix-left 'binop
+                       $equality-expression
+                       (op "&"))
+
+       $equality-expression
+       ))
+
+
+
+;; 9. equality
+;;--------------------------------------------
+(:: $equality-expression
+     (@or (@infix-left 'binop
+                       $relational-expression
+                       $equality-operator)
+
+          $relati
