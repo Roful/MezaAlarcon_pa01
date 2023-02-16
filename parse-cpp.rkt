@@ -691,4 +691,50 @@
 
 
 (:: $prefix-operator
-     (
+     (@or (@= 'new (op "new") (@? $array-suffix))
+          (@= 'delete (op "delete") (@? $array-suffix))
+          (@= 'cast |(|  $type  |)| )
+          (op "void")
+          (op "sizeof")
+          (op "++")
+          (op "--")
+          (op "+")
+          (op "-")
+          (op "~")
+          (op "!")
+          (op "*")                      ; indirection
+          (op "&")                      ; address of
+          (op "::")
+))
+
+
+(::= $array-suffix 'array-suffix
+     |[| |]|)
+
+
+
+
+;; 2. postfix
+;;--------------------------------------------
+(:: $postfix-expression
+    (@or (@postfix 'postfix
+                   $primary-expression
+                   $postfix-operator)
+         $primary-expression))
+
+
+(:: $postfix-operator
+     (@or (op "++")
+          (op "--")
+          $index-suffix
+          $property-reference-suffix
+          $type-parameter
+          $arguments))
+
+
+(::= $arguments 'argument
+     |(|  (@? (@.@ $expression |,|))  |)|
+)
+
+
+(::= $index-suffix 'index
