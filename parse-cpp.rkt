@@ -738,3 +738,50 @@
 
 
 (::= $index-suffix 'index
+    |[|  $expression  |]|
+)
+
+
+(::= $property-reference-suffix 'field-access
+     (@or (@~ ".") (@~ "->")) $identifier)
+
+
+
+;; scope resolution ::
+;---------------------------------------------
+(:: $scope-resolution
+    (@or (@infix-left 'scope
+                      $id
+                      ($$ "::"))
+
+         $primary-expression
+))
+
+
+
+;; 1. primary
+;;--------------------------------------------
+(:: $primary-expression
+    (@or (@= 'this ($$ "this"))
+         $type-cast
+         $ctype                         ; could be used in a macro argument
+         $identifier
+         $literal
+         $array-literal
+         $object-literal
+         (@= #f |(|  $expression  |)|)
+))
+
+
+(::= $type-cast 'type-cast
+     (@or ($$ "typeid")
+          ($$ "const_cast")
+          ($$ "dynamic_cast")
+          ($$ "reinterpret_cast")
+          ($$ "static_cast")))
+
+
+
+;; literal
+;;--------------------------------------------
+(:: $literal
