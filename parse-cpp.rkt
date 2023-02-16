@@ -785,3 +785,45 @@
 ;; literal
 ;;--------------------------------------------
 (:: $literal
+     (@or ($$ "null")
+          ($$ "true")
+          ($$ "false")
+          $string-concat
+          $float-literal
+          $numeral-literal
+          $string-literal
+          $char-literal))
+
+
+(::= $array-literal 'array-literal
+     |{|  (@? (@.@ $expression |,|))  |}|
+)
+
+
+(::= $object-literal 'object-literal
+     |{|  $property-name-value (@* (@... |,| $property-name-value))  |}|
+)
+
+
+(::= $property-name-value 'property-name-value
+     $property-name |:| $assignment-expression)
+
+
+(:: $property-name
+     (@or $identifier
+          $string-literal
+          $numeral-literal))
+
+
+(::= $float-literal 'float-literal
+     $numeral-literal ($$ ".") $numeral-literal)
+
+
+(::= $string-concat 'string-concat
+     $string-literal (@* (@or $string-literal $expression)))
+
+
+
+;-------------------------------------------------------------
+;                    inline assembly
+;-------------------------------------
