@@ -826,4 +826,47 @@
 
 ;-------------------------------------------------------------
 ;                    inline assembly
-;-------------------------------------
+;-------------------------------------------------------------
+(::= $inline-assembly 'inline-assembly
+     (@or (@~ "asm")
+          (@~ "__asm__"))
+     (@? (@or ($$ "volatile")
+              ($$ "__volatile__")))
+     |(|   $string-concat  |)|
+     |;|
+)
+
+
+(::= $extended-assembly 'extended-assembly
+     (@or (@~ "asm")
+          (@~ "__asm__"))
+     (@? (@or ($$ "volatile")
+              ($$ "__volatile__")))
+     |(|  $string-concat
+     |:|  (@= 'output-operands (@* $string-literal |(| $identifier |)|  ))
+     |:|  (@= 'input-operands (@* $string-literal |(| $identifier |)|   ))
+     |:|  (@= 'clobbered-registers (@? (@.@ $string-literal |,|)))
+     |)|
+     |;|
+)
+
+
+
+
+
+(define parse-cpp
+  (lambda (s)
+    (set-parameters)
+    (first-val
+     ($eval $program
+            (filter (lambda (x) (not (comment? x)))
+                    (scan s))))))
+
+
+
+
+;-------------------------------------------------------------
+;                          tests
+;-------------------------------------------------------------
+
+;;
