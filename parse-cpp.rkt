@@ -869,4 +869,11 @@
 ;                          tests
 ;-------------------------------------------------------------
 
-;;
+;; (test-file "tests/simulator-arm.cc"
+;;            "tests/simulator-mips.cc"
+;;            "tests/d8-3404.cc"
+;;            "tests/d8-8424.cc"
+;;            "tests/assembler-arm-2.cc"
+;;            "tests/assembler-arm-7.cc"
+;;            "tests/assembler-arm-8309.cc"
+;; )
