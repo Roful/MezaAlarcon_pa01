@@ -26,3 +26,46 @@
 
 ;-------------------------------------------------------------
 ;                     scanner setttings
+;-------------------------------------------------------------
+
+; single quote is considered a delimeter in s-expression
+
+(define set-parameters
+  (lambda ()
+    (set-delims (list "("  ")"  "["  "]"  "{"  "}" "'"  "`"  "," ))
+    (set-line-comment (list ";"))
+    (set-comment-start "")
+    (set-comment-end "")
+    (set-operators  '())
+    (set-quotation-marks '(#\"))
+    (set-lisp-char (list "#\\" "?\\"))
+    (set-significant-whitespaces '())))
+
+
+
+;-------------------------------------------------------------
+;                        parser
+;-------------------------------------------------------------
+
+(:: $open
+     (@or (@~ "(") (@~ "[")))
+
+(:: $close
+     (@or (@~ ")") (@~ "]")))
+
+(:: $non-parens
+     (@and (@! $open) (@! $close)))
+
+(::= $parens 'sexp
+     (@seq $open (@* $sexp) $close))
+
+(:: $sexp
+    (@+ (@or $parens $non-parens)))
+
+(:: $program $sexp)
+
+
+(define parse-lisp
+  (lambda (s)
+    (set-parameters)
+    (first-val (
