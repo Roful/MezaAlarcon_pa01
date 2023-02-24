@@ -12,4 +12,43 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this 
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+#lang racket
+
+(require "structs.rkt")
+(require "utils.rkt")
+(require "parsec.rkt")
+
+(provide parse-yin)
+
+
+;-------------------------------------------------------------
+;                     scanner setttings
+;-------------------------------------------------------------
+
+; single quote is considered a delimeter in s-expression
+
+(define set-parameters
+  (lambda ()
+    (set-delims (list "("  ")"  "["  "]"  "{"  "}" "'"  "`"  "," ))
+    (set-line-comment (list "--"))
+    (set-comment-start "")
+    (set-comment-end "")
+    (set-operators  '())
+    (set-quotation-marks '(#\"))
+    (set-lisp-char (list "#\\" "?\\"))
+    (set-significant-whitespaces '())))
+
+
+
+;-------------------------------------------------------------
+;                        parser
+;-------------------------------------------------------------
+
+(:: $open
+     (@or (@~ "(") (@~ "[")))
+
+(:: $close
+     (@or (@~ ")") (@~ "]"))
