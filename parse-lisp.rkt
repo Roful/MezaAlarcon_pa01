@@ -68,4 +68,14 @@
 (define parse-lisp
   (lambda (s)
     (set-parameters)
-    (first-val (
+    (first-val ($eval $sexp (scan s)))))
+
+
+;;; command line use only
+
+;; (let ([args (current-command-line-arguments)])
+;;   (cond
+;;    [(null? args) '()]
+;;    [else
+;;     (set-parameters)
+;;     (print (parse-lisp (read-file (vector-ref args 0))))]))
