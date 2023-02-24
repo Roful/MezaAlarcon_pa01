@@ -51,4 +51,31 @@
      (@or (@~ "(") (@~ "[")))
 
 (:: $close
-     (@or (@~ ")") (@~ "]"))
+     (@or (@~ ")") (@~ "]")))
+
+(:: $non-parens
+     (@and (@! $open) (@! $close)))
+
+(::= $parens 'sexp
+     (@seq $open (@* $sexp) $close))
+
+(:: $sexp
+    (@+ (@or $parens $non-parens)))
+
+(:: $program $sexp)
+
+
+(define parse-yin
+  (lambda (s)
+    (set-parameters)
+    (first-val ($eval $sexp (scan s)))))
+
+
+;;; command line use only
+
+;; (let ([args (current-command-line-arguments)])
+;;   (cond
+;;    [(null? args) '()]
+;;    [else
+;;     (set-parameters)
+;;     (print (parse-yin (read-file (vector-ref args 0))))]))
