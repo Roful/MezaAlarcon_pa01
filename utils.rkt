@@ -134,4 +134,44 @@
           (set! counter (+ x counter))
           (print-mark ".")]
          [else
-       
+          (set! counter (+ x counter))])))))
+
+
+
+;;----------------- multi dimensional eq hash --------------------
+
+(define hash-put!
+  (lambda (hash key1 key2 v)
+    (cond
+     [(hash-has-key? hash key2)
+      (let ([inner (hash-ref hash key2)])
+        (hash-set! inner key1 v))]
+     [else
+      (let ([inner (make-hasheq)])
+        (hash-set! inner key1 v)
+        (hash-set! hash key2 inner))])))
+
+(define hash-get
+  (lambda (hash key1 key2)
+    (cond
+     [(hash-has-key? hash key2)
+      (let ([inner (hash-ref hash key2)])
+        (cond
+         [(hash-has-key? inner key1)
+          (hash-ref inner key1)]
+         [else #f]))]
+     [else #f])))
+
+
+(define hash-put2!
+  (lambda (hash key1 key2 v)
+    (cond
+     [(hash-has-key? hash key2)
+      (let ([inner (hash-ref hash key2)])
+        (hash-set! inner key1 v))]
+     [else
+      (let ([inner (make-hash)])
+        (hash-set! inner key1 v)
+        (hash-set! hash key2 inner))])))
+
+(define hash-ge
