@@ -498,3 +498,427 @@
             (cond
              [(not t) (values (list (car toks)) (cdr toks))]
              [else (values #f #f)])))))))
+
+
+;; similar to @!, but takes only one parser and will not
+;; make a sequence by invoking @seq
+(define @!^
+  (lambda (p)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (letv ([(t r) ((p) toks stk ctx)])
+          (cond
+           [(not t) (values (list (car toks)) (cdr toks))]
+           [else (values #f #f)]))))))
+
+
+
+
+(define @and
+  (lambda ps
+    (lambda ()
+      (lambda (toks stk ctx)
+        (let loop ([ps ps] [res '()])
+          (cond
+           [(null? ps)
+            (let ([r1 (car res)])
+                (values (car r1) (cadr r1)))]
+           [else
+            (letv ([(t r) (apply-check (car ps) toks stk ctx)])
+              (cond
+               [(not t)
+                (values #f #f)]
+               [else
+                (loop (cdr ps) (cons (list t r) res))]))]))))))
+
+
+
+; (((@and (@or ($$ "[") ($$ "{")) (@! ($$ "{")))) (scan "["))
+
+
+
+;; parses the parsers ps normally, but "globs" the parses and doesn't
+;; put them into the output.
+(define $glob
+  (lambda ps
+    (let ([parser ((apply @... ps))])
+      (lambda ()
+        (lambda (toks stk ctx)
+          (letv ([(t r) (parser toks stk ctx)])
+            (cond
+             [(not t) (values #f #f)]
+             [else
+              (values '() r)])))))))
+
+; (($glob ($$ "foo")) (scan "foo bar"))
+
+
+
+;; similar to $glob, but takes only one parser and will not
+;; make a sequence by invoking @seq
+(define $glob^
+  (lambda (p)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (letv ([(t r) ((p) toks stk ctx)])
+          (cond
+           [(not t) (values #f #f)]
+           [else
+            (values '() r)]))))))
+
+
+
+;; A phantom is something that takes space but invisible. It is useful
+;; for something whose position is important, but is meaningless to
+;; show up in the AST. It is used mostly for delimeters. $phantom is
+;; seldom used directly. The helper @~ creates a phantom from strings.
+(define $phantom
+  (lambda ps
+    (let ([parser ((apply @... ps))])
+      (lambda ()
+        (lambda (toks stk ctx)
+          (letv ([(t r) (parser toks stk ctx)])
+            (cond
+             [(not t) (values #f #f)]
+             [else
+              (cond
+               [(null? t)
+                (values '() r)]
+               [else
+                (values (list (Node 'phantom
+                                    (Node-start (car t))
+                                    (Node-end (last t))
+                                    '()
+                                    #f #f))
+                        r)])])))))))
+
+
+
+
+;------------------------ parsers ---------------------------
+
+(define $fail
+  (lambda ()
+    (lambda (toks stk ctx)
+      (values #f #f))))
+
+
+(define $none
+  (lambda ()
+    (lambda (toks stk ctx)
+      (values '() toks))))
+
+
+;; succeeds if the predicate 'proc' returns true for the first token.
+(define $pred
+  (lambda (proc)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (cond
+         [(null? toks) (values #f #f)]
+         [(proc (car toks))
+          (values (list (car toks)) (cdr toks))]
+         [else
+          (values #f #f)])))))
+
+
+(define $eof
+  ($glob ($pred (lambda (t) (eq? t 'eof)))))
+
+
+;; literal parser for tokens. for example ($$ "for")
+(define $$
+  (lambda (s)
+    ($pred
+     (lambda (x)
+       (and (token? x) (string=? (Node-elts x) s))))))
+
+
+(define @_
+  (lambda (s)
+    ($glob ($$ s))))
+
+
+(define @~
+  (lambda (s)
+    ($phantom ($$ s))))
+
+
+(define join
+  (lambda (ps sep)
+    (cond
+     [(null? (cdr ps)) ps]
+     [else
+      (cons (car ps) (cons sep (join (cdr ps) sep)))])))
+
+
+;; a list of parser p separated by sep
+(define @.@
+  (lambda (p sep)
+    (@... p (@* (@... sep p)))))
+
+
+
+;; ($eval (@.@ ($$ "foo") ($$ ","))
+;;        (scan "foo, foo, foo"))
+
+
+
+
+
+;-------------------------------------------------------------
+;                  expression parser combinators
+;-------------------------------------------------------------
+
+;; helper for constructing left-associative infix expression
+(define constr-exp-l
+  (lambda (type fields)
+    (let loop ([fields (cdr fields)] [ret (car fields)])
+         (cond
+          [(null? fields) ret]
+          [else
+           (let ([e (Node type
+                          (Node-start ret)
+                          (Node-end (cadr fields))
+                          (list ret (car fields) (cadr fields))
+                          #f #f)])
+             (loop (cddr fields) e))]))))
+
+
+;; helper for constructing right-associative infix expression
+(define constr-exp-r
+  (lambda (type fields)
+    (let ([fields (reverse fields)])
+      (let loop ([fields (cdr fields)] [ret (car fields)])
+           (cond
+            [(null? fields) ret]
+            [else
+             (let ([e (Node type
+                            (Node-start (cadr fields))
+                            (Node-end ret)
+                            (list (cadr fields) (car fields) ret)
+                            #f #f)])
+               (loop (cddr fields) e))])))))
+
+
+
+;; helper for creating infix operator parser. used by @infix-left and
+;; @infix-right
+(define @infix
+  (lambda (type p op associativity)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (let loop ([rest toks] [ret '()])
+             (letv ([(tp rp) (((@seq p)) rest stk ctx)])
+               (cond
+                [(not tp)
+                 (cond
+                  [(< (length ret) 3)
+                   (values #f #f)]
+                  [else
+                   (let ([fields (reverse (cdr ret))]
+                         [constr (if (eq? associativity 'left)
+                                     constr-exp-l
+                                     constr-exp-r)])
+                     (values (list (constr type fields))
+                             (cons (car ret) rest)))])]
+                [else
+                 (letv ([(top rop) (((@seq op)) rp stk ctx)])
+                   (cond
+                    [(not top)
+                     (cond
+                      [(< (length ret) 2)
+                       (values #f #f)]
+                      [else
+                       (let ([fields (reverse (append tp ret))]
+                             [constr (if (eq? associativity 'left)
+                                         constr-exp-l
+                                         constr-exp-r)])
+                         (values (list (constr type fields))
+                                 rp))])]
+                    [else
+                     (loop rop (append (append top tp) ret))]))])))))))
+
+
+(define @infix-left
+  (lambda (type p op)
+    (@infix type p op 'left)))
+
+
+(define @infix-right
+  (lambda (type p op)
+    (@infix type p op 'right)))
+
+
+
+;; ($eval (@infix-right 'binop $multiplicative-expression $additive-operator)
+;;        (scan "x + y + z"))
+
+
+
+
+(define @postfix
+  (lambda (type p op)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (letv ([(t r) (((@... p (@+ op))) toks stk ctx)])
+          (cond
+           [(not t)
+            (values #f #f)]
+           [else
+            (values (list (make-postfix type t)) r)]))))))
+
+
+;; ($eval (@postfix 'ok ($$ "foo") (@= 'bar ($$ "bar")) 'ok)
+;;        (scan "foo bar bar"))
+
+
+(define make-postfix
+  (lambda (type ls)
+    (let loop ([ls (cdr ls)] [ret (car ls)])
+         (cond
+          [(null? ls) ret]
+          [else
+           (let ([e (Node type
+                          (Node-start ret)
+                          (Node-end (car ls))
+                          (list ret (car ls))
+                          #f #f)])
+             (loop (cdr ls) e))]))))
+
+
+(define @prefix
+  (lambda (type p op)
+    (lambda ()
+      (lambda (toks stk ctx)
+        (letv ([(t r) (((@... (@+ op) p)) toks stk ctx)])
+          (cond
+           [(not t)
+            (values #f #f)]
+           [else
+            (values (list (make-prefix type t)) r)]))))))
+
+
+(define make-prefix
+  (lambda (type ls)
+    (cond
+     [(null? (cdr ls)) (car ls)]
+     [else
+      (let ([tail (make-prefix type (cdr ls))])
+        (Node type
+              (Node-start (car ls))
+              (Node-end tail)
+              (list (car ls) tail)
+              #f #f))])))
+
+
+;; ($eval (@prefix 'prefix $primary-expression $prefix-operator)
+;;        (scan "-1"))
+
+
+
+;-------------------------------------------------------------
+;                   syntactic extensions
+;-------------------------------------------------------------
+
+(define *parse-hash* (make-hasheq))
+
+
+;; define an unnamed parser
+(define-syntax ::
+  (syntax-rules ()
+    [(_ name expr)
+     (define name
+       (lambda ()
+         (lambda (toks stk ctx)
+           (cond
+            [(hash-get *parse-hash* name toks)
+             => (lambda (p)
+                  (values (car p) (cdr p)))]
+            [else
+             (letv ([(t r) ((expr) toks stk ctx)])
+               (hash-put! *parse-hash* name toks (cons t r))
+               (values t r))]))))]))
+
+
+
+;; define a named parser
+(define-syntax ::=
+  (syntax-rules ()
+    [(_ name type expr ...)
+     (define name
+       (cond
+        [(symbol? type)
+         (lambda ()
+           (lambda (toks stk ctx)
+             (cond
+              [(hash-get *parse-hash* name toks)
+               => (lambda (p)
+                    (values (car p) (cdr p)))]
+              [else
+               (letv ([parser (@= type expr ...)]
+                      [(t r) ((parser) toks stk (cons 'name ctx))])
+                 (hash-put! *parse-hash* name toks (cons t r))
+                 (values t r))])))]
+        [else
+         (fatal '::= "type must be a symbol, but got: " type)]))]))
+
+
+
+
+
+;;---------------- context sensitive parsing ----------------
+
+;; succeed only in certain context
+(define-syntax ::?
+  (syntax-rules ()
+    [(_ name effective-ctx expr)
+     (define name
+       (lambda ()
+         (lambda (toks stk ctx)
+           (cond
+            [(not (memq 'effective-ctx ctx))
+             (values #f #f)]
+            [(hash-get *parse-hash* name toks)
+             => (lambda (p)
+                  (values (car p) (cdr p)))]
+            [else
+             (letv ([(t r) ((expr) toks stk (cons 'name ctx))])
+               (hash-put! *parse-hash* name toks t r)
+               (values t r))]))))]))
+
+
+
+;; succeed only in a context that is NOT avoid-ctx
+(define-syntax ::!
+  (syntax-rules ()
+    [(_ name avoid-ctx expr)
+     (define name
+       (lambda ()
+         (lambda (toks stk ctx)
+           (cond
+            [(memq 'avoid-ctx ctx)
+             (values #f #f)]
+            [(hash-get *parse-hash* name toks)
+             => (lambda (p)
+                  (values (car p) (cdr p)))]
+            [else
+             (letv ([(t r) ((expr) toks stk (cons 'name ctx))])
+               (hash-put! *parse-hash* name toks t r)
+               (values t r))]))))]))
+
+
+;; execuate parser p on the input tokens
+(define $eval
+  (lambda (p toks)
+    (set! *parse-hash* (make-hasheq))
+    (letv ([(t r) ((p) toks '() '())])
+      (set! *parse-hash* (make-hasheq))
+      (values t r))))
+
+
+(define parse1
+  (lambda (p s)
+    (letv ([(t r) ($eval p (filter (lambda (x) (not (comment? x)))
+                                   (scan s)))])
+      t)))
