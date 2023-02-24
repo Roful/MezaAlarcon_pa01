@@ -35,4 +35,67 @@
        (letv (bd* ...) body ...))]
     [(_ ([e1 e2] bd* ...) body ...)
      (let ([e1 e2])
-       (letv (bd* ...) body
+       (letv (bd* ...) body ...))]))
+
+
+(define-syntax first-val
+  (syntax-rules ()
+    [(_ e)
+     (letv ([(x y) e]) x)]))
+
+
+(define-syntax second-val
+  (syntax-rules ()
+    [(_ e)
+     (letv ([(x y) e]) y)]))
+
+
+(define *debug* #f)
+(define-syntax peek
+  (syntax-rules ()
+    [(_ name args ...)
+     (if *debug*
+         (begin
+           (printf "~s: ~s = ~s~n" name 'args args)
+           ...)
+         (void))]))
+
+
+;; utility for error reporting
+(define fatal
+  (lambda (who . args)
+    (printf "~s: " who)
+    (for-each display args)
+    (display "\n")
+    (error who "")))
+
+
+; foldl of Racket has a bug!
+; (foldl (lambda (x y) x) 0 '(1 2 3 4))
+; => 4
+; Don't use it!
+(define foldl2
+  (lambda (f x ls)
+    (cond
+     [(null? ls) x]
+     [else
+       (foldl2 f (f x (car ls)) (cdr ls))])))
+
+
+; (foldl2 + 0 '(1 2 3 4 ))
+
+
+
+(define orf
+  (lambda (a b)
+    (or a b)))
+
+
+
+
+(define char->string string)
+
+
+(define read-file
+  (lambda (filename)
+    (
