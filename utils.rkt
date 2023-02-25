@@ -174,4 +174,55 @@
         (hash-set! inner key1 v)
         (hash-set! hash key2 inner))])))
 
-(define hash-ge
+(define hash-get2
+  (lambda (hash key1 key2)
+    (cond
+     [(hash-has-key? hash key2)
+      (let ([inner (hash-ref hash key2)])
+        (cond
+         [(hash-has-key? inner key1)
+          (hash-ref inner key1)]
+         [else #f]))]
+     [else #f])))
+
+
+(define predand
+  (lambda preds
+    (lambda (x)
+      (cond
+       [(null? preds) #t]
+       [((car preds) x) 
+        ((apply predand (cdr preds)) x)]
+       [else #f]))))
+
+
+(define predor
+  (lambda preds
+    (lambda (x)
+      (cond
+       [(null? preds) #f]
+       [((car preds) x) #t]
+       [else
+        ((apply predor (cdr preds)) x)]))))
+
+
+(define set-
+  (lambda (s1 s2)
+    (cond
+     [(null? s1) '()]
+     [(memq (car s1) s2)
+      (set- (cdr s1) s2)]
+     [else
+      (cons (car s1) (set- (cdr s1) s2))])))
+
+
+
+(define string-join
+  (lambda (ls sep)
+    (cond
+     [(null? ls) ""]
+     [else 
+      (string-append (car ls) sep (string-join (cdr ls) sep))])))
+
+; (string-join (list "a" "b" "c") ",")
+
